@@ -1,0 +1,88 @@
+\documentclass[12pt]{tesislcc}
+\usepackage{texlambda}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usepackage{fancybox}
+
+\begin{document}
+
+\titulo{El cálculo lambda y fundamentos de la computación}
+\autor{Eduardo Acuña Yeomans}
+\director{Martín Eduardo Frías Armenta}
+\fecha{2016}
+
+\portada%
+
+\frontmatter
+
+\begin{resumen}
+  Falta escribir el resumen.
+\end{resumen}
+
+\begin{dedicatoria}
+  Falta escribir la dedicatoria.
+\end{dedicatoria}
+
+\begin{agradecimientos}
+  Falta escribir los agradecimientos.
+\end{agradecimientos}
+
+\tableofcontents
+
+\mainmatter%
+
+\introduccion%
+\input{introduccion.tex}
+
+\chapter{El cálculo lambda en el desarrollo de la computación}
+\input{capitulo-1.tex}
+
+\chapter{El cálculo lambda sin tipos}
+\input{capitulo-2.tex}
+
+\chapter{Tipos en el cálculo lambda}
+\input{capitulo-3.tex}
+
+\chapter{Teoría de la computación}
+\input{capitulo-4.tex}
+
+\chapter{Lógica constructivista}
+\input{capitulo-5.tex}
+
+\chapter{Lenguajes de programación}
+\input{capitulo-6.tex}
+
+\conclusiones%
+\input{conclusion.tex}
+
+
+\appendix
+
+\chapter{Composición tipográfica de términos lambda en \LaTeX}
+\input{apendice-1.tex}
+
+\chapter{Compilación del cálculo lambda}
+\input{apendice-2.tex}
+
+\chapter{Intérprete del cálculo lambda}
+\input{apendice-3.tex}
+
+\listoffigures
+\listoftables
+\listofalgorithms%
+\listoflistings%
+
+\nocite{*}
+\bibliography{bibliografia}
+\addcontentsline{toc}{chapter}{Bibliografía}
+\markboth{\MakeUppercase{Bibliografía}}{\MakeUppercase{Bibliografía}}
+
+
+\end{document}
+
+%%% Local Variables:
+%%% coding: utf-8
+%%% mode: latex
+%%% TeX-master: t
+%%% TeX-command-extra-options: "-shell-escape"
+%%% End:

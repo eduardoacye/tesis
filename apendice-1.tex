@@ -1,0 +1,426 @@
+Para escribir términos lambda en \LaTeX{} se escribió el paquete \TeXLaMbDa, se encarga normalizar términos lambda, aplicar el abuso de notación utilizado en el trabajo y agregarle estilos a diferentes partes de un término lambda de forma automática con un simple comando en el modo matemáticas. También contiene diversos comandos para abreviar la escritura de terminología y operaciones del cálculo lambda.\\
+
+\section{Código}
+El siguiente archivo es nombrado \texttt{texlambda.sty} y contiene las definiciones del paquete de \LaTeX.
+
+\begin{minted}[fontsize=\footnotesize]{latex}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{texlambda}[2016/03/09 Typesetting for the untyped lambda calculus]
+
+\RequirePackage{suffix}
+\RequirePackage{amsmath}
+\RequirePackage{amsfonts}
+\RequirePackage{xifthen}
+\RequirePackage{etoolbox}
+
+\newcommand{\LcFlags}{}
+\newcommand{\lcflags}[1]{
+  \ifthenelse{\equal{#1}{}}{
+    \renewcommand{\LcFlags}{}
+  }{
+    \renewcommand{\LcFlags}{-#1}
+  }
+}
+
+\newcommand\lc[2][]{%
+  \ifstrempty{#1}{
+    \immediate\write18{
+      \unexpanded{texlambda -e} \LcFlags \unexpanded{ " #2 " > lc-buf.tex}
+    }
+    \input{lc-buf.tex}
+  }{
+    \immediate\write18{
+      \unexpanded{texlambda -e -#1 " #2 " > lc-buf.tex}
+    }
+    \input{lc-buf.tex}
+  }
+}
+
+\WithSuffix\newcommand\lc*[2][]{
+  \ifstrempty{#1}{
+    \immediate\write18{
+      \unexpanded{texlambda } \LcFlags \unexpanded{ " #2 " > lc-buf.tex}
+    }
+    \input{lc-buf.tex}
+  }{
+    \immediate\write18{
+      \unexpanded{texlambda -#1 " #2 " > lc-buf.tex}
+    }
+    \input{lc-buf.tex}
+  }
+}
+
+\newcommand{\betaredu}{$\beta$-reducción}
+
+\newcommand{\alphaconv}{$\alpha$-conversión}
+
+\newcommand{\alphacong}{$\alpha$-congruente}
+
+\newcommand{\synteq}{\equiv}
+
+\newcommand{\termlen}[1]{\left\lVert#1\right\rVert}
+
+
+\DeclareRobustCommand{\TeXLaMbDa}{
+  \TeX-$\mathcal{L\!\!{\scriptstyle A}\!M\!^{B}\!D\!}\boldsymbol{{\scriptstyle \lambda}}$
+}
+\end{minted}
+
+El siguiente archivo es nombrado \texttt{texlambda.rkt} y contiene el parser de términos lambda, el algoritmo de normalización, desnormalización y los procedimientos para vaciar en la salida estándar código de \LaTeX.
+
+\begin{minted}[fontsize=\footnotesize]{racket}
+(define (parse str)
+  (read
+   (open-input-string
+    (string-append
+     "("
+     (regexp-replace* #rx"\\." (regexp-replace* #rx"\\\\" str " lambda ( ") " ) ")
+     ")"))))
+
+(define (normalize x)
+  (match x
+    [(list a) (normalize a)]
+    [(list 'lambda (list args ...) body ...)
+     (list 'lambda
+           (list (car args))
+           (normalize (if (null? (cdr args)) body (list 'lambda (cdr args) body))))]
+    [(list a b ...)
+     (foldl (lambda (x y) (list y x))
+            (normalize a)
+            (map normalize b))]
+    [(? symbol? a) a]))
+
+(define (denormalize x)
+  (match x
+    [(? symbol? a) a]
+    [(list 'lambda (list arg) body)
+     (cons 'lambda (cons (uncurry-args x) (denormalize (uncurry-body x))))]
+    [(list a b)
+     (match a
+       [(? symbol? x)
+        (list (denormalize a) (denormalize b))]
+       [(list 'lambda (list arg) body)
+        (list (denormalize a) (denormalize b))]
+       [_
+        (append (denormalize a) (list (denormalize b)))])]
+    [(list a) x]))
+
+(define (uncurry-args x)
+  (match x
+    [(list 'lambda (list arg) body) (cons arg (uncurry-args body))]
+    [_ null]))
+
+(define (uncurry-body x)
+  (match x
+    [(list 'lambda (list arg) body) (uncurry-body body)]
+    [(? symbol? a) (list a)]
+    [_ x]))
+
+(define (read-lambda x)
+  (normalize (parse x)))
+
+(define (latexify x)
+  (match x
+    [(? symbol? a)
+     (format "~a~a~a" (lc:variable-pre) a (lc:variable-post))]
+    [(list 'lambda (list arg) body)
+     (format "~a~a~a~a~a~a"
+             (lc:left-paren)
+             (lc:lambda)
+             (latexify arg)
+             (lc:abstraction-separator)
+             (latexify body)
+             (lc:right-paren))]
+    [(list a b)
+     (format "~a~a~a~a~a"
+             (lc:left-paren)
+             (latexify a)
+             (lc:application-separator)
+             (latexify b)
+             (lc:right-paren))]))
+
+(define (latexify* x)
+  (match x
+    [(? symbol? a)
+     (format "~a~a~a"
+             (lc:variable-pre)
+             a
+             (lc:variable-post))]
+    [(list 'lambda (list args ...) body ...)
+     (format "~a~a~a~a"
+             (lc:lambda)
+             (string-join (map latexify* args) (lc:application-separator))
+             (lc:abstraction-separator)
+             (latexify* body))]
+    [(list a (list b ...) c ...)
+     (match a
+       [(list 'lambda (list args ...) body ...)
+        (format "~a~a~a~a~a~a~a~a~a"
+                (lc:left-paren)
+                (latexify* a)
+                (lc:right-paren)
+                (lc:application-separator)
+                (lc:left-paren)
+                (latexify* b)
+                (lc:right-paren)
+                (if (null? c) "" (lc:application-separator))
+                (latexify* c))]
+       [_
+        (format "~a~a~a~a~a~a~a"
+                (latexify* a)
+                (lc:application-separator)
+                (lc:left-paren)
+                (latexify* b)
+                (lc:right-paren)
+                (if (null? c) "" (lc:application-separator))
+                (latexify* c))])]
+    [(list a b ...)
+     (match a
+       [(list 'lambda (list args ...) body ...)
+        (format "~a~a~a~a~a"
+                (lc:left-paren)
+                (latexify* a)
+                (lc:right-paren)
+                (if (null? b) "" (lc:application-separator))
+                (latexify* b))]
+       [_
+        (format "~a~a~a"
+                (latexify* a)
+                (if (null? b) "" (lc:application-separator))
+                (latexify* b))])]
+    ['() ""]))
+
+(define (assert-predicate pred)
+  (lambda (x)
+    (if (pred x)
+        x
+        (error "Expected argument doesn't satisfy predicate" x pred))))
+
+(define lc:left-paren            (make-parameter "\\left( "   (assert-predicate string?)))
+(define lc:right-paren           (make-parameter " \\right)"  (assert-predicate string?)))
+(define lc:abstraction-separator (make-parameter " . "        (assert-predicate string?)))
+(define lc:lambda                (make-parameter " \\lambda " (assert-predicate string?)))
+(define lc:variable-pre          (make-parameter ""           (assert-predicate string?)))
+(define lc:variable-post         (make-parameter ""           (assert-predicate string?)))
+(define lc:application-separator (make-parameter "\\ "        (assert-predicate string?)))
+
+(define spaced?           (make-parameter #f (assert-predicate boolean?)))
+(define bold-variables?   (make-parameter #f (assert-predicate boolean?)))
+(define bold-lambdas?     (make-parameter #f (assert-predicate boolean?)))
+(define bold-dots?        (make-parameter #f (assert-predicate boolean?)))
+(define bold-parentheses? (make-parameter #f (assert-predicate boolean?)))
+(define explicit?         (make-parameter #f (assert-predicate boolean?)))
+(define term              (make-parameter "" (assert-predicate string?)))
+
+(define console-args
+  (command-line
+   #:program "TeX-LaMbDa"
+   #:once-each
+   [("-s" "--spaced")           "Spaced terms mode - Introduces spacing"
+                                (spaced? #t)]
+   [("-v" "--bold-variables")   "Bold variables mode - Make variable names bold"
+                                (bold-variables? #t)]
+   [("-l" "--bold-lambdas")     "Bold lambdas mode - Makes lambdas bold"
+                                (bold-lambdas? #t)]
+   [("-d" "--bold-dots")        "Bold dots mode - Makes dots bold"
+                                (bold-dots? #t)]
+   [("-p" "--bold-parentheses") "Bold parentheses mode - Makes parentheses bold"
+                                (bold-parentheses? #t)]
+   [("-e" "--explicit")         "Explicit mode - Removes abuse of notation"
+                                (explicit? #t)]
+   #:args (str)
+   str))
+
+(term console-args)
+
+(when (bold-variables?)
+  (lc:variable-pre "\\boldsymbol{")
+  (lc:variable-post "}"))
+
+(when (bold-lambdas?)
+  (lc:lambda " \\boldsymbol{\\lambda} "))
+
+(when (bold-dots?)
+  (lc:abstraction-separator " \\boldsymbol{.} "))
+
+(when (bold-parentheses?)
+  (lc:left-paren "\\boldsymbol{\\left( \\right.} ")
+  (lc:right-paren " \\boldsymbol{\\left. \\right)}"))
+
+(when (spaced?)
+  (lc:left-paren (string-append (lc:left-paren) "\\ "))
+  (lc:right-paren (string-append " \\" (lc:right-paren)))
+  (lc:lambda (string-append (lc:lambda) "\\ "))
+  (lc:abstraction-separator (string-append "\\ " (lc:abstraction-separator) "\\ ")))
+
+(if (explicit?)
+    (display (latexify (normalize (parse (term)))))
+    (display (latexify* (denormalize (normalize (parse (term)))))))
+\end{minted}
+
+\section{Documentación}
+
+\subsection*{Introducción}
+Este paquete permite escribir en el modo de matemáticas de \LaTeX\ términos bien formados del cálculo lambda sin tipos.\\
+
+Los comandos principales son \texttt{\textbackslash lc\{x\}} y \texttt{\textbackslash lc*\{x\}}. El primero traduce el término lambda \texttt{x} en código para el modo matemáticas de \LaTeX\ sin abusos de notación, el segundo traduce a \texttt{x} de la manera mas concisa posible, utilizando los abusos de notación estándar en la literatura del cálculo lambda. En ambos casos, \texttt{x} puede ser escrito con o sin abuso de notación o una mescolanza de ambos estilos.\\
+
+La sintáxis aceptada es:
+\begin{itemize}
+\item[\S] Si \texttt{x} es una secuencia de caracteres sin espacios, entonces \texttt{x} es un término lambda aceptado (\emph{átomo}).
+
+\item[\S] Si \texttt{x} y \texttt{y} son términos lambda, entonces \texttt{(x y)} es un término lambda aceptado (\emph{aplicación}).
+
+\item[\S] Si \texttt{x} es una secuencia de caracteres sin espacios y \texttt{y} es un término lambda aceptado, entonces \texttt{(\textbackslash x.y)} es un término lambda aceptado (\emph{abstracción}).
+\end{itemize}
+
+Los abusos de notación son:
+\begin{itemize}
+\item[\S] Si \texttt{x} es una aplicación o una abstracción, se pueden ignorar
+  los paréntesis.
+\item[\S] Si \texttt{x} es una abstracción cuyo cuerpo es otra abstracción, se
+  pueden agrupar los argumentos de ambas abstracciones, e.g
+  \texttt{(\textbackslash x.(\textbackslash y.M))} es equivalente a \texttt{(\textbackslash x y.M)}.
+\item[\S] Si \texttt{x} es una aplicación anidada con asociación a la izquierda,
+  se pueden escribir los términos en las aplicaciones de manera consecutiva, e.g
+  \texttt{(((a b)c)d)} es equivalente a \texttt{(a b c d)}.
+\end{itemize}
+
+\subsection*{Ejemplos}
+
+\subsubsection*{Átomos}
+Escribiendo \texttt{\textbackslash lc\{x\}} se obtiene \( \lc{x} \).
+
+Escribiendo \texttt{\textbackslash lc*\{x\}} se obtiene \( \lc*{x} \).
+
+
+\subsubsection*{Abstracción lambda}
+Escribiendo \texttt{\textbackslash lc\{\textbackslash x.x\}} se obtiene \( \lc{\x.x} \).
+
+Escribiendo \texttt{\textbackslash lc*\{\textbackslash x.x\}} se obtiene \( \lc*{\x.x} \).
+
+\subsubsection*{Aplicación lambda}
+Escribiendo \texttt{\textbackslash lc\{x y z\}} se obtiene \( \lc{x y z} \).
+
+Escribiendo \texttt{\textbackslash lc*\{x y z\}} se obtiene \( \lc*{x y z} \).
+
+\subsubsection*{Numerales de Church}
+Escribiendo \texttt{\textbackslash lc\{\textbackslash f x.f(f(f(f(f x))))\}} se obtiene \( \lc{\f x.f(f(f(f(f x))))} \).
+
+Escribiendo \texttt{\textbackslash lc*\{\textbackslash f x.f(f(f(f(f x))))\}} se obtiene \( \lc*{\f x.f(f(f(f(f x))))} \).
+
+\subsubsection*{Términos lambda variados}
+Escribiendo \texttt{\textbackslash lc\{x y z (y x)\}} se obtiene \( \lc{x y z (y x)} \).
+
+Escribiendo \texttt{\textbackslash lc*\{(((x y) z) (y x))\}} se obtiene \( \lc*{(((x y) z) (y x))} \).
+
+\bigskip
+
+Escribiendo \texttt{\textbackslash lc\{\textbackslash x.u x y\}} se obtiene \( \lc{\x.u x y} \).
+
+Escribiendo \texttt{\textbackslash lc*\{(\textbackslash x.((u x) y))\}} se obtiene \( \lc*{(\x. ((u x) y))} \).
+
+\bigskip
+
+Escribiendo \texttt{\textbackslash lc\{\textbackslash u.u(\textbackslash x.y)\}} se obtiene \( \lc{\u.u(\x.y)} \).
+
+Escribiendo \texttt{\textbackslash lc*\{(\textbackslash u.(u (\textbackslash x.y)))\}} se obtiene \( \lc*{(\ u. (u (\x. y)))} \).
+
+\bigskip
+
+Escribiendo \texttt{\textbackslash lc\{(\textbackslash u.v u u)z y\}} se obtiene \( \lc{(\u.v u u)z y} \).
+
+Escribiendo \texttt{\textbackslash lc*\{(((\textbackslash u.((v u) u)) z) y)\}} se obtiene \( \lc*{(((\ u. ((v u) u)) z) y)} \).
+
+\bigskip
+
+Escribiendo \texttt{\textbackslash lc\{u x(y z)(\textbackslash v.v y)\}} se obtiene \( \lc{u x(y z)(\v.v y)} \).
+
+Escribiendo \texttt{\textbackslash lc*\{(((u x)(y z))(\textbackslash v.(v y)))\}} se obtiene \( \lc*{(((u x) (y z)) (\v. (v y)))} \).
+
+\bigskip
+
+Escribiendo \texttt{\textbackslash lc\{(\textbackslash x y z.x z(y z))u v w\}} se obtiene \( \lc{(\x y z. x z(y z)) u v w} \).
+
+Escribiendo \texttt{\textbackslash lc*\{((((\textbackslash x.(\textbackslash y.(\textbackslash z.((x z)(y z)))))u)v)w)\}} se obtiene \( \lc*{((((\x. (\y. (\ z. ((x z) (y z))))) u) v) w)} \).
+
+\subsection*{Estilos}
+
+Para obtener diferentes estilos de términos, se puede utilizar el comando \texttt{\textbackslash lc\{x\}} con argumentos extras: \texttt{\textbackslash lc[args]\{x\}}, donde \texttt{x} es un término lambda como en los anteriores comandos y \texttt{args} son las banderas (o \emph{flags}) que determinan el formato del término.\\
+
+Las banderas admitidas son \texttt{s}, \texttt{v}, \texttt{l}, \texttt{d} y \texttt{p}. Si ejecutas el comando \texttt{./texlambda --help} obtendrás la siguiente descripción de las banderas:
+
+\begin{verbatim}
+TeX-LaMbDa [ <option> ... ] <str>
+ where <option> is one of
+  -s, --spaced : Spaced terms mode - Introduces spacing
+  -v, --bold-variables : Bold variables mode - Make variable names bold
+  -l, --bold-lambdas : Bold lambdas mode - Makes lambdas bold
+  -d, --bold-dots : Bold dots mode - Makes dots bold
+  -p, --bold-parentheses : Bold parentheses mode - Makes parentheses bold
+  -e, --explicit : Explicit mode - Removes abuse of notation
+  --help, -h : Show this help
+  -- : Do not treat any remaining argument as a switch (at this level)
+ Multiple single-letter switches can be combined after one `-'; for
+  example: `-h-' is the same as `-h --'
+\end{verbatim}
+
+El modo explícito es controlado por el modificador estrella en el comando \texttt{lc}, así que no debes utilizar la bandera \texttt{e}.\\
+
+\subsection*{Ejemplos de modificación de estilos}
+Por ejemplo, para obtener ``\emph{negritas}'' en las lambdas y puntos, se utiliza el comando \texttt{\textbackslash lc[ld]\{x\}}, también sirve usar como banderas \texttt{dl} ya que el orden no importa:
+
+\[ \lc[ld]{(\x y z. x z(y z)) u v w} \]\\
+
+Si queremos tener únicamente los átomos en ``\emph{negritas}'' se escribe \texttt{\textbackslash lc[v]\{x\}}:
+
+\[ \lc[v]{(\x y z. x z(y z)) u v w} \]\\
+
+La versión no explícita de este término sería \texttt{\textbackslash lc*[v]\{x\}}:
+
+\[ \lc*[v]{(\x y z. x z(y z)) u v w} \]\\
+
+Y si deseamos un término lambda mas espaciado se puede utilizar \texttt{\textbackslash lc*[vs]\{x\}}:
+
+\[ \lc*[vs]{(\x y z. x z(y z)) u v w} \]\\
+
+Si queremos tener todo en ``\emph{negritas}'' excepto las variables, utilizamos \texttt{\textbackslash lc[pdl]\{x\}}:
+
+\[ \lc[pdl]{(\x y z. x z(y z)) u v w} \]\\
+
+Y con \texttt{\textbackslash lc*[pdl]\{x\}}:
+
+\[ \lc*[pdl]{(\x y z. x z(y z)) u v w} \]\\
+
+Es posible asignar las banderas por defecto utilizando el comando \texttt{\textbackslash lcflags\{args\}}, de tal manera que si se asignan banderas utilizando este comando, todos los términos lambda escritos con \texttt{\textbackslash lc} o \texttt{\textbackslash lc*} sin argumentos extra, utilizarán estas banderas. Por ejemplo al escribir \texttt{\textbackslash lcflags\{pld\}}:
+\lcflags{pdl}
+\begin{itemize}
+\item[\S] Escribiendo \texttt{\textbackslash lc\{\textbackslash f x.f(f(f(f x)))\}} se obtiene \( \lc{\f x.f(f(f(f x)))} \)
+\item[\S] Escribiendo \texttt{\textbackslash lc*\{\textbackslash f x.f(f(f(f x)))\}} se obtiene \( \lc*{\f x.f(f(f(f x)))} \)
+\end{itemize}
+\lcflags{}
+
+Con este comando se pueden redefinir las banderas y escribiendo \texttt{\textbackslash lcflags\{\}} se eliminan, regresando a los valores por defecto originales.\\
+
+Por el momento es lo único que puede estilizar el programa \texttt{texlambda}, sin embargo estoy trabajando en poder realizar con comandos de latex y de manera declarativa \betaredu\ y \alphaconv.\\
+
+\subsection*{Operaciones y equivalencias}
+
+El paquete \TeXLaMbDa\ también tiene algunos comandos para escribir operaciones y equivalencias utilizadas frecuentemente en la literatura. Por el momento son:
+
+\begin{itemize}
+\item[\S] \texttt{\textbackslash betaredu} $\rightarrow$ \betaredu.
+\item[\S] \texttt{\textbackslash alphaconv} $\rightarrow$ \alphaconv.
+\item[\S] \texttt{\$\textbackslash synteq\$} $\rightarrow$ $\synteq$.
+\item[\S] \texttt{\$\textbackslash termlen\{\textbackslash lc\{\textbackslash x.x\}\}\$} $\rightarrow$ $\termlen{\lc{\x.x}}$.
+\item[\S] \texttt{\textbackslash alphacong} $\rightarrow$ \alphacong.
+\end{itemize}
+
+Hacen falta muchas para completar las que utilizaré en mi tesis de licenciatura, sin embargo, aún no establezco una notación fija para las operaciones.
+
+%%% Local Variables:
+%%% coding: utf-8
+%%% mode: latex
+%%% TeX-master: "main"
+%%% TeX-command-extra-options: "-shell-escape"
+%%% End:

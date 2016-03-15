@@ -93,7 +93,7 @@ linkcolor = black]{hyperref}
 
 % Algoritmos y listado de código
 \RequirePackage{listings}
-\RequirePackage[cache=false]{minted}
+\RequirePackage{minted}
 \RequirePackage{algorithmic}
 \RequirePackage[chapter]{algorithm}
 

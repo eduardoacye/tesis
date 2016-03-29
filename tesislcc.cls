@@ -93,7 +93,6 @@ linkcolor = black]{hyperref}
 
 % Algoritmos y listado de código
 \RequirePackage{listings}
-\RequirePackage{minted}
 \RequirePackage{algorithmic}
 \RequirePackage[chapter]{algorithm}
 
@@ -142,8 +141,7 @@ includefoot]{geometry}
 
 % Nombres para listados y algoritmos en Español
 \renewcommand{\lstlistingname}{Código}
-\renewcommand\listingscaption{Código}
-\renewcommand\listoflistingscaption{Índice de códigos}
+\renewcommand{\lstlistlistingname}{Índice de códigos}
 \renewcommand{\listalgorithmname}{Índice de algoritmos}
 \floatname{listing}{Código}
 \floatname{algorithm}{Algoritmo}

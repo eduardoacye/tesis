@@ -1,172 +1,310 @@
+El cálculo lambda es un sistema matemático creado con la finalidad de expresar,
+manipular y estudiar funciones. La manera en como se trabaja con funciones en
+este sistema es un poco diferente a como es usual en otras áreas de
+las matemáticas y para mitigar las posibles confusiones que se puedan presentar
+en la lectura de este trabajo se presentará en este capítulo una introducción
+que servirá como transición de la manera en como usalmente se trabaja con
+funciones a como se trabajará con funciones en el resto de este documento.\\
+
+El presente capítulo se divide en dos secciones: en la primer sección se
+abordará una introducción informal al cálculo lambda, en donde se presentará la
+terminología utilizada en las explicaciones y ejemplos presentados, se
+establecerán las diferencias tanto conceptuales como de notación entre las
+funciones en el cálculo lambda y las funciones en otras áreas de las
+matemáticas; en la segunda parte se presenta una definición formal del cálculo
+lambda y en base a esta se definirán con precisión los términos y conceptos
+abordados en la primer sección.
+
 \section{Introducción}
 
-El cálculo lambda es un sistema matemático el cuál permite expresar, manipular
-y estudiar funciones. La manera en como se trabaja con funciones en
-este sistema es un poco diferente a como es usual en otras áreas de
-las matemáticas.\
+La definición usual de función es el de una relación entre un conjunto de
+entradas, llamado el dominio y un conjunto de salidas llamado codominio. Esta
+relación tiene además la propiedad de que cada elemento del dominio se relaciona
+exactamente con un elemento del codominio, escrito formalmente: Sean
+\(A\) y \(B\) dos conjuntos, una función \(f\) con dominio \(A\) y codominio
+\(B\) es un subconjunto de \(A\times B\), tal que \(\forall a \in A\), si \((a,\
+b) \in f\) y \((a,\ b^\prime) \in f\) con \(b,\ b^\prime \in B\), entonces
+\(b=b^\prime\).\\
 
-En general se considera que una función es una regla de correspondencia
-que asocia una fórmula bien formada del cálculo lambda a otra. El procedimiento
-para expresar y aplicar funciones es mecánico, lo cuál permite concebir a las
-funciones como programas que tienen una entrada y una salida que puede ser
-descrita en términos de la entrada.\
+Las funciones tienen varias maneras de ser representadas. En la
+definición anterior la representación es la de pares ordenados en donde el
+primer elemento del par es un elemento del dominio y el segundo es un elemento
+del codominio. Dependiendo del contexto en el que se trabaja con las funciones
+puede ser conveniente representarlas simbolicamente como fórmulas, graficamente
+como dibujos, numéricamente como tablas o incluso verbalmente con palabras.\\
 
-Una función no está limitada a operar con argumentos arbitrarios, para
-una función en particular se pueden identificar clases o rangos de
-posibles argumentos y valores de la función. No es necesario
-especificar la clase de argumentos y la clase de valores de una
-función ya que podemos tratar la aplicación de una función a algo
-fuera de la clase de argumentos asociada a ella como un valor sin
-significado.\
+Es posible utilizar esta definición para \emph{describir} las funciones en el
+cálculo lambda, para esto tendríamos que establecer cuál es el dominio y
+codominio de las funciones; después presentar una representación conveniente
+para las reglas de correspondencia en el sistema. Sin embargo, hay algunas
+propiedades del cálculo lambda que hacen que esta definición
+no pueda ser directamente aplicada. En particular, el cálculo lambda como
+sistema formal es una \emph{teoría ecuacional}, lo cuál significa que toda la
+teoría matemática del cálculo lambda está basada en la manera en como se
+escriben simbolicamente fórmulas en el sistema y como se verá mas adelante,
+estas fórmulas no se componen de conjuntos, colecciones, clases o secuencias ni
+de conectivos o cuantificadores lógicos.\\
 
-Por ejemplo, la función \(f(x) = 3\times x\) tiene como rango de
-argumentos y rango de valores a números. Al aplicar la función \(f\) a
-un número en particular como el \(2\) se obtiene otro número, en este
-caso \(f(2) = 3\times 2 = 6\). Los valores de \(f\) pudieran o no perder
-sentido si se aplica \(f\) a otra clase de argumentos: En el caso de
-considerar las palabras en español como argumentos de \(f\), no tienen
-sentido los valores que puede tomar \(f\) debido a que no hay una
-definición precisa de multiplicación que involucre a palabras en el
-español y números, por otro lado pudiéramos ampliar la clase de
-argumentos de \(f\) a que incluya matrices, debido a que si hay una
-operación definida de multiplicación entre un número (en este caso el
-3) y una matriz.\
+Las fórmulas en el cálculo lambda sólo nos permiten representar variables,
+funciones y el acto de \emph{aplicar} una fórmula a otra. El concepto de aplicar
+hace alusión a la aplicación de funciones, es decir, el acto de aplicar una
+función a un argumento (el cuál es elemento de su dominio), para obtener el
+valor correspondiente (elemento del codominio). Por ejemplo, considerando la función
+\(f(x)=x^2\), aplicar \(f\) a 4 es \(f(4)=16\). Este concepto, así como la
+representación de funciones, es en algunos aspectos mas restrictivo que en otras
+áreas de las matemáticas, ya que las fórmulas no contienen números como el 2, ni
+operaciones como la exponenciación, por lo tanto, la función \(f(x)=x^2\) no
+puede ser escrita directamente como una fórmula del cálculo lambda. Por otro
+lado, la aplicación en el cálculo lambda es menos restrictiva que la aplicación
+de funciones de otras áreas de las matemáticas, por ejemplo, una fórmula válida
+en el cálculo lambda es la aplicación de una variable en otra.\\
 
-Es posible considerar funciones cuya clase de argumentos sean
-funciones, por ejemplo en el cálculo diferencial la derivada es una
-función cuyas clases de argumentos y valores son a su vez funciones.
-En general existen funciones que siempre tienen sentido sin importar
-en que argumentos sea aplicada, una de estas funciones es la función
-identidad \(I\) la cual es definida como \(I(x) = x\).
+En general, las fórmulas asociadas a los conceptos de función y de aplicación de
+funciones se pueden definir únicamente en términos de otras fórmulas, las cuales
+a su vez pueden ser sólo variables, funciones o aplicaciones. Esto no significa
+que al trabajar con este sistema formal no podamos trabajar también con teoría
+de conjuntos, números o lógica, ya que al igual que las palabras en el español,
+estos objetos y herramientas matemáticas forman parte del \emph{metalenguaje}
+que utilizaremos en este trabajo, es decir, son parte del lenguaje utilizado
+cuando se examina o estudia el cálculo lambda.\\
 
-\section{Notación}
+Al tratar con funciones en el cálculo lambda, se omite hablar del dominio o
+codominio de la las funciones, esto es debido a que si consideramos el conjunto
+de todas las fórmulas expresables del cálculo lambda, todas las funciones tienen
+a este conjunto como dominio y codominio. Esto después debe ser tratado con
+cuidado, ya que abordaremos diferentes objetos matemáticos que se pueden
+representar como fórmulas del cálculo lambda y las fórmulas que definamos
+como funciones para operar con estas representaciones seguirán teniendo el mismo
+dominio y codominio. Por ejemplo, es posible representar cualquier número
+natural solo con fórmulas del cálculo lambda y también es posible tener una
+representación de la operación de exponenciación, con estas dos componentes se
+puede \emph{emular} la función \(f : \mathbb{N} \to \mathbb{N}\),
+\(f(x,y)=x^y\), mas sin embargo la fórmula que representa esta operación seguirá
+teniendo como dominio y codominio el conjunto de todas las fórmulas del cálculo
+lambda, esto significa que será valido aplicar esta representación de
+exponenciación a fórmulas que no sean representaciones de números naturales y el
+resultado de dicha aplicación no necesariamente será una fórmula que represente
+a un número natural.\\
 
-La notación utilizada previamente para escribir la definición y
-aplicación de funciones en los párrafos de arriba es ampliamente usada
-en matemáticas, sin embargo el cálculo lambda favorece una notación
-alternativa.\
+El hecho de tener estas limitaciones en las fórmulas nos permite poder entender
+de manera muy clara y precisa todos los procesos que tranformen la estructura de
+una fórmula, a tal grado que todas las operaciones que se realizan sobre las
+fórmulas pueden reproducirse paso a paso de manera mecánica, manipulando los
+símbolos que componen a las fórmulas.\\
 
-Retomando un ejemplo previo, la expresión para la
-definición de la función \(f\) es \(f(x)=3\times x\) y se compone de tres
-elementos: primero se encuentra el nombre de la función seguido de una
-letra que representa una variable, el símbolo \(=\) establece una
-relación del nombre de la función y el argumento con
-otra expresión en donde puede o no aparecer la variable \(x\), en este
-caso esta otra expresión es \(3\times x\) la cual representa una
-multiplicación. En el cálculo lambda no se especifica el nombre de la función,
-considerando una definición como anónima. La manera en como se
-escribiría la definición de \(f\), considerando que \(m\) es la operación de
-multiplicación y \(y\) es el número 3 es: \(\lc{\x.m x y}\), el nombre de
-la función es omitido, el argumento se encuentra después de el símbolo
-\(\lambda\) y lo que antes era el lado derecho de la función se
-encuentra después del punto.\
+A continuación se abordará una introducción informal a la notación usada para
+expresar fórmulas del cálculo lambda y se enfatizarán algunas diferencias
+mencionadas previamente.\\
 
-Debido a que en el cálculo lambda el nombre de la función no se encuentra en
-su definición la aplicación de una función se escribe especificando
-textualmente la función a la que se hace referencia. La manera en
-como de denota la aplicación de \(f\) en el número 2 es:
+\subsection{Notación}
 
+La notación utilizada para escribir la definición y aplicación de funciones en
+los ejemplos anteriores fué la de expresar la regla de correspondencia como una
+fórmula simbólica. En el cálculo lambda, también se aborda ésta representación,
+pero los símbolos utilizados para escribir las fórmulas son definidos con
+precisión de antemano, en contraste con otras áreas de las matemáticas, en donde la
+notación de las reglas de correspondencia puede ser extendida de manera
+arbitraria ya sea para incluír operaciones sobre distintos objetos matemáticos
+(como el producto vectorial), abstraer repetición de operaciones (como
+\(\sum_{i=0}^n\)) o incluso incrustar en la notación procesos no finitos (como
+límites al infinito \(\lim_{x\to \infty}\)).\\
 
-\[\lc{(\x.m x y)z}\ \text{en lugar de}\ f(2)\]
+Para introducir la notación del cálculo lambda, consideramos la función
+identidad \(I : \mathbb{N} \to \mathbb{N}\) definida como \(I(x)=x\).\\
 
-Considerando que \(z\) es el número 2.
+En esta notación, \(I\) se compone de la especificación de argumentos y valores,
+en donde aseveramos que a lo que nos referiremos como \(I\) es una función cuyo
+dominio y codominio es \(\mathbb{N}\), después se establece la regla de
+correspondencia en donde establecemos que cuando \(I\) sea aplicada a un
+argumento \(x\in \mathbb{N}\) el elemento en el codominio será equivalente a la
+fórmula del lado derecho de la igualdad, en donde toda aparición de la \(x\) en
+la fórmula hace referencia al argumento particular al que le fué aplicado
+\(I\).\\ 
 
-A pesar de aparentar ser una notación mas inconveniente debido a que
-se requiere escribir mas texto para expresar la misma idea, esta notación
+En el cálculo lambda, no se considera el dominio ni el codominio de \(I\), e
+incluso, no se considera el nombre con el que nos referimos a la función. La
+manera en como se escribe esta función como una fórmula en el cálculo lambda es
+\[\lc{\x.x}\] el símbolo ``\(\lambda\)'' nos indica que la fórmula es una función, y
+el símbolo ``\(.\)'' separa la variable que hace referencia al argumento al que
+la función será aplicada y la fórmula de la regla de correspondencia.\\
+
+La aplicación de fórmulas se denota de manera diferente también, mientras que en
+la notación tradicional se escribe \(I(y)\) considerando que \(y\in
+\mathbb{N}\), en el cálculo lambda, debido a que no se nombran las funciones, se
+escribe explícitamente la función a la que hacemos referencia \[\lc{(\x.x)y}\]
+en ambos casos, \emph{realizar} la aplicación consiste en sustituír el argumento
+concreto en la fórmula de la regla de correspondencia y el resultado en ambos
+casos sería \(y\). Sin embargo, en el cálculo lambda no podemos expresar que
+\(\lc{(\x.x)y}=y\) sin antes mencionar de manera explícita el significado que se
+le dará a la igualdad entre dos fórmulas.\\
+
+Como se mencionó anteriormente, lo único que se puede escribir en el cálculo
+lambda son fórmulas, por lo tanto, en el ejemplo anterior ``\(x\)'', ``\(y\)'',
+``\(\lc{\x.x}\)'' y ``\(\lc{(\x.x)y}\)'' son fórmulas del cálculo lambda y
+representan las tres diferentes clases de fórmulas: variables, funciones y
+aplicaciones.\\
+
+A pesar de ser aparentemente una notación mas inconveniente debido a que
+se requiere escribir mas símbolos para expresar la misma idea y no se puede
+extender su notación como es usual en matemáticas, esta notación
 nos permite ser mas explícitos en las operaciones que se realizan con
 las funciones y proveen de una mayor uniformidad en la sintáxis del
-lenguaje utilizado. Un inconveniente de utilizar la notación mas
-popular es que la notación es mas basta que la mostrada en el ejemplo,
-en el caso que la función se defina por casos se introduce nueva
-sintaxis, por ejemplo la definición de una función que compute el
-factorial de un número entero no negativo se escribiría:\
+lenguaje utilizado. En futuras secciones se abordarán técnicas para representar
+diversos objetos matemáticos y operaciones. Este incremento en la capacidad de
+expresar ideas y conceptos seguirá manteniendo la misma uniformidad en la manera
+en como se escriben las fórmulas y seguirá utilizando únicamente variables,
+funciones y aplicaciones.\\
 
-\[g(n)=
+La notación utilizada nos permitirá también, estudiar y tener mas control sobre
+la manera en cómo las fórmulas son transformadas y podremos asociarles un
+significado preciso, tanto en lo que las fórmulas representan conceptualmente
+hablando, como en las maneras en las que las fórmulas pueden ser manipuladas,
+aplicadas y simplificadas.\\
+
+Un ejemplo de la importancia de la asignación explícita del significado
+operacional de las fórmulas es el de los posibles problemas que se pueden
+encontrar con algunos modelos de sustitución en la definición de funciones usual
+en otras áreas de las matemáticas. Consideremos la función factorial \(f : \mathbb{N}
+\to \mathbb{N}\)
+\[f(n)=
 \begin{cases}
-  1 &\mbox{si } n = 0 \\
-  n\times g(n-1) & \mbox{en otro caso }
+  1 &\mbox{si } n=1\\
+  n\times f(n-1) & \mbox{en otro caso.}
 \end{cases}
-\]\
+\]
 
-Si involucramos operaciones mas complejas que la
-multiplicación nos encontraremos con aún mas sintaxis, por ejemplo
-\(\Sigma\) para una sumatoria, \(\Pi\) para productos, \(\frac{df}{dx}\)
-para la derivadas, \(\int\) para integrales e incluso la función \(g\)
-definida previamente sería escrita como \(n!{}\).\
+Sabemos que para obtener el resultado deseado, al momento de aplicar \(f\) en 5,
+primero verificamos si \(5=0\), en donde, si fuera el caso, el resultado sería 1,
+pero ya que \(5\not= 0\), el resultado es \(5\times f(4)\), el proceso mecánico
+de sustituír el argumento en la fórmula de la regla de correspondencia consiste
+en primero verificar si la condición es cierta antes de proceder en sustituír el
+valor del argumento en el consecuente correspondiente. Si este modelo de
+sustitución no se especifica para el uso de la notación de casos presente en el
+ejemplo, se pudieran contemplar otras maneras de sustituír al 5 en la fórmula,
+por ejemplo, sustituyendo el argumento en todas las apariciones de la variable
+\(n\), luego expandir el valor de la aplicación de funciones y posteriormente
+decidir el resultado final verificando si el argumento cumple la condición. Sin
+embargo, decidir usar este modelo de sustitución resultaría en realizar una
+infinidad de sustituciones debido a la naturaleza recursiva de la definición.\\
 
-En el cálculo lambda, toda la notación se compone de definición de funciones,
-aplicación de funciones y variables. Es por eso que para representar la función
-\(f\) en el cálculo lambda tuvimos que escribir a la operación de multiplicación
-como una función y a los números como variables. Como se verá mas adelánte, es
-posible definir con precisión los números naturales y las operaciones
-aritméticas en el cálculo lambda.\
+A pesar de que se puede definir el factorial de un número de tal manera que no
+sea tan importante el modelo de sustitución, en el ejemplo anterior como
+\(f(n)=\prod_{i=1}^{n} i\), estas definiciones ocultan el orden en el que se
+realizan las transformaciones mecánicas al aplicar \(f\) a un número y mas aún,
+hacen que sea difícil asignar el orden debido a la gran variedad de notaciones
+que se pueden utilizar para referirse a la misma operación.\\
 
-Cabe mencionar que es usual escribir términos lambda precisando únicamente el
-significado operacional de sus partes. Por ejemplo:
+En el estudio cotidiano del cálculo lambda, es usual referirse a una fórmula en
+particular por lo que sus partes representan, en el resto de esta sección nos
+referiremos a una variable entre la \(\lambda\) y el punto de una función como
+\emph{argumento} y a la fórmula después del punto y antes del paréntesis cerrado
+como el \emph{cuerpo} de la función. A continuación se muestran algunos ejemplos
+de fórmulas junto con la descripción textual de su estructura:
 
 \begin{align*}
-  \text{a. }\ &\lc{x} & \text{ Es una variable}\\
-  \text{b. }\ &\lc{\x.x(x y)} & \text{ Es una función}\\
-  \text{c. }\ &\lc{y (\x.\x.x)} & \text{ Es una aplicación}\\
-  \text{d. }\ &\lc{(\y.y)(\x.x w)} & \text{ Es una aplicación de una función en otra}\\
-  \text{e. }\ &\lc{\f.\x.f(f x)} &\text{ Es una función con rango de valores de funciones}
+  \text{a. }\ &\lc{x} & &\text{ Variable};\\
+  \text{b. }\ &\lc{\x.x} & &\text{ Función cuyo cuerpo es su argumento};\\
+  \text{c. }\ &\lc{y (\x.x)} & &\text{ Aplicación de una variable en una función};\\
+  \text{d. }\ &\lc{(\y.y(\x.x))(\w.w)} & &\text{ Aplicación de una función en otra función};\\
+  \text{e. }\ &\lc{\x.x x} & &\text{ Función cuyo cuerpo es la aplicación de su argumento sobre sí mismo};\\
+  \text{f. }\ &\lc{\f x.f x} & &\text{ Función cuyo cuerpo es una función}.
 \end{align*}
 
-\subsection{Variables}
-En el cálculo lambda las variables por si solas son expresiones válidas, en el
-inciso \emph{a} aparece la variable \(x\) la cual no es ni una definición de
-función ni una aplicación de una expresión a una función.\
+Las variables en el cálculo lambda son fórmulas por si solas, en el inciso
+\emph{a} aparece la variable \(\lc{x}\) la cual no es ni una función ni una
+aplicación; las variables por si solas en el cálculo lambda casi no tienen
+utilidad, pero al ser partes de una fórmula se enriquece su uso: en el caso del
+inciso \emph{b} la misma variable \(\lc{x}\) es el cuerpo de la función y como es
+también el argumento, esta variable obtiene el potencial de convertirse en
+cualquier otra fórmula a partir de la aplicación de \(\lc{\x.x}\).\\
 
-\subsection{Aplicaciones anidadas}
-Así como en la notación tradicional se pueden escribir expresiones
-como \(\sen(\ln(x))\) en el cálculo lambda también se puede anidar la aplicación
-de funciones. En el inciso \emph{b} se muestra un ejemplo de esto, \(\lc{\x.x(x
-  y)}\) consiste en aplicar \(x\) al resultado de la aplicación \(\lc{x y}\).\
+En el inciso \emph{c} se tiene una aplicación inusual, es la variable \(\lc{y}\)
+siendo aplicada a una función. Lo mas usual es tener fórmulas en donde lo que se
+aplica es una función, sin embargo si \(\lc{y (\x.x)}\) fuera el cuerpo de una
+función, entonces \(\lc{y}\) jugaría un papel mas relevante. Esto se puede
+apreciar en el inciso \emph{d}, en donde la fórmula del inciso \emph{c} es el
+cuerpo de una función con argumento \(\lc{y}\) y esta función está siendo
+aplicada a otra función. Este ejemplo nos permite abordar dos ideas importantes,
+primero, las funciones pueden ser aplicadas a funciones y segundo el realizar la
+aplicación del ejemplo \emph{d}, la variable \(\lc{y}\) tomará el valor de
+\(\lc{\w.w}\) y podrá ser ahora aplicada a la función \(\lc{\x.x}\):
 
-\subsection{Aplicaciones sin sentido aparente}
-El inciso \emph{c} muestra una expresión que no tiene sentido si
-consideramos la aplicación como se abordó previamente. Sin embargo, \(\lc{y
-  (\x.\x.x)}\) es una expresión válida en el cálculo lambda a
-pesar de ser poco usual tratar la aplicación de una expresión en una
-variable tanto en la teoría como en las aplicaciones del sistema.\
+\begin{align*}
+  \text{1. } &\lc{(\y.y(\x.x))(\w.w)} & &\text{ fórmula del inciso \emph{d}}\\
+  \text{2. } &\lc{(\w.w)(\x.x)} & &\text{ al aplicar } \lc{\y.y(\x.x)} \text{ a } \lc{\w.w}\\
+  \text{3. } &\lc{\x.x} & &\text{ al aplicar } \lc{\w.w} \text{ a } \lc{\x.x}
+\end{align*}
 
-\subsection{Aplicación de función a función}
-Como se describió previamente, el cálculo lambda permite expresar la
-aplicación de una función a otra función para definir operaciones
-interesantes que manipulen expresiones (como lo son la diferenciación y
-la integración). En el inciso \emph{d} se muestra como se aplica la función
-identidad \(\lc{\y.y}\) a la función \(\lc{\x.x w}\) (esta
-segunda función no tiene un significado en particular).\
+En este último ejemplo se describió una secuencia de transformaciones mecánicas
+sobre los símbolos de la fórmula, este procedimiento tiene algunos detalles que
+son importantes recalcar pero se abordarán cuando se describa la formalización
+del cálculo lambda en la siguiente sección. Por el momento se describen los
+últimos dos incisos los cuales presentan dos conceptos interesantes.\\ 
 
-\subsection{Funciones de varias variables}
-En la notación tradicional se denotan las funciones de varias
-variables como \(f(x_1,\dots ,x_n)= M\) (donde \(M\) es una expresión) y cuando
-se aplican estas funciones a valores particulares se escribe \(f(v_1,\dots , v_n)\) (donde
-\(v_1,\dots , v_n\) son valores en el dominio de \(f\)). En el cálculo lambda
-solo se pueden definir funciones en una sola
-variable, sin embargo, como el sistema nos permite tener funciones con
-rango de valores de funciones, se puede simular tener funciones de
-varias variables. Si consideramos como ejemplo la función
-\(f(x,y)=\sin(x)+\cos(y)\) su equivalente en el cálculo lambda sería \(\lc{\x
-  y.a (s x) (c y)}\), donde \(a\), \(s\) y \(c\) son las operaciones de adición,
-seno y coseno. De tal manera que si se desee evaluar \(f(\pi, \frac{1}{2}\pi)\), en el
-cálculo lambda se escribiría \(\lc{(\x y.a (s x) (c y)) p1 p2}\) (donde \(p1\) y
-\(p2\) corresponden a los valores de \(\pi\) y \(\frac{1}{2}\pi\)).\
+En el inciso \emph{e} se tiene una función cuyo cuerpo es la aplicación de su
+argumento sobre sí mismo. Lo interesante de esta fórmula es que encapsula la
+idea de replicar cualquier fórmula a la que se aplique. Por ejemplo, si
+aplicamos la fórmula a la variable \(\lc{y}\) y realizamos el proceso de
+aplicación similar al mostrado con el anterior ejemplo, obtendremos \(\lc{y y}\)
+como resultado, lo cuál no es un resultado muy interesante. Sin embargo si
+aplicamos la fórmula a sí misma obtendremos lo que Douglas Hofstadter acuñó como
+``\emph{quine}'' en una de las tantas exploraciones sobre la autoreferencia
+entre la Tortuga y Aquiles en \cite{Hofstadter:GEB}:
 
-En el cálculo lambda, la evaluación parcial de una función como esta es muy
-útil ya que permite tratar con los argumentos de la función de manera
-independiente.
+\begin{align*}
+  \text{1. } &\lc{(\x.x x)(\x.x x)} & &\text{ fórmula del inciso \emph{e} aplicada a si misma}\\
+  \text{2. } &\lc{x} \leftarrow \lc{\x.x x} & &\text{ valor que tomará } \lc{x} \text{ en el cuerpo de } \lc{\x.x x}\\
+  \text{3. } &\lc{x x} & &\text{ fórmula en donde se sustituirá } \lc{x}\\
+  \text{4. } &\lc{(\x.x x)(\x.x x)} & &\text{ al completar la sustitución}
+\end{align*}
 
-\section{Equivalencias y operaciones}
+Como podemos observar, el resultado de la aplicación es la fórmula inicial, a
+pesar de que el término quine se asoció originalmente a una paradoja sobre
+valores de verdad \cite{Quine:Paradox}, hoy en día hace referencia a un programa
+que tiene como resultado el código fuente de él mismo.\\
+
+El inciso \emph{f} es una función cuyo cuerpo es una función, en donde el cuerpo
+de esta última es la aplicación del argumento de la primer función al argumento
+de la segunda. El concepto interesante que ilustra esta fórmula es el de
+funciones de varias variables: Aplicar esta fórmula a una segunda fórmula y
+posteriormente aplicar el resultado de la aplicación a una tercera fórmula
+produce el mismo resultado a que si tuvieramos una función de dos argumentos
+\(\lc{f}\) y \(\lc{x}\) cuyo cuerpo es \(\lc{f x}\) y aplicaramos esta fórmula
+hipotética a la misma segunda y tercera fórmula. Siguiendo una notación similar
+a la que hemos estado utilizando, el resultado de la operación
+\[((\lambda f\ x . (f\ x))\ g\ y)\]
+sería equivalente a
+\[(((\lambda f . (\lambda x . (f\ x)))\ g)\ y)\]
+
+Otra manera de representar funciones de varias variables sería la de representar
+a tuplas en el cálculo lambda y tener fórmulas para obtener cada elemento de una
+tupla. Sin embargo, representar tuplas es un mecanismo mas complejo que se
+abordará en otra sección. Las fórmulas presentes en los últimos dos ejemplos
+pueden resultar difíciles de leer por el uso de los paréntesis tanto en las
+funciones y en las aplicaciones, sin embargo, un abuso de notación será
+introducido en la siguiente sección y teniendo en cuenta las tres clases de
+fórmulas será mas fácil leerlas e identificar sus partes.\\
+
+En este momento podría ser difícil imaginar cómo se representan conceptos
+complejos con el cálculo lambda, solo hemos abordado de manera muy informal y
+poco precisa la habilidad de replicar fórmulas como el quine y simular funciones
+de varias variables con funciones cuyos cuerpos son funciones. Sin embargo, como
+se aborda en futuras secciones, muchas representaciones son mas sencillas de lo
+que pudieran aparentar, para el lector curioso: ¡ \emph{la fórmula del inciso \emph{f}
+es una posible representación del número 1} !.\\
+
+\textbf{¡¡TERMINAR DE REVISAR ESTA SECCIÓN!!}\\
+
+\subsection{Equivalencias y operaciones}
 
 Hay una serie de operaciones elementales en el cálculo lambda que permiten la
 manipulación de expresiones. La operación mas básica y de la cual dependen el
 resto es la de \emph{sustitución} de una variable en una expresión por otra
 expresión. Las otras tres operaciones tratan con el concepto de igualdad entre
 dos expresiones y como se puede obtener una expresión equivalente a partir de
-otra.\
+otra.\\
 
-\subsection{Sustitución}
+\subsubsection{Sustitución}
 
 La operación de sustitución se encarga de cambiar la manera en como se escribe
 una expresión, usualmente se sustituyen variables por expresiones mas complejas.
@@ -179,7 +317,7 @@ Para denotar la sustitución de la variable \(y\) por \(x\) en la expresión
 En general se puede sustituír cualquier variable dentro de una expresión por
 otra expresión, de tal manera que si \(M\) y \(N\) son expresiones del cálculo
 lambda y \(x\) es una variable, el sustituír a la \(x\) en \(M\) por \(N\) se
-denota \(M[\lc{x}:=N]\).\
+denota \(M[\lc{x}:=N]\).\\
 
 Otros ejemplos de sustitución son
 
@@ -188,16 +326,16 @@ Otros ejemplos de sustitución son
 \item[\S] \(\lc{\f.f(f x)}[\lc{x}:=\lc{f x}] = \lc{\f.f(f(f x))}\)
 \end{itemize}
 
-\subsection{Equivalencias}
+\subsubsection{Equivalencias}
 
 Como se abordó previamente se pueden construír expresiones en el cálculo lambda
 cuyo significado no esté definido con claridad o que el significado de una
-expresión dependa del contexto en el que es utilizada.\
+expresión dependa del contexto en el que es utilizada.\\
 
 Una pregunta que se puede responder independientemente del contexto en el que se
 trabaje con el cálculo lambda es, si \(M\) y \(N\) son dos expresiones del
 cálculo lambda, ¿Son equivalentes?. Pera responder esta pregunta se tiene que
-explorar a que nos podemos referir con \emph{equivalente}.\
+explorar a que nos podemos referir con \emph{equivalente}.\\
 
 Podemos afirmar que dos expresiones son equivalentes cuando entendemos el
 contexto y el nivel de abstracción en el que se está refiriendo a ellas. Por
@@ -210,34 +348,34 @@ expresiones, sin embargo, si consideramos a los algorítmos como los objetos que
 comparamos, se suele tomar en cuenta la cantidad de operaciones que
 realizan en función al tamaño del las entradas, por lo que dos algoritmos con
 las mismas entradas y las mismas salidas no sean equivalentes desde un punto de
-vista de complejidad computacional.\
+vista de complejidad computacional.\\
 
 Ya que es importante precisar con exactitud el concepto de equivalencia,
 abordaremos algunas maneras en las que podemos comparar dos expresiones del
 cálculo lambda.
 
-\subsubsection{Equivalencia sintáctica}
+\paragraph{Equivalencia sintáctica}
 
 Esta equivalencia es aquella que nos permite distinguir si dos expresiones son
 lo mismo de acuerdo a la manera en como están escritas. Si \(M\) y \(N\) están
 escritas de la misma manera, símbolo por símbolo, se dice que son equivalentes
-sintácticamente y se denota \(M \synteq N\).\
+sintácticamente y se denota \(M \synteq N\).\\
 
-\subsubsection{Equivalencia estructural}
+\paragraph{Equivalencia estructural}
 
 Podemos ver las expresiones del cálculo lambda como definición de funciones,
 aplicación de funciones, variables y combinaciones de estas. La posición en
 donde se encuentran las partes de una expresión determinan su estructura, sin
 embargo, los nombres de varaibles que se utilizan no influyen su significado
 estructural, de manera similar al concepto de la equivalencia en gráficas
-isomorfas.\
+isomorfas.\\
 
 Considerndo la función identidad \(\lc{\x.x}\) se puede observar que tiene la
 misma estructura que \(\lc{\y.y}\) la cual también representa la función
 identidad. A pesar de no estar escritas exactamente igual, la correspondencia
 que hay de la posición de la variable \(x\) en la primera expresión con la
 posición de la variable \(y\) en la segunda y el hecho de que ambas tienen la
-misma estructura nos permite decir que son equivalente.\
+misma estructura nos permite decir que son equivalente.\\
 
 Considerando dos expresiones un poco mas complejas como \(\lc{\f x.f x}\) y
 \(\lc{\g y.g y}\) podemos notar que también son equivalentes en este sentido.
@@ -247,7 +385,7 @@ en lugar de leer explícitamente el nombre de la variable, se lee la posición d
 la primera aparición de dicha variable. En el ejemplo dado se lee ``Una función cuyo
 cuerpo es una función cuyo cuerpo es la aplicación de la primer variable en la
 segunda''. Si dos expresiones \(M\) y \(N\) son estructuralmente equivalentes,
-se dice que \(M\) es \alphacong~a \(N\).\
+se dice que \(M\) es \alphacong~a \(N\).\\
 
 Una notación utilizada para corroborar la equivalencia estructural es el
 \emph{índice de De Bruijn}, esta notación evita la aparición de variables en las
@@ -255,19 +393,19 @@ expresiones y en su lugar utiliza números que representan la distancia de una
 variable a la \(\lambda\) de la función en donde aparece como argumento. De tal
 manera que una expresión como
 
-\begin{equation}\label{eq:1}
+\begin{equation}\label{eq:2.1}
   \lc{\z.(\y.y (\x.x))(\x. z x)}
 \end{equation}
 
 se escribe usando el índice de De Bruijn como
 
-\begin{equation}\label{eq:2}
+\begin{equation}\label{eq:2.2}
   \lambda (\lambda 1 (\lambda 1)) (\lambda 2 1)
 \end{equation}
 
 En la figura~\ref{fig:DeBruijn-transformation} se puede observar de manera
 gráfica la transformación de una notación a otra para este ejemplo en
-particular.\
+particular.\\
 
 \begin{figure}
   \centering
@@ -301,7 +439,7 @@ particular.\
     \node [below=4cm of z2] (arrow3) {\(\Downarrow\)};
     \node [below of=arrow3](bruijn) {\(\lambda (\lambda 1 (\lambda 1)) (\lambda 2 1)\)};
   \end{tikzpicture}
-  \caption{Transformación de~\eqref{eq:1} a~\eqref{eq:2}.}
+  \caption{Transformación de~\eqref{eq:2.1} a~\eqref{eq:2.2}.}
 \label{fig:DeBruijn-transformation}
 \end{figure}
 
@@ -309,26 +447,26 @@ Una desventaja de utilizar la notación de De Bruijn es que ciertas expresiones
 del cálculo lambda no pueden ser escritas, en particular, toda variable tiene
 que estar asociada a una \(\lambda\) para que esta notación pueda ser utilizada.
 Sin embargo como veremos más adelante, la mayoría de los usos del cálculo lambda
-asocian a todas las variables en las expresiones.\
+asocian a todas las variables en las expresiones.\\
 
 En este trabajo no se utilizará la notación de De Bruijn, sin embargo
 es importante mencionarla ya que dos expresiones que sean
 \alphacong~van a ser sintácticamente equivalentes utilizando los índices de De
-Bruijn.\
+Bruijn.\\
 
-\subsubsection{Equivalencia de aplicación}
+\paragraph{Equivalencia de aplicación}
 
 Otra equivalencia que podemos encontrar en las expresiones es la de aplicación,
 esta hace referencia a que la aplicación de una función a una expresión es
 equivalente al resultado de evaluar la función con dicha expresión como
 argumento. Para entender mejor este concepto, consideramos la función en
 notación tradicional \(f(x)=x^2\), si se evalúa \(f(3)\) el resultado es 8, por
-lo tanto podemos decir que \(f(3)\) y 8 son equivalentes.\
+lo tanto podemos decir que \(f(3)\) y 8 son equivalentes.\\
 
 Si consideramos la expresión de la función identidad \(\lc{\x.x}\) podemos
 afirmar que para cualquier expresión \(M\), \(\lc{(\x.x) M}\) es equivalente a
 \(M\), en el cálculo lambda a esta equivalencia se le llama
-\(\beta\)-\emph{convertibilidad}.\
+\(\beta\)-\emph{convertibilidad}.\\
 
 En la notación tradicional, estas tres equivalencias se denotan con el mísmo
 símbolo \(=\), de tal manera que si dos expresiones son equivalentes ya sea
@@ -336,74 +474,229 @@ sintácticamente, estructuralmente o aplicativamente, entonces serán considerad
 iguales. En el cálculo lambda es importante diferenciar estas equivalencias ya
 que el manejo de las funciones no se aborda desde el punto de vista de una
 relación entre el dominio y codominio, si no como una expresión que puede ser
-manipulada y transformada de manera mecáncia.\
+manipulada y transformada de manera mecáncia.\\
 
-\subsubsection{Equivalencia de redundancia}
+\paragraph{Equivalencia de redundancia}
 
-Otro tipo de equivalencia es la de redundancia, se considera en un caso muy
-particular pero más adelante se verá que las implicaciones de considerarla son
-fuertes. Consideremos la expresión \(\lc{\x.(\y.y) x}\), el papel que puede
-jugar es el de ser aplicada en otra expresión \(M\), la cual resultaría igual a
-aplicar la expresión interna \(\lc{\y.y}\) en \(M\). Por las equivalencias
-descritas previamente podemos observar que \(\lc{\x.(\y.y) x}\) y \(\lc{\y.y}\)
-no son sintácticamente equivalentes, ni estructuralmente equivalentes, ni
-siquiera aplicativamente equivalentes. El trabajar con la función que envuelve a
-\(\lc{\y.y}\) resulta redundante al momento de aplicar las funciones en
-expresiones, ésto nos permite considerar un criterio de equivalencia.\
+Otro tipo de equivalencia es la de redundancia, consideremos la expresión
+\(\lc{\x.(\y.y) x}\), el papel que puede jugar es el de ser aplicada en otra
+expresión \(M\), la cual resultaría igual a aplicar la expresión interna
+\(\lc{\y.y}\) en \(M\). Por las equivalencias descritas previamente podemos
+observar que \(\lc{\x.(\y.y) x}\) y \(\lc{\y.y}\) no son sintácticamente
+equivalentes, ni estructuralmente equivalentes, ni siquiera aplicativamente
+equivalentes. El trabajar con la función que envuelve a \(\lc{\y.y}\) resulta
+redundante al momento de aplicar las funciones en expresiones, ésto nos permite
+considerar un criterio de equivalencia.\\
 
 En el cálculo lambda, la equivalencia de redundancia se denomina
-\(eta\)\emph{-equivalencia} y nos permite considerar como iguales las
-expresiones de la forma \(\lc{\x.M x}\) y \(M\).
+\(\eta\)\emph{-equivalencia} y nos permite considerar como iguales las
+expresiones de la forma \(\lc{\x.M x}\) y \(M\).\\
 
-\subsubsection{Equivalencia computacional}
+\paragraph{Equivalencia computacional}
 
 En el estudio de la lógica, se hace la distinción que una equivalencia puede ser
 extensional o intensional. La equivalencia extensional hace referencia a las
 propiedades externas de los objetos, mientras que la equivalencia intensional
-hace referencia a la definición o representación interna de los objetos.\
+hace referencia a la definición o representación interna de los objetos.\\
 
 Las equivalencias sintáctica y estructural son equivalencias intencionales,
 mientras que las equivalencias de aplicación y redundancia son equivalencias
-extensionales, debido a que se jusgan dos objetos a partir de su evaluación. Sin
-embargo, la equivalencia de aplicación no comprende el caso mencionado al inicio
-de esta subsección. Suponiendo que tenemos dos expresiones \(M\) y \(N\) que
-describen el mismo algoritmo o la misma función, la equivalencia de aplicación
-no los considera equivalente.\
+extensionales, debido a que se juzgan dos objetos a partir de su evaluación. Sin
+embargo, las equivalencias de aplicación y de redundancia no comprenden el caso
+mencionado al inicio de esta subsección. Suponiendo que tenemos dos expresiones
+\(M\) y \(N\) que describen el mismo algoritmo o la misma función, la
+equivalencia de aplicación no los considera equivalente.\\
 
 En la notación tradicional, la igualdad de funciones es una equivalencia
 extensional, por ejemplo \(f(x) = e^{i\pi}\times x\) y \(g(x) = x\) describen la
 función identidad y podemos aseverar que \(f=g\) sin necesidad de evaluar ambas
-funciones con un argumento en particular.\
+funciones con un argumento en particular.\\
 
 En el cálculo lambda se puede hablar de este tipo de igualdad funcional si
 consideramos que para toda expresión del cálculo lambda \(P\), si \(\lc{M P}\)
-es equivalente a \(\lc{N P}\), entonces las expresiones \(M\) y \(N\) son
-extensionalmente equivalentes.\
+es equivalente a \(\lc{N P}\), entonces las expresiones \(M\) y \(N\) se dice
+que son \(ext\) equivalentes.\\
 
-\subsection{Transformación de expresiones}
+\paragraph{Una simple regla con fuertes implicaciones}
+
+Existe una regla, llamada regla \(\xi\), la cual establece una equivalencia muy
+sencilla: si dos expresiones \(M\) y \(N\) son equivalentes, entonces las
+expresiones \(\lc{\x.M}\) y \(\lc{\x.N}\) también lo son.\\
+
+Aunque esta regla aparente aportar poco y pueda ser considerada innecesaria si
+combinamos todas las equivalencias previamente descritas, es suficiente para
+eliminar la equivalencia de redundancia y la equivalencia computacional de la
+formalización del cálculo lambda, la cuál será abordada en la siguiente sección.\\
+
+
+\subsubsection{Transformación de expresiones}
 
 A cada equivalencia diferente a la sintáctica se le puede asociar una operación de
 transformación la cual nos permita pasar de una expresión \(M\) a otra expresión
-\(N\) de tal manera que una equivalencia entre estas dos expresiones se cumpla.\
+\(N\) de tal manera que estas dos expresiones sean equivalentes bajo algún
+criterio específico.\\
 
 En el caso de la \alphacong~la operación correspondiente consiste en cambiar
 nombres de variables, en la \(\beta\)-\emph{convertibilidad} la operación
 consiste en realizar una secuencia de sustituciones de las variables de una
 función por expresiones a las que la función es aplicada y en la
-\(eta\)\emph{-equivalencia} la operación consiste en la eliminación de funciones
-redundantes.\
+\(\eta\)\emph{-equivalencia} la operación consiste en la eliminación de funciones
+redundantes.\\
 
 Estas operaciones se definirán de manera formal más adelante y aunque puedan
 parecer operaciones sencillas de definir a partir de la operación de
 sustitución, se tiene que tener mucho cuidado en no obtener expresiones que
-rompan la equivalencia asociada.
+rompan la equivalencia asociada.\\
 
-\section{Formalización de la teoría \texorpdfstring{$\boldsymbol\lambda$}{lambda}}
+\section{Formalización de la teoría
+  \texorpdfstring{$\boldsymbol\lambda$}{lambda}}
 
+La teoría \(\boldsymbol\lambda\) es el conjunto de axiomas que definen
+formalmente al cálculo lambda como sistema formal, el objeto de estudio
+principal de esta teoría es el del conjunto cociente formado a partir de un
+conjunto de fórmulas bien formadas y una relación de equivalencia. En las
+siguientes subsecciones se definirán estos conceptos, los cuales nos permitirán
+comenzar el estudio formal del cálculo lambda.\\
+
+\subsection{Fórmulas bien formadas}
+
+Una fórmula bien formada es un objeto formal sintáctico al que se le puede
+asociar un significado semántico. Para definir las fórmulas bien formadas de un
+lenguaje no es necesario darle un significado a cada fórmula, pero sí es
+importante expresar de manera rigurosa cómo se constituye simbolicamente.\\
+
+El conjunto de fórmulas bien formadas del cálculo lambda es llamado
+\emph{términos lambda}, denotado como \(\Lambda\). Este conjunto tiene elementos
+que son fórmulas construidas a partir del alfabeto \(\Sigma\). Éste alfabeto es
+un conjunto que se conforma por los símbolos \((\) , \()\) , \(.\) , \(\lambda\)
+y una infinidad de símbolos \(v ,\ v^{\prime} ,\ v^{\prime\prime} ,\ \dots\ \),
+etc. A esta secuencia infinita de símbolos \(v^i\) se denotará como \(V\), de
+tal manera que \(\Sigma = \left\{\  (\ ,\ )\ ,\ .\ ,\ \lambda\ \right\} \cup V\).\\
+
+\(\Lambda\) es el conjunto mas pequeño tal que:
+
+\begin{align}
+  \label{eq:2.3}
+  \lc{x} \in V &\Rightarrow \lc{x} \in \Lambda\\
+  \label{eq:2.4}
+  \lc{M},\ \lc{N} \in \Lambda &\Rightarrow \lc{M N} \in \Lambda\\
+  \label{eq:2.5}
+  \lc{M} \in \Lambda,\ \lc{x} \in V &\Rightarrow \lc{\x.M} \in \Lambda
+\end{align}
+
+Cada una de estas tres reglas corresponde a los tres tipos de términos lambda.
+La regla \eqref{eq:2.3} implica que los símbolos en \(V\) son términos lambda,
+estos símbolos son llamados \emph{átomos}; la regla \eqref{eq:2.4} implica que dos
+términos lambda entre paréntesis también son términos lambda, a este tipo de
+términos se les llama \emph{aplicaciones}; la regla \eqref{eq:2.5} implica que
+si se tiene entre paréntesis el símbolo \(\lambda\) seguido de un átomo, un
+punto y un término lambda cualquiera, entonces ésta expresión también es un
+término lambda, a este tipo de términos lambda se les llama
+\emph{abstracciones}.\\
+
+Desde la perspectiva de lenguajes formales, \(\Lambda = L(G)\), donde \(G\) es
+una gramática libre de contexto con categorías sintácticas \(T\) (términos
+lambda), \(E\) (aplicaciones), \(F\) (abstracciones) y \(A\) (átomos); símbolos
+terminales \(\left\{\ (\ ,\ )\ ,\ .\ ,\ \lambda\ ,\ v,\ {}^{\prime}\
+\right\}\); símbolo inicial \(T\) y con las siguientes reglas de producción:
+
+\begin{align*}
+  \text{1.  }\ T &\rightarrow  E\ \mid\ F\ \mid\ V\\
+  \text{2.  }\ E &\rightarrow  (\ T\ T\ )\\
+  \text{3.  }\ F &\rightarrow  (\ \lambda\ A\ .\ T\ )\\
+  \text{4.  }\ A &\rightarrow  v\ \mid\ E\ {}^{\prime}
+\end{align*}
+
+Para facilitar la escritura de términos lambda, en este trabajo se realizan las
+siguientes consideraciones sobre la notación:
+
+\begin{itemize}
+\item[I.] Cuando se hace referencia a cualquier término lambda se utilizan las
+  letras mayúsculas \(M,\ N,\ O,\ \) etc. Es importante establecer que si en un
+  ejemplo, explicación, teorema o demostración hacemos referencia a un término
+  lambda con una letra mayúscula, cualquier otra aparición de esta letra hará
+  referencia a este mismo término.
+\item[II.] Cuando se hace referencia a cualquier átomo se utilizarán las letras
+  minúsculas \(x,\ y,\ z,\ w,\ \) etc. Al igual que en el punto anterior, la
+  aparición de una letra minúscula en un ejemplo, explicación, teorema o
+  demostración hará referencia al mismo término.
+\item[III.] Los paréntesis serán omitidos de acuerdo a las siguientes
+  equivalencias sintácticas:
+  \begin{itemize}
+  \item[a)] \(\lc{M N O} \synteq \lc*{M N O}\), en general, se considera la
+    aplicación de términos lambda como una operación con asociación a la
+    izquierda. Se tiene que tener cuidado con respetar la asociación, por
+    ejemplo \(\lc{M(N(O(P)))} \synteq \lc*{M(N(O(P)))} \not\synteq \lc*{M N O P}\).
+  \item[b)] \(\lc{\x.M N} \synteq \lc*{\x.M N}\), en general, se puede escribir una
+    abstracción omitiendo los paréntesis externos siempre y cuando no se escriba
+    un término sintácticamente diferente. Por ejemplo \(\lc{(\x.M N) O} \synteq
+    \lc*{(\x.M N) O} \not\synteq \lc*{\x.M N O}\) ya que el lado derecho de la
+    equivalencia es sintácticamente equivalente a \(\lc*{\x.M N O}\).
+  \item[c)] \(\lc{\x y z.M} \synteq \lc*{\x y z.M}\), en general, si el subtérmino a
+    la derecha del punto en una abstracción es también una abstracción, se
+    pueden agrupar los åtomos antes del punto de ambas abstracciones después de
+    una \(\lambda\) y antes que el punto, dejando el subtérmino después del
+    punto de la segunda abstracción, como el del nuevo término.
+  \end{itemize}
+\item[IV.] Se utilizará el símbolo \(=\) para representar la igualdad entre dos
+  objetos matemáticos que no sean términos lambda, como por ejemplo números.
+\end{itemize}
+
+La notación explicada en \emph{III.a)} proviene de la reducción usada por
+Schönfinkel, en donde funciones de varias variables se transformaban a funciones
+de una sola variable. \textbf{¡¡REFERENCIA DE SCHÖNFINKEL AQUI!!}\\
+
+\subsection{Relación de equivalencia}
+
+Una relación de equivalencia es una relación binaria \(\sim\) sobre elementos de un
+conjunto \(X\), donde \(\sim\) es reflexiva, simétrica y transitiva, es decir:
+
+\begin{itemize}
+\item[\S] \(a\in X \Rightarrow a\sim a\)
+\item[\S] \(a,\ b\in X,\ a\sim b \Rightarrow b\sim a \)
+\item[\S] \(a,\ b,\ c\in X, a\sim b,\ b\sim c \Rightarrow a\sim c\)
+\end{itemize}
+
+En el estudio formal del cálculo lambda, la relación de equivalencia asociada a
+los términos lambda es llamada \emph{convertibilidad}. Ésta relación es generada
+a partir de axiomas y para formular estos axiomas es necesario formalizar el
+concepto de \emph{sustitución}.\\
+
+
+\textbf{DEFINIR SUSTITUCIÓN}\\
+
+\textbf{DEFINIR ALPHA CONVERSIÓN Y SUS DETALLES FINOS}\\
+
+\textbf{DEFINIR BETA CONVERSIÓN Y SUS DETALLES FINOS}\\
+
+\textbf{DEFINIR REGLA XI Y SUS DETALLES FINOS}\\
+
+\subsection{Conjunto cociente}
+
+\textbf{EXPLICAR THIS SHIT Y CLASES DE EQUIVALENCIA}\\
+
+\subsection{Axiomas de \texorpdfstring{$\boldsymbol\lambda$}{lambda}}
+
+Sean \(M,\ N,\ Z\in \Lambda\) y \(x,\ y\in V\), la convertibilidad en la teoría
+\(\boldsymbol\lambda\) se genera a partir de los siguientes axiomas:
+
+\begin{align}
+  &\lc{M} \sim \lc{M} &(\text{reflexividad})\\
+  &\lc{M} \sim \lc{N} \Rightarrow \lc{N} \sim \lc{M} &(\text{simetría})\\
+  &\lc{M} \sim \lc{N},\ \lc{N} \sim \lc{L} \Rightarrow \lc{M} \sim \lc{L} &(\text{transitividad})\\
+  &\lc{M} \sim \lc{N} \Rightarrow \lc{M Z} \sim \lc{N Z}\\
+  &\lc{M} \sim \lc{N} \Rightarrow \lc{Z M} \sim \lc{Z N}\\
+  &\lc{\x.M} \sim \lc{\y.M}[\lc{x}:=\lc{y}] &(\alpha\text{-conversión})\\
+  &\lc{(\x.M)N} \sim \lc{M}[\lc{x}:=\lc{N}] &(\beta\text{-conversión})\\
+  &\lc{M} \sim \lc{N} \Rightarrow \lc{\x.M} \sim \lc{\x.N} &(\text{regla } \xi)
+\end{align}
+
+\textbf{CLARIFICAR DIFERENCIAS SOBRE LAS TEORÍAS Y SUS NOMBRES}\\
+
+\textbf{DESCRIBIR LÓGICA COMBINATORIA Y LA TEORIA LAMBDA I}
 
 %%% Local Variables:
 %%% coding: utf-8
 %%% mode: latex
 %%% TeX-master: "main"
-%%% TeX-command-extra-options: "-shell-escape"
 %%% End:

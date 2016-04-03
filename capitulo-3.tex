@@ -1,4 +1,253 @@
-Formulación e introducción a aplicaciones.
+\section{Introducción}
+
+El cálculo lambda es un sistema formal inventado en la década de 1920 por el
+matemático y lógico Alonzo Church con la finalidad de describir las propiedades
+mas básicas de la abstracción, aplicación y sustitución de funciones en un
+contexto muy general~\cite{CardoneHindley:History}.\\
+
+Cardone y Hindley mencionan en su artículo publicado en ``Handbook of the
+History of Logic'' que el cálculo lambda es utilizado ampliamente en el cómputo
+y la lógica de orden superior. Versiones modificadas del cálculo lambda
+fundamentan importantes sistemas lógicos y lenguajes de programación. Ejemplos
+de esto se puede encontrar en el desarrollo de los lenguajes
+Lisp~\cite{Lisp:first}, Scheme~\cite{Scheme:first} y Haskell~\cite{Haskell:first};
+así como en demostradores automáticos de teoremas como LCF~\cite{ML:first}.\\
+
+El concepto de \emph{función} en el cálculo lambda es tratado como \emph{reglas}
+en lugar de como gráficas, la noción de funciones como reglas se refiere, en
+este sistema formal, al proceso de obtener un valor a partir de un argumento,
+sin imponer restricciones sobre éste. En la época en la que Church formuló el
+cálculo lambda, sistemas formales con la noción de función como la teoría de
+conjuntos Zermelo-Fraenkel impedían que algunas funciones pudieran ser definidas
+\cite{Barendregt:Bible}, un ejemplo de esto es la función \emph{identidad}, es
+usual restringir el dominio de esta función dependiendo de el contexto en la que
+es utilizada, sin embargo, en principio pudiera tener como dominio el conjunto
+universal, lo cual no es permitido en la teoría de conjuntos tradicional ya que
+dicho conjunto sería elemento de si mismo.\\
+
+\section{Revisión histórica}
+La siguiente revisión histórica resume el desarrollo del cálculo lambda de
+acuerdo a una compilación de artículos sobre la historia de la lógica matemática
+\cite{CardoneHindley:History}.\\
+
+El sistema formal conocido hoy en día como el \emph{cálculo lambda} fue inventado por
+el matemático y lógico Alonzo Church en 1928, sin embargo el primer
+trabajo publicado en donde se hace mención de este sistema fue en el
+artículo titulado \emph{A set of postulates for the foundation of
+  logic}~\cite{Church:FoundationsLogic} en 1932, en donde presentó el desarrollo
+de un sistema lógico a partir del cálculo lambda.\\
+
+De 1931 a 1934 en la universidad de Princeton, Alonzo Church recibió
+ayuda de dos estudiantes: Stephen Kleene y Barkley Rosser. Entre ellos
+colaboraron e hicieron varias aportaciones, tanto en la lógica de Church como en
+el sistema detrás de ella, el cual era el cálculo lambda. Uno de estos descubrimientos
+fue la inconsistencia de la lógica propuesta por Church en su trabajo
+de 1932.\\
+
+En años siguientes se desarrolló el estudio de la teoría de reducción
+en el cálculo lambda, lo cual llevó a la demostración del teorema de
+confluencia de Church-Rosser en 1936 y aseguró la consistencia del
+cálculo lambda puro, es decir, el sistema simple del cálculo lambda no contenía
+inconsistencias. En este año también se encontró la equivalencia del
+sistema con la \emph{lógica combinatoria}, un sistema inventado por
+Haskell Curry basado en ideas similares a las de Church.\\
+
+Trabajos sobre la representación de los números naturales en el cálculo lambda
+se desarrollaron y se descubrió que las funciones del sistema que
+operaban sobre estas representaciones eran mas poderosas que lo
+anticipado, debido a una demostración de equivalencia entre esta clase
+de funciones, las funciones recursivas de Herbrand-Gödel y las
+funciones computables de Turing las cuales intentaban formalizar el
+concepto informal de cómputo. Alonzo Church conjeturó en la tesis de
+Church-Turing que las funciones definibles en el cálculo lambda capturaban
+exactamente el concepto informal de cómputo. El clímax de esta serie
+de trabajos sobre lo que es posible definir en el cálculo lambda fue cuando
+Church dio una solución negativa al problema de decisión planteado por
+Hilbert para la lógica de primer orden.\\
+
+Por muchos años el cálculo lambda falló en atraer a otros estudiosos lógicos y
+a pesar de haber servido para la primer demostración para
+el problema de decisión, Turing poco tiempo después consiguió
+desarrollar otra demostración utilizando un modelo mas transparente al
+cómputo, incluso fuertes personajes que contribuyeron al desarrollo
+del cálculo lambda como Kleene parecían favorecer otros sistemas. Sin embargo
+Alonzo Church escribió un libro introductorio titulado \emph{Los
+  cálculos de la conversión lambda} dirigido a una demografía menos
+especializada lo cual amplió el estudio del sistema a otras ramas de
+las matemáticas.\\
+
+Durante la década de los cuarentas y cincuentas, los avances
+relacionados con el cálculo lambda se enfocaron en cuatro temas: teoría de
+tipos simples (simple type theory), teoría abstracta de reducción
+(abstract reduction theory), reducciones en la lógica
+combinatoria y en el cálculo lambda y sistemas ilativos (illative systems). En
+su extensa revisión de la historia del cálculo lambda, Cardone y Hindley
+expresan que  los avances de estas cuatro vertientes de estudio fueron
+fundamentales para el desarrollo del cálculo lambda en las siguientes
+décadas.\\
+
+En los primeros sistemas basados en el cálculo lambda la aplicación de
+funciones no tenía restricciones, una función podía ser evaluada en si
+misma o en cualquier otra expresión válida del cálculo lambda. Versiones del
+cálculo lambda en donde se restringe la aplicación de funciones utilizando
+tipos son llamados cálculo lambda con tipos. Estos tipos son incrustados
+incrustados en la definición de funciones como anotaciones para
+restringir el rango de dominio.\\
+
+Basándose en las ideas de Frank Ramsey y Leon Chwistek, Church
+desarrolló una teoría de tipos basada en funciones para simplificar la
+teoría de tipos de Russel y Whitehead. Su sistema de tipos fue
+analizada y extendida por una serie de estudiantes de doctorado de
+Princeton, cuyas contribuciones mas relevantes fueron dar definiciones
+de estructuras algebraicas para el cálculo lambda con tipos y la extensión del
+sistema para tipos transfinitos.\\
+
+Alonzo Church no se involucró mucho en las teorías abstractas de
+reducción, sin embargo, fuertes contribuciones fueron realizadas en la
+década de los sesenta. El concepto central detrás de estas teorías fue
+el de la propiedad de confluencia asociada a ciertos procedimientos
+para la manipulación de expresiones en el cálculo lambda. Con el pasar de los
+años el interés por estas teorías abstractas siguió desarrollándose y
+llegó a extenderse mas allá de los sistemas formales del cálculo lambda y la
+lógica combinatoria.\\
+
+Los primeros trabajos de Kleene y Rosser con el cálculo lambda involucraban un
+procedimiento de manipulación de expresiones llamado \betaredu. Haskell
+Curry estudió mas a fondo esta reducción, sin embargo su trabajo (como
+al igual que muchos científicos de la época) se vio interrumpido por
+la segunda guerra mundial. Fue hasta después de 1950 que Curry retomó
+esta línea de investigación y por 20 años trabajó tanto con el cálculo lambda
+como con la lógica combinatoria vaciando una gran cantidad de
+resultados y teoremas en dos monografías que se convirtieron en
+referencias bibliográficas clave para futuros matemáticos.\\
+
+A partir de la década de los sesenta, el interés por el cálculo lambda llegó a
+varios científicos trabajando en ciencias de la computación, en
+particular  en el área de lenguajes de programación.\\
+
+Hubo tres figuras clave en el desarrollo del cálculo lambda en el área de la
+programación: John McCarthy con el desarrollo del lenguaje de
+programación LISP cuya notación de abstracción tiene muchas
+similitudes con la del cálculo lambda; Peter Landin el cual propuso varias
+construcciones para el lenguaje ALGOL utilizando expresiones del
+cálculo lambda y subsecuentemente desarrollando la máquina abstracta SECD la cual
+trataba expresiones del cálculo lambda como programas de computadora y
+finalmente Corrado Böhm quien desarrolló el lenguaje CUCH en donde se
+utilizaban los combinadores de Haskell Curry y el cálculo lambda.\\
+
+A pesar de que los trabajos de McCarthy y Landin llegaron a ser mas
+populares en la comunidad de programación. El trabajo que realizó Böhm
+y los estudiantes que formó fue el que contribuyó mas al cálculo lambda desde
+una perspectiva de ciencias de la computación. En sus años de estudio
+del sistema puro del cálculo lambda, ellos plantearon y resolvieron varios
+problemas asociados a la sintaxis del cálculo lambda y la lógica combinatoria.\\
+
+El cálculo lambda ha sido reciclado por varias generaciones convirtiéndose en
+tema de interés para personas estudiando otras ramas de las
+matemáticas. A pesar de que estos trabajos se han alejado de los
+objetivos originales de Church, las  nociones básicas desarrolladas
+por el trabajo previo se han convertido en pilares fundamentales de
+las ciencias de la computación.\\
+
+El ganador del premio Turing de 1976 Dana Scott menciona en una
+presentación de la celebración del centenario de Alan Turing
+\cite{Scott:TuringCentenary} algunos
+trabajos que han sido relevantes para el cálculo lambda en este milenio,
+incluyo aquí algunos títulos de artículos que a pesar de tratar temas
+mas avanzados que los presentados en este trabajo, pueden proveer una
+perspectiva moderna del estudio del cálculo lambda.\\
+
+\begin{itemize}
+\item Moerdijk-Palmgren (2000) Predicative topos.
+\item Ehrhard, Regnier (2003) Differential \(\lambda\)-calculus.
+\item Mosses (2004) Modular Structural Operational Semantics.
+\item Taylor (2005) A \(\lambda\)-calculus for real analysis.
+\item Awodey-Warren (2006) Homotopy type theory.
+\item Hudak, etal. (2010) Functional Reactive Programming.
+\end{itemize}
+
+
+
+\section{Enfoques del cálculo lambda}
+
+De acuerdo a Barendregt~\cite{Barendregt:Bible} el estudio del cálculo lambda
+tiene tres enfoques:\\
+
+\begin{enumerate}[I]
+\item Fundamentos de matemáticas.
+\item Cómputo.
+\item Cálculo lambda puro.
+\end{enumerate}
+
+\subsection{Fundamentos de matemáticas}
+
+Los objetivos que se tenían cuando se dio origen al cálculo lambda eran
+desarrollar una teoría general de funciones y extender esta teoría con nociones
+lógicas para proveer fundamentos a la lógica y a partes de las
+matemáticas~\cite{Barendregt:Bible}.\\
+
+El primer objetivo es expresado por Church en~\cite{Church:LambdaConversion}, en
+donde dice
+
+\begin{quote}
+El estudio de las propiedades generales de funciones, independientemente de su
+aparición en cualquier dominio matemático, pertenece a la lógica formal o se
+encuentra en la línea divisoria entre la lógica y la matemática. Este estudio es
+la motivación original para los cálculos --- pero estos están formulados de tal
+manera que es posible abstraer a partir del significado pretendido y
+considerarlos simplemente como sistemas formales.
+\end{quote}
+
+Desde la publicación del artículo~\cite{Church:FoundationsLogic} se intentó
+lograr el segundo objetivo, sin embargo, todos los intentos de proveer un
+fundamento para las matemáticas fallaron. Casi inmediatamente después de la
+publicación de Church se encontró una contradicción. Kleene y Rosser, dos
+estudiantes de Church, formularon una variante de la paradoja de Richard para el
+sistema lógico planteado~\cite{KleeneRosser:paradox}.\\
+
+Después del descubrimiento de la paradoja Kleene-Rosser Church se sintió
+desalentado en el estudio de los fundamentos de las matemáticas. En 1941 Church
+publicó una teoría que corregía las inconsistencias observadas
+en~\cite{KleeneRosser:paradox}, ésta fue llamada cálculo-\(\lambda I\) y era menos
+ambiciosa y mas limitada que sus anteriores sistemas. Otros matemáticos y
+lógicos continúan utilizando variaciones del cálculo lambda en sus
+investigaciones sobre los fundamentos de las matemáticas.\\
+
+\subsection{Cómputo}
+
+La parte del cálculo lambda que solo trata con funciones resultó ser bastante
+exitosa en el estudio del cómputo. Utilizando esta teoría, Church propuso una
+formalización de la noción ``efectivamente computable'' la cual es llamada
+\emph{lambda definibilidad}. Esta formalización resultó ser equivalente a el
+concepto de \emph{computabilidad} propuesto por Turing.\\
+
+Debido a que el cálculo lambda fue la inspiración de muchos lenguajes de
+programación, investigación en la semántica de los lenguajes se realizó
+utilizando este sistema. Peter Landin en la década de 1960 realizó una
+traducción del lenguaje Algol al cálculo lambda, lo cuál le permitió expresar de
+manera formal la semántica operacional del lenguaje, es decir, cómo debía
+ejecutarse un programa escrito en Algol.\\
+
+En 1969 Dana Scott logró expresar la semántica denotacional de los lenguajes de
+programación utilizando el cálculo lambda, esto permitió poder expresar de
+manera formal el significado de los programas escritos en un lenguaje de
+programación.\\
+
+\subsection{Cálculo lambda puro}
+
+Los anteriores dos enfoques del cálculo lambda se desarrollaron extendiendo la
+teoría básica con sistemas lógicos y computacionales para utilizar al cálculo
+lambda como herramienta o como un lenguaje básico. Otro enfoque es que el objeto
+de estudio sea el sistema en sí.\\
+
+El estudio del cálculo lambda en sí consiste principalmente en estudiar las
+funciones como reglas partiendo de la identificación de las fórmulas bien
+formadas o \emph{términos} que pueden ser expresados en el sistema. Las
+investigaciones en el estudio del cálculo lambda permiten resolver problemas
+como la identificación de funciones sobre términos que se pueden definir como
+términos en el cálculo lambda o mecanismos para poder manipular un término para
+obtener otro y la relación entre ellos.\\
+
 
 %%% Local Variables:
 %%% coding: utf-8

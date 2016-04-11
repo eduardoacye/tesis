@@ -3,6 +3,7 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning}
 \usepackage{fancybox}
+\usepackage{proof}
 
 \usepackage{minted}
 \renewcommand\listingscaption{Código}
@@ -36,40 +37,43 @@
 \mainmatter%
 
 \introduccion%
-\input{introduccion.tex}
+\input{introduccion}
+
+\chapter{El cálculo lambda}
+\input{capitulo-0}
 
 \chapter{El cálculo lambda sin tipos}
-\input{capitulo-1.tex}
+\input{capitulo-1}
 
 \chapter{Tipos en el cálculo lambda}
-\input{capitulo-2.tex}
+\input{capitulo-2}
 
 \chapter{El cálculo lambda en el desarrollo de la computación}
-\input{capitulo-3.tex}
+\input{capitulo-3}
 
 \chapter{Teoría de la computación}
-\input{capitulo-4.tex}
+\input{capitulo-4}
 
 \chapter{Lógica constructivista}
-\input{capitulo-5.tex}
+\input{capitulo-5}
 
 \chapter{Lenguajes de programación}
-\input{capitulo-6.tex}
+\input{capitulo-6}
 
 \conclusiones%
-\input{conclusion.tex}
+\input{conclusion}
 
 
 \appendix
 
 \chapter{Composición tipográfica de términos lambda en \LaTeX}
-%\input{apendice-1.tex}
+\input{apendice-1}
 
 \chapter{Compilación del cálculo lambda}
-%\input{apendice-2.tex}
+\input{apendice-2}
 
 \chapter{Intérprete del cálculo lambda}
-%\input{apendice-3.tex}
+\input{apendice-3}
 
 \listoffigures
 \listoftables

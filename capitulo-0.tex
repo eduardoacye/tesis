@@ -993,8 +993,7 @@ Si \(\lc{x} \not\synteq \lc{y}\) y \(\lc{x}\not\in \lc*{q[fv[L]]}\), entonces
 
 En contraste a la operación de \emph{sustitución} en donde no se permite
 introducir o quitar referencias a variables enlazadas, el \emph{contexto}
-\(\lc{q[context[C]]}\) (léase \(C\left[ \quad \right]\)) es un término con
-``hoyos'', formalmente:\\
+\(\lc{q[context[C]]}\) es un término con ``hoyos'', formalmente:\\
 
 \begin{itemize}
 \item \(\lc{x}\) es un contexto;
@@ -1006,30 +1005,15 @@ introducir o quitar referencias a variables enlazadas, el \emph{contexto}
 \end{itemize}
 
 Si \(\lc{q[context[C]]}\) es un contexto y \(\lc{M} \in \Lambda\), entonces
-\(\lc{q[fill[C,M]]}\) denota el resultado de colocar \(\lc{M}\) en los hoyos
+\(\lc{q[fill[C,M]]}\) denota el resultado de reemplazar por \(\lc{M}\) los hoyos
 de \(\lc{q[context[C]]}\). Al realizar esto, las variables libres de \(\lc{M}\)
 pueden convertirse en variables ligadas de \(\lc{q[fill[C,M]]}\). \\
 
-léase
-
-\begin{itemize}
-\item \(\lc{x}\) es un contexto;
-\item \(\left[ \quad \right]\) es un contexto;
-\item Si \(C_{1}\left[ \quad \right]\) y \(C_{2}\left[ \quad \right]\) son
-  contextos, entonces \((C_{1}\left[ \quad \right] C_{2}\left[ \quad \right])\)
-  y \((\lambda x.C_{1}\left[ \quad \right])\) también lo son.
-\end{itemize}
-
-Si \(C\left[ \quad \right]\) es un contexto y \(\lc{M} \in \Lambda\), entonces
-\(C\left[ M \right]\) denota el resultado de colocar \(\lc{M}\) en los hoyos
-de \(C\left[ \quad \right]\). Al realizar esto, las variables libres de \(\lc{M}\)
-pueden convertirse en variables ligadas de \(C\left[ M \right]\). \\
-
 Por ejemplo, considerando un contexto \(\lc{q[context[C]]} \synteq
 \lc*{\x.x(\y.q[hole[]])}\), si \(\lc{M} \synteq \lc*{x y}\), entonces
-\(\lc{q[fill[C,M]]} \synteq \lc*{q[fill[\x.x(\y.q[hole[]]), x y]]}\) (léase
-\(\lc*{\x.x(\y.x y)}\)). El ejemplo análogo con la sustitución es si \(\lc{C}
-\synteq \lc*{\x.x(\y.w)}\) y \(\lc{M} \synteq \lc*{x y}\), entonces
+\(\lc{q[fill[C,M]]} \synteq \lc*{q[fill[\x.x(\y.hole[]), x y]]} \synteq
+\lc*{fill[\x.x(\y.q[hole[]]), x y]}\). El ejemplo análogo con la sustitución es
+si \(\lc{C} \synteq \lc*{\x.x(\y.w)}\) y \(\lc{M} \synteq \lc*{x y}\), entonces
 \(\lc*{q[subst[C,w,M]]} \synteq \lc*{q[subst[\x.x(\y.w),w,x y]]}\) la cual es
 sintácticamente equivalente a \(\lc*{\z.z(\y.x y)}\), contrastando ambos
 resultados:
@@ -1122,6 +1106,55 @@ elemento de \(\Lambda\) módulo convertibilidad (denotado \(\Lambda /
 =_{\boldsymbol{\lambda}}\)) es distinto y representa a una clase de
 términos lambda considerados en \(\boldsymbol{\lambda}\) como equivalentes. \\
 
+Para demostrar que \(\boldsymbol{\lambda} \vdash \lc{M}=\lc{N}\) se puede
+escribir el árbol de deducción correspondiente. Por ejemplo:
+
+\[\boldsymbol{\lambda} \vdash \lc*{(\f.x((\y.y f) \z.z))w} = \lc*{x w}\]
+
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}[
+    equat/.style={rectangle, draw},
+    grow=up,
+    edge from parent/.style={draw,latex-},
+    level 1/.style={sibling distance=20em, level distance=5em},
+    level 2/.style={sibling distance=40em},
+    level 3/.style={sibling distance=20em},
+    level 4/.style={sibling distance=10em}
+    ]
+    \node [equat] (foo1) {\(\lc*{(\f.x((\y.y f) \z.z))w} = \lc*{x w}\)}
+    child {
+      node [equat] (foo3) {\(\lc*{(\f.x f)w} = \lc*{x w}\)}
+    }
+    child {
+      node [equat] (foo5) {\(\lc*{(\f.x((\y.(y f)) \z.z))w}=\lc*{(\f.x f)w}\)}
+      child {
+        node [equat] (foo7) {\(\lc*{\f.x((\y.y f)\z.z)}=\lc*{\f.x f}\)}
+        child {
+          node [equat] (foo9) {\(\lc*{x((\y.y f)\z.z)}=\lc*{x f}\)}
+          child {
+            node [equat] (foo11) {\(\lc*{(\y.y f)\z.z} = f\)}
+            child {
+              node [equat] (foo13) {\(\lc*{(\z.z)f} = \lc*{f}\)}
+            }
+            child {
+              node [equat] (foo14) {\(\lc*{(\y.y f)\z.z} = \lc*{(\z.z)f}\)}
+            }
+            edge from parent [] node [right] {\((\mu)\)}
+          }
+          edge from parent [] node [right] {\((\xi)\)}
+        }
+        edge from parent [] node [right] {\((\nu)\)}
+      }
+    };
+    \node [above=0em of foo13] (bar1) {\((\beta)\)};
+    \node [above=0em of foo14] (bar2) {\((\beta)\)};
+    \node [above=0em of foo11] (bar3) {\((\tau)\)};
+    \node [above=0em of foo1] (bar4) {\((\tau)\)};
+    \node [above=0em of foo3] (bar5) {\((\beta)\)};
+  \end{tikzpicture}
+\end{figure}
+
 Tres términos lambda de suma importancia son:
 
 \begin{itemize}
@@ -1138,6 +1171,12 @@ Tres términos lambda de suma importancia son:
   \item[(iii)] \(\lc*{q[bold[S]] M N L} =_{\boldsymbol{\lambda}} \lc*{M L(N L)}\)
   \end{itemize}
 \end{cor}
+
+Estos tres combinadores generan en la teoría \(\boldsymbol{\lambda}\) al
+conjunto \(\Lambda^{0}\) utilizando únicamente aplicación de términos lambda.
+Debido a que \(\lc*{q[bold[S K K]]}=_{\boldsymbol{\lambda}} \lc*{q[bold[I]]}\),
+sólo es necesario considerar a \(\lc{q[bold[K]]}\) y a \(\lc{q[bold[S]]}\) para
+generar a \(\Lambda^{0}\). \\
 
 \subsubsection{Otras teorías}
 

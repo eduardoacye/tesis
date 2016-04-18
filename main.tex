@@ -9,6 +9,10 @@
 \renewcommand\listingscaption{Código}
 \renewcommand\listoflistingscaption{Índice de códigos}
 
+\usepackage{newunicodechar}
+
+\newunicodechar{λ}{\(\lambda\)}
+
 \begin{document}
 
 \titulo{El cálculo lambda y fundamentos de la computación}
@@ -16,71 +20,71 @@
 \director{Martín Eduardo Frías Armenta}
 \fecha{2016}
 
-\portada%
+% \portada%
 
 \frontmatter
 
-\begin{resumen}
-  Falta escribir el resumen.
-\end{resumen}
+% \begin{resumen}
+%   Falta escribir el resumen.
+% \end{resumen}
 
-\begin{dedicatoria}
-  Falta escribir la dedicatoria.
-\end{dedicatoria}
+% \begin{dedicatoria}
+%   Falta escribir la dedicatoria.
+% \end{dedicatoria}
 
-\begin{agradecimientos}
-  Falta escribir los agradecimientos.
-\end{agradecimientos}
+% \begin{agradecimientos}
+%   Falta escribir los agradecimientos.
+% \end{agradecimientos}
 
 \tableofcontents
 
 \mainmatter%
 
-\introduccion%
-\input{introduccion}
+% \introduccion%
+% \input{introduccion}
 
 \chapter{El cálculo lambda}
 \input{capitulo-0}
 
-\chapter{El cálculo lambda sin tipos}
-\input{capitulo-1}
+% \chapter{El cálculo lambda sin tipos}
+% \input{capitulo-1}
 
-\chapter{Tipos en el cálculo lambda}
-\input{capitulo-2}
+% \chapter{Tipos en el cálculo lambda}
+% \input{capitulo-2}
 
-\chapter{El cálculo lambda en el desarrollo de la computación}
-\input{capitulo-3}
+% \chapter{El cálculo lambda en el desarrollo de la computación}
+% \input{capitulo-3}
 
-\chapter{Teoría de la computación}
-\input{capitulo-4}
+% \chapter{Teoría de la computación}
+% \input{capitulo-4}
 
-\chapter{Lógica constructivista}
-\input{capitulo-5}
+% \chapter{Lógica constructivista}
+% \input{capitulo-5}
 
-\chapter{Lenguajes de programación}
-\input{capitulo-6}
+% \chapter{Lenguajes de programación}
+% \input{capitulo-6}
 
-\conclusiones%
-\input{conclusion}
+% \conclusiones%
+% \input{conclusion}
 
 
 \appendix
 
-\chapter{Composición tipográfica de términos lambda en \LaTeX}
-\input{apendice-1}
+% \chapter{Composición tipográfica de términos lambda en \LaTeX}
+% \input{apendice-1}
 
-\chapter{Compilación del cálculo lambda}
-\input{apendice-2}
+% \chapter{Compilación del cálculo lambda}
+% \input{apendice-2}
 
-\chapter{Intérprete del cálculo lambda}
-\input{apendice-3}
+% \chapter{Intérprete del cálculo lambda}
+% \input{apendice-3}
 
-\listoffigures
-\listoftables
-\listofalgorithms%
-\listoflistings%
+% \listoffigures
+% \listoftables
+% \listofalgorithms%
+% \listoflistings%
 
-\nocite{*}
+% \nocite{*}
 \bibliography{bibliografia}
 \addcontentsline{toc}{chapter}{Bibliografía}
 \markboth{\MakeUppercase{Bibliografía}}{\MakeUppercase{Bibliografía}}

@@ -1,12 +1,12 @@
 El cálculo lambda es un sistema formal originalmente creado con la finalidad de
-expresar, manipular y estudiar funciones para el desarrollo de sistemas lógicos;
-a lo largo de la historia, este sistema se ha adaptado para el estudio de los
-fundamentos de la computación y como modelo formal para el desarrollo de la
-teoría de lenguajes de programación. \\
+expresar, manipular y estudiar funciones para el desarrollo de los fundamentos
+de la lógica y las matemáticas; a lo largo de la historia, este sistema se ha
+adaptado para el estudio de los fundamentos de la computación y como sustento
+teórico para el desarrollo de lenguajes de programación. \\
 
 Tres características fundamentales del cálculo lambda son el lenguaje utilizado
-para describir expresiones; la representación y manejo de funciones; las
-nociones de transformación e igualdad de expresiones. \\
+para describir expresiones; la interpretación, representación y manejo de
+funciones; las nociones de transformación y equivalencia de expresiones. \\
 
 Este capítulo consiste de dos secciones: primero se introduce informalmente el
 cálculo lambda, en donde se enfatiza las diferencias conceptuales, operacionales
@@ -15,15 +15,16 @@ orden; en la segunda sección se presenta la formalización del cálculo lambda.
 
 \section{Noción informal del cálculo lambda}
 
-En el estudio del cálculo lambda existen dos lenguajes, el lenguaje de las
-expresiones del sistema y el metalenguaje utilizado para describir y analizar
-estas expresiones. \\
+En el estudio del cálculo lambda existen dos lenguajes, el de las expresiones
+del sistema y el que se utiliza para describir y analizar estas expresiones,
+llamado metalenguaje. \\
 
-El lenguaje de las expresiones se relaciona con las clases de objetos del
-cálculo lambda y describe lo que es válido manipular, comparar y representar en
-el sistema formal. El metalenguaje permite describir cómo es que estas
-expresiones son manipuladas y comparadas, así como los mecanismos para
-representar como expresiones conceptos y objetos matemáticos. \\
+El lenguaje de las expresiones es un \emph{lenguaje formal} que especifica las
+secuencias de símbolos que representan expresiones válidas del cálculo lambda,
+se relaciona con las clases de objetos del sistema que son válidos manipular,
+comparar y representar. Por otro lado, el metalenguaje permite describir
+\emph{cómo} es que estas expresiones son manipuladas y comparadas, así como los
+mecanismos para representar conceptos y objetos matemáticos como expresiones. \\
 
 \subsection{Expresiones}
 
@@ -32,22 +33,22 @@ Existen tres clases de expresiones en el cálculo lambda: \emph{átomos},
 
 Las expresiones mas simples son los átomos, representados con un símbolo como
 \(x\), \(y\) o \(z\). Éstas expresiones también son llamadas variables y al
-igual que en la matemática clásica y la lógica de primer orden, las variables no
-tienen mucha importancia por sí solas, pero al estar asociadas a cuantificadores
-o a funciones pueden representar valores complejos. \\
+igual que en la matemática clásica y la lógica de primer orden, no tienen mucha
+importancia por sí solas, pero al estar asociadas a cuantificadores (\(\forall
+x\) y \(\exists x\)) o a funciones (\(f(x)\)) pueden representar valores
+complejos. \\
 
 Las abstracciones y aplicaciones son expresiones con estructura, es posible
-identificar y referirse a sus partes. Estos dos tipos de expresiones son
-complementarias: las abstracciones representan el concepto de generalizar una
-expresión y se asocian al concepto de \emph{función}, mientras que las aplicaciones
-representan el concepto de concretar una expresión y se asocian al concepto de
-\emph{aplicación de funciones}. \\
+identificar y referirse a sus partes. Estos son complementarias: las
+abstracciones representan la generalización de una expresión y se asocian al
+concepto de \emph{función}, mientras que las aplicaciones representan el acto de
+concretar una expresión y se asocian al concepto de \emph{aplicación de
+  funciones}. \\
 
 La definición de función en la matemática clásica es el de una relación entre un
 conjunto de entradas, llamado \emph{dominio} y un conjunto de salidas, llamado
 \emph{codominio}. Esta relación tiene además la propiedad de que cada elemento
-del dominio se relaciona exactamente con un elemento del codominio,
-formalmente: \\
+del dominio se asocia exactamente con un elemento del codominio, formalmente: \\
 
 Sean \(A\) y \(B\) dos conjuntos, una función \(f\) con dominio \(A\) y
 codominio \(B\) es un subconjunto del producto cartesiano \(A\times B\), tal que
@@ -87,19 +88,20 @@ se escriben de la forma \(\lc{M N}\) donde \(\lc{M}\) y \(\lc{N}\) son cualquier
 átomo, abstracción o aplicación. El concepto relacionado con las aplicaciones en
 la matemática clásica es el del acto de obtener un elemento del codominio de una
 función a partir de un elemento en su dominio, por ejemplo, considerando la
-función \(f(x)=x^{2}\), la aplicación de \(f\) en 4 es \(f(4)\). De manera
-similar, existe una operación la cual permite transformar expresiones de la
-forma \(\lc{(\x.M)N}\), donde \(\lc{M}\) y \(\lc{N}\) son expresiones
-cualquiera, a una expresión \(Z\) similar a \(M\) pero con las apariciones de
-\(x\) en \(M\) intercambiadas por \(N\). \\
+función \(f(x)=x^{2}\), la aplicación de \(f\) en 4 es \(f(4)\). La notación del
+cálculo lambda es similar a la notación tradicional \(f(x)\), solo que con el
+paréntesis abierto antes de la función, es decir, \((f\ x)\). De manera similar
+a la aplicación de funciones, existe una operación la cual permite transformar
+expresiones de la forma \(\lc{M N}\) donde \(\lc{N}\) es cualquier expresión y
+\(\lc{M}\) es una abstracción, a otra expresión \(\lc{Z}\) similar al cuerpo de
+\(\lc{M}\) pero con el argumento de \(\lc{M}\) intercambiado por \(\lc{N}\). \\
 
 Las abstracciones y aplicaciones del cálculo lambda son en algunos aspectos mas
-restrictivos que las funciones y la aplicación de funciones. El concepto de
-función considera dos conjuntos en general, no importa que propiedades tengan
-sus elementos o que operaciones se pueden realizar sobre ellos, en el caso de
-las abstracciones todo valor al que puede estar asociado el argumento de la
-abstracción es toda expresión del cálculo lambda y esta asociación se
-puede realizar a partir de una aplicación. \\
+restrictivos que las funciones y la aplicación de funciones. La función
+considera dos conjuntos cualquiera y no importa que propiedades tengan sus
+elementos o que operaciones se pueden realizar sobre ellos. Por otro lado, las
+abstracciones y aplicaciones sólo pueden ser descritas a partir de otras
+expresiones del cálculo lambda. \\
 
 Cuando se desea representar alguna función en el cálculo lambda, se deben
 \emph{codificar} como expresiones del lenguaje los elementos del dominio y el
@@ -115,13 +117,13 @@ como exponente. \\
 
 El hecho de tener un lenguaje tan reducido y minimalista para las expresiones
 del cálculo lambda nos permite entender con detalle y precisión todos los
-procesos de manipulación y transformación de expresiones y debido a que todo lo
+procesos de manipulación y transformación de expresiones y siendo que todo lo
 que se representa con el cálculo lambda debe ser codificado como expresiones,
 los objetos representados pueden ser entendidos de la misma manera. \\
 
 Con solo átomos, aplicaciones y abstracciones se pueden formular expresiones
 complejas. A continuación se presentan seis ejemplos de expresiones y se
-describen diferentes maneras en las que estas se pueden componer para formar
+describen diferentes maneras en las cuales estas se pueden componer para formar
 otras expresiones mas complejas. \\
 
 \begin{itemize}
@@ -200,10 +202,10 @@ siguiente capítulo. \\
 
 \subsection{Operaciones}
 
-En el cálculo lambda existen algunas operaciones para transformar expresiones,
-estas operaciones no son expresiones del lenguaje, mas bien son cambios
-mecánicos de las partes de las expresiones que nos permiten obtener una
-expresión a partir de otras dado un criterio particular. \\
+En el cálculo lambda se pueden realizar algunas operaciones para transformar
+expresiones, estas operaciones son parte del metalenguaje y consisten de una
+serie de cambios mecánicos a la estructura de las expresiones de acuerdo a un
+criterio particular. \\
 
 En la subsección anterior se mencionan dos operaciones que se abordaron
 tangencialmente: el intercambio en una expresión de un átomo por otra expresión
@@ -276,8 +278,8 @@ cambiar el símbolo que representa el átomo \(\lc{x}\) en la expresión
 la sustitución sin problemas, de tal manera que:
 
 \begin{align*}
-  &\lc{q[subst[\x.y,y,x]]} &\text{al realizar un cambio de variable ligada} \\
-  &\lc{q[subst[\z.y,y,x]]} &\text{al realizar la operación de sustitución} \\
+  &\lc{q[subst[\x.y,y,x]]} &\text{después de realizar un cambio de variable ligada, se obtiene} \\
+  &\lc{q[subst[\z.y,y,x]]} &\text{se realiza la operación de sustitución} \\
   &\lc{\z.x}               &\text{resultado de la operación}
 \end{align*}
 
@@ -356,22 +358,23 @@ El cálculo lambda es un sistema maleable y se permite definir operaciones
 arbitrarias sobre expresiones para estudiar como el sistema se comporta en
 diferentes contextos, por ejemplo, se puede considerar una operación similar a
 la sustitución que permite introducir referencias a una o mas \(\lambda\) en una
-expresión, sin embargo, con las operaciones de \emph{sustitución}, \emph{cambio de
-  variable ligada} y \emph{aplicación de abstracciones} se puede estudiar el
-contenido de este trabajo. \\
+expresión, sin embargo, el presente trabajo está constituido para entender
+plenamente las ideas centrales del cálculo lambda haciendo solamente uso de las
+operaciones de \emph{sustitución}, \emph{cambio de variable ligada} y
+\emph{aplicación de abstracciones}. \\
 
 \subsection{Equivalencias}
 
 El cálculo lambda se considera formalmente como una \emph{teoría ecuacional},
 esto significa que los axiomas del sistema formal son ecuaciones que relacionan
-expresiones del lenguaje. Esto hace que el concepto de igualdad o equivalencia
-de expresiones sea de suma importancia. \\
+expresiones del lenguaje. Esto hace que el concepto de \emph{equivalencia} de
+expresiones sea de suma importancia. \\
 
 Es tan relevante la formalización de las nociones de equivalencia que considerar
-alguna igualdad entre dos expresiones que se escriben diferente puede cambiar
+alguna equivalencia entre dos expresiones que se escriben diferente puede cambiar
 por completo el sistema formal que se estudia. En el desarrollo histórico del
 cálculo lambda, el estudio de los criterios que permiten establecer que dos
-expresiones son iguales ha dado pié a una gran diversidad de variantes de la
+expresiones son equivalentes ha dado pié a una gran diversidad de variantes de la
 teoría original; es por ello que en la literatura se suele hablar de \emph{los
 cálculos lambda} y no únicamente de un cálculo lambda. \\
 
@@ -388,9 +391,12 @@ de operaciones. \\
 La \emph{equivalencia sintáctica} es una relación entre expresiones que no está
 asociada a una transformación, se considera como una equivalencia trivial, ya
 que asevera la igualdad entre dos expresiones que son escritas exactamente
-igual, símbolo por símbolo a excepción de abusos de notación. Esta equivalencia
-es denotada como \(\lc{M} \synteq \lc{N}\) cuando \(\lc{M}\) es sintácticamente
-igual a \(\lc{N}\). \\
+igual, símbolo por símbolo a excepción de abusos de notación. Por ejemplo, la
+expresión \(\sin^{2}\left( x \right)\) es un abuso de notación de \(\left(
+  \sin\left( x \right) \right)^{2}\) y ambas son sintácticamente iguales. En el
+cálculo lambda, la equivalencia sintáctica es denotada como \(\lc{M} \synteq
+\lc{N}\) cuando \(\lc{M}\) es sintácticamente la misma expresión que \(\lc{N}\).
+\\
 
 Todos los cálculos lambda, al igual que la mayoría de los sistemas formales,
 comprenden la noción de equivalencia sintáctica. Sin embargo las equivalencias
@@ -408,13 +414,12 @@ respectivamente. A pesar de que no se escriben sintácticamente igual, la
 correspondencia que hay entre las posiciones de los átomos en una y otra
 expresión nos permite considerarlas como equivalentes. Sin embargo, la operación
 de cambio de variable ligada no considera cambios de nombres a átomos que sean
-variables libres. \\
-
-Esta relación de equivalencia es llamada \(\alpha\)-convertibilidad y se denota
-como \(\lc{M} \convertible{\alpha} \lc{N}\) para dos expresiones del cálculo
-lambda \(\lc{M}\) y \(\lc{N}\) en donde a partir de una serie de cambios de
-variables ligadas en \(\lc{M}\) o parte de \(\lc{M}\) y en \(\lc{N}\) o parte de
-\(\lc{N}\)se puedan obtener expresiones sintácticamente equivalentes. \\
+variables libres. Esta relación de equivalencia es llamada
+\(\alpha\)-convertibilidad y se denota como \(\lc{M} \convertible{\alpha}
+\lc{N}\) para dos expresiones del cálculo lambda \(\lc{M}\) y \(\lc{N}\) en
+donde a partir de una serie de cambios de variables ligadas en \(\lc{M}\) o
+parte de \(\lc{M}\) y en \(\lc{N}\) o parte de \(\lc{N}\) se puedan obtener
+expresiones sintácticamente equivalentes. \\
 
 Una técnica utilizada por algoritmos que verifican si dos expresiones
 \(\lc{M}\) y \(\lc{N}\) son \(\alpha\)-convertibles es la de \emph{índices de De
@@ -609,8 +614,9 @@ pero
 
 Para capturar la definición de \(\beta\)-convertibilidad con ecuaciones, es
 necesario definir a \(\sim\) en partes de una expresión. Las siguientes reglas,
-nombradas por Curry como \(\nu\), \(\mu\) y \(\xi\), junto con las reglas de
-\(\sim\) completan la definición declarativa de \(\beta\)-convertibilidad:
+nombradas por Curry \cite{Curry:CombinatoryLogicI} como \(\nu\), \(\mu\) y
+\(\xi\), junto con las reglas de \(\sim\) completan la definición declarativa de
+\(\beta\)-convertibilidad:
 
 \begin{align*}
   &(\nu)  &\lc{M} \sim \lc{N} &\implies \lc{M Z} \sim \lc{N Z} \\
@@ -628,8 +634,8 @@ sobre partes de una expresión, por ejemplo, para concluir que \(\lc{\f.(\x.f
 \end{align*}
 
 Es posible incluir aún más reglas de equivalencia cuando se estudia el cálculo
-lambda, a pesar de poder estudiar las expresiones en este sistema a partir de
-equivalencias arbitrarias, usualmente cada regla de equivalencia se relaciona
+lambda, a pesar de poder trabajar con expresiones en este sistema a partir de
+equivalencias arbitrarias, usualmente cada regla de equivalencia se asocia
 con alguna argumentación basada en la noción de función. \\
 
 Por ejemplo, se puede considerar una expresión de la forma \(\lc{\x.M x}\) y
@@ -643,7 +649,7 @@ En el estudio de algoritmos, esta última equivalencia no es aplicable, ya que e
 enfoque no es estudiar relaciones de entradas y salidas, si no el comportamiento
 de un procedimiento. Por ejemplo, un algoritmo \(A_{1}\) puede computar los
 mismos resultados que otro algoritmo \(A_{2}\) para todas las entradas posibles,
-sin embargo, al realizar diferentes operaciones pueden describir diferentes
+sin embargo, al realizar diferentes operaciones se pueden describir diferentes
 procedimientos y por lo tanto no se pueden considerar como equivalentes. \\
 
 Otras maneras de expresar esta última regla son:
@@ -694,19 +700,19 @@ tradicionalmente la definición del conjunto de términos lambda se define como 
 conjunto mas pequeño en donde: \\
 
 \begin{align}
-  \lc{x} \in V &\implies \lc{x} \in \Lambda\\
-  \lc{M},\ \lc{N} \in \Lambda &\implies \lc{M N} \in \Lambda\\
-  \lc{M} \in \Lambda,\ \lc{x} \in V &\implies \lc{\x.M} \in \Lambda
+  \lc{x} \in V &\implies \lc{x} \in \Lambda \\
+  \lc{M} \in \Lambda,\ \lc{x} \in V &\implies \lc{\x.M} \in \Lambda \\
+  \lc{M},\ \lc{N} \in \Lambda &\implies \lc{M N} \in \Lambda \\
 \end{align}
 
 Cada una de estas tres reglas corresponde a las tres clases de términos lambda:
 la regla 1.3 define a todos los elementos de \(V\) como términos lambda, a estas
-variables se les llama \emph{átomos}; la regla 1.4 define a las cadenas de
-la forma \(\lc{M N}\) (donde \(\lc{M}\) y \(\lc{N}\) son términos lambda) como
-términos lambda, a estos términos se les llama \emph{aplicaciones}; la regla 1.5
-define a las cadenas de la forma \(\lc{\x.M}\) (donde \(\lc{x}\) es un átomo y
-\(\lc{M}\) es un término lambda) como términos lambda, a estos términos se les
-llama \emph{abstracciones}. \\
+variables se les llama \emph{átomos}; la regla 1.4 define a las cadenas de la
+forma \(\lc{\x.M}\) (donde \(\lc{x}\) es un átomo y \(\lc{M}\) es un término
+lambda) como términos lambda, a estos términos se les llama
+\emph{abstracciones}; la regla 1.5 define a las cadenas de la forma \(\lc{M N}\)
+(donde \(\lc{M}\) y \(\lc{N}\) son términos lambda) como términos lambda, a
+estos términos se les llama \emph{aplicaciones}. \\
 
 Una definición alternativa de \(\Lambda\) es haciendo uso de gramáticas libres
 de contexto: El conjunto de términos lambda es el lenguaje generado por la
@@ -717,10 +723,10 @@ terminales \(\{\texttt{(},\ \texttt{)},\ \texttt{.},\ \lambda,\ v,\
 producción:
 
 \begin{align*}
-  \text{1. }\ T &\rightarrow E\ \mid\ F\ \mid\ A\\ 
-  \text{2. }\ E &\rightarrow \texttt{(}\ T\ T\ \texttt{)} \\
+  \text{1. }\ T &\rightarrow E\ \mid\ F\ \mid\ A \\ 
+  \text{2. }\ A &\rightarrow \texttt{v}\ \mid\ A\ {}^{\prime} \\
   \text{3. }\ F &\rightarrow \texttt{(}\ \lambda\ A\ \texttt{.}\ T\ \texttt{)} \\
-  \text{4. }\ A &\rightarrow \texttt{v}\ \mid\ A\ {}^{\prime}
+  \text{4. }\ E &\rightarrow \texttt{(}\ T\ T\ \texttt{)}
 \end{align*}
 
 Para facilitar la escritura y lectura de los términos lambda, en este trabajo se
@@ -1207,21 +1213,38 @@ debido a que \(\lc{y} \not\in \lc{q[fv[x]]}\). \\
 
 \subsubsection{Extensionalidad}
 
+Equivalencia de procedimientos como cajas negras y no como algoritmos.
+
 \subsubsection{Equivalencia de teorías}
 
+Comparación entre teorías formales, énfasis en \(\eta\) contra \(\zeta\) contra \(ext\).
+
 \subsubsection{Lemas y Corolarios sobre términos lambda en \(\lambda K \beta\)}
+
+Resultados sobre términos lambda en la teoría \(\boldsymbol{\lambda K \beta}\).
 
 \subsection{Teoría de reducción}
 
 \subsubsection{Contracciones}
 
+Transformaciones de términos con un paso.
+
 \subsubsection{Reducciones}
+
+Reducciones basadas en contracciones
 
 \subsubsection{Convertibilidad}
 
+Ecuaciones desde una perspectiva de reducción
+
 \subsubsection{Teorema de Church-Rosser}
 
+Confluencia en términos lambda.
+
 \subsection{Böhm trees}
+
+Estructura con perspectiva conjuntivista, no se formaliza el modelo pero se
+describe.
 
 %%% Local Variables: 
 %%% coding: utf-8 

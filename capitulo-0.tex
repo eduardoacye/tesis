@@ -1,18 +1,8 @@
-El cálculo lambda es un sistema formal originalmente creado por Alonzo Church en
-1932 \cite{Church:FoundationsLogic} con la finalidad de expresar, manipular y
-estudiar funciones para el desarrollo de los fundamentos de la lógica y las
-matemáticas \cite[p.~248]{Church:FoundationsLogic}. A lo largo de la historia, este
-sistema se ha adaptado para el estudio de los fundamentos de la computación y
-como sustento teórico para el desarrollo de lenguajes de programación. \\
+El cálculo lambda es un sistema formal originalmente creado por Alonzo Church en 1932 \cite{Church:FoundationsLogic} con la finalidad de expresar, manipular y estudiar funciones para el desarrollo de los fundamentos de la lógica y las matemáticas \cite[p.~248]{Church:FoundationsLogic}. A lo largo de la historia, este sistema se ha adaptado para el estudio de los fundamentos de la computación y como sustento teórico para el desarrollo de lenguajes de programación. \\
 
-Tres características fundamentales del cálculo lambda son el lenguaje utilizado
-para describir expresiones; la interpretación, representación y manejo de
-funciones; y las nociones de transformación y equivalencia de expresiones. \\
+Tres características fundamentales del cálculo lambda son el lenguaje utilizado para describir expresiones; la interpretación, representación y manejo de funciones; y las nociones de transformación y equivalencia de expresiones. \\
 
-Este capítulo consiste de dos secciones: primero se introduce informalmente el
-cálculo lambda, en donde se enfatiza las diferencias conceptuales, operacionales
-y de notación entre este sistema, la matemática clásica y la lógica de primer
-orden; en la segunda sección se presenta la formalización del cálculo lambda. \\
+Este capítulo consiste de dos secciones: primero se introduce informalmente el cálculo lambda, en donde se enfatiza las diferencias conceptuales, operacionales y de notación entre este sistema, la matemática clásica y la lógica de primer orden; en la segunda sección se presenta la formalización del cálculo lambda. \\
 
 El contenido de este capítulo está basado en los primeros cuatro capítulos del
 libro \emph{The Lambda Calculus, Its Syntax and Semantics} por H.P. Barendregt
@@ -58,7 +48,7 @@ conjunto de entradas, llamado \emph{dominio} y un conjunto de salidas, llamado
 del dominio se asocia exactamente con un elemento del codominio, formalmente,
 sean \(A\) y \(B\) dos conjuntos, una función \(f\) con dominio \(A\) y
 codominio \(B\) es un subconjunto del producto cartesiano \(A\times B\), tal que
-para toda \(a\in A\), existe \(b\in B\) tal que \((a,\ b)\in f\) y si \((a,\
+para toda \(a\in A\), existe \(b \in B\) tal que \((a,\ b)\in f\) y si \((a,\
 b^\prime)\in f\) con \(b^\prime \in B\), entonces \(b=b^\prime\). \\
 
 Las funciones tienen varias maneras de ser representadas. En la definición
@@ -135,41 +125,44 @@ otras expresiones más complejas. \\
 
 \begin{ejemplo} Algunas expresiones del cálculo lambda
   \label{ejemplo:expresiones1}
-  \begin{equation} \label{ejemplo:expresiones1:a}
-    \lc{x} \tag{a}
-  \end{equation}
-  \begin{equation} \label{ejemplo:expresiones1:b}
-    \lc{\x.x} \tag{b}
-  \end{equation}
-  \begin{equation} \label{ejemplo:expresiones1:c}
-    \lc{y\x.x} \tag{c}
-  \end{equation}
-  \begin{equation} \label{ejemplo:expresiones1:d}
-    \lc{(\y.y\x.x)\w.w} \tag{d}
-  \end{equation}
-  \begin{equation} \label{ejemplo:expresiones1:e}
-    \lc{\x.x x} \tag{e}
-  \end{equation}
-  \begin{equation} \label{ejemplo:expresiones1:f}
-    \lc{\f x.f(f x)} \tag{f}
-  \end{equation}
-\end{ejemplo}
+  \begin{subequations}
+    \begin{gather}
+      \label{ejemplo:expresiones1:a} \tag{a}
+      \lc{x}
+      \\
+      \label{ejemplo:expresiones1:b} \tag{b}
+      \lc{\x.x}
+      \\
+      \label{ejemplo:expresiones1:c} \tag{c}
+      \lc{y\x.x}
+      \\
+      \label{ejemplo:expresiones1:d} \tag{d}
+      \lc{(\y.y\x.x)\w.w}
+      \\
+      \label{ejemplo:expresiones1:e} \tag{e}
+      \lc{\x.x x}
+      \\
+      \label{ejemplo:expresiones1:f} \tag{f}
+      \lc{\f x.f(f x)}
+    \end{gather}
+  \end{subequations}
+\end{ejemplo} \
 
 Los átomos por si solos son expresiones válidas, en el inciso
-\ref{ejemplo:expresiones1:a} aparece el átomo \(\lc{x}\), como tal no tiene
+\eqref{ejemplo:expresiones1:a} aparece el átomo \(\lc{x}\), como tal no tiene
 mucha utilidad, no podemos decir que toma valores en algún conjunto o que
 representa algún valor en particular como falso o verdadero, es tan sólo un
 símbolo. Al ser parte de otra expresión, un átomo puede tener más relevancia, en
-el inciso \ref{ejemplo:expresiones1:b} el átomo \(\lc{x}\) en el cuerpo de la
+el inciso \eqref{ejemplo:expresiones1:b} el átomo \(\lc{x}\) en el cuerpo de la
 abstracción \(\lc{\x.x}\) y ahora tiene el potencial de ser cambiado por
 cualquier otra expresión debido a que también es el argumento. \\
 
-En el inciso \ref{ejemplo:expresiones1:c} se tiene la aplicación del átomo
-\(\lc{y}\) en la abstracción del inciso \ref{ejemplo:expresiones1:b}. A pesar de
+En el inciso \eqref{ejemplo:expresiones1:c} se tiene la aplicación del átomo
+\(\lc{y}\) en la abstracción del inciso \eqref{ejemplo:expresiones1:b}. A pesar de
 ser contraintuitivo, las expresiones de aplicación se componen de dos
 expresiones cualesquiera, por lo tanto, a pesar de estar asociada
 conceptualmente con la aplicación de funciones, la expresión \(\lc{y\x.x}\) es
-válida. La expresión del inciso \ref{ejemplo:expresiones1:d} contiene la
+válida. La expresión del inciso \eqref{ejemplo:expresiones1:d} contiene la
 expresión anterior en una abstracción en la primer parte de la aplicación y nos
 permite observar dos ideas importantes: primero, las abstracciones pueden ser
 aplicadas a abstracciones; segundo, al realizar la operación de aplicar
@@ -179,13 +172,13 @@ expresión \(\lc{\w.w}\) la cual a su vez puede ser aplicada a la expresión
 
 \begin{ejemplo} Procedimiento de aplicar \(\lc{\y.y\x.x}\) en \(\lc{\w.w}\) \label{ejemplo:aplicacion1}
   \begin{align*}
-    \text{1. } &\lc{(\y.y(\x.x))(\w.w)} & &\text{ expresión del inciso \ref{ejemplo:expresiones1:d}}\\ 
+    \text{1. } &\lc{(\y.y(\x.x))(\w.w)} & &\text{ expresión del inciso \eqref{ejemplo:expresiones1:d}}\\ 
     \text{2. } &\lc{(\w.w)(\x.x)} & &\text{ al aplicar } \lc{\y.y(\x.x)} \text{ a } \lc{\w.w}\\ 
     \text{3. } &\lc{\x.x} & &\text{ al aplicar } \lc{\w.w} \text{ a } \lc{\x.x}
   \end{align*}
-\end{ejemplo}
+\end{ejemplo} \
 
-En el inciso \ref{ejemplo:expresiones1:e} se presenta una abstracción cuyo
+En el inciso \eqref{ejemplo:expresiones1:e} se presenta una abstracción cuyo
 cuerpo es la aplicación de su argumento sobre sí mismo. Lo interesante de esta
 expresión es que es que encapsula la idea de replicar a partir de la aplicación
 cualquier expresión a la que sea aplicada. Por ejemplo, si aplicamos \(\lc{\x.x
@@ -198,11 +191,11 @@ formular una expresión auto-replicante en el cálculo lambda: \\
 \begin{ejemplo} Procedimiento de aplicar \(\lc{\x.x x}\) a \(\lc{\x.x x}\)
   \label{ejemplo:aplicacion2}
   \begin{align*}
-    \text{1. } &\lc{(\x.x x)(\x.x x)} & &\text{ expresión del inciso \ref{ejemplo:expresiones1:e} aplicada a sí misma}\\
+    \text{1. } &\lc{(\x.x x)(\x.x x)} & &\text{ expresión del inciso \eqref{ejemplo:expresiones1:e} aplicada a sí misma}\\
     \text{2. } &\text{En } \lc{x x} \text{ se asocia } \lc{x} \text{ a } \lc{\x.x x} \\
     \text{3. } &\lc{(\x.x x)(\x.x x)} & &\text{ resultado del procedimiento.}
   \end{align*}
-\end{ejemplo}
+\end{ejemplo} \
 
 A este tipo de expresiones se les llaman ``quines''
 \cite[pp.~431--437]{Hofstadter:GEB} término originalmente asociado a una
@@ -210,7 +203,7 @@ paradoja sobre sistemas lógicos \cite{Quine:Paradox}. En la actualidad, el
 término ``quine'' hace referencia a un programa cuya \emph{salida} es el
 programa mismo. \\
 
-En el inciso \ref{ejemplo:expresiones1:f} se tiene una abstracción cuyo cuerpo
+En el inciso \eqref{ejemplo:expresiones1:f} se tiene una abstracción cuyo cuerpo
 es otra abstracción. El concepto interesante que ilustra esta expresión es el de
 la representación de funciones de varias variables. Al realizar la operación de
 abstracción de \(\lc{\f x.f(f x)}\) a una expresión cualquiera \(\lc{M}\) se
@@ -218,8 +211,7 @@ obtiene \(\lc{\x.M(M x)}\). Si posteriormente se realiza la aplicación de este
 resultado a una expresión cualquiera \(\lc{N}\) se obtiene \(\lc{M(M N)}\), esto
 sería similar al resultado que se obtendría de aplicar una función con
 argumentos \(f\) y \(x\), con cuerpo \(f(f(x))\) a dos valores de su dominio
-\(M\) y \(N\).
-\\
+\(M\) y \(N\). \\
 
 Otra manera de representar funciones de varias variables como abstracciones del
 cálculo lambda es codificando \emph{tuplas} o \emph{secuencias} y poder hacer
@@ -243,23 +235,26 @@ cualquiera \(\lc{M}\) intercambiando las apariciones de un átomo \(\lc{x}\) por
 otra expresión \(\lc{M}\), este procedimiento se denota
 \[\lc{q[subst[M,x,N]]}\]. \\
 
-En muchos casos la operación de sustitución se puede realizar de manera trivial:
+En muchos casos la operación de sustitución se puede realizar de manera trivial: \\
 
 \begin{ejemplo} Sustituciones sencillas
   \label{ejemplo:sustitucion1}
-  \begin{equation} \label{ejemplo:sustitucion1:a}
-    \lc{q[subst[x,x,y]]}\ =\ \lc{subst[x,x,y]} \tag{a}
-  \end{equation}
-  \begin{equation} \label{ejemplo:sustitucion1:b}
-    \lc{q[subst[x x \y.y,x,z]]}\ =\ \lc{subst[x x \y.y,x,z]} \tag{b}
-  \end{equation}
-  \begin{equation} \label{ejemplo:sustitucion1:c}
-    \lc{q[subst[subst[w x y z,x,a],y,b]]}\ =\ \lc{subst[subst[w x y z,x,a],y,b]} \tag{c}
-  \end{equation}
-  \begin{equation} \label{ejemplo:sustitucion1:d}
-    \lc{q[subst[x x,x,\w.w]]}\ =\ \lc{subst[x x,x,\w.w]} \tag{d}
-  \end{equation}
-\end{ejemplo}
+  \begin{subequations}
+    \begin{align}
+      \label{ejemplo:sustitucion1:a} \tag{a}
+      \lc{q[subst[x,x,y]]}\ &=\ \lc{subst[x,x,y]}
+      \\
+      \label{ejemplo:sustitucion1:b} \tag{b}
+      \lc{q[subst[x x \y.y,x,z]]}\ &=\ \lc{subst[x x \y.y,x,z]}
+      \\
+      \label{ejemplo:sustitucion1:c} \tag{c}
+      \lc{q[subst[subst[w x y z,x,a],y,b]]}\ &=\ \lc{subst[subst[w x y z,x,a],y,b]}
+      \\
+      \label{ejemplo:sustitucion1:d} \tag{d}
+      \lc{q[subst[x x,x,\w.w]]}\ &=\ \lc{subst[x x,x,\w.w]}
+    \end{align}
+  \end{subequations}
+\end{ejemplo} \
 
 Existen algunos detalles de la sustitución que se deben tomar en cuenta para
 evitar obtener expresiones erróneas, en particular cuando se sustituye en
@@ -271,9 +266,9 @@ obtiene la expresión \(\lc{subst[\x.y,y,z]}\) la cual también es análoga a la
 función constante pero con el átomo \(\lc{z}\). Si no se tiene cuidado,
 sustituir un átomo por otro en esta abstracción puede resultar en una expresión
 con diferente interpretación, en este ejemplo, el caso patológico de la
-sustitución ingenua es:
+sustitución ingenua es: \\
 
-\[\lc{q[subst[\x.y,y,x]]}\]
+\[\lc{q[subst[\x.y,y,x]]}\] \
 
 Se puede pensar que el resultado es \(\lc{\x.x}\) la cuál es análoga a la
 función identidad, sin embargo, la sustitución no permite cambiar las
@@ -303,14 +298,14 @@ fundamentales de la operación de sustitución: la operación
 Para resolver el problema de \(\lc{q[subst[\x.y,y,x]]}\) se debe considerar otra
 operación llamada \emph{cambio de variable ligada}. Se parte de la observación
 que en una expresión del cálculo lambda, las referencias entre \(\lambda x\) y
-los átomos \(\lc{x}\) (para cualquier átomo \(\lc{x}\)) es mas importante que el
+los átomos \(\lc{x}\) (para cualquier átomo \(\lc{x}\)) es más importante que el
 símbolo con el que se representa el átomo. En las expresiones simbólicas de
 funciones sucede lo mismo, al expresar \(f(x)=x^{2}\) y \(f(y)=y^{2}\) hacemos
 referencia a la misma regla de correspondencia y por lo tanto a la misma función
 (sin considerar el dominio y el codominio de \(f\)). En el cálculo lambda,
 cambiar el símbolo que representa el átomo \(\lc{x}\) en la expresión
 \(\lc{\x.y}\) por otro símbolo no utilizado como \(\lc{z}\) nos permite realizar
-la sustitución sin problemas.
+la sustitución sin problemas. \\
 
 \begin{ejemplo} Procedimiento de sustitución para el caso patológico
   \label{ejemplo:sustitucion2}
@@ -319,7 +314,7 @@ la sustitución sin problemas.
     \text{2. } &\lc{q[subst[\z.y,y,x]]} &\text{después de realizar un cambio de variable ligada} \\
     \text{3. } &\lc{\z.x}               &\text{resultado del procedimiento de sustitución}
   \end{align*}
-\end{ejemplo}
+\end{ejemplo} \
 
 Cuando se realiza un cambio de variable ligada sobre una abstracción
 \(\lc{\x.M}\) se cambia tanto el átomo \(\lc{x}\) acompañado por la \(\lambda\),
@@ -336,7 +331,7 @@ puede realizarse múltiples veces para transformar varias abstracciones. \\
     \text{2. } &\lc{\g x.g(g(g x))} &\text{Cambiando \(f\) por \(g\)} \\
     \text{3. } &\lc{\g y.g(g(g y))} &\text{Cambiando \(x\) por \(y\)}
   \end{align*}
-\end{ejemplo}
+\end{ejemplo} \
 
 El cambio de variable ligada en una abstracción \(\lc{\x.M}\) de \(\lc{x}\) a
 \(\lc{y}\) resulta en la abstracción \[\lc{\y.q[subst[M,x,y]]}\]. \\
@@ -344,15 +339,15 @@ El cambio de variable ligada en una abstracción \(\lc{\x.M}\) de \(\lc{x}\) a
 La definición de la operación de sustitución es recursiva y hace uso de la
 operación de cambio de variable ligada, considerando a \(\lc{x}\), \(\lc{y}\),
 \(\lc{z}\) como átomos diferentes y \(\lc{M}\), \(\lc{N}\) y \(\lc{P}\) como
-expresiones cualquiera diferentes:
+expresiones cualquiera diferentes: \\
 
 \begin{itemize}
-\item \(\lc{q[subst[x,x,M]]}\) resulta en \(\lc{M}\)
-\item \(\lc{q[subst[y,x,M]]}\) resulta en \(\lc{y}\)
+\item \(\lc{q[subst[x,x,M]]}\) resulta en \(\lc{M}\);
+\item \(\lc{q[subst[y,x,M]]}\) resulta en \(\lc{y}\);
 \item \(\lc{q[subst[M N, x, P]]}\) resulta en \(\lc{q[subst[M, x, P]] q[subst[N,
-    x, P]]}\)
+    x, P]]}\);
 \item \(\lc{q[subst[\x.M, x, N]]}\) resulta en \(\lc{\x.M}\) debido a que las
-  referencias a \(\lc{x}\) no deben eliminarse
+  referencias a \(\lc{x}\) no deben eliminarse;
 \item \(\lc{q[subst[\y.M, x, N]]}\) resulta en:
   \begin{itemize}
   \item \(\lc{\y.M}\) cuando \(\lc{x}\) no es una variable libre en \(\lc{M}\)
@@ -361,8 +356,8 @@ expresiones cualquiera diferentes:
     eso introduciría una referencia a \(\lambda y\)
   \item \(\lc{\z.q[subst[subst[M,y,z],x,N]]}\) cuando \(\lc{x}\) es una variable
     libre en \(\lc{M}\) y \(\lc{y}\) es una variable libre en \(\lc{N}\)
-  \end{itemize}
-\end{itemize}
+  \end{itemize}.
+\end{itemize} \
 
 La operación de \emph{aplicación de abstracciones} es el mecanismo mediante el cual
 se puede ``concretar'' una abstracción haciendo uso de otra expresión como valor
@@ -382,7 +377,7 @@ aplicación de abstracciones con los pasos de la transformación: \\
     \text{2. } &\lc{q[subst[x,x,y]]} \\
     \text{3. } &\lc{subst[x,x,y]}
   \end{align*}
-\end{ejemplo}
+\end{ejemplo} \
 
 \begin{ejemplo} Procedimiento de aplicación de \(\lc{\w.w}\) a \(\lc{x}\)
   \label{ejemplo:aplicacion4}
@@ -391,7 +386,7 @@ aplicación de abstracciones con los pasos de la transformación: \\
     \text{2. } &\lc{\x.q[subst[w,w,x]]} \\
     \text{3. } &\lc{\x.subst[w,w,x]}
   \end{align*}
-\end{ejemplo}
+\end{ejemplo} \
 
 \begin{ejemplo} Procedimiento de múltiples aplicaciones
   \label{ejemplo:aplicacion5}
@@ -402,7 +397,7 @@ aplicación de abstracciones con los pasos de la transformación: \\
     \text{4. } &\lc{q[subst[g(g(g x)), x, y]]} \\
     \text{5. } &\lc{subst[g(g(g x)), x, y]}
   \end{align*}
-\end{ejemplo}
+\end{ejemplo} \
 
 El cálculo lambda es un sistema maleable y se permite definir operaciones
 arbitrarias sobre expresiones para estudiar como el sistema se comporta en
@@ -426,7 +421,7 @@ por completo el sistema formal que se estudia. En el desarrollo histórico del
 cálculo lambda, el estudio de los criterios que permiten establecer que dos
 expresiones son equivalentes ha dado pie a una gran diversidad de variantes de la
 teoría original; es por ello que en la literatura se suele hablar de \emph{los
-cálculos lambda} y no únicamente de un cálculo lambda. \\
+  cálculos lambda} y no únicamente de un cálculo lambda. \\
 
 Como se aborda en la subsección anterior, con la operación de sustitución se
 puede transformar expresiones del cálculo lambda y definir otras operaciones
@@ -447,7 +442,7 @@ ejemplo, la expresión \(\sin^{2}\left( x \right)\) es un abuso de notación de
 En el cálculo lambda, la equivalencia sintáctica es denotada como \(\lc{M}
 \synteq \lc{N}\) cuando \(\lc{M}\) es sintácticamente la misma expresión que
 \(\lc{N}\).
-\\
+\
 
 Todos los cálculos lambda, al igual que la mayoría de los sistemas formales,
 comprenden la noción de equivalencia sintáctica. Sin embargo las equivalencias
@@ -474,118 +469,117 @@ expresiones sintácticamente equivalentes. \\
 
 Una técnica utilizada por algoritmos que verifican si dos expresiones
 \(\lc{M}\) y \(\lc{N}\) son \(\alpha\)-convertibles es la de \emph{índices de De
-Bruijn}, esta transformación cambia la aparición de átomos por números naturales
+  Bruijn}, esta transformación cambia la aparición de átomos por números naturales
 que representan la ``distancia'' de los átomos a las \(\lambda\) que hacen
-referencia. Por ejemplo, la expresión
+referencia. \\
 
-\begin{equation}
-  \lc{\z.(\y.y (\x.x))(\x. z x)}
-\end{equation}
+\begin{ejemplo} La expresión \(\lc{\z.(\y.y (\x.x))(\x. z x)}\) se escribe
+  usando índices de De Bruijn como \
 
-se escribe usando índices de De Bruijn como
+  \[\lambda\ (\lambda\ 1\ (\lambda\ 1))\ (\lambda\ 2\ 1)\] \
 
-\begin{equation}
-  \lambda\ (\lambda\ 1\ (\lambda\ 1))\ (\lambda\ 2\ 1)
-\end{equation}
-
-En la figura 1.1 se puede observar de manera gráfica la transformación de una
-notación a otra para este ejemplo, visualizando las expresiones del cálculo
-lambda como árboles. \\
+  En la figura \ref{figura:DeBruijn1} se puede observar de manera gráfica la
+  transformación de una notación a otra para este ejemplo, visualizando las
+  expresiones del cálculo lambda como árboles.
+\end{ejemplo} \
 
 \begin{figure}[h!]
   \centering
-  \begin{tikzpicture}[level/.style={sibling distance=60mm/#1}] 
-    \node (term) {
-      \(\lc{\z.(\y.y (\x.x))(\x. z x)}\)
-    }; 
-    \node [below of=term] (arrow1) {
-      \(\Downarrow\)
-    }; 
-    \node [circle,draw,below of= arrow1] (z) {
-      \(\lambda z\)
-    } child {
-      node [circle,draw] (a) {
-        \(\lambda y\)
+  \resizebox{8.6cm}{!}{%
+    \begin{tikzpicture}[level/.style={sibling distance=60mm/#1}] 
+      \node [draw] (term) {
+        \(\lc{\z.(\y.y (\x.x))(\x. z x)}\)
+      }; 
+      \node [below of=term] (arrow1) {
+        \(\Downarrow\)
+      }; 
+      \node [circle,draw,below of= arrow1] (z) {
+        \(\lambda z\)
       } child {
-        node [circle,draw] (c) {
-          \(y\)
-        }
-      }
-      child {
-        node [circle,draw] (d) {
-          \(\lambda x\)
+        node [circle,draw] (a) {
+          \(\lambda y\)
+        } child {
+          node [circle,draw] (c) {
+            \(y\)
+          }
         }
         child {
-          node [circle,draw] (g) {
+          node [circle,draw] (d) {
+            \(\lambda x\)
+          }
+          child {
+            node [circle,draw] (g) {
+              \(x\)
+            }
+          } 
+        } 
+      } 
+      child {
+        node [circle,draw] (b) {
+          \(\lambda x\)
+        } 
+        child {node [circle,draw] (e) {
+            \(z\)
+          }
+        } 
+        child {
+          node [circle,draw] (f) {
             \(x\)
           }
         } 
-      } 
-    } 
-    child {
-      node [circle,draw] (b) {
-        \(\lambda x\)
-      } 
-      child {node [circle,draw] (e) {
-          \(z\)
-        }
-      } 
-      child {
-        node [circle,draw] (f) {
-          \(x\)
-        }
-      } 
-    };
-    \node [below=4cm of z] (arrow2) {
-      \(\Downarrow\)
-    };
-    \node [circle,draw,below of= arrow2] (z2) {
-      \(\lambda\)
-    }
-    child {
-      node [circle,draw] (a2) {
+      };
+      \node [below=4cm of z] (arrow2) {
+        \(\Downarrow\)
+      };
+      \node [circle,draw,below of= arrow2] (z2) {
         \(\lambda\)
-      } 
+      }
       child {
-        node [circle,draw] (c2) {
-          \(1\)
-        }
-      } 
-      child {
-        node [circle,draw] (d2) {
+        node [circle,draw] (a2) {
           \(\lambda\)
         } 
         child {
-          node [circle,draw] (g2) {
+          node [circle,draw] (c2) {
             \(1\)
           }
         } 
-      } 
-    } 
-    child {
-      node [circle,draw] (b2) {
-        \(\lambda\)
+        child {
+          node [circle,draw] (d2) {
+            \(\lambda\)
+          } 
+          child {
+            node [circle,draw] (g2) {
+              \(1\)
+            }
+          } 
+        } 
       } 
       child {
-        node [circle,draw] (e2) {
-          \(2\)
+        node [circle,draw] (b2) {
+          \(\lambda\)
+        } 
+        child {
+          node [circle,draw] (e2) {
+            \(2\)
+          }
+        } 
+        child {
+          node [circle,draw] (f2) {
+            \(1\)
+          }
         }
-      } 
-      child {
-        node [circle,draw] (f2) {
-          \(1\)
-        }
-      }
-    };
-    \node [below=4cm of z2] (arrow3) {
-      \(\Downarrow\)
-    };
-    \node [below of=arrow3](bruijn) {
-      \(\lambda\ (\lambda\ 1\ (\lambda\ 1))\ (\lambda\ 2\ 1)\)
-    };
-  \end{tikzpicture}
-  \caption{Transformación de la expresión 1.1 a 1.2.}
-\end{figure}
+      };
+      \node [below=4cm of z2] (arrow3) {
+        \(\Downarrow\)
+      };
+      \node [draw,below of=arrow3](bruijn) {
+        \(\lambda\ (\lambda\ 1\ (\lambda\ 1))\ (\lambda\ 2\ 1)\)
+      };
+    \end{tikzpicture}
+  }
+  \caption{Transformación gráfica a la notación de índices de De Bruijn}
+  \label{figura:DeBruijn1}
+\end{figure} \
 
 Una desventaja de utilizar la notación de De Bruijn es que ciertas expresiones
 del cálculo lambda no pueden ser escritas, en particular, los átomos no pueden
@@ -609,7 +603,7 @@ abstracciones en \(\lc{M}\) o parte de \(\lc{M}\) y \(\lc{N}\) o parte de
 Es importante enfatizar que la \(\beta\)-convertibilidad considera el proceso
 inverso de la aplicación de abstracciones, por ejemplo, \(\lc{f(f(f x))}
 \convertible{\beta} \lc{(\g y.g(g(g y)))f x}\). Todas las relaciones de
-equivalencia por definición cumplen con tres propiedades:
+equivalencia por definición cumplen con tres propiedades: \\
 
 \begin{enumerate}[a.]
 \item Toda expresión \(\lc{M}\) es equivalente a sí misma. \label{relequiv:a}
@@ -619,7 +613,7 @@ equivalencia por definición cumplen con tres propiedades:
   expresión \(\lc{N}\) y \(\lc{N}\) se relaciona con la misma equivalencia a
   \(\lc{P}\), entonces, \(\lc{M}\) y \(\lc{P}\) se relacionan con esta
   equivalencia. \label{relequiv:c}
-\end{enumerate}
+\end{enumerate} \
 
 La equivalencia sintáctica corresponde al inciso \ref{relequiv:a} de las
 propiedades de equivalencias mencionadas y es llamada propiedad de
@@ -649,52 +643,58 @@ convención para elaborar la siguiente definición de una relación de equivalen
 
 \begin{defi} Ecuaciones que satisfacen la relación de equivalencia \(\sim\)
   \label{definicion:1}
-  \begin{equation} \label{definicion:1:alpha}
-    \lc{\x.M}\ \sim\ \lc{\y.q[subst[M,x,y]]} \tag{\ensuremath{\alpha}}
-  \end{equation}
-  \begin{equation} \label{definicion:1:beta}
-    \lc{(\x.M)N}\ \sim\ \lc{q[subst[M,x,N]]} \tag{\ensuremath{\beta}}
-  \end{equation}
-  \begin{equation} \label{definicion:1:rho}
-    \lc{M}\ \sim\ \lc{M} \tag{\ensuremath{\rho}}
-  \end{equation}
-  \begin{equation} \label{definicion:1:sigma}
-    \lc{M}\ \sim\ \lc{N}\ \implies\ \lc{N}\ \sim\ \lc{M} \tag{\ensuremath{\sigma}}
-  \end{equation}
-  \begin{equation} \label{definicion:1:tau}
-    \lc{M}\ \sim\ \lc{N},\ \lc{N}\ \sim\ \lc{P}\ \implies\ \lc{M}\ \sim\ \lc{P} \tag{\ensuremath{\tau}}
-  \end{equation}
-\end{defi}
+  \begin{subequations}
+    \begin{align}
+      \label{definicion:1:alpha} \tag{\ensuremath{\alpha}}
+      \lc{\x.M}\ &\sim\ \lc{\y.q[subst[M,x,y]]}
+      \\
+      \label{definicion:1:beta} \tag{\ensuremath{\beta}}
+      \lc{(\x.M)N}\ &\sim\ \lc{q[subst[M,x,N]]}
+      \\
+      \label{definicion:1:rho} \tag{\ensuremath{\rho}}
+      \lc{M}\ &\sim\ \lc{M}
+      \\
+      \label{definicion:1:sigma} \tag{\ensuremath{\sigma}}
+      \lc{M}\ \sim\ \lc{N}\ &\implies\ \lc{N}\ \sim\ \lc{M}
+      \\
+      \label{definicion:1:tau} \tag{\ensuremath{\tau}}
+      \lc{M}\ \sim\ \lc{N},\ \lc{N}\ \sim\ \lc{P}\ &\implies\ \lc{M}\ \sim\ \lc{P}
+    \end{align}
+  \end{subequations}
+\end{defi} \
 
 Las ecuaciones en la definición \ref{definicion:1} son muy parecidas a las
 propiedades de la \(\beta\)-conversión, con la excepción de que la
 \(\beta\)-conversión relaciona expresiones en donde sus partes fueron
-transformadas y \(\sim\) no, por ejemplo
+transformadas y \(\sim\) no, por ejemplo \\
 
-\[\lc{\f.(\x.f x)y} \convertible{\beta} \lc{\f.f y}\]
+\[\lc{\f.(\x.f x)y} \convertible{\beta} \lc{\f.f y}\] \
 
-pero
+pero \\
 
-\[\lc{\f.(\x.f x)y} \not\sim \lc{\f.f y}\]
+\[\lc{\f.(\x.f x)y} \not\sim \lc{\f.f y}\] \
 
 Para capturar la definición de \(\beta\)-convertibilidad con ecuaciones, es
 necesario definir a \(\sim\) en partes de una expresión. Las siguientes reglas,
 nombradas por Curry \cite[p.~59]{Curry:CombinatoryLogicI} como \(\nu\), \(\mu\) y
 \(\xi\), junto con las reglas de \(\sim\) completan la definición declarativa de
-\(\beta\)-convertibilidad:
+\(\beta\)-convertibilidad: \\
 
 \begin{defi} Reglas que debe cumplir \(\sim\) para ser \(\convertible{\beta}\)
   \label{definicion:2}
-  \begin{equation} \label{definicion:2:nu}
-    \lc{M}\ \sim\ \lc{N}\ \implies\ \lc{M Z}\ \sim\ \lc{N Z} \tag{\ensuremath{\nu}}
-  \end{equation}
-  \begin{equation} \label{definicion:2:mu}
-    \lc{M}\ \sim\ \lc{N}\ \implies\ \lc{Z M}\ \sim\ \lc{Z N} \tag{\ensuremath{\mu}}
-  \end{equation}
-  \begin{equation} \label{definicion:3:xi}
-    \lc{M}\ \sim\ \lc{N}\ \implies\ \lc{\x.M}\ \sim\ \lc{\x.N} \tag{\ensuremath{\xi}}
-  \end{equation}
-\end{defi}
+  \begin{subequations}
+    \begin{align}
+      \label{definicion:2:nu} \tag{\ensuremath{\nu}}
+      \lc{M}\ \sim\ \lc{N}\ &\implies\ \lc{M Z}\ \sim\ \lc{N Z}
+      \\
+      \label{definicion:2:mu} \tag{\ensuremath{\mu}}
+      \lc{M}\ \sim\ \lc{N}\ &\implies\ \lc{Z M}\ \sim\ \lc{Z N}
+      \\
+      \label{definicion:3:xi} \tag{\ensuremath{\xi}}
+      \lc{M}\ \sim\ \lc{N}\ &\implies\ \lc{\x.M}\ \sim\ \lc{\x.N}
+    \end{align}
+  \end{subequations}
+\end{defi} \
 
 Con estas reglas, las inferencias lógicas nos permiten abordar la equivalencia
 sobre partes de una expresión. \\
@@ -704,7 +704,7 @@ sobre partes de una expresión. \\
     \text{1. } &\lc{(\x.f x)y} \sim \lc{f y} & &\text{ por \(\beta\)} \\
     \text{2. } &\lc{\f.(\x.f x)y} \sim \lc{\f.f y} & &\text{ por \(\xi\)}
   \end{align*}
-\end{ejemplo}
+\end{ejemplo} \
 
 Es posible incluir aún más reglas de equivalencia cuando se estudia el cálculo
 lambda, a pesar de poder trabajar con expresiones en este sistema a partir de
@@ -729,9 +729,9 @@ ordenamiento \emph{merge sort} logra ordenar una secuencia de \(n\) números de
 menor a mayor en \(\mathcal{O}(n \log n)\) mientras que el algoritmo
 \emph{bubble sort} computa el mismo resultado pero en \(\mathcal{O}(n^2)\).
 La equivalencia ``funcional'' se pudiera incluír en la definición de \(\sim\)
-añadiendo la siguiente regla:
+añadiendo la siguiente regla: \\
 
-\[\lc{M P}\ \sim\ \lc{N P}\ \implies\ \lc{M}\ \sim\ \lc{N}\]
+\[\lc{M P}\ \sim\ \lc{N P}\ \implies\ \lc{M}\ \sim\ \lc{N}\] \
 
 Con esto se termina la introducción informal al cálculo lambda, las ideas que se
 han manejado en esta sección serán ahora formalizadas y definidas de manera
@@ -741,16 +741,15 @@ rigurosa. \\
 
 La teoría del cálculo lambda se puede formalizar de diferentes perspectivas, en
 este trabajo se abordan dos: a partir de la \emph{reducibilidad y
-convertibilidad} de expresiones y a partir de \emph{sistemas formales}. La
+  convertibilidad} de expresiones y a partir de \emph{sistemas formales}. La
 primera consiste en definir transformaciones de expresiones mediante
-procedimientos, mientras que la segunda define axiomas y reglas de inferencia.
-\\
+procedimientos, mientras que la segunda define axiomas y reglas de inferencia. \\
 
 Independientemente de la perspectiva de la formalización, los conceptos son los
 mismos y las definiciones equivalentes. En ambos casos se formaliza la teoría
 \(\boldsymbol{\lambda}\), también llamado cálculo-\(\lambda K \beta\). \\
 
-De acuerdo a Barendregt \cite{Barendregt:Bible}, el objeto de estudio principal
+De acuerdo a Barendregt \cite[p.~22]{Barendregt:Bible}, el objeto de estudio principal
 de la teoría \(\boldsymbol{\lambda}\) es el conjunto de términos lambda módulo
 convertibilidad, estas nociones serán presentadas en las siguientes
 subsecciones. \\
@@ -764,44 +763,69 @@ Los \emph{términos lambda} son las \emph{fórmulas bien formadas} del cálculo
 lambda, es decir, las expresiones válidas del sistema. El conjunto de todos los
 términos lambda es un lenguaje formal, denotado como \(\Lambda\). \\
 
-El conjunto \(\Lambda\) tiene elementos que son cadenas conformadas por símbolos
-en el alfabeto \(\Sigma = \{\texttt{(},\ \texttt{)},\ \texttt{.},\ \lambda\}
-\cup V\), donde \(V\) es el conjunto conformado por todas las variables
-\(v_{i}\) con \(i\in \mathbb{N}\). \\
+El lenguaje \(\Lambda\) se puede definir de diferentes maneras, a continuación
+se presenta una definición inductiva y posteriormente una construcción a partir
+de una gramática libre de contexto. \\
 
-El lenguaje \(\Lambda\) se puede definir de diferentes maneras,
-tradicionalmente la definición del conjunto de términos lambda se define como el
-conjunto mas pequeño en donde: \\
-
-\begin{align}
-  \lc{x} \in V &\implies \lc{x} \in \Lambda \\
-  \lc{M} \in \Lambda,\ \lc{x} \in V &\implies \lc{\x.M} \in \Lambda \\
-  \lc{M},\ \lc{N} \in \Lambda &\implies \lc{M N} \in \Lambda \\
-\end{align}
+\begin{defi}[Términos lambda] El conjunto \(\Lambda\) tiene elementos que son
+  cadenas conformadas por símbolos en el alfabeto \(\Sigma = \{\texttt{(},\
+  \texttt{)},\ \texttt{.},\ \lambda\} \cup V\), donde \(V\) es un conjunto
+  infinito \(\left\{ v_{0},\ v_{00},\ v_{000},\ ... \right\}\) de variables.
+  \(\Lambda\) es el conjunto mas pequeño que satisface:
+  \label{definicion:terminoslambda1}
+  \begin{subequations}
+    \label{definicion:terminoslambda1:implicaciones}
+    \begin{align}
+      \label{definicion:terminoslambda1:atomos} \tag{a}
+      \lc{x} \in V &\implies \lc{x} \in \Lambda
+      \\
+      \label{definicion:terminoslambda1:abstracciones} \tag{b}
+      \lc{M} \in \Lambda,\ \lc{x} \in V &\implies \lc{\x.M} \in \Lambda
+      \\
+      \label{definicion:terminoslambda1:aplicaciones} \tag{c}
+      \lc{M},\ \lc{N} \in \Lambda &\implies \lc{M N} \in \Lambda
+    \end{align}
+  \end{subequations}
+\end{defi} \
 
 Cada una de estas tres reglas corresponde a las tres clases de términos lambda:
-la regla 1.3 define a todos los elementos de \(V\) como términos lambda, a estas
-variables se les llama \emph{átomos}; la regla 1.4 define a las cadenas de la
-forma \(\lc{\x.M}\) (donde \(\lc{x}\) es un átomo y \(\lc{M}\) es un término
+la regla \eqref{definicion:terminoslambda1:atomos} define a todos los elementos
+de \(V\) como términos lambda, a estas variables se les llama \emph{átomos}; la
+regla \eqref{definicion:terminoslambda1:abstracciones} define a las cadenas de
+la forma \(\lc{\x.M}\) (donde \(\lc{x}\) es un átomo y \(\lc{M}\) es un término
 lambda) como términos lambda, a estos términos se les llama
-\emph{abstracciones}; la regla 1.5 define a las cadenas de la forma \(\lc{M N}\)
-(donde \(\lc{M}\) y \(\lc{N}\) son términos lambda) como términos lambda, a
-estos términos se les llama \emph{aplicaciones}. \\
+\emph{abstracciones}; la regla \eqref{definicion:terminoslambda1:aplicaciones}
+define a las cadenas de la forma \(\lc{M N}\) (donde \(\lc{M}\) y \(\lc{N}\) son
+términos lambda) como términos lambda, a estos términos se les llama
+\emph{aplicaciones}. \\
 
 Una definición alternativa de \(\Lambda\) es haciendo uso de gramáticas libres
-de contexto: El conjunto de términos lambda es el lenguaje generado por la
-gramática libre de contexto \(G\) con categorías sintácticas \(T\) (términos
-lambda), \(E\) (aplicaciones), \(F\) (abstracciones) y \(A\) (átomos); símbolos
-terminales \(\{\texttt{(},\ \texttt{)},\ \texttt{.},\ \lambda,\ v,\
-{}^{\prime}\}\); símbolo inicial \(T\) y con las siguientes reglas de
-producción:
+de contexto: \\
 
-\begin{align*}
-  \text{1. }\ T &\rightarrow E\ \mid\ F\ \mid\ A \\ 
-  \text{2. }\ A &\rightarrow \texttt{v}\ \mid\ A\ {}^{\prime} \\
-  \text{3. }\ F &\rightarrow \texttt{(}\ \lambda\ A\ \texttt{.}\ T\ \texttt{)} \\
-  \text{4. }\ E &\rightarrow \texttt{(}\ T\ T\ \texttt{)}
-\end{align*}
+\begin{defi}[Términos lambda] El conjunto de términos lambda es el lenguaje
+  generado por la gramática libre de contexto \(G\) con categorías sintácticas
+  \(T\) (términos lambda), \(E\) (aplicaciones), \(F\) (abstracciones) y \(A\)
+  (átomos); símbolos terminales \(\{\texttt{(},\ \texttt{)},\ \texttt{.},\
+  \lambda,\ v,\ {}_{0}\}\); símbolo inicial \(T\) y con las siguientes
+  reglas de producción: \
+  \label{definicion:terminoslambda2}
+  \begin{subequations}
+    \label{definicion:terminoslambda2:producciones}
+    \begin{align}
+      \label{definicion:terminoslambda2:terminos} \tag{a}
+      T &\rightarrow E\ \mid\ F\ \mid\ A
+      \\
+      \label{definicion:terminoslambda2:atomos} \tag{b}
+      A &\rightarrow \texttt{v}_{0}\ \mid\ A\ {}_{0}
+      \\
+      \label{definicion:terminoslambda2:abstracciones} \tag{c}
+      F &\rightarrow \texttt{(}\ \lambda\ A\ \texttt{.}\ T\ \texttt{)}
+      \\
+      \label{definicion:terminoslambda2:aplicaciones} \tag{d}
+      E &\rightarrow \texttt{(}\ T\ T\ \texttt{)}
+    \end{align}
+  \end{subequations}
+\end{defi} \
 
 Para facilitar la escritura y lectura de los términos lambda, en este trabajo se
 hacen las siguientes consideraciones sobre la notación: \\
@@ -836,10 +860,10 @@ hacen las siguientes consideraciones sobre la notación: \\
   \end{itemize}
 \item El símbolo \(\synteq\) denota la equivalencia sintáctica entre dos
   términos lambda.
-\end{itemize}
+\end{itemize} \
 
 A continuación se muestran ejemplos de términos lambda asociados a términos
-sintácticamente equivalentes pero escritos con abuso de notación:
+sintácticamente equivalentes pero escritos con abuso de notación: \\
 
 \begin{align*}
   \lc{x y z (y x)} & \synteq \lc*{x y z (y x)}\\
@@ -848,35 +872,37 @@ sintácticamente equivalentes pero escritos con abuso de notación:
   \lc{(\u.v u u)z y} & \synteq \lc*{(\u.v u u)z y}\\
   \lc{u x(y z)(\v.v y)} & \synteq \lc*{u x(y z)(\v.v y)}\\
   \lc{(\x y z.x z(y z))u v w} & \synteq \lc*{(\x y z.x z(y z))u v w}
-\end{align*}
+\end{align*} \
 
 Para hacer referencia a una secuencia con una cantidad arbitraria de términos
 lambda se usa la notación
 \(\lc{q[seq[x]]}=\lc{q[dots[1,subscript[x,1],subscript[x,n]]]}\) cuando es
 secuencia de átomos y
 \(\lc{q[seq[M]]}=\lc{q[dots[1,subscript[M,1],subscript[M,n]]]}\) cuando es
-secuencia de términos lambda en general. Con esta notación se puede abreviar
+secuencia de términos lambda en general. Con esta notación se puede abreviar \\
 
 \[\lc*{\q[seq[x]].M} \synteq 
-\lc*{\q[dots[2,subscript[x,1],subscript[x,2],subscript[x,n]]].M}\]
+  \lc*{\q[dots[2,subscript[x,1],subscript[x,2],subscript[x,n]]].M}\] \
 
-y
-
+y \\
 
 \[\lc*{M q[seq[N]]} \synteq
-  \lc*{q[dots[3,M,subscript[N,1],subscript[N,2],subscript[N,n]]]}\]
+  \lc*{q[dots[3,M,subscript[N,1],subscript[N,2],subscript[N,n]]]}\] \
 
 En algunas demostraciones realizadas por inducción, se usa la expresión
-``\emph{inducción sobre} \(\lc{M}\)'' para referirse a la inducción sobre la
-\emph{longitud} de \(\lc{M}\). La longitud de un término lambda, denotada como
-\(\lc{q[length[M]]}\), es la cantidad de apariciones de átomos en el término
-lambda y se define como:
+``inducción sobre \(\lc{M}\)'' para referirse a la inducción sobre la
+\emph{longitud} de \(\lc{M}\). \\
 
-\begin{itemize}
-\item \(\lc{q[length[x]]}\ =\ 1\)
-\item \(\lc*{q[length[M N]]}\ =\ \lc{q[length[M]]} + \lc{q[length[N]]}\)
-\item \(\lc*{q[length[\x.M]]}\ =\ 1 + \lc{q[length[M]]}\)
-\end{itemize}
+\begin{defi}[Longitud] La longitud de un término lambda, denotada como
+  \(\lc{q[length[M]]}\), es la cantidad de apariciones de átomos en el término
+  lambda, se determina a partir de la estructura del término lambda como: \
+  \label{definicion:longitud}
+  \begin{align*}
+    \lc{q[length[x]]}\ &=\ 1 \\
+    \lc*{q[length[M N]]}\ &=\ \lc{q[length[M]]} + \lc{q[length[N]]} \\
+    \lc*{q[length[\x.M]]}\ &=\ 1 + \lc{q[length[M]]}
+  \end{align*}
+\end{defi} \
 
 Por ejemplo, la longitud del término lambda \(\lc*{x(\y.y u x)}\) es
 \(\lc*{q[length[x(\y.y u x)]]}=\lc{length[x(\y.y u x)]}\). \\
@@ -895,16 +921,25 @@ para los subtérminos de \(\lc{M}\) los cuales estrictamente menor longitud que
 \(\lc{M}\). \\
 
 El concepto de aparición de un término lambda en otro se formaliza a partir del
-concepto de subtérmino: \(\lc{M}\) es un subtérmino de \(\lc{N}\), denotado
-\(\lc{q[subterm[M,N]]}\) si \(\lc{M} \in \lc{q[subterms[N]]}\), donde
-\(\lc{q[subterms[N]]}\) es la colección de subtérminos de \(\lc{N}\) definida de
-manera inductiva como:
+concepto de subtérmino: \\
 
-\begin{align*}
-  \lc*{q[subterms[x]]} &= \{\lc*{x}\} \\
-  \lc*{q[subterms[\x.M]]} &= \lc*{q[subterms[M]]} \cup \{\lc*{\x.M}\} \\
-  \lc*{q[subterms[M N]]} &= \lc*{q[subterms[M]]} \cup \lc*{q[subterms[N]]} \cup \{\lc*{M N}\}
-\end{align*}
+\begin{defi}[Subtérmino] \(\lc{M}\) es un subtérmino de \(\lc{N}\), denotado
+  \(\lc{q[subterm[M,N]]}\) si \(\lc{M} \in \lc{q[subterms[N]]}\), donde
+  \(\lc{q[subterms[N]]}\) es la colección de subtérminos de \(\lc{N}\) definida
+  de manera inductiva como:
+  \label{definicion:subtermino}
+  \begin{align*}
+    \lc*{q[subterms[x]]} &= \{\lc*{x}\} \\
+    \lc*{q[subterms[\x.M]]} &= \lc*{q[subterms[M]]} \cup \{\lc*{\x.M}\} \\
+    \lc*{q[subterms[M N]]} &= \lc*{q[subterms[M]]} \cup \lc*{q[subterms[N]]} \cup \{\lc*{M N}\}
+  \end{align*}
+\end{defi} \
+
+\begin{defi}[Aparición] La aparición de \(\lc{M}\) en \(\lc{N}\) implica que
+  \(\lc{q[subterm[M,N]]}\) o que \(\lc{M}\) es el átomo del argumento de una
+  abstracción en \(\lc{N}\).
+  \label{definicion:aparicion}
+\end{defi} \
 
 Un subtérmino \(\lc{N}\) de \(\lc{M}\) puede aparecer varias veces en
 \(\lc{M}\), cuando dos subtérminos \(\lc{q[subscript[N,1]]}\) y
@@ -913,193 +948,256 @@ común, se dice que son \emph{disjuntas}. Cuando \(\lc{N}\) es subtérmino de
 \(\lc{M}\) se le llama \emph{activo} si aparece en una aplicación de la forma
 \(\lc{N Z}\), de lo contrario, se le llama \emph{pasivo}. \\
 
-La aparición de \(\lc{M}\) en \(\lc{N}\) implica que \(\lc{q[subterm[M,N]]}\) o
-que \(\lc{M}\) es el átomo del argumento de una abstracción en \(\lc{N}\). \\
-
 Cuando \(\lc{\x.M}\) es un subtérmino de \(\lc{P}\), se dice que la aparición
 \(\lc{M}\) es el \emph{alcance} de la aparición del átomo \(\lc{x}\) que
 acompaña a la \(\lambda\). \\
 
-Sea \(\lc{M}\synteq \lc*{\x.x y(\z.y)}\):
+\begin{ejemplo} Sea \(\lc{M}\synteq \lc*{\x.x y(\z.y)}\):
+  \begin{itemize}
+  \item el término \(\lc*{q[subterm[x y, M]]}\);
+  \item el átomo \(\lc{z}\) no es subtérmino de \(\lc{M}\) pero si aparece en
+    \(\lc{M}\), debido a que \(\lc{z}\) es el argumento de \(\lc*{\z.y}\);
+  \item el término \(\lc*{y(\z.y)}\) a pesar de parecer ser un subtérmino de
+    \(\lc{M}\) no lo es, esto se puede corroborar escribiendo los términos sin el
+    abuso de notación: \(\lc*{y(\z.y)} \synteq \lc{y(\z.y)}\) y \(\lc{M} \synteq
+    \lc*{\x.x y(\z.y)} \synteq \lc{\x.x y(\z.y)}\), en este caso, la clave está en
+    observar la estructura de la aplicación \(\lc*{x y(\z.y)}\).
+  \item Las apariciones de \(\lc{x}\) y \(\lc*{\z.y}\) en \(\lc{M}\) son
+    disjuntas.
+  \item Los términos \(\lc{x}\) y \(\lc{x y}\) son subtérminos activos de
+    \(\lc{M}\), mientras que \(\lc{y}\) y \(\lc*{\z.y}\) son subtérminos pasivos.
+  \end{itemize} 
+\end{ejemplo} \
 
-\begin{itemize}
-\item el término \(\lc*{q[subterm[x y, M]]}\);
-\item el átomo \(\lc{z}\) no es subtérmino de \(\lc{M}\) pero si aparece en
-  \(\lc{M}\), debido a que \(\lc{z}\) es el argumento de \(\lc*{\z.y}\);
-\item el término \(\lc*{y(\z.y)}\) a pesar de parecer ser un subtérmino de
-  \(\lc{M}\) no lo es, esto se puede corroborar escribiendo los términos sin el
-  abuso de notación: \(\lc*{y(\z.y)} \synteq \lc{y(\z.y)}\) y \(\lc{M} \synteq
-  \lc*{\x.x y(\z.y)} \synteq \lc{\x.x y(\z.y)}\), en este caso, la clave está en
-  observar la estructura de la aplicación \(\lc*{x y(\z.y)}\).
-\item Las apariciones de \(\lc{x}\) y \(\lc*{\z.y}\) en \(\lc{M}\) son
-  disjuntas.
-\item Los términos \(\lc{x}\) y \(\lc{x y}\) son subtérminos activos de
-  \(\lc{M}\), mientras que \(\lc{y}\) y \(\lc*{\z.y}\) son subtérminos pasivos.
-\end{itemize}
+Las variables de un término lambda se pueden clasificar de diferentes maneras de
+acuerdo a la posición que tienen en el término y a los subtérminos a los que se
+asocian. \\
 
+\begin{defi}[Clasificación de variables] La aparición de un átomo \(\lc{x}\) en
+  un término \(\lc{P}\) es llamada: \
+  \label{definicion:clasesvariables}
+  \begin{itemize}
+  \item \emph{variable ligada} si es un subtérmino de \(\lc{M}\) en una abstracción
+    \(\lc{\x.M}\) en \(\lc{P}\);
+  \item \emph{variable enlazada} si y sólo si es la \(\lc{x}\) que
+    acompaña la \(\lambda\) de \(\lc{\x.M}\) en \(\lc{P}\);
+  \item \emph{variable libre} en otro caso.
+  \end{itemize}
+\end{defi} \
 
-La aparición de un átomo \(\lc{x}\) en un término \(\lc{P}\) es llamada:
+Es importante aclarar la diferencia entre un átomo \(\lc{x}\) como subtérmino de
+un término lambda \(\lc{M}\) y una aparición de \(\lc{x}\) en \(\lc{M}\): la
+aparición hace referencia a la posición de \(\lc{x}\) en \(\lc{M}\). Por
+ejemplo, en el término lambda \(\lc{(\x.x)x}\) la primera aparición del átomo
+\(\lc{x}\) es una variable enlazada, la segunda aparición es una variable ligada
+y la tercera aparición es una variable libre. \\
 
-\begin{itemize}
-\item \emph{variable ligada} si es un subtérmino de \(\lc{M}\) en una abstracción
-  \(\lc{\x.M}\) en \(\lc{P}\)
-\item \emph{variable enlazada} si y sólo si es la \(\lc{x}\) que
-  acompaña la \(\lambda\) de \(\lc{\x.M}\) en \(\lc{P}\)
-\item \emph{variable libre} en otro caso
-\end{itemize}
-
-Es importante aclarar la diferencia entre un átomo \(\lc{x}\) como subtérmino de un término
-lambda \(\lc{M}\) y una aparición de \(\lc{x}\) en \(\lc{M}\): la aparición hace
-referencia a la posición de \(\lc{x}\) en \(\lc{M}\). Por ejemplo, en el término
-lambda \(\lc{(\x.x)x}\) la primera aparición del átomo \(\lc{x}\) es una
-variable enlazada, la segunda aparición es una variable ligada y la
-tercera aparición es una variable libre. \\
-
-Sea \(\lc{M} \synteq \lc*{x(\y.x y)}\):
-
-\begin{itemize}
-\item El átomo \(\lc{x}\) aparece como variable libre dos veces en
-  \(\lc{M}\).
-\item El átomo \(\lc{y}\) aparece como variable ligada en \(\lc{M}\).
-\end{itemize}
+\begin{ejemplo} Sea \(\lc{M} \synteq \lc*{x(\y.x y)}\):  
+  \begin{itemize}
+  \item El átomo \(\lc{x}\) aparece como variable libre dos veces en
+    \(\lc{M}\);
+  \item El átomo \(\lc{y}\) aparece como variable ligada en \(\lc{M}\).
+  \end{itemize}
+\end{ejemplo} \
 
 Un átomo puede aparecer como variable libre y ligada en un mismo término, por
-ejemplo \(\lc{y(\y.y)}\). \\
+ejemplo en el término \(\lc{y(\y.y)}\), la primera aparición de \(\lc{y}\) es
+libre, la segunda es enlazada y la tercera es ligada. \\
 
-El conjunto de variables libres de un término lambda \(\lc{M}\) se denota
-\(\lc{q[fv[M]]}\) y cuando \(\lc{q[fv[M]]}=\emptyset\) se dice que \(\lc{M}\) es
-un término \emph{cerrado} o un \emph{combinador}. Por ejemplo, \(\lc*{q[fv[x
-  \x.x y z]]} = \left\{ x,\ y,\ z \right\}\); \(\lc*{q[fv[\x y z.y]]} =
-\emptyset\) y es un combinador; \(\lc*{q[fv[(\y.x)(\x.y)]]}=\left\{ x,\ y
-\right\}\). \\
+En la definición formal de algunos conceptos es conveniente hacer referencia a
+las variables libres de un término lambda: \\
+
+\begin{defi}[Variables libres] El conjunto de variables libres de un término lambda \(\lc{M}\) se denota
+  \(\lc{q[fv[M]]}\) y se define de manera inductiva como:
+  \label{definicion:variableslibres}
+  \begin{align*}
+    \lc{q[fv[x]]} &= \left\{ \lc{x} \right\} \\
+    \lc{q[fv[\x.M]]} &= \lc{q[fv[M]]} \setminus \left\{ \lc{x} \right\} \\
+    \lc{q[fv[M N]]} &= \lc{q[fv[M]]} \cup \lc{q[fv[N]]}
+  \end{align*}
+\end{defi} \
+
+Cuando \(\lc{q[fv[M]]}=\emptyset\) se dice que \(\lc{M}\) es un término
+\emph{cerrado} o un \emph{combinador}. \\
+
+\begin{ejemplo} Consideremos los términos \(\lc*{x\x.x y z}\), \(\lc*{\x y
+    z.y}\) y \(\lc*{(\y.x)\x.y}\).
+  \begin{itemize}
+  \item \(\lc*{q[fv[x \x.x y z]]} = \left\{ x,\ y,\ z \right\}\);
+  \item \(\lc*{q[fv[\x y z.y]]} = \emptyset\), por lo tanto es un combinador;
+  \item \(\lc*{q[fv[(\y.x)(\x.y)]]}=\left\{ x,\ y \right\}\).
+  \end{itemize}
+\end{ejemplo} \
 
 En ocasiones es importante distinguir los términos lambda cerrados de aquellos
-que contienen variables libres, se denota como \(\Lambda^{0}\) al conjunto \(\{\lc{M}
-\in \Lambda \mid \lc{M} \text{ es un término cerrado}\}\). La generalización de
-esta notación es \(\Lambda^{0}(\lc{q[seq[x]]})=\{M\in\Lambda \mid
-\lc{q[fv[M]]}\subseteq \{\lc{q[seq[x]]}\}\}\). \\
+que contienen variables libres, para ello se identifica el subconjunto de
+\(\Lambda\) que contiene a todos los términos lambda cerrados: \\
 
-Cuando se tiene un término lambda \(\lc{M}\) con \(\lc{q[fv[M]]} \not=
-\emptyset\) se le llama \emph{clausura} de \(\lc{M}\) al término lambda
-\(\lc{\q[seq[x]].M}\) con \(\lc{q[seq[x]]}=\lc{q[fv[M]]}\). Por ejemplo,
-\(\lc{\x y z.x y z}\) es la clausura de \(\lc{\z.x y z}\). \\
+\begin{defi}[Términos cerrados] Se denota como \(\Lambda^{0}\) al conjunto \
+  \label{definicion:terminoscerrados}
+  \[\{\lc{M} \in \Lambda \mid \lc{M} \text{ es un término cerrado}\}\]
+\end{defi} \
 
-Una manera de acortar la notación para repetición de aplicaciones es escribiendo
-\(\lc*{q[left-apply[n,F,M]]}\) cuando se aplica \(n\) veces \(\lc{F}\) por la
-izquierda
+La notación \(\Lambda^{0}\) se puede generalizar para identificar diferentes
+subconjuntos de \(\Lambda\) a partir de las variables libres de los términos
+lambda: \\
+
+\[\Lambda^{0}(\lc{q[seq[x]]})=\{M\in\Lambda \mid \lc{q[fv[M]]}\subseteq
+  \{\lc{q[seq[x]]}\}\}\] \
+
+De tal manera que: \\
+
+\[\Lambda^{0} = \Lambda^{0}(\emptyset)\] \
+
+Todos los términos lambda en \(\Lambda \setminus \Lambda^{0}\) tienen al menos
+una clausura en \(\Lambda^{0}\). \\
+
+\begin{defi}[Clausura] La clausura de un término lambda \(\lc{M}\) con
+  \(\lc{q[fv[M]]} \not= \emptyset\) es un término lambda
+  \label{definicion:clausura}
+  \[\lc{\q[seq[x]].M}\]
+  con \(\lc{q[seq[x]]}=\lc{q[fv[M]]}\)
+\end{defi} \
+
+\begin{ejemplo} Consideremos el término lambda \(\lc{M} \synteq \lc{\z.x y z}\)
+  \begin{itemize}
+  \item \(\lc{\x y z.x y z}\) es una clausura de \(\lc{M}\);
+  \item \(\lc{\y x z.x y z}\) es una clausura de \(\lc{M}\);
+  \item \(\lc{\z x y z.x y z}\) no es una clausura de \(\lc{M}\).
+  \end{itemize}
+\end{ejemplo} \
+
+Al escribir términos lambda con repetición de aplicaciones suele ser conveniente
+utilizar una notación mas compacta. Cuando se aplica \(n\) veces un término
+\(\lc{F}\) por la izquierda a otro término \(\lc{M}\) se denota
+\(\lc*{q[left-apply[n,F,M]]}\). Cuando se aplica \(n\) veces un término
+\(\lc{M}\) por la derecha a otro término \(\lc{F}\) se denota
+\(\lc*{q[right-apply[n,F,M]]}\). La definición formal de esta notación es: \\
 
 \begin{align*}
   \lc{q[left-apply[n+1,F,M]]} &\synteq \lc{F q[left-apply[n,F,M]]}\\
   \lc{q[left-apply[0,F,M]]}   &\synteq \lc{M}
-\end{align*}
-
-y \(\lc*{q[right-apply[n,F,M]]}\) cuando se aplica \(n\) veces \(\lc{M}\) por la
-derecha
+\end{align*} \
 
 \begin{align*}
   \lc{q[right-apply[n+1,F,M]]} &\synteq \lc{q[right-apply[n,F,M]] M}\\
   \lc{q[right-apply[0,F,M]]}   &\synteq \lc{F}
-\end{align*}
+\end{align*} \
 
-Esta notación es útil para describir familias de términos que siguen un patrón
-con la asociación de aplicaciones repetidas, por ejemplo, el término \(\lc{\f
-  x.f(f(f(f x)))}\) se escribe \(\lc*{\f x.q[left-apply[4,f,x]]}\). \\
+\begin{ejemplo} El término lambda \(\lc*{\f x.f(f(f(f x)))} \synteq \lc{\f
+    x.f(f(f(f x)))}\) se puede escribir de manera compacta como
+  \[\lc*{\f x.q[left-apply[4,f,x]]}\]
+\end{ejemplo} \
 
-Para cualquier \(\lc{M}\), \(\lc{N}\) y \(\lc{x}\), se define
-\(\lc{q[subst[M,x,N]]}\) como el resultado de sustituir cada aparición libre de
-\(\lc{x}\) por \(\lc{N}\) en \(\lc{M}\) de acuerdo a las siguientes reglas:
+\begin{ejemplo} El término lambda \(\lc*{\f x.f x x x x} \synteq \lc{\f x.f x x
+    x x}\) se puede escribir de manera compacta como
+  \[\lc*{\f x.q[right-apply[4,f,x]]}\]
+\end{ejemplo}
 
-\begin{align*}
-  &\lc{q[subst[x,x,N]]} & &\synteq & &\lc{N}; \\
-  &\lc{q[subst[a,x,N]]} & &\synteq & &\lc{a} & &\lc{a} \not\synteq \lc{x}; \\
-  &\lc{q[subst[P Q,x,N]]} & &\synteq & &\lc{q[subst[P,x,N]] q[subst[Q,x,N]]}; \\
-  &\lc{q[subst[\x.P,x,N]]} & &\synteq & &\lc{\x.P}; \\
-  &\lc{q[subst[\y.P,x,N]]} & &\synteq & &\lc{\y.P} & &\lc{x}\not\synteq \lc{y},\ \lc{x} \not\in \lc{q[fv[P]]}; \\
-  &\lc{q[subst[\y.P,x,N]]} & &\synteq & &\lc{\y.q[subst[P,x,N]]} & &\lc{x}\not\synteq \lc{y},\ \lc{x}\in\lc{q[fv[P]]},\ \lc{y}\not\in \lc{q[fv[N]]}; \\
-  &\lc{q[subst[\y.P,x,N]]} & &\synteq & &\lc{\z.q[subst[subst[P,y,z],x,N]]} & &\lc{x}\not\synteq \lc{y},\ \lc{x}\in\lc{q[fv[P]]},\ \lc{y}\in \lc{q[fv[N]]}, \\
-  & & & & & & & \lc{z}\not\in \lc{q[fv[N P]]}.
-\end{align*}
+\begin{defi}[Sustitución] Para cualquier \(\lc{M}\), \(\lc{N}\) y \(\lc{x}\), se
+  define \(\lc{q[subst[M,x,N]]}\) como el resultado de sustituir cada aparición
+  libre de \(\lc{x}\) por \(\lc{N}\) en \(\lc{M}\) de acuerdo a las siguientes
+  reglas:
+  \label{definicion:sustitucion}
+  \begin{align*}
+    &\lc{q[subst[x,x,N]]} & &\synteq & &\lc{N}; \\
+    &\lc{q[subst[a,x,N]]} & &\synteq & &\lc{a} & &\lc{a} \not\synteq \lc{x}; \\
+    &\lc{q[subst[P Q,x,N]]} & &\synteq & &\lc{q[subst[P,x,N]] q[subst[Q,x,N]]}; \\
+    &\lc{q[subst[\x.P,x,N]]} & &\synteq & &\lc{\x.P}; \\
+    &\lc{q[subst[\y.P,x,N]]} & &\synteq & &\lc{\y.P} & &\lc{x}\not\synteq \lc{y},\ \lc{x} \not\in \lc{q[fv[P]]}; \\
+    &\lc{q[subst[\y.P,x,N]]} & &\synteq & &\lc{\y.q[subst[P,x,N]]} & &\lc{x}\not\synteq \lc{y},\ \lc{x}\in\lc{q[fv[P]]},\ \lc{y}\not\in \lc{q[fv[N]]}; \\
+    &\lc{q[subst[\y.P,x,N]]} & &\synteq & &\lc{\z.q[subst[subst[P,y,z],x,N]]} & &\lc{x}\not\synteq \lc{y},\ \lc{x}\in\lc{q[fv[P]]},\ \lc{y}\in \lc{q[fv[N]]}, \\
+    & & & & & & & \lc{z}\not\in \lc{q[fv[N P]]}.
+  \end{align*} \
+\end{defi}
 
-Los siguientes son ejemplos de sustituciones para cada uno de los casos de la
-definición:
+\begin{ejemplo} Procedimientos de sustituciones para cada uno de los casos de la
+  definición \ref{definicion:sustitucion}: \
 
-\begin{itemize}
-\item \(\lc*{q[subst[y,y,\x.x]]}\)
   \begin{itemize}
-  \item \(\synteq \lc*{\x.x}\)
+  \item \begin{enumerate}
+    \item \(\lc*{q[subst[y,y,\x.x]]}\)
+    \item \(\synteq \lc*{\x.x}\)
+    \end{enumerate}
+  \item \begin{enumerate}
+    \item \(\lc*{q[subst[z,w,x x]]}\)
+    \item \(\synteq \lc*{z}\)
+    \end{enumerate}
+  \item \begin{enumerate}
+    \item \(\lc*{q[subst[y x x, x, y]]}\)
+    \item \(\synteq \lc*{q[subst[y x, x, y]] q[subst[x, x, y]]}\)
+    \item \(\synteq \lc*{q[subst[y, x, y]] q[subst[x, x, y]] y}\)
+    \item \(\synteq \lc*{y y y}\)
+    \end{enumerate}
+  \item \begin{enumerate}
+    \item \(\lc*{q[subst[\f x.f f x, f, g]]}\)
+    \item \(\synteq \lc*{\f x.f f x}\)
+    \end{enumerate}
+  \item \begin{enumerate}
+    \item \(\lc*{q[subst[\f x.f f x, x, y]]}\)
+    \item \(\synteq \lc*{\f x.f f x}\) ya que \(\lc*{x} \not\in \lc*{q[fv[\x.f f x]]}\)
+    \end{enumerate}
+  \item \begin{enumerate}
+    \item \(\lc*{q[subst[\f.x\x.f f x, x, y]]}\)
+    \item \(\synteq \lc*{\f.q[subst[x\x.f f x, x, y]]}\) ya que
+      \(\lc*{x}\in\lc*{q[fv[x\x.f f x]]}\) y \(\lc*{f}\not\in \lc*{q[fv[y]]}\)
+    \item \(\synteq \lc*{\f.q[subst[x,x,y]] q[subst[\x.f f x, x, y]]}\)
+    \item \(\synteq \lc*{\f.y\x.f f x}\)
+    \end{enumerate}
+  \item \begin{enumerate}
+    \item \(\lc*{q[subst[\f.x\x.f f x, x, f]]}\)
+    \item \(\synteq \lc*{\g.q[subst[subst[x\x.f f x, f, g], x, f]]}\) ya que
+      \(x\in \lc*{q[fv[x\x.f f x]]}\), \(f\in \lc*{q[fv[f]]}\) y \(\lc{g}\not\in
+      \lc*{q[fv[f (x\x.f f x)]]}\)
+    \item \(\synteq \lc*{\g.q[subst[x\x.g g x, x, f]]}\)
+    \item \(\synteq \lc*{\g.f\x.g g x}\)
+    \end{enumerate}
   \end{itemize}
-\item \(\lc*{q[subst[z,w,x x]]}\)
-  \begin{itemize}
-  \item \(\synteq \lc*{z}\)
-  \end{itemize}
-\item \(\lc*{q[subst[y x x, x, y]]}\)
-  \begin{itemize}
-  \item \(\synteq \lc*{q[subst[y x, x, y]] q[subst[x, x, y]]}\)
-  \item \(\synteq \lc*{q[subst[y, x, y]] q[subst[x, x, y]] y}\)
-  \item \(\synteq \lc*{y y y}\)
-  \end{itemize}
-\item \(\lc*{q[subst[\f x.f f x, f, g]]}\)
-  \begin{itemize}
-  \item \(\synteq \lc*{\f x.f f x}\)
-  \end{itemize}
-\item \(\lc*{q[subst[\f x.f f x, x, y]]}\)
-  \begin{itemize}
-  \item \(\synteq \lc*{\f x.f f x}\) ya que \(\lc*{x} \not\in \lc*{q[fv[\x.f f x]]}\)
-  \end{itemize}
-\item \(\lc*{q[subst[\f.x\x.f f x, x, y]]}\)
-  \begin{itemize}
-  \item \(\synteq \lc*{\f.q[subst[x\x.f f x, x, y]]}\) ya que
-    \(\lc*{x}\in\lc*{q[fv[x\x.f f x]]}\) y \(\lc*{f}\not\in \lc*{q[fv[y]]}\)
-  \item \(\synteq \lc*{\f.q[subst[x,x,y]] q[subst[\x.f f x, x, y]]}\)
-  \item \(\synteq \lc*{\f.y\x.f f x}\)
-  \end{itemize}
-\item \(\lc*{q[subst[\f.x\x.f f x, x, f]]}\)
-  \begin{itemize}
-  \item \(\synteq \lc*{\g.q[subst[subst[x\x.f f x, f, g], x, f]]}\) ya que
-    \(x\in \lc*{q[fv[x\x.f f x]]}\), \(f\in \lc*{q[fv[f]]}\) y \(\lc{g}\not\in
-    \lc*{q[fv[f (x\x.f f x)]]}\)
-  \item \(\synteq \lc*{\g.q[subst[x\x.g g x, x, f]]}\)
-  \item \(\synteq \lc*{\g.f\x.g g x}\)
-  \end{itemize}
-\end{itemize}
 
-En el último ejemplo es importante observar que las apariciones ligadas de
-\(\lc{x}\) no se sustituyen. \\
+  En el último caso es importante observar que las apariciones ligadas de
+  \(\lc{x}\) no se sustituyen.
+\end{ejemplo} \
 
 \begin{lema}
-Si \(\lc{x} \not\synteq \lc{y}\) y \(\lc{x}\not\in \lc*{q[fv[L]]}\), entonces
-\[\lc*{q[subst[subst[M,x,N],y,L]]} \synteq \lc*{q[subst[subst[M,y,L],x,subst[N,y,L]]]}\]
-\end{lema}
+  Si \(\lc{x} \not\synteq \lc{y}\) y \(\lc{x}\not\in \lc*{q[fv[L]]}\), entonces
+  \[\lc*{q[subst[subst[M,x,N],y,L]]} \synteq \lc*{q[subst[subst[M,y,L],x,subst[N,y,L]]]}\]
+\end{lema} \
 
 En contraste a la operación de \emph{sustitución} en donde no se permite
-introducir o quitar referencias a variables enlazadas, el \emph{contexto}
-\(\lc{q[context[C]]}\) es un término con ``hoyos'', formalmente:\\
+introducir o quitar referencias a variables enlazadas, el \emph{contexto} es un
+término con ``hoyos'': \\
 
-\begin{itemize}
-\item \(\lc{x}\) es un contexto;
-\item \(\lc{q[hole[]]}\) es un contexto;
-\item Si \(\lc{q[context[subscript[C,1]]]}\) y
-  \(\lc{q[context[subscript[C,2]]]}\) son contextos, entonces
-  \(\lc{q[context[subscript[C,1]]] q[context[subscript[C,2]]]}\) y
-  \(\lc{\x.q[context[subscript[C,1]]]}\) también lo son.
-\end{itemize}
+\begin{defi}[Contexto] Un contexto es un término lambda denotado
+  \(\lc{q[context[C]]}\) definido de manera inductiva:
+  \label{definicion:contexto}
+  \begin{itemize}
+  \item \(\lc{x}\) es un contexto;
+  \item \(\lc{q[hole[]]}\) es un contexto;
+  \item Si \(\lc{q[context[subscript[C,1]]]}\) y
+    \(\lc{q[context[subscript[C,2]]]}\) son contextos, entonces
+    \(\lc{q[context[subscript[C,1]]] q[context[subscript[C,2]]]}\) y
+    \(\lc{\x.q[context[subscript[C,1]]]}\) también lo son.
+  \end{itemize}
+\end{defi} \
 
 Si \(\lc{q[context[C]]}\) es un contexto y \(\lc{M} \in \Lambda\), entonces
 \(\lc{q[fill[C,M]]}\) denota el resultado de reemplazar por \(\lc{M}\) los hoyos
 de \(\lc{q[context[C]]}\). Al realizar esto, las variables libres de \(\lc{M}\)
 pueden convertirse en variables ligadas de \(\lc{q[fill[C,M]]}\). \\
 
-Por ejemplo, considerando un contexto \(\lc{q[context[C]]} \synteq
-\lc*{\x.x(\y.q[hole[]])}\), si \(\lc{M} \synteq \lc*{x y}\), entonces
-\(\lc{q[fill[C,M]]} \synteq \lc*{q[fill[\x.x(\y.hole[]), x y]]} \synteq
-\lc*{fill[\x.x(\y.q[hole[]]), x y]}\). El ejemplo análogo con la sustitución es
-si \(\lc{C} \synteq \lc*{\x.x(\y.w)}\) y \(\lc{M} \synteq \lc*{x y}\), entonces
-\(\lc*{q[subst[C,w,M]]} \synteq \lc*{q[subst[\x.x(\y.w),w,x y]]}\) la cual es
-sintácticamente equivalente a \(\lc*{\z.z(\y.x y)}\), contrastando ambos
-resultados:
+\begin{ejemplo} Consideremos el contexto \(\lc{q[context[C]]} \synteq
+  \lc*{\x.x(\y.q[hole[]])}\).
 
-\[\lc*{\x.x(\y.x y)} \not\synteq \lc*{\z.z(\y.x y)}\]
+  Si \(\lc{M} \synteq \lc*{x y}\), entonces \(\lc{q[fill[C,M]]} \synteq
+  \lc*{q[fill[\x.x(\y.hole[]), x y]]} \synteq \lc*{fill[\x.x(\y.q[hole[]]), x
+    y]}\). El caso análogo con la sustitución es si \(\lc{C} \synteq
+  \lc*{\x.x(\y.w)}\) y \(\lc{M} \synteq \lc*{x y}\), entonces
+  \(\lc*{q[subst[C,w,M]]} \synteq \lc*{q[subst[\x.x(\y.w),w,x y]]}\) la cual es
+  sintácticamente equivalente a \(\lc*{\z.z(\y.x y)}\), contrastando ambos
+  resultados:
 
+  \[\lc*{\x.x(\y.x y)} \not\synteq \lc*{\z.z(\y.x y)}\]
+\end{ejemplo} \
 
 \subsection{Teoría \texorpdfstring{\(\boldsymbol{\lambda K \beta}\)}{\lambda K
     \beta}}
@@ -1109,7 +1207,7 @@ Esta subsección está basada principalmente en el capítulo 6 de
 
 Una \emph{teoría formal} \(\mathcal{T}\) consiste de tres conjuntos:
 \emph{fórmulas}, \emph{axiomas} y \emph{reglas de inferencia}. Cada regla
-tiene una o mas \emph{premisas} y una \emph{conclusión}. \\
+tiene una o más \emph{premisas} y una \emph{conclusión}. \\
 
 Si \(\Gamma\) es el conjunto de fórmulas, una \emph{deducción} de una fórmula
 \(B\) a partir de \(\Gamma\) es un árbol de fórmulas, siendo aquellas que están
@@ -1118,47 +1216,60 @@ fórmulas intermedias siendo deducidas a partir de las fórmulas inmediatamente
 arriba de ellas usando reglas de inferencia; y \(B\) estando en la parte
 inferior del árbol. \\
 
-Si y sólo si existe tal deducción, se escribe:
-\[\mathcal{T},\Gamma \vdash B\]
+Si y sólo si existe tal deducción, se escribe: \\
 
-Sí y sólo si \(\Gamma\) es el conjunto vacío se escribe:
-\[\mathcal{T} \vdash B\]
+\[\mathcal{T},\Gamma \vdash B\] \
+
+Sí y sólo si \(\Gamma\) es el conjunto vacío se escribe: \\
+
+\[\mathcal{T} \vdash B\] \
 
 A continuación se presenta la definición de la teoría \(\boldsymbol{\lambda K
   \beta}\), debido a que esta teoría será la que se describe principalmente en
 este trabajo, se acorta el nombre \(\boldsymbol{\lambda K \beta}\) a
 \(\boldsymbol{\lambda}\). \\
 
-Las \emph{fórmulas} de \(\boldsymbol{\lambda}\) son ecuaciones de la
-forma \(\lc{M}=_{\boldsymbol{\lambda}}\lc{N}\), para tódo término lambda
-\(\lc{M}\) y \(\lc{N}\). Los \emph{axiomas} son (\(\alpha\)), (\(\beta\)) y
-(\(\rho\)). Las \emph{reglas de inferencia} son (\(\mu\)), (\(\nu\)), (\(\xi\)),
-(\(\tau\)) y (\(\sigma\)):
-
-\emph{Axiomas:}
-\begin{align*}
-  &(\alpha) & & \lc*{\x.M}=_{\boldsymbol{\lambda}}\lc{\y.q[subst[M,x,y]]} & &\text{ si } y \not\in \lc{q[fv[M]]}; \\
-  &(\beta)  & & \lc*{(\x.M)N}=_{\boldsymbol{\lambda}}\lc{q[subst[M,x,N]]}; \\
-  &(\rho)   & & \lc{M}=_{\boldsymbol{\lambda}}\lc{M}.
-\end{align*}
-
-\emph{Reglas de inferencia:}
-\begin{align*}
-  &(\mu)    & & \infer{\lc*{Z M}=_{\boldsymbol{\lambda}}\lc*{Z N}}{\lc{M}=_{\boldsymbol{\lambda}}\lc{N}}; \\
-  &(\nu)    & & \infer{\lc*{M Z}=_{\boldsymbol{\lambda}}\lc*{N Z}}{\lc{M}=_{\boldsymbol{\lambda}}\lc{N}}; \\
-  &(\xi)    & & \infer{\lc*{\x.M}=_{\boldsymbol{\lambda}}\lc*{\x.N}}{\lc{M}=_{\boldsymbol{\lambda}}\lc{N}}; \\
-  &(\tau)   & & \infer{\lc{M}=_{\boldsymbol{\lambda}}\lc{P}}{\lc{M}=_{\boldsymbol{\lambda}}\lc{N},\ \lc{N}=_{\boldsymbol{\lambda}}\lc{P}}; \\
-  &(\sigma) & & \infer{\lc{N}=_{\boldsymbol{\lambda}}\lc{M}}{\lc{M}=_{\boldsymbol{\lambda}}\lc{N}}.
-\end{align*}
-
-La \emph{demostrabilidad} en \(\boldsymbol{\lambda}\) de una ecuación
-\(\lc{M}=_{\boldsymbol{\lambda}}\lc{N}\) es denotada \(\boldsymbol{\lambda}
-\vdash \lc{M}=_{\boldsymbol{\lambda}}\lc{N}\); si se establece que la teoría
-formal a la que se hace referencia es \(\boldsymbol{\lambda}\), se puede
-escribir simplemente \(\lc{M}=\lc{N}\). \\
-
-Si \(\boldsymbol{\lambda} \vdash \lc{M}=\lc{N}\), entonces \(\lc{M}\) y \(\lc{N}\)
-son llamados términos \emph{convertibles}. \\
+\begin{defi} Las \emph{fórmulas} de \(\boldsymbol{\lambda}\) son ecuaciones de
+  la forma \(\lc{M}=_{\boldsymbol{\lambda}}\lc{N}\), con los siguientes axiomas
+  y reglas de inferencia:
+  \label{definicion:teorialambda}
+  \begin{description}
+  \item[Axiomas]
+    \begin{subequations}
+      \begin{align}
+        \label{definicion:teorialambda:alpha} \tag{\ensuremath{\alpha}}
+        \lc*{\x.M}&=_{\boldsymbol{\lambda}}\lc{\y.q[subst[M,x,y]]} & &\text{si } \lc{y} \not\in \lc{q[fv[M]]}
+        \\
+        \label{definicion:teorialambda:beta} \tag{\ensuremath{\beta}}
+        \lc*{(\x.M)N}&=_{\boldsymbol{\lambda}}\lc{q[subst[M,x,N]]}
+        \\
+        \label{definicion:teorialambda:rho} \tag{\ensuremath{\rho}}
+        \lc{M}&=_{\boldsymbol{\lambda}}\lc{M}
+      \end{align}
+    \end{subequations}
+  \item[Reglas de inferencia]
+    \begin{equation}
+      \label{definicion:teorialambda:mu} \tag{\ensuremath{\mu}}
+      \infer{\lc*{Z M}=_{\boldsymbol{\lambda}}\lc*{Z N}}{\lc{M}=_{\boldsymbol{\lambda}}\lc{N}}
+    \end{equation}
+    \begin{equation}
+      \label{definicion:teorialambda:nu} \tag{\ensuremath{\nu}}
+        \infer{\lc*{M Z}=_{\boldsymbol{\lambda}}\lc*{N Z}}{\lc{M}=_{\boldsymbol{\lambda}}\lc{N}}
+    \end{equation}
+    \begin{equation}
+      \label{definicion:teorialambda:xi} \tag{\ensuremath{\xi}}
+      \infer{\lc*{\x.M}=_{\boldsymbol{\lambda}}\lc*{\x.N}}{\lc{M}=_{\boldsymbol{\lambda}}\lc{N}}
+    \end{equation}
+    \begin{equation}
+      \label{definicion:teorialambda:tau} \tag{\ensuremath{\tau}}
+        \infer{\lc{M}=_{\boldsymbol{\lambda}}\lc{P}}{\lc{M}=_{\boldsymbol{\lambda}}\lc{N} & \lc{N}=_{\boldsymbol{\lambda}}\lc{P}}
+    \end{equation}
+    \begin{equation}
+      \label{definicion:teorialambda:sigma} \tag{\ensuremath{\sigma}}
+      \infer{\lc{N}=_{\boldsymbol{\lambda}}\lc{M}}{\lc{M}=_{\boldsymbol{\lambda}}\lc{N}}
+    \end{equation}
+  \end{description}
+\end{defi} \
 
 Al inicio de esta sección, se menciona que el objeto de estudio de la teoría
 \(\boldsymbol{\lambda}\) es el conjunto de términos lambda módulo
@@ -1173,84 +1284,105 @@ relación de equivalencia y al igual que toda relación de equivalencia es
 \((\rho)\), \((\sigma)\) y \((\tau)\). La \emph{clase de equivalencia} de un
 término lambda \(\lc{M}\) con respecto a esta relación de equivalencia es el
 conjunto de todos los términos lambda \(\lc{N}\) tal que
-\(\lc{M}=_{\boldsymbol{\lambda}}\lc{N}\), denotado:
+\(\lc{M}=_{\boldsymbol{\lambda}}\lc{N}\), denotado: \\
 
 \[\left[ \lc{M} \right]_{=_{\boldsymbol{\lambda}}} = \left\{ \lc{N} \in \Lambda
-    \mid \lc{M}=_{\boldsymbol{\lambda}}\lc{N} \right\}\]
+    \mid \lc{M}=_{\boldsymbol{\lambda}}\lc{N} \right\}\] \
 
-La frase ``\emph{módulo convertibilidad}'' se refiere al conjunto de todas las
-clases de equivalencia de \(\Lambda\) considerando la relación de equivalencia
-de la teoría formal con la que se esté trabajando. Que este conjunto sea el
-objeto de estudio de la teoría \(\boldsymbol{\lambda}\) significa que cada
-elemento de \(\Lambda\) módulo convertibilidad (denotado \(\Lambda /
-=_{\boldsymbol{\lambda}}\)) es distinto y representa a una clase de
-términos lambda considerados en \(\boldsymbol{\lambda}\) como equivalentes. \\
+La frase ``módulo convertibilidad'' se refiere al conjunto de todas las clases
+de equivalencia de \(\Lambda\) considerando la relación de equivalencia de la
+teoría formal con la que se esté trabajando. Que este conjunto sea el objeto de
+estudio de la teoría \(\boldsymbol{\lambda}\) significa que cada elemento de
+\(\Lambda\) módulo convertibilidad (denotado \(\Lambda /
+=_{\boldsymbol{\lambda}}\)) es distinto y representa a una clase de términos
+lambda considerados en \(\boldsymbol{\lambda}\) como equivalentes. \\
+
+\begin{defi}[Demostrabilidad] La \emph{demostrabilidad} en
+  \(\boldsymbol{\lambda}\) de una ecuación
+  \(\lc{M}=_{\boldsymbol{\lambda}}\lc{N}\) es denotada \(\boldsymbol{\lambda}
+  \vdash \lc{M}=_{\boldsymbol{\lambda}}\lc{N}\); si se establece que la teoría
+  formal a la que se hace referencia es \(\boldsymbol{\lambda}\), se puede
+  escribir simplemente \(\lc{M}=\lc{N}\). Si \(\boldsymbol{\lambda} \vdash
+  \lc{M}=\lc{N}\), entonces \(\lc{M}\) y \(\lc{N}\) son llamados términos
+  \emph{convertibles}.
+  \label{definicion:demostrabilidad}
+\end{defi}
 
 Para demostrar que \(\boldsymbol{\lambda} \vdash \lc{M}=\lc{N}\) se puede
-escribir el árbol de deducción correspondiente. Por ejemplo:
+escribir el árbol de deducción correspondiente.
 
-\[\boldsymbol{\lambda} \vdash \lc*{(\f.x((\y.y f) \z.z))w} = \lc*{x w}\]
-
-\begin{figure}[h!]
-  \centering
-  \begin{tikzpicture}[
-    equat/.style={rectangle, draw},
-    grow=up,
-    edge from parent/.style={draw,latex-},
-    level 1/.style={sibling distance=20em, level distance=5em},
-    level 2/.style={sibling distance=40em},
-    level 3/.style={sibling distance=20em},
-    level 4/.style={sibling distance=10em}
-    ]
-    \node [equat] (foo1) {\(\lc*{(\f.x((\y.y f) \z.z))w} = \lc*{x w}\)}
-    child {
-      node [equat] (foo3) {\(\lc*{(\f.x f)w} = \lc*{x w}\)}
-    }
-    child {
-      node [equat] (foo5) {\(\lc*{(\f.x((\y.(y f)) \z.z))w}=\lc*{(\f.x f)w}\)}
-      child {
-        node [equat] (foo7) {\(\lc*{\f.x((\y.y f)\z.z)}=\lc*{\f.x f}\)}
+\begin{ejemplo} Consideremos los términos lambda \(\lc{M} \synteq
+  \lc*{(\f.x((\y.y f) \z.z))w}\) y \(\lc{N} \synteq \lc*{x w}\). Se demuestra
+  \[\boldsymbol{\lambda} \vdash \lc{M} = \lc{N}\]
+  formulando un árbol de deducción como el siguiente:
+  
+  \begin{figure}[h!]
+    \centering
+    \resizebox{11.1cm}{!}{%
+      \begin{tikzpicture}[
+        equat/.style={rectangle, draw},
+        grow=up,
+        edge from parent/.style={draw,latex-},
+        level 1/.style={sibling distance=20em, level distance=5em},
+        level 2/.style={sibling distance=40em},
+        level 3/.style={sibling distance=20em},
+        level 4/.style={sibling distance=10em}
+        ]
+        \node [equat] (foo1) {\(\lc*{(\f.x((\y.y f) \z.z))w} = \lc*{x w}\)}
         child {
-          node [equat] (foo9) {\(\lc*{x((\y.y f)\z.z)}=\lc*{x f}\)}
-          child {
-            node [equat] (foo11) {\(\lc*{(\y.y f)\z.z} = f\)}
-            child {
-              node [equat] (foo13) {\(\lc*{(\z.z)f} = \lc*{f}\)}
-            }
-            child {
-              node [equat] (foo14) {\(\lc*{(\y.y f)\z.z} = \lc*{(\z.z)f}\)}
-            }
-            edge from parent [] node [right] {\((\mu)\)}
-          }
-          edge from parent [] node [right] {\((\xi)\)}
+          node [equat] (foo3) {\(\lc*{(\f.x f)w} = \lc*{x w}\)}
         }
-        edge from parent [] node [right] {\((\nu)\)}
-      }
-    };
-    \node [above=0em of foo13] (bar1) {\((\beta)\)};
-    \node [above=0em of foo14] (bar2) {\((\beta)\)};
-    \node [above=0em of foo11] (bar3) {\((\tau)\)};
-    \node [above=0em of foo1] (bar4) {\((\tau)\)};
-    \node [above=0em of foo3] (bar5) {\((\beta)\)};
-  \end{tikzpicture}
-\end{figure}
+        child {
+          node [equat] (foo5) {\(\lc*{(\f.x((\y.(y f)) \z.z))w}=\lc*{(\f.x f)w}\)}
+          child {
+            node [equat] (foo7) {\(\lc*{\f.x((\y.y f)\z.z)}=\lc*{\f.x f}\)}
+            child {
+              node [equat] (foo9) {\(\lc*{x((\y.y f)\z.z)}=\lc*{x f}\)}
+              child {
+                node [equat] (foo11) {\(\lc*{(\y.y f)\z.z} = f\)}
+                child {
+                  node [equat] (foo13) {\(\lc*{(\z.z)f} = \lc*{f}\)}
+                }
+                child {
+                  node [equat] (foo14) {\(\lc*{(\y.y f)\z.z} = \lc*{(\z.z)f}\)}
+                }
+                edge from parent [] node [right] {\((\mu)\)}
+              }
+              edge from parent [] node [right] {\((\xi)\)}
+            }
+            edge from parent [] node [right] {\((\nu)\)}
+          }
+        };
+        \node [above=0em of foo13] (bar1) {\((\beta)\)};
+        \node [above=0em of foo14] (bar2) {\((\beta)\)};
+        \node [above=0em of foo11] (bar3) {\((\tau)\)};
+        \node [above=0em of foo1] (bar4) {\((\tau)\)};
+        \node [above=0em of foo3] (bar5) {\((\beta)\)};
+      \end{tikzpicture}
+    }
+  \end{figure}
+\end{ejemplo} \
 
-Tres términos lambda de suma importancia son:
+\begin{defi}[Combinadores SKI] Tres términos lambda de suma importancia son:
+  \label{definicion:ski}
+  \begin{align*}
+    \lc{q[bold[I]]} &\synteq \lc*{\x.x} \\
+    \lc{q[bold[K]]} &\synteq \lc*{\x y.x} \\
+    \lc{q[bold[S]]} &\synteq \lc*{\x y z.x z(y z)}
+  \end{align*}
+\end{defi} \
 
-\begin{itemize}
-\item \(\lc{q[bold[I]]} \synteq \lc*{\x.x}\);
-\item \(\lc{q[bold[K]]} \synteq \lc*{\x y.x}\);
-\item \(\lc{q[bold[S]]} \synteq \lc*{\x y z.x z(y z)}\).
-\end{itemize}
 
-\begin{cor}
-  Para todo término \(\lc{M},\ \lc{N},\ \lc{L} \in \Lambda\)
-  \begin{itemize}
-  \item[(i)] \(\lc*{q[bold[I]] M} =_{\boldsymbol{\lambda}} M\)
-  \item[(ii)] \(\lc*{q[bold[K]] M N} =_{\boldsymbol{\lambda}} M\)
-  \item[(iii)] \(\lc*{q[bold[S]] M N L} =_{\boldsymbol{\lambda}} \lc*{M L(N L)}\)
-  \end{itemize}
-\end{cor}
+\begin{cor} Para todo término \(\lc{M},\ \lc{N},\ \lc{L} \in \Lambda\)
+  \begin{align}
+    \tag{a}
+    \lc*{q[bold[I]] M} &=_{\boldsymbol{\lambda}} M \\
+    \tag{b}
+    \lc*{q[bold[K]] M N} &=_{\boldsymbol{\lambda}} M \\
+    \tag{c}
+    \lc*{q[bold[S]] M N L} &=_{\boldsymbol{\lambda}} \lc*{M L(N L)}
+  \end{align}
+\end{cor} \
 
 Estos tres combinadores generan en la teoría \(\boldsymbol{\lambda}\) al
 conjunto \(\Lambda^{0}\) utilizando únicamente aplicación de términos lambda.
@@ -1267,13 +1399,15 @@ la teoría que considera a este conjunto restringido de términos lambda (denota
 \(\boldsymbol{\lambda}\) cambiando \(\Lambda\) por \(\Lambda_{I}\) se le conoce
 como teoría \(\boldsymbol{\lambda I \beta}\) (o el cálculo \(\lambda I\)). \\
 
-El conjunto \(\Lambda_{I}\) se define de manera inductiva como
-\begin{itemize}
-\item \(\lc{x} \in \Lambda_{I}\);
-\item \(\lc{M}\in \Lambda_{I},\ \lc{x} \in \lc{q[fv[M]]} \implies \lc{\x.M} \in
-  \Lambda_{I}\);
-\item \(\lc{M},\ \lc{N} \in \Lambda_{I} \implies \lc{M N} \in \Lambda_{I}\).
-\end{itemize}
+\begin{defi} El conjunto \(\Lambda_{I}\) se define de manera inductiva:
+  \label{definicion:lambdaI}
+  \begin{align*}
+    \lc{x} &\in \Lambda_{I} \\
+    \lc{M}\in \Lambda_{I},\ \lc{x} \in \lc{q[fv[M]]} &\implies \lc{\x.M} \in
+  \Lambda_{I} \\
+    \lc{M},\ \lc{N} \in \Lambda_{I} &\implies \lc{M N} \in \Lambda_{I}
+  \end{align*}
+\end{defi} \
 
 La diferencia fundamental entre las teorías \(\boldsymbol{\lambda K \beta}\) y
 \(\boldsymbol{\lambda I \beta}\) es el término lambda \(\lc{q[bold[K]]}\), ya que

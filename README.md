@@ -1,3 +1,7 @@
+# Tesis de licenciatura: El cálculo lambda y los fundamentos de la computación
+
+## Pendientes
+
 - [ ] Capítulos
   - [ ] Introducción
   - [ ] El cálculo lambda

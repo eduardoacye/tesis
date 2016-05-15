@@ -1,23 +1,41 @@
-- [ ] Bla bla
-	- [ ] Bla bla bla
-		- [ ] Blo Blo
-
-
 - [ ] Capítulos
   - [ ] Introducción
   - [ ] El cálculo lambda
     - [ ] Noción informal del cálculo lambda
+      - [ ] Expresiones
+      - [ ] Operaciones
+      - [ ] Equivalencias
     - [ ] Formalización del cálculo lambda
+      - [ ] Términos lambda
+      - [ ] Teoría \lambda K \beta
     - [ ] Otras teorías
+      - [ ] \lambda I \beta
+      - [ ] Extensionalidad
     - [ ] Equivalencia de teorías
     - [ ] Teoría de reducción
+      - [ ] Contracciones
+      - [ ] Reducciones
+      - [ ] Convertibilidad
     - [ ] Teorema de Church-Rosser
     - [ ] Árboles Bohm
   - [ ] Codificación de objetos
     - [ ] Álgebra booleana
+      - [ ] Valores de verdad
+      - [ ] Conectivos lógicos
+      - [ ] Lógica multivaluada
     - [ ] Aritmética
+      - [ ] Numerales de Church
+      - [ ] Operaciones elementales
+      - [ ] Hiperoperadores
+      - [ ] Hiperoperadores inversos
     - [ ] Procesos recursivos
+      - [ ] Combinador Y
+      - [ ] Orden de evaluación
+      - [ ] Funciones recursivas
     - [ ] Estructuras complejas
+      - [ ] Par ordenado
+      - [ ] Estructuras lineales
+      - [ ] Árboles
   - [ ] Tipos en el cálculo lambda
     - [ ] Tipos simples
     - [ ] Representación de tipos de datos

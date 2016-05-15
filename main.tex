@@ -1,0 +1,105 @@
+% Eduardo Acuña Yeomans 2016
+% Stripped down version of my dissertation.
+%
+
+% Document class and language
+\documentclass[10pt,letterpaper,twoside,openright]{book}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[T1]{fontenc}
+
+% Mathematics
+\usepackage[sumlimits]{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{concrete}
+\usepackage{euler}
+\usepackage{proof}
+\newcommand{\bs}{\boldsymbol}
+
+\theoremstyle{plain}%
+\newtheorem{thm}{Teorema}[section]
+\newtheorem{lem}[thm]{Lema}
+\newtheorem{prop}[thm]{Proposición}
+\newtheorem*{cor}{Corolario}
+\theoremstyle{definition}
+\newtheorem{defn}{Definición}[section]
+\newtheorem{exmp}{Ejemplo}[section]
+\theoremstyle{remark}
+\newtheorem*{rem}{Observación}
+\newtheorem*{note}{Nota}
+\newtheorem{case}{Caso}
+
+% Pictures
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows, shadows}
+
+% Lists
+\usepackage{enumerate}
+
+% Unicode lambda
+\usepackage{newunicodechar}
+\newunicodechar{λ}{\lambda}
+\newunicodechar{Λ}{\Lambda}
+\newunicodechar{α}{\alpha}
+\newunicodechar{β}{\beta}
+\newunicodechar{Γ}{\Gamma}
+\newunicodechar{ρ}{\rho}
+\newunicodechar{σ}{\sigma}
+\newunicodechar{Σ}{\Sigma}
+\newunicodechar{τ}{\tau}
+\newunicodechar{ν}{\nu}
+\newunicodechar{μ}{\mu}
+\newunicodechar{ξ}{\xi}
+\newunicodechar{ζ}{\zeta}
+\newunicodechar{η}{\eta}
+\newunicodechar{φ}{\phi}
+
+% λ-calculus commands
+\newcommand{\subst}[3]{#1 \left[ #2 \operatorname{:=} #3 \right]}
+\newcommand{\synteq}{\equiv}
+\newcommand{\contract}[1]{\operatorname{\rightarrow_{#1}}}
+\newcommand{\reduce}[1]{\operatorname{\twoheadrightarrow_{#1}}}
+\newcommand{\convertible}[1]{\operatorname{=_{#1}}}
+\DeclareMathOperator{\Sub}{Sub}
+\DeclareMathOperator{\FV}{FV}
+
+% Links in PDF
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    pdftitle={El cálculo lambda y los fundamentos de la computación},
+    pdfauthor={Eduardo Acuña Yeomans}
+    bookmarks=true,
+}
+
+\begin{document}
+
+\title{El cálculo lambda y los fundamentos de la computación}
+\author{Eduardo Acuña Yeomans}
+\date{2016}
+
+\maketitle
+
+\frontmatter
+\tableofcontents
+
+\mainmatter
+\chapter{El cálculo lambda}
+\input{capitulo-1}
+
+\chapter{Codificación de objetos}
+\input{capitulo-2}
+
+\appendix
+
+\nocite{*}
+\bibliographystyle{acm}
+\bibliography{biblio}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

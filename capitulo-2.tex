@@ -1,0 +1,377 @@
+
+\section{Álgebra Booleana}
+\label{sec:algebra-booleana}
+
+Uno de los atributos del cálculo lambda es que nos permite codificar información usando términos lambda y definir algoritmos utilizando reducciones que manipulen estos términos. Un buen ejemplo de esto es la  representación de valores de verdad, de los cuales podemos derivar las operaciones elementales del álgebra booleana.
+
+Se establecen primero los cimientos de este sistema booleano primitivo determinando la representación de los valores \emph{verdadero} y \emph{falso}. Los algoritmos que se elaboran en esta subsección se basan en los términos que se les asocia a estos dos valores.
+
+\subsection{Valores de verdad}
+\label{sec:valores-de-verdad}
+
+Es posible formular predicados lógicos con la notación del cálculo lambda. Se le asignan términos lambda a los valores de falso y verdadero. El término asociado a verdadero es \( λx y.x \) y el término asociado a falso es \( λx y.y \).
+
+A partir de estos términos se pueden obtener nuevos términos lambda para los operadores básicos del álgebra booleana, para el resto de la sección se define \( \bs{V} \synteq λx y.x \) (verdadero) y \( \bs{F} \synteq λx y.y \) (falso), es decir, \( \bs{V} \) es una función de dos parámetros que al ser evaluada regresa el primer argumento y \( \bs{F} \) es una función de dos parámetros que al ser evaluada regresa el segundo argumento.
+
+\subsection{Conectivos lógicos}
+\label{sec:conectivos-logicos}
+
+Explorando con esta representación podemos obtener términos lambda obtenidos a partir de la aplicación de las combinaciones de estos dos valores.
+
+Combinaciones de la aplicación de dos valores de verdad.
+
+\begin{itemize}
+\item \( \bs{V} \bs{V} \)
+  \begin{enumerate}
+  \item \( (λx y.x)(λx y.x) \)
+  \item \( \contract{β} λy x w.x \)
+  \end{enumerate}
+  Función de tres parámetros que al ser evaluada regresa el segundo argumento.
+\item \( \bs{V} \bs{F} \)
+  \begin{enumerate}
+  \item \( (λx y.x)(λx y.y) \)
+  \item \(\contract{β} λy x w.w \)
+  \end{enumerate}
+  Función de tres parámetros que al ser evaluada regresa el tercer argumento.
+\item \( \bs{F} \bs{V} \)
+  \begin{enumerate}
+  \item \( (λx y.y)(λx y.x) \)
+  \item \(\contract{β} λy.y \)
+  \end{enumerate}
+  Función de un parámetro que al ser evaluada regresa el argumento.
+\item \( \bs{F} \bs{F} \)
+  \begin{enumerate}
+  \item \( (λx y.y)(λx y.y) \)
+  \item \(\contract{β} λy.y \)
+  \end{enumerate}
+  Función de un parámetro que al ser evaluada regresa el argumento
+\end{itemize}
+
+Combinaciones de la aplicación de tres valores de verdad.
+
+\begin{itemize}
+\item \( \bs{V} \bs{V} \bs{V} \)
+  \begin{enumerate}
+  \item \( (λy x w.x)(λx y.x) \)
+  \item \( \contract{β} λx w.x \)
+  \item \( \contract{α} \bs{V} \)
+  \end{enumerate}
+\item \( \bs{V} \bs{V} \bs{F} \)
+  \begin{enumerate}
+  \item \( (λy x w.x)(λx y.y) \)
+  \item \( \contract{β} λx w.x \)
+  \item \( \contract{α} \bs{V} \)
+  \end{enumerate}
+\item \( \bs{V} \bs{F} \bs{V} \)
+  \begin{enumerate}
+  \item \( (λy x w.w)(λx y.x) \)
+  \item \( \contract{β} λx w.w \)
+  \item \( \contract{α} \bs{F} \)
+  \end{enumerate}
+\item \( \bs{V} \bs{F} \bs{F} \)
+  \begin{enumerate}
+  \item \( (λy x w.w)(λx y.y) \)
+  \item \( \contract{β} λx w.w \)
+  \item \( \contract{α} \bs{F} \)
+  \end{enumerate}
+\item \( \bs{F} \bs{V} \bs{V} \)
+  \begin{enumerate}
+  \item \( (λy.y)(λx y.x) \)
+  \item \( \contract{β} λx y.x \)
+  \item \( \synteq \bs{V} \)
+  \end{enumerate}
+\item \( \bs{F} \bs{V} \bs{F} \)
+  \begin{enumerate}
+  \item \( (λy.y)(λx y.y) \)
+  \item \( \contract{β} λx y.y \)
+  \item \( \synteq \bs{F} \)
+  \end{enumerate}
+\item \( \bs{F} \bs{F} \bs{V} \)
+  \begin{enumerate}
+  \item \( (λy.y)(λx y.x) \)
+  \item \( \contract{β} λx y.y \)
+  \item \( \synteq \bs{F} \)
+  \end{enumerate}
+\item \( \bs{F} \bs{F} \bs{F} \)
+  \begin{enumerate}
+  \item \( (λy.y)(λx y.y) \)
+  \item \( \contract{β} λx y.x \)
+  \item \( \synteq \bs{V} \)
+  \end{enumerate}
+\end{itemize}
+
+Un vistazo superficial a estas dos tablas me dice que nos será de más ayuda la segunda, ya que a partir de valores de verdad se obtienen otros valores de verdad. Si suponemos que hay dos predicados \( P \) y \( Q \) los cuales pueden tomar los valores \( \bs{V} \) o \( \bs{F} \), podemos ver estas combinaciones como
+
+\begin{table}
+  \centering
+  \begin{tabular}{|c|c|c|c|c|c|}
+    \hline
+    \( P \)      & \( Q \)      & \( P P P \)  & \( P P Q \)  & \( P Q P \)  & \( P Q Q \)  \\ [0.5ex]
+    \hline\hline
+    \( \bs{F} \) & \( \bs{F} \) & \( \bs{F} \) & \( \bs{F} \) & \( \bs{F} \) & \( \bs{F} \) \\
+    \hline
+    \( \bs{F} \) & \( \bs{V} \) & \( \bs{F} \) & \( \bs{V} \) & \( \bs{F} \) & \( \bs{V} \) \\
+    \hline
+    \( \bs{V} \) & \( \bs{F} \) & \( \bs{V} \) & \( \bs{V} \) & \( \bs{F} \) & \( \bs{F} \) \\
+    \hline
+    \( \bs{V} \) & \( \bs{V} \) & \( \bs{V} \) & \( \bs{V} \) & \( \bs{V} \) & \( \bs{V} \) \\
+    \hline
+  \end{tabular}
+  \caption{Tabla de verdad de algunas combinaciones}
+  \label{tab:boollambda}
+\end{table}
+
+\begin{itemize}
+\item \( P P Q \) o \( Q Q Q \)
+\item \( P P Q \) o \( Q Q P \)
+\item \( P Q P \) o \( Q P Q \)
+\item \( P Q Q \) o \( Q P P \)
+\end{itemize}
+
+Teniendo en cuenta que el conjunto de valores que puede tomar \( P \) es el mismo que puede tomar \( Q \), solo consideramos una de las columnas. Se prosigue construyendo una tabla de verdad de estas cuatro posibilidades:
+
+Por los valores de las tablas de verdad, encontramos que:
+
+\[ \land \synteq λp q.p q p \]
+
+\[ \lor \synteq λp q.p p q \]
+
+Con este procedimiento logramos obtener las operaciones booleanas básicas de conjunción (asociado a la compuerta lógica \( \mathrm{AND} \)) y disyunción (asociado a la compuerta lógica \( \mathrm{OR} \)). Para poder completar la incrustación del álgebra booleana en el cálculo lambda necesitamos poder representar la operación de negación, la cual derivaremos con otra metodología.
+
+El término lambda que representa la negación debe ser una abstracción que tenga como parámetro un predicado \( p \) y que regrese un término de dos parámetros que regrese el primero si \( p \) es falso y el segundo si \( p \) es verdadero. La forma de éste término es \( λp x y.? \) donde \( ? \) es un término por definir. Para encontrar este término incógnita hacemos la observación que si \( p \) es verdadero el primer argumento que le apliquemos será el resultado, mientras que si \( p \) es falso, el segundo argumento que le apliquemos será el resultado. Por lo tanto
+
+\[ (λp x y.p y x) \bs{V} \contract{β} λx y.y \synteq \bs{F} \]
+
+\[ (λp x y.p y x) \bs{F} \contract{β} λx y.x \synteq \bs{V} \]
+
+Bajo este mismo procedimiento podemos encontrar otras operaciones útiles relacionadas con estructuras de control como condicionales. Para tener un término lambda de la condicional ``Si \( P \) entonces \( M \), de lo contrario \( N \)'', donde \( P \) es un valor de verdad con esta codificación y \( M \) y \( N \) son términos cualesquiera, se construye como \( λp m n.? \), donde \( ? \) debe de resultar en \( m \) si \( p \) es verdadero y en \( n \) si \( p \) es falso. Por lo tanto
+
+\[ \mathrm{Condicional} \synteq λp m n.p m n \]
+
+Este término debe ser aplicado como
+
+\[ (((\mathrm{Condicional} \mathrm{Predicado}) \mathrm{Consecuente}) \mathrm{Contrario}) \]
+
+para ser \( β \)-reducido de manera correcta.
+
+Queda pendiente expandir el trabajo de lógica proposicional que se ha desarrollado a la admisión de mas de dos valores de verdad, buscando ser consistente con la metodología de derivación de términos utilizada.
+
+\section{Aritmética}
+\label{sec:aritmetica}
+
+Así como se pueden representar los valores de verdad de falso y verdadero en el cálculo lambda, también podemos encontrar representaciones para los números naturales. En esta sección se aborda una representación llamada numerales de Church, también se presentan términos lambda para operar números naturales con esta representación.
+
+Para cada \( n \in \mathbb{N} \) el numeral de Church de \( n \) es un término lambda denotado como \( \bar{n} \) definido como:
+
+\[ \bar{n} \synteq λx y.x^{n} y \]
+
+En la siguiente tabla se puede apreciar mejor la estructura de los numerales de Church
+
+\begin{table}
+  \centering
+  \begin{tabular}{|c|c|}
+    \hline
+    \( n \) & \( \bar{n} \) \\ [0.5ex]
+    \hline\hline
+    0 & \( λx y.y \) \\
+    \hline
+    1 & \( λx y.x y \) \\
+    \hline
+    2 & \( λx y.x(x y) \) \\
+    \hline
+    3 & \( λx y.x(x(x y)) \) \\
+    \hline
+    ... & ... \\
+    \hline
+  \end{tabular}
+  \caption{Numerales de Church}
+  \label{tab:numerales}
+\end{table}
+
+Como se observa en la tabla, un numeral de Church es una abstracción descurrificada de dos argumentos la cual al ser evaluada es reducida a la \( n \)-ésima composición del primer argumento evaluada en el segundo argumento.
+
+Una manera de entender esta representación es pensar en los números naturales como un conteo de uno en uno; el 0 es no contar; el 1 es contar uno mas que el 0; el 2 es uno mas que el 1, así que el 2 es uno mas que el uno mas que el 0; el 3 es uno mas que el 2, así que el 3 es uno mas que el uno mas que el uno mas que el 0 y así sucesivamente. La idea de ``el uno mas'' es la del sucesor, si consideramos a \( x \) como una función sucesor y a \( y \) como el 0, podemos expresar \( x(x(x(y))) \) como \( \mathrm{sucesor}(\mathrm{sucesor}(\mathrm{sucesor}(0))) \), así que
+
+\begin{align*}
+\mathrm{sucesor}(\mathrm{sucesor}(\mathrm{sucesor}(0))) & = \mathrm{sucesor}(\mathrm{sucesor}(1)) \\
+                             & = \mathrm{sucesor}(2) \\
+                             & = 3
+\end{align*}
+
+Es interesante pensar en diferentes maneras de expresar las operaciones mas elementales de la aritmétima como términos lambda que operen sobre esta representación. A continuación se presenta una exploración de los términos lambda correspondientes a algunas operaciones elementales de la aritmética: suma, multiplicación, exponenciación y resta. La suma es una repetición de la operación sucesor, la multiplicación una repetición de suma, la exponenciación una repetición de multiplicaciones y la resta una repetición de la operación predecesor. Esto nos lleva a identificar las operaciones de sucesor y predecesor como los algoritmos base para el resto de las operaciones primitivas.
+
+El término \emph{sucesor} debe ser uno tal que al ser aplicado a un numeral \( \bar{n} \) se pueda \( β \)-reducir al numeral \( \bar{n+1} \). Considerando la definición de \( \bar{n} \synteq λx y.x^{n} y \), lo que buscamos es una manera de agregarle una \( x \) a la composición en el cuerpo de \( \bar{n} \) para obtener \( λx y.x^{n+1} y \). Se construye este término considerando primero que será aplicado a un numeral
+
+\[ \mathrm{sucesor} \synteq λ\bar{n}.? \] 
+
+Además el resultado de \( β \)-reducir esta aplicación deberá ser una función de dos argumentos (como lo son todos los numerales de Church):
+
+\[ \mathrm{sucesor} \synteq λ\bar{n}.λx y.? \]
+
+Tomando en cuenta que \( \bar{n} x y \synteq x^{n} y \) y que \( x x^{n} y \synteq x^{n+1} y \):
+
+\[ \mathrm{sucesor} \synteq λn x y.x(n x y) \]
+
+A continuación se \( β \)-reduce la aplicación de \( \mathrm{sucesor} \) al numeral \( \bar{4} \synteq λx y.x(x(x(x y))) \):
+
+\begin{align*}
+                & \mathrm{sucesor} \bar{4} \\
+\synteq         & (λn x y.x(n x y)) (λx y.x(x(x(x y)))) \\
+\convertible{α} & (λn x y.x(n x y)) (λf z.f(f(f(f z)))) \\
+\contract{β}    & (λx y.x(((λf z.f (f (f (f z)))) x) y)) \\
+\contract{β}    & (λx y.x((λz.x(x(x(x z)))) y)) \\
+\contract{β}    & (λx y.x(x(x(x(x y))))) \\
+\synteq         & \bar{5}
+\end{align*}
+
+La otra operación elemental en la aritmética es el \emph{predecesor}, el término que represente esta operación debe ser uno que cumpla con la siguiente definición:
+
+\begin{align*}
+\mathrm{predecesor} \bar{0} & \reduce{β} \bar{0} \\
+\mathrm{predecesor} \bar{n} & \reduce{β} \bar{n-1}
+\end{align*}
+
+El término lambda del predecesor con la representación de numerales de Church es mucho mas compleja que la del sucesor. Se pudiera pensar que la misma idea utilizada en la derivación del sucesor aplicaría para la derivación del predecesor: si tenemos \( n \) aplicaciones de \( x \) a \( y \), al aplicar el término que buscamos a un numeral de Church se debe \( β \)-reducir a otro numeral con una aplicación de \( x \) menos, se utiliza \( y \) para añadir una \( x \) mas en el cuerpo del numeral. Sin embargo, la estructura de los numerales no nos permite quitar una \( x \) usando \( y \) facilmente ya que el numeral puede ser aplicado a dos términos, el que representa las \( x \) y el que representa a la \( y \); la variable que determina el valor del numeral es  \( x \) y la sustitución de \( x \) por otro término en esta representación se hace con \emph{cada} aparición de \( x \) en el cuerpo del numeral, por otro lado, al sustituír la \( y \) por otro término solo podemos hacer mas complejo el término o sustituírla por otra variable.
+
+Para derivar el término del predecesor vamos a presentar un término con una estructura similar a los numerales de Church:
+
+\[ λx y z.z x^{n} y \]
+
+La diferencia entre este término y un numeral de Church es que podemos modificar su estructura por enfrente, por atrás y en las composiciones intermedias. Si este término representara \( \bar{n+1} \) pudieramos obtener el cuerpo de \( \bar{n} \) de la siguiente manera:
+
+\begin{align*}
+             & (λx y z.z x^{n} y) x y (λa.a) \\
+\contract{β} & (((λy z.z x^{n} y) y) (λa.a)) \\
+\reduce{β}   & ((λz.z x^{n} y) (λa.a)) \\
+\contract{β} & (λa.a) x^{n} y \\
+\contract{β} & x^{n} y
+\end{align*}
+
+Es decir, mantenemos las \( x \) y la \( y \) y le aplicamos a \( x^{n} y \) el término lambda que representa a la función identidad. Esta manera conveniente de representar a los numerales resulta ser incompleta, ya que no se podrá obtener \( x^{n-1} y \) a partir del resultado (ya que la \( z \) no aparece en el término resultante). Sin embargo, si logramos tener un término que nos genera este término modificado pudiéramos realizar esta transformación dentro de la función predecesor sería mas fácil encontrar \( \bar{n-1} \).
+
+La estructura del sucesor sería:
+
+\[ λn x y.? (λa.a) \]
+
+Donde \( ? \) debe ser tal que al \( β \)-reducirse resulte en un término con la forma \( λz.z x^{n-1} y \). Es conveniente desmenuzar el problema de encontrar este término desconocido: primero sabemos que el numeral de Church \( \bar{n} \) puede ser aplicado a dos términos y el primer término al que sea aplicado se sustituirá en todas las apariciones de \( x \), como queremos que la \( β \)-reducción nos genere una función cuyo argumento sea la primer variable en la composición del numeral, tenemos que encontrar una manera de propagar un término de la forma \( λw.w x^{m} y \) de tal manera que al aplicarle otro término nos resulte \( λw.w x^{m+1} y \). De esta manera al aplicar este otro término una y otra vez, resulte \( λw.w x^{n-1} y \) con el cual podemos obtener el cuerpo del predecesor sustituyendo \( w \) por \( λa.a \).
+
+Este otro término que buscamos será el que sustituirá a la \( x \) en \( \bar{n} \) para que:
+
+\[ ?(λw.w x^{m} y) \reduce{β} λw.w x^{m+1} y \]
+
+Lo que sucede en cada aplicación de este estilo es que se compone una \( x \) en cada aplicación y se deja explícita una \( w \) que podrá ser sustituída como valor. El término que nos permite hacer esto tiene la siguiente forma:
+
+\[ λg w.w (g x) \]
+
+Al ser aplicado a un término \( λw.w x^{m} y \) la variable \( g \) será sustituída por este término y el resultado será \( λw.w((λr.r x^{m} y) x) \) (nótese el cambio de nombre de la variable ligada \( w \) en el argumento), lo cual se reduce a \( λw.w x^{m+1} y \) el cual mantiene su estructura original.
+
+El percance con esta aproximación a la solución es que el primer valor al que se le aplica el término \( λg w.w (g x) \) debe ser \( λw.w y \).
+
+Para visualizar una manera de resolver el problema, es conveniente expresar cómo se verían las aplicaciones de \( λg w.w (g x) \) para un numeral de Church en particular. Si consideramos la aplicación de \( \bar{4} (λg w.w(g x)) \):
+
+\begin{align*}
+             & \bar{4} (λg w.w(g x)) \\
+\synteq      & ( (λx y.x^{4} y) (λg.(λw.(w (g x)))) ) \\
+\synteq      & ( (λx y.x(x(x(x y)))) (λg.(λw.(w (g x)))) ) \\
+\contract{β} & (λy.(λg.(λw.(w (g x))))((λg.(λw.(w (g x))))((λg.(λw.(w (g x))))((λg.(λw.(w (g x)))) y))))
+\end{align*}
+
+Esto nos lleva al segundo paso para encontrar la función predecesor, en el desarrollo anterior notamos que la primer aplicación de \( λg w.w (g x) \) es en la variable \( y \) la cual está ligada por la \( λ \) del término. Sabemos que para obtener \( λw.w x^{3} y \) debemos \( β \)-reducir el término:
+
+\[ ((λg.(λw.(w (g x)))) ((λg.(λw.(w (g x)))) ((λg.(λw.(w (g x)))) (λw.w y)))) \]
+
+Con esto podemos encontrar el valor que tiene que tomar \( y \) en el numeral ya que:
+
+\[ ((λg.(λw.(w (g x)))) y) \reduce{β} λw.w y \]
+
+El término que buscamos es el que debe sustituír a la variable \( y \) en la reducción:
+
+\begin{align*}
+           & ((λg.(λw.(w (g x)))) ?) \\
+\reduce{β} & (λw.(w (? x)))
+\end{align*}
+
+El término \( ? \) debe ser una función que al ser aplicada a \( x \) se reduzca a \( y \). El término \( λu.y \) cumple con esta propiedad y será el que utilizaremos.
+
+Considerando los términos determinados en el procedimiento anterior, podemos decir cómo será la función predecesor. Primero se aplica \( (λg.(λw.(w (g x)))) \) a \( \bar{n} \), este término resultante se aplica a \( λu.y \), \( β \)-reducir esta aplicación nos resulta \( λw.w x^{n-1} y \) la cual puede ser aplicada a la función identidad \( λa.a \) para obtener \( x^{n-1} y \). Lo cual nos lleva al término completo de predecesor:
+
+\[ (λn.(λx y.(((n (λg.(λw.(w (g x))))) (λu.y)) (λa.a)))) \]
+
+Teniendo los términos lambda de sucesor y predecesor se puede abordar la derivación de operaciones mas complejas como la de adición, multiplicación, exponenciación y sustracción de numerales de Church siguiendo el mismo enfoque. En este trabajo no se abordan otras operaciones como la división debido al aumento de complejidad por no ser una operación interna, es decir, la división de dos naturales puede ser un racional y no se definió una representación de términos lambda para el conjunto de los racionales.
+
+Un término lambda para la adición de dos numerales \( \bar{m} \) y \( \bar{n} \) es
+
+\[ λm n.(λx y.n \mathrm{sucesor} m) \]
+
+y se obtuvo a partir de la observación de que realizar la suma \( m+n \) es equivalente a computar el \( n \)-ésimo sucesor de \( m \).
+
+Utilizando la estructura de \( \bar{n} \) podemos aplicar \( \bar{n} \mathrm{sucesor} \bar{m} \) para obtener la \( n \)-ésima composición de la función sucesor aplicada al numeral \( \bar{m} \):
+
+\begin{align*}
+             & \bar{n} \mathrm{sucesor} \bar{m} \\
+\synteq      & (( (λx y.x^{n} y) \mathrm{sucesor}) (λx y.x^{m} y)) \\
+\contract{β} & ( (λy.\mathrm{sucesor}^{n} y) (λx y.x^{m} y)) \\
+\contract{β} & \mathrm{sucesor}^{n} λx y.x^{m} y \\
+\reduce{β}   & λx y.x^{m+n} y \\
+\synteq      & \bar{m+n}
+\end{align*}
+
+Un término lambda para la multiplicación de dos numerales de Church es
+
+\[ λm n x y.n (m x) y \]
+
+el cual aborda la idea de componer \( m n \) consigo mismo \( n \) veces (lo cual equivaldría a sumar \( n \) veces \( m \).
+
+En el caso de la adición y la multiplicación, el orden en el que aplicamos el término a los numerales no es de importancia ya que son operaciones conmutativas, \( m+n = n+m \) y \( m \times n = n \times m \). Sin embargo en la sustracción y la exponenciación no se tiene esta propiedad, por lo que es importante el orden en el que se aplican los numerales a los términos, para ello consideraremos el orden como \( m-n \) y \( m^{n} \).
+
+Basándonos en el término de la adición podemos obtener un término de la sustracción el cual es
+
+\[ λm n x y.n \mathrm{predecesor} m \].
+
+Ya que en la adición se dejó explícito el acto de aumentar \( m \) veces en 1 a \( n \), cambiamos el término de \( \mathrm{sucesor} \) por el de \( \mathrm{predecesor} \) y ahora se decrementa \( m \) veces en 1 a \( n \).
+
+Un término lambda para la exponenciación es
+
+\[ λm n.n m \]
+
+es curioso tener una representación tan sencilla para una operación tan compleja como esta. A diferencia de los anteriores términos, al aplicarle a ésta exponenciación dos numerales, el numeral resultante tendrá las variables compuestas las variables que no se componen en las entradas, es decir, si \( \bar{m} \synteq λf g.f^{m} g \) y \( \bar{n} \synteq λx y.x^{n} y \), el resultado será \( \bar{m^{n}} \synteq λg y.g^{m^{n}} y \).
+
+Para corroborar que estas representaciones calculan de manera correcta la operación correspondiente para los numerales de Church se pueden realizar varias pruebas con diferentes numerales de entrada. En este trabajo no se desarrollarán ejemplos para estos términos.
+
+Los mecanismos que hemos utilizado para derivar las operaciones se basan en construír términos que vayan transformando entradas con una estructura determinada de tal manera que nos acerquemos poco a poco al cálculo de la operación deseada; esta labor llega a ser bastante tediosa y carece de interés algorítmico. A continuación se presenta una manera mas interesante y elegante de abordar el problema de representar operaciones aritméticas.
+
+Se introduce el término lambda que me permite generar hiperoperaciones aritméticas:
+
+\[ λf u m n.n (λw.f m w) u \]
+
+Abstracción de la noción de repetición sobre la estructura de un numeral, considerar propiedades de conmutatividad y asociatividad en operaciones. Abordar el problema del cómputo de operaciones inversas. Determinar un término que nos genere elementos de la secuencia de hiperoperaciones.
+
+\section{Procesos recursivos}
+
+Combinador Y, ordenes de evaluación, funciones recursivas.
+
+\[ \bs{Y} \synteq λf.(λx.f(x x))(λx.f(x x)) \]
+
+Presentar una breve introducción sobre los combinadores y hablar del combinador \( \bs{Y} \) y cómo nos permite expresar funciones recursivas en el cálculo lambda.
+
+Como ejemplos prácticos de esta subsección sería adecuado desarrollar el término para el cálculo de factoriales o algúna otra función de una sola variable que transforme un numeral de Church en otro. También pudiera expandir la recursividad a términos multivariables currificados como la función Ackermann (abstracción a la generación de hiperoperaciones, ver \emph{The Book of Numbers} de Conway).
+
+\section{Pares ordenados}
+
+Construcción axiomática de pares ordenados, listas, \( n \)-tuplas, árboles y otras estructuras complejas.
+
+Presentar la representación de pares ordenados para la construcción de estructuras mas complejas.
+
+\[ \mathrm{Car}(\mathrm{Cons}(x,y)) = x \]
+
+\[ \mathrm{Cdr}(\mathrm{Cons}(x,y)) = y \]
+
+Esta sección es apropiada para comenzar a relacionar la teoría de autómatas, lenguajes regulares y libres de contexto con sistemas medianamente complejos que se pueden incrustar en el cálculo lambda sin modificar el sistema. Un problema pudiece ser el no determinismo, pero pudiera solventar esto con el desarrollo de operaciones funcionales sobre listas (map, filter, fold, etc).
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

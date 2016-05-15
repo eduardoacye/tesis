@@ -1,12 +1,12 @@
 - [ ] Capítulos
   - [ ] Introducción
   - [ ] El cálculo lambda
-    - [ ] Noción informal del cálculo lambda
-      - [ ] Expresiones
-      - [ ] Operaciones
-      - [ ] Equivalencias
+    - [x] Noción informal del cálculo lambda
+      - [x] Expresiones
+      - [x] Operaciones
+      - [x] Equivalencias
     - [ ] Formalización del cálculo lambda
-      - [ ] Términos lambda
+      - [x] Términos lambda
       - [ ] Teoría \lambda K \beta
     - [ ] Otras teorías
       - [ ] \lambda I \beta
@@ -58,3 +58,6 @@
   - [ ] Compilación a SECD
   - [ ] Inferencia de tipos
 - [ ] Formato
+  - [x] Clase de estilo
+  - [x] Clase de bibliografía
+  - [ ] Comandos de estilo

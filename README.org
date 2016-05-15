@@ -64,3 +64,42 @@
 *** TODO Compilación a SECD
 *** TODO Inferencia de tipos
 ** Formato
+
+
+- [ ] Capítulos
+  - [ ] Introducción
+  - [ ] El cálculo lambda
+    - [ ] Noción informal del cálculo lambda
+    - [ ] Formalización del cálculo lambda
+    - [ ] Otras teorías
+    - [ ] Equivalencia de teorías
+    - [ ] Teoría de reducción
+    - [ ] Teorema de Church-Rosser
+    - [ ] Árboles Bohm
+  - [ ] Codificación de objetos
+    - [ ] Álgebra booleana
+    - [ ] Aritmética
+    - [ ] Procesos recursivos
+    - [ ] Estructuras complejas
+  - [ ] Tipos en el cálculo lambda
+    - [ ] Tipos simples
+    - [ ] Representación de tipos de datos
+    - [ ] Generalización de tipos
+  - [ ] Lenguajes de programación
+    - [ ] Programación basada en el cálculo lambda
+    - [ ] Sistema de tipos Hindley-Milner
+    - [ ] Máquina SECD
+    - [ ] Semántica denotacional
+  - [ ] Teoría de la computación
+    - [ ] Tesis de Church-Turing
+    - [ ] Isomorfismo de Curry-Howard
+    - [ ] Entscheidungsproblem
+    - [ ] Complejidad computacional
+  - [ ] Conclusión
+- [ ] Apéndices
+  - [ ] Notación
+  - [ ] Lenguaje del cálculo lambda
+  - [ ] Intérprete
+  - [ ] Compilación a SECD
+  - [ ] Inferencia de tipos
+- [ ] Formato

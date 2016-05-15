@@ -1,0 +1,66 @@
+* Tesis de licenciatura
+
+** Pendientes [0%]
+   - [-] Capítulos [0%]
+     - [ ] Introducción
+     - [-] El cálculo lambda [12%]
+       - [X] Noción informal del cálculo lambda [100%]
+	 - [X] Expresiones
+	 - [X] Operaciones
+	 - [X] Equivalencias
+       - [-] Formalización del cálculo lambda [50%]
+	 - [X] Términos lambda
+	 - [-] Teoría \( \lambda K \beta \) [50%]
+	   - [X] Definición
+	   - [ ] Términos en \( \lambda K \beta \)
+       - [ ] Otras teorías
+       - [ ] Extensionalidad
+       - [ ] Equivalencia de teorías
+       - [ ] Teoría de reducción [0%]
+	 - [ ] Contracciones
+	 - [ ] Reducciones
+	 - [ ] Convertibilidad
+       - [ ] Teorema de Church-Rosser
+       - [ ] Árboles Böhm
+     - [ ] Codificación de objetos [0%]
+       - [ ] Álgebra booleana [0%]
+	 - [ ] Valores de verdad
+	 - [ ] Conectivos lógicos
+	 - [ ] Lógica multivaluada
+       - [ ] Aritética [0%]
+	 - [ ] Numerales de Church
+	 - [ ] Operaciones elementales
+	 - [ ] Hiperoperadores
+	 - [ ] Hiperaciones inversas
+       - [ ] Procesos recursivos [0%]
+	 - [ ] Combinador \( Y \)
+	 - [ ] Orden de evaluación
+	 - [ ] Funciones recursivas
+       - [ ] Estructuras complejas [0%]
+	 - [ ] Par ordenado
+	 - [ ] Estructuras lineales
+	 - [ ] Árboles
+     - [ ] Tipos en el cálculo lambda [0%]
+       - [ ] Tipos simples [0%]
+	 - [ ] Estilo Church
+	 - [ ] Estilo Curry
+       - [ ] Representación de tipos de datos
+       - [ ] Generalización de tipos
+     - [ ] Lenguajes de programación [0%]
+       - [ ] Programación basada en el cálculo lambda
+       - [ ] Sistema de tipos Hindley-Milner
+       - [ ] Máquina SECD
+       - [ ] Semántica denotacional
+     - [ ] Teoría de la computación [0%]
+       - [ ] Tesis de Church-Turing
+       - [ ] Isomorfismo de Curry-Howard
+       - [ ] Entscheidungsproblem
+       - [ ] Complejidad computacional
+     - [ ] Conclusión
+   - [ ] Apéndices [0%]
+     - [ ] Notación
+     - [ ] Lenguaje del cálculo lambda
+     - [ ] Intérprete
+     - [ ] Compilación a SECD
+     - [ ] Inferencia de tipos
+   - [ ] Formato

@@ -2,6 +2,9 @@
 auto/*
 lc-buf.tex
 \[.tex
+_region_.prv
+_region_.tex
+main.prv
 
 ## Core latex/pdflatex auxiliary files:
 *.aux

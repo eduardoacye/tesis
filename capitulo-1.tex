@@ -367,7 +367,7 @@ pero
 
 \[ (λf.((λx.(f x)) y)) \nsim (λf.(f y)) \]
 
-Para capturar la definición de \( β \)-convertibilidad con ecuaciones, es necesario definir a \( \sim \) en partes de una expresión. Las siguientes reglas, nombradas por Curry \cite[p.~59]{Curry:CombinatoryLogicI} como \( ν \), \( μ \) y \( ξ \), junto con las reglas de \(\sim\) completan la definición declarativa de \(\beta\)-convertibilidad:
+Para capturar la definición de \( β \)-convertibilidad con ecuaciones, es necesario definir a \( \sim \) en partes de una expresión. Las siguientes reglas, nombradas por Curry \cite[p.~59]{Curry:CombinatoryLogicI} como \( ν \), \( μ \) y \( ξ \), junto con las reglas de \(\sim\) completan la definición declarativa de \( β \)-convertibilidad:
 
 \begin{defn}
   Reglas que debe cumplir \( \sim \) para ser \( \convertible{β} \)
@@ -808,6 +808,7 @@ En el caso particular de la teoría \( \bs{λKβ} \) se considera que \( \mathca
     \label{teorialambda:mu} \tag{\( μ \)}
     \infer{Z M = Z N}{M = N}
   \end{equation}
+  
   \begin{equation}
     \label{teorialambda:nu} \tag{\( ν \)}
     \infer{M Z = N Z}{M = N}
@@ -919,10 +920,125 @@ La frase ``módulo convertibilidad'' se refiere al conjunto de todas las clases 
   \end{align*}
 \end{cor}
 
-Estos tres combinadores generan en la teoría \( \bs{λ} \) al conjunto \( Λ^{0} \) con combinaciones de aplicaciones. Debido a que \( \bs{S} \bs{K} \bs{K} =_{\bs{λ}} \bs{I} \), sólo es necesario combinar con aplicaciones a \( \bs{K} \) y a \( \bs{S} \) para generar cualquier término cerrado.
+Estos tres combinadores generan en la teoría \( \bs{λ} \) al conjunto \( Λ^{0} \) con combinaciones de aplicaciones. Debido a que \( \bs{SKK} =_{\bs{λ}} \bs{I} \), sólo es necesario combinar con aplicaciones a \( \bs{K} \) y a \( \bs{S} \) para generar cualquier término cerrado.
 
-\subsubsection{Otras teorías}
+\begin{defn}[Bases]
+  \label{defn:bases}
+  \begin{enumerate}
+  \item Sea \( \mathcal{X} \subset Λ \). El conjunto de términos \emph{generado} por \( \mathcal{X} \), denotado \( \mathcal{X}^{+} \), es el conjunto mas pequeño tal que
+    \begin{enumerate}
+    \item \( \mathcal{X} \subseteq \mathcal{X}^{+} \),
+    \item \( M, N \in \mathcal{X}^{+} \implies (M N) \in \mathcal{X}^{+} \).
+    \end{enumerate}
+  \item Sea \( \mathcal{P} \subset Λ \). \( \mathcal{X} \subset Λ \) es una \emph{base} para \( \mathcal{P} \) si para toda \( M \in \mathcal{P} \) existe \( N \in \mathcal{X}^{+} \) tal que \( N = M \).
+  \item \( \mathcal{X} \) es llamada una \emph{base} si \( \mathcal{X} \) es una base para \( Λ^{0} \).
+  \end{enumerate}
+\end{defn}
+
+\begin{lem}
+  \label{lem:ski}
+  Sea \( λx.M \) una abstracción tal que \( \Sub(M) \) no contiene abstracciones
+
+  \begin{enumerate}
+  \item Si \( M = x \), entonces \( λx.M = \bs{I} \);
+  \item Si \( x \not\in \FV(M) \), entonces \( λx.M = (\bs{K} M) \);
+  \item Si \( M = PQ \), entonces \( λx.M = \bs{S}(λx.P)(λx.Q) \).
+  \end{enumerate}
+\end{lem}
+
+\begin{proof}
+  Ver \ref{defn:ski} y \ref{cor:ski}
+  \begin{enumerate}
+  \item
+    \begin{align*}
+      (\bs{I} N) &= N \\
+                 &= ((λx.x) N) \\
+                 &= ((λx.M) N)
+    \end{align*}
+  \item
+    \begin{align*}
+      ((\bs{K} M) N) &= (λxy.x)M N \\
+                     &= (λy.M)N \\
+                     &= ((λx.M)N)
+    \end{align*}
+  \item
+    \begin{align*}
+      \bs{S}(λx.P)(λx.Q) &= (λabc.(a c)(b c))(λx.P)(λx.Q) \\
+                         &= λc.((λx.P)c)((λx.Q)c) \\
+                         &= λc.P[x:=c]Q[x:=c] \\
+                         &= λc.(P Q)[x:=c] \\
+                         &= λx.PQ \\
+                         &= λx.M
+    \end{align*}
+  \end{enumerate}
+\end{proof}
+
+\begin{prop}
+  \label{prop:ski}
+  \( \{ \bs{S}, \bs{K}, \bs{I} \} \) es una base, es decir, para todo término \( M \in Λ^{0} \), existe un término \( M' \) compuesto de aplicaciones de \( \bs{S} \), \( \bs{K} \) e \( \bs{I} \) tal que \( M = M' \).
+\end{prop}
+
+La demostración de la proposición \ref{prop:ski} consiste en la construcción de un algoritmo para transformar \( M \) a \( M' \).
+
+\begin{proof}
+  \label{proof:ski}
+  Sea \( M \in Λ^{0} \), se construye un término \( M' \in \{ \bs{S},\bs{K},\bs{I} \}^{+} \) tal que \( M' = M \) enumerando los subtérminos en \( M \) que sean abstracciones de menor a mayor longitud.
+
+  Sea \( λx.N \) la abstracción con menor longitud en \( M \), según la estructura de \( N \) se aplican las siguientes transformaciones:
+
+  \begin{enumerate}
+  \item Si \( N = a \)
+    \begin{enumerate}
+    \item \label{item:ski:1a} Si \( a = x \) se transforma \( λx.N \) a \( \bs{I} \) en \( M \).
+    \item \label{item:ski:1b}Si \( a \not= x \) se transforma \( λx.N \) a \( (\bs{K} a) \) en \( M \).
+    \end{enumerate}
+  \item \( N = (P Q) \)
+    \begin{enumerate}
+    \item \label{item:ski:2a} Si \( x \not\in \FV(P) \) y \( x \not\in \FV(Q) \) se transforma \( λx.PQ \) a \( \bs{S} (\bs{K} P) (\bs{K} Q) \) en \( M \).
+    \item \label{item:ski:2b} Si \( x \not\in \FV(P) \) y \( x \in \FV(Q) \) se transforma \( λx.PQ \) a \( \bs{S} (\bs{K} P) (λx.Q) \) en \( M \).
+    \item \label{item:ski:2c} Si \( x \in \FV(P) \) y \( x \not\in \FV(Q) \) se transforma \( λx.PQ \) a \( \bs{S} (λx.P) (\bs{K} Q) \) en \( M \).
+    \item \label{item:ski:2d} Si \( x \in \FV(P) \) y \( x \in \FV(Q) \) se transforma \( λx.PQ \) a \( \bs{S} (λ.P) (λx.Q) \) en  \( M \).
+    \end{enumerate}
+  \end{enumerate}
+
+  En los casos \ref{item:ski:2a}, \ref{item:ski:2b}, \ref{item:ski:2c}, \ref{item:ski:2d} se forman abstracciones con longitud menor a \( λx.N \), por lo tanto serán las que se transformarán después. Ya que la longitud de estas abstracciones es estrictamente menor a \( λx.N \) y los casos base \ref{item:ski:1a} y \ref{item:ski:1b} de la transformación no introducen abstracciones, en una cantidad finita de pasos el término \( M \) transformado no tendrá abstracciones de la forma \( λx.N \).
+
+  Para un término \( M \) con sólo una abstracción, \( \mathit{a} \) aplicaciones y \( \mathit{v} \) variables ligadas (no enlazadas) una cota superior para la máxima cantidad de pasos se calcula considerando que para los términos de la forma \( λx.a \) se cumple el caso \ref{item:ski:1b} (el cual aumenta la cantidad de aplicaciones en 1) y que para los términos de la forma \( λx.PQ \) se cumple el caso \ref{item:ski:2d} (el cual aumenta la cantidad de aplicaciones en 2) ya que en estos casos se produce el término con mas aplicaciones, las cuales determinan la cantidad de veces que se repite el algoritmo por cada abstracción en \( M \). Para calcular la cota superior de la cantidad de aplicaciones \( a' \) que produce el algoritmo para un término con \( n \) abstracciones se plantea la siguiente relación de recurrencia:
+
+  \begin{align*}
+    \mathit{a}'_{0} &= \mathit{a} \\
+    \mathit{a}'_{n} &= 2 \times \mathit{a}'_{n-1} + \mathit{v}
+  \end{align*}
+
+  Esta recurrencia describe la función \( \mathit{a}' \colon \mathbb{N} \to \mathbb{N} \):
+
+  \[ \mathit{a}'(n) = 2^{n} \times \mathit{a} + (2^{n}-1) \times \mathit{v} \]
+
+  Para la cota superior de la cantidad de pasos realizados por el algoritmo para un término \( M \) con \( n \) abstracciones, se plantea la siguiente relación de recurrencia basada en \( \mathit{a}' \) y en el hecho de que la cantidad de variables ligadas y no enlazadas no aumenta en los pasos del algoritmo:
+
+  \begin{align*}
+    \mathit{p}_{0} &= 0 \\
+    \mathit{p}_{n} &= \mathit{p}_{n-1} + \mathit{a}'(n-1) + \mathit{v}
+  \end{align*}
+
+  Esta recurrencia describe la función \( \mathit{p} \colon \mathbb{N} \to \mathbb{N} \):
+
+  \begin{align*}
+    \mathit{p}(n) &= (\mathit{a} + \mathit{v}) \times \sum_{i=0}^{n-1} 2^{i} \\
+                  &= (\mathit{a} + \mathit{v}) \times (2^{n}-1)
+  \end{align*}
+  
+\end{proof}
+
+\subsubsection{Lemas y corolarios sobre términos lambda en \( \bs{λKβ} \)}
+\label{sec:lemas-y-corolarios}
+
+Resultados sobre términos lambda en la teoría \( \bs{λKβ} \).
+
+\subsection{Otras teorías}
 \label{sec:otras-teorias}
+
+\subsubsection{\( \bs{λIβ} \)}
 
 En el artículo \cite{Church:LambdaConversion}, Alonzo Church presenta una definición del cálculo lambda con un conjunto restringido de términos lambda. A la teoría que considera a este conjunto restringido de términos lambda (denotado \( Λ_{I} \)) y los axiomas y reglas de inferencia de la teoría \( \bs{λ} \) cambiando \( Λ \) por \( Λ_{I} \) se le conoce como teoría \( \bs{λIβ} \) (o el cálculo \( λI \)).
 
@@ -1014,33 +1130,130 @@ Sea \( \mathcal{T} \) una teoría formal, se considera extender \( \mathcal{T} \
   \[ \mathcal{T} \vdash C \]
 \end{defn}
 
-\subsubsection{Lemas y corolarios sobre términos lambda en \( \bs{λKβ} \)}
-\label{sec:lemas-y-corolarios}
-
-Resultados sobre términos lambda en la teoría \( \bs{λKβ} \).
-
 \subsection{Teoría de reducción}
 \label{sec:teoriareduccion}
+
+1.14 y 2.9
 
 \subsubsection{Contracciones}
 \label{sec:contracciones}
 
 Transformaciones de términos con un paso.
 
+\begin{defn}[Contracciones Hindley y Seldin]
+  \label{defn:contraccion}
+  Dado un término lambda \( X \), una \emph{contracción} en \( X \) es una tripleta \( \langle X,R,Y \rangle \), denotada \( X \contract{R} Y \), donde \( R \) es una aparición de un \emph{redex} en \( X \) y \( Y \) es el resultado de contraer \( R \) en \( X \).
+\end{defn}
+
+\begin{exmp}
+  \begin{align*}
+    (λx.(λy.y x)z)v &\contract{(λx.(λy.y x)z)v} (λy.y v)z ,\\
+    (λx.(λy.y x)z)v &\contract{(λy.y x)z} (λx.z x)v.
+  \end{align*}
+\end{exmp}
+
 \subsubsection{Reducciones}
 \label{sec:reducciones}
 
-Reducciones basadas en contracciones.
+Reducciones basadas en contracciones, de Barendregt
 
-\subsubsection{Convertibilidad}
-\label{sec:convertibilidad}
+\begin{defn}[Relación compatible]
+  \label{defn:compatible}
+  Si dice que una relación binaria \( \bs{R} \) sobre \( Λ \) es:
+  \begin{enumerate}
+  \item Una \emph{relación compatible} cuando
+    \[ (M,M') \in \bs{R} \implies (ZM,ZM') \in \bs{R},\ (MZ,M'Z) \in \bs{R},\ (λx.M,λx.M') \in \bs{R} \]
+    para toda \( M, M', Z \in Λ \).
+  \item Una \emph{relación de congruencia} cuando \( \bs{R} \) es compatible, reflexiva, transitiva y simétrica.
+  \item Una \emph{relación de reducción} cuando \( \bs{R} \) es compatible, reflexiva y transitiva.
+  \end{enumerate}
+  \emph{compatible} cuando
 
-Ecuaciones desde una perspectiva de reducción
+\end{defn}
 
-\subsubsection{Teorema de Church-Rosser}
-\label{sec:church-rosser}
+\begin{note}
+  Una relación \( \bs{R} \subseteq Λ^{2} \) es compatible cuando
 
-Confluencia en términos lambda.
+  \[ (M,M') \in \bs{R} \implies (C[M],C[M']) \in \bs{R} \]
+
+  para toda \( M, M' \in Λ \) y todo contexto \( C[\quad] \), con un hoyo.
+\end{note}
+
+\begin{defn}
+  \label{defn:nocion-reduccion}
+  Una \emph{noción de reducción} en \( Λ \) es una relación binaria \( \bs{R} \) en \( Λ \).
+\end{defn}
+
+Sean \( \bs{R}_{1} \) y \( \bs{R}_{2} \) nociones de reducción, la relación \( \bs{R}_{1} \cup \bs{R}_{2} \) se denota \( \bs{R}_{1}\bs{R}_{2} \).
+
+
+\begin{defn}[Reducción \( \bs{β} \)]
+  La regla \eqref{teorialambda:beta} en la teoría \( \bs{λ} \) se puede definir como la reducción:
+  
+  \[ \bs{β} = \{ ((λx.M)N,M[x:=N]) : M, N \in Λ \} \]
+\end{defn}
+
+\begin{defn}
+  Sea \( \bs{R} \) una noción de reducción en \( Λ \), \( \bs{R} \) introduce las relaciones binarias:
+
+  \begin{itemize}
+  \item R-reducción en un paso, denotada \( \contract{R} \) y definida de manera inductiva como:
+    \begin{align*}
+      \text{(1)} && (M,N) \in \bs{R} &\implies M \contract{R} N \\
+      \text{(2)} && M \contract{R} N &\implies Z M \contract{R} Z N \\
+      \text{(3)} && M \contract{R} N &\implies M Z \contract{R} N Z \\ 
+      \text{(4)} && M \contract{R} N &\implies λx.M \contract{R} λx.N
+    \end{align*}
+  \item R-reducción, denotada \( \reduce{R} \) y definida de manera inductiva como:
+    \begin{align*}
+      \text{(1)} && M \contract{R} N &\implies M \reduce{R} N \\
+      \text{(2)} && M \reduce{R} M \\
+      \text{(3)} && M \reduce{R} N,\ N \reduce{R} L &\implies M \reduce{R} L
+    \end{align*}
+  \item R-convertibilidad, denotada \( \convertible{R} \) y definida de manera inductiva como:
+    \begin{align*}
+      \text{(1)} && M \reduce{R} N &\implies M \convertible{R} N \\
+      \text{(2)} && M \convertible{R} N &\implies N \convertible{R} M \\
+      \text{(3)} && M \convertible{R} N,\ N \convertible{R} L &\implies M \convertible{R} L
+    \end{align*}
+  \end{itemize}
+\end{defn}
+
+\begin{lem}
+  Las relaciones \( \contract{R} \), \( \reduce{R} \) y \( \convertible{R} \) son compatibles. Por lo tanto \( \reduce{R} \) es una relación de reducción y \( \convertible{R} \) es una relación de congruencia.
+\end{lem}
+
+\begin{proof}
+  
+\end{proof}
+
+Usualmente una noción de reducción se introduce de la siguiente manera: ``Sea \( \bs{R} \) definida por las siguientes \emph{reglas de contracción} \ \( \bs{R} \colon M \contract{} N \text{ dado que } ... \)''.
+
+Esto significa que \( \bs{R} = \{ (M,N) : ... \} \), por ejemplo, \( \bs{β} \) pudo haber sido introducida por la siguiente regla de contracción
+
+\[ \bs{β} : (λx.M)N \contract{} M[x:=N] \]
+
+\begin{defn}
+  \begin{enumerate}
+  \item Un \( R \)-redex es un término \( M \) tal que \( (M,N) \in R \) para algún término \( N \). En este caso \( N \) es llamado un \( R \)-contractum de \( M \).
+  \item Un término \( M \) es llamado una forma normal de \( R \), denotado \( R-fn \), si \( M \) no contiene algún \( R \)-redex.
+  \item Un término \( N \) es una \( R-fn \) de \( M \) (o \( M \) tiene la \( R-fn \) \( N \)) si \( N \) es una \( R-fn \) y \( M \convertible{R} N \).
+  \end{enumerate}
+\end{defn}
+
+El proceso de pasar de un redex a su contractum es llamado \emph{contracción}. En lugar de escribir ``\( M \) es una \( R-fn \)'' usualmente se escribe ``\( M \) está en \( R-fn \)'', pensando en una máquina que ha llegado a su estado final.
+
+\begin{exmp}
+  \( (λx.x x)λy.y \) es un \( β \)-redex. Por lo tanto \( (λx.x x)(λy.y)z \) no está en \( β-fn \); sin embargo este término tiene la \( β-fn \) \( z \).
+\end{exmp}
+
+Plantear las ideas para pasar del concepto de contracción al de reducción y posteriormente al de convertibilidad.
+
+Gráficas de reducción.
+
+Teorema de Church-Rosser y toda la magia necesaria para abordarlo y la magia que valga la pena mencionar en la que CR es importante va aquí.
+
+Probablemente es buena idea separar la sección ``Noción informal del cálculo lambda'' y ``Formalización del cálculo lambda'' en dos capítulos diferentes. ¿Valdrá la pena abordar árboles de Böhm?
 
 \subsection{Árboles Böhm}
 \label{sec:arboles-bohm}

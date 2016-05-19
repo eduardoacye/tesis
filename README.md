@@ -12,16 +12,16 @@
     - [ ] Formalización del cálculo lambda
       - [x] Términos lambda
       - [ ] Teoría \lambda K \beta
-    - [ ] Otras teorías
-      - [ ] \lambda I \beta
-      - [ ] Extensionalidad
-    - [ ] Equivalencia de teorías
-    - [ ] Teoría de reducción
-      - [ ] Contracciones
-      - [ ] Reducciones
-      - [ ] Convertibilidad
-    - [ ] Teorema de Church-Rosser
-    - [ ] Árboles Bohm
+      - [ ] Otras teorías
+        - [ ] \lambda I \beta
+        - [ ] Extensionalidad
+        - [ ] Equivalencia de teorías
+      - [ ] Teoría de reducción
+        - [ ] Contracciones
+        - [ ] Reducciones
+        - [ ] Convertibilidad
+        - [ ] Teorema de Church-Rosser
+      - [ ] Árboles Bohm
   - [ ] Codificación de objetos
     - [ ] Álgebra booleana
       - [ ] Valores de verdad

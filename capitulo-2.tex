@@ -2,6 +2,8 @@
 \section{Álgebra Booleana}
 \label{sec:algebra-booleana}
 
+\paragraph{Reescribir} Esto se tiene que escribir bien, ver al final de la sección otra metodología para desarrollar las ideas.
+
 Uno de los atributos del cálculo lambda es que nos permite codificar información usando términos lambda y definir algoritmos utilizando reducciones que manipulen estos términos. Un buen ejemplo de esto es la  representación de valores de verdad, de los cuales podemos derivar las operaciones elementales del álgebra booleana.
 
 Se establecen primero los cimientos de este sistema booleano primitivo determinando la representación de los valores \emph{verdadero} y \emph{falso}. Los algoritmos que se elaboran en esta subsección se basan en los términos que se les asocia a estos dos valores.
@@ -155,6 +157,74 @@ Este término debe ser aplicado como
 para ser \( β \)-reducido de manera correcta.
 
 Queda pendiente expandir el trabajo de lógica proposicional que se ha desarrollado a la admisión de mas de dos valores de verdad, buscando ser consistente con la metodología de derivación de términos utilizada.
+
+\subsection*{Cambios en la metodología}
+
+Explicar de manera clara por qué \( T \synteq λx y.x \) y \( F \synteq λx y.y \). Si se comienza formulando el término lambda para la expresión condicional \emph{if-then-else} se pueden construír de manera mas explícita los conectivos lógicos:
+
+\[ B \synteq λp t f.p t f \]
+
+\begin{itemize}
+\item Si \( p \) es \( λx y.x \) entonces se \( β \)-reduce a \( t \)
+\item Si \( p \) es \( λx y.y \) entonces se \( β \)-reduce a \( f \)
+\end{itemize}
+
+De esta manera se pueden ``programar'' los conectivos lógicos de la siguiente manera
+
+\subsubsection*{Conjunción}
+
+\begin{verbatim}
+Conjuncion (predicado1, predicado2) =
+    Si predicado1, entonces:
+        Si predicado2, entonces:
+            Verdadero
+        De lo contrario:
+            Falso
+    De lo contrario:
+        Falso
+\end{verbatim}
+
+\begin{align*}
+  \land & \synteq λp q.B p (B q T F) F \\
+        & \contract{β} λp q.p (B q T F) F \\
+        & \contract{β} λp q.p (q T F) F \\
+        & \reduce{β} λp q.p q F
+\end{align*}
+
+\subsubsection*{Disyunción}
+
+\begin{verbatim}
+Disyuncion (predicado1, predicado2) =
+    Si predicado1, entonces:
+        T
+    De lo contrario:
+        Si predicado2, entonces:
+            T
+        De lo contrario:
+            F
+\end{verbatim}
+
+\begin{align*}
+  \lor & \synteq λp q.B p T (B q T F) \\
+       & \contract{β} λp q.p T (B q T F) \\
+       & \contract{β} λp q.p T (q T F) \\
+       & \reduce{β} λp q.p T q
+\end{align*}
+
+\subsubsection*{Negación}
+
+\begin{verbatim}
+Negacion (predicado) =
+    Si predicado, entonces:
+        F
+    De lo contrario:
+        T
+\end{verbatim}
+
+\begin{align*}
+  \neg & \synteq λp.B p F T \\
+       & \contract{β} λp.p F T
+\end{align*}
 
 \section{Aritmética}
 \label{sec:aritmetica}
@@ -368,7 +438,47 @@ Presentar la representación de pares ordenados para la construcción de estruct
 
 Esta sección es apropiada para comenzar a relacionar la teoría de autómatas, lenguajes regulares y libres de contexto con sistemas medianamente complejos que se pueden incrustar en el cálculo lambda sin modificar el sistema. Un problema pudiece ser el no determinismo, pero pudiera solventar esto con el desarrollo de operaciones funcionales sobre listas (map, filter, fold, etc).
 
+\subsection*{Cambios en la metodología}
 
+Expandir el concepto de valores de verdad al de pares ordenados
+
+\subsubsection*{Constructor}
+
+\begin{verbatim}
+CreaPar (primero, segundo) =
+    Elige (x) =
+        Si x, entonces:
+            primero
+        De lo contrario:
+            segundo
+    Elige
+\end{verbatim}
+
+\begin{align*}
+  \otimes & \synteq λa d.λx.B x a d \\
+          & \contract{β} λa d.λx.x a d \\
+          & \synteq λa d x.x a d
+\end{align*}
+
+\subsubsection*{Selectores}
+
+\begin{verbatim}
+Primero (Elige) =
+    Elige(T)
+\end{verbatim}
+
+\begin{align*}
+  \otimes_{1} & \synteq λx.x T
+\end{align*}
+
+\begin{verbatim}
+Segundo (Elige) =
+    Elige(F)
+\end{verbatim}
+
+\begin{align*}
+  \otimes_{2} & \synteq λx.x F
+\end{align*}
 
 
 %%% Local Variables:

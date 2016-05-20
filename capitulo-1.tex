@@ -32,7 +32,7 @@ Debido a la notación utilizada puede parecer que las abstracciones se relaciona
 
 Es posible utilizar la definición de función para \emph{describir} operaciones y transformaciones de expresiones en el cálculo lambda, o utilizar lógica de primer orden para aseverar verdades en el sistema, o cuantificar propiedades de las expresiones utilizando números, sin embargo estos objetos matemáticos no están incrustados en el lenguaje de las expresiones y conforman lo que es el metalenguaje.
 
-Las aplicaciones son expresiones conformadas a partir de otras dos expresiones, se escriben de la forma \( (M N) \) donde \( M \) y \( N \) son cualesquiera átomos, abstracciones o aplicaciones. El concepto relacionado con las aplicaciones en la matemática clásica es el del acto de obtener un elemento del codominio de una función a partir de un elemento en su dominio, por ejemplo, considerando la función \( f(x)=x^{2} \), la aplicación de \( f \) en \( 4 \) es \( f(4) \).  La notación del cálculo lambda es similar a la notación tradicional \( f(x) \), solo que con el paréntesis abierto antes de la función, es decir, \( (f x) \). De manera similar a la aplicación de funciones, existe una operación la cual permite transformar expresiones de la forma \( (M N) \) donde \( N \) es cualquier expresión y \( M \) es una abstracción, a otra expresión \( Z \) similar al cuerpo de \( M \) pero con el argumento de \( M \) intercambiado por \( N \).
+Las aplicaciones son expresiones conformadas a partir de otras dos expresiones, se escriben de la forma \( (M\, N) \) donde \( M \) y \( N \) son cualesquiera átomos, abstracciones o aplicaciones. El concepto relacionado con las aplicaciones en la matemática clásica es el del acto de obtener un elemento del codominio de una función a partir de un elemento en su dominio, por ejemplo, considerando la función \( f(x)=x^{2} \), la aplicación de \( f \) en \( 4 \) es \( f(4) \).  La notación del cálculo lambda es similar a la notación tradicional \( f(x) \), solo que con el paréntesis abierto antes de la función, es decir, \( (f\, x) \). De manera similar a la aplicación de funciones, existe una operación la cual permite transformar expresiones de la forma \( (M\, N) \) donde \( N \) es cualquier expresión y \( M \) es una abstracción, a otra expresión \( Z \) similar al cuerpo de \( M \) pero con el argumento de \( M \) intercambiado por \( N \).
 
 Las abstracciones y aplicaciones del cálculo lambda son en algunos aspectos más restrictivos que las funciones y la aplicación de funciones. La función considera dos conjuntos cualquiera y no importa que propiedades tengan sus elementos o que operaciones se pueden realizar sobre ellos. Por otro lado, las abstracciones y aplicaciones sólo pueden ser descritas a partir de otras expresiones del cálculo lambda.
 
@@ -64,35 +64,35 @@ Con solo átomos, aplicaciones y abstracciones se pueden formular expresiones co
 \end{exmp}
 
 
-Los átomos por si solos son expresiones válidas, en el inciso \eqref{eq:expresiones:a} aparece el átomo \( x \), como tal no tiene mucha utilidad, no podemos decir que toma valores en algún conjunto o que representa algún valor en particular como falso o verdadero, es tan sólo un símbolo. Al ser parte de otra expresión, un átomo puede tener más relevancia, en el inciso \eqref{eq:expresiones:b} el átomo \( x \) en el cuerpo de la abstracción \( (λx.x) \) y ahora tiene el potencial de ser cambiado por cualquier otra expresión debido a que también es el argumento.
+Los átomos por si solos son expresiones válidas, en el inciso \eqref{eq:expresiones:a} aparece el átomo \( x \), como tal no tiene mucha utilidad, no podemos decir que toma valores en algún conjunto o que representa algún valor en particular como falso o verdadero, es tan sólo un símbolo. Al ser parte de otra expresión, un átomo puede tener más relevancia, en el inciso \eqref{eq:expresiones:b} el átomo \( x \) es el cuerpo de la abstracción \( (λx.x) \) y ahora tiene el potencial de ser cambiado por cualquier otra expresión debido a que también es el argumento.
 
-En el inciso \eqref{eq:expresiones:c} se tiene la aplicación del átomo \( y \) en la abstracción del inciso \eqref{eq:expresiones:b}. A pesar de ser contraintuitivo, las expresiones de aplicación se componen de dos expresiones cualesquiera, por lo tanto, a pesar de estar asociada conceptualmente con la aplicación de funciones, la expresión \( (y(λx.x)) \) es válida. La expresión del inciso \eqref{eq:expresiones:d} contiene la expresión anterior en una abstracción en la primer parte de la aplicación y nos permite observar dos ideas importantes: primero, las abstracciones pueden ser aplicadas a abstracciones; segundo, al realizar la operación de aplicar \( (λy.(y(λx.x))) \) a \( (λw.w) \), el átomo \( y \) es intercambiado por la expresión \( (λw.w) \) la cual a su vez puede ser aplicada a la expresión \( (λx.x) \).
+En el inciso \eqref{eq:expresiones:c} se tiene la aplicación del átomo \( y \) en la abstracción del inciso \eqref{eq:expresiones:b}. A pesar de ser contraintuitivo, las expresiones de aplicación se componen de dos expresiones cualesquiera, por lo tanto, a pesar de estar asociada conceptualmente con la aplicación de funciones, la expresión \( (y (λx.x)) \) es válida. La expresión del inciso \eqref{eq:expresiones:d} contiene la expresión anterior en una abstracción en la primer parte de la aplicación y nos permite observar dos ideas importantes: primero, las abstracciones pueden ser aplicadas a abstracciones; segundo, al realizar la operación de aplicar \( (λy.(y(λx.x))) \) a \( (λw.w) \), el átomo \( y \) es intercambiado por la expresión \( (λw.w) \) la cual a su vez puede ser aplicada a la expresión \( (λx.x) \).
 
 \begin{exmp}
-  Procedimiento de aplicar \( (λy.(y(λx.x))) \) en \( (λw.w) \)
+  Procedimiento de aplicar \( (λy.(y (λx.x))) \) en \( (λw.w) \)
   \label{exmp:aplicacion}
   \begin{align*}
-    \text{1. } & ((λy.(y(λx.x)))(λw.w)) & \text{expresión del inciso \eqref{eq:expresiones:d}} \\
-    \text{2. } & ((λw.w)(λx.x)) & \text{al aplicar \( (λy.(y(λx.x))) \) a \( (λw.w) \)} \\
+    \text{1. } & ((λy.(y (λx.x)))(λw.w)) & \text{expresión del inciso \eqref{eq:expresiones:d}} \\
+    \text{2. } & ((λw.w)(λx.x)) & \text{al aplicar \( (λy.(y (λx.x))) \) a \( (λw.w) \)} \\
     \text{3. } & (λx.x) & \text{al aplicar \( (λw.w) \) a \( (λx.x) \)}
   \end{align*}
 \end{exmp}
 
-En el inciso \eqref{eq:expresiones:e} se presenta una abstracción cuyo cuerpo es la aplicación de su argumento sobre sí mismo. Lo interesante de esta expresión es que es que encapsula la idea de replicar a partir de la aplicación cualquier expresión a la que sea aplicada. Por ejemplo, si aplicamos \( (λx.(x x)) \) al átomo \( y \) y se realiza el procedimiento de aplicación como en el ejemplo \ref{exmp:aplicacion}, se obtiene \( (y y) \) y en general al realizar la operación de aplicación sobre \( ((λx.(x x))M) \) donde \( M \) es cualquier expresión, se obtiene \( (M M) \). Con ésta expresión se puede formular una expresión auto-replicante en el cálculo lambda:
+En el inciso \eqref{eq:expresiones:e} se presenta una abstracción cuyo cuerpo es la aplicación de su argumento sobre sí mismo. Lo interesante de esta expresión es que es que encapsula la idea de replicar a partir de la aplicación cualquier expresión a la que sea aplicada. Por ejemplo, si aplicamos \( (λx.(x\, x)) \) al átomo \( y \) y se realiza el procedimiento de aplicación como en el ejemplo \ref{exmp:aplicacion}, se obtiene \( (y\, y) \) y en general al realizar la operación de aplicación sobre \( ((λx.(x\, x))M) \) donde \( M \) es cualquier expresión, se obtiene \( (M\, M) \). Con ésta expresión se puede formular una expresión auto-replicante en el cálculo lambda:
 
 \begin{exmp}
-  Procedimiento de aplicar \( (λx.(x x)) \) a \( (λx.(x x)) \)
+  Procedimiento de aplicar \( (λx.(x\, x)) \) a \( (λx.(x\, x)) \)
   \label{exmp:aplicacion2}
   \begin{align*}
-    \text{1. } & ((λx.(x x))(λx.(x x))) & \text{expresión del inciso \eqref{eq:expresiones:e} aplicada a sí misma} \\
-    \intertext{\centering En \( (x x) \) se cambia cada \( x \) por \( (λx.(x x)) \)}
-    \text{2. } & ((λx.(x x))(λx.(x x))) & \text{resultado del procedimiento.}
+    \text{1. } & ((λx.(x\, x))(λx.(x\, x))) & \text{expresión del inciso \eqref{eq:expresiones:e} aplicada a sí misma} \\
+    \intertext{\centering En \( (x\, x) \) se cambia cada \( x \) por \( (λx.(x\, x)) \)}
+    \text{2. } & ((λx.(x\, x))(λx.(x\, x))) & \text{resultado del procedimiento.}
   \end{align*}
 \end{exmp}
 
 A este tipo de expresiones se les llaman ``quines'' \cite[pp.~431--437]{Hofstadter:GEB} término originalmente asociado a una paradoja sobre sistemas lógicos \cite{Quine:Paradox}. En la actualidad, el término ``quine'' hace referencia a un programa cuya \emph{salida} es el programa mismo.
 
-En el inciso \eqref{eq:expresiones:f} se tiene una abstracción cuyo cuerpo es otra abstracción. El concepto interesante que ilustra esta expresión es el de la representación de funciones de varias variables. Al realizar la operación de abstracción de \( (λf.(λx.(f(f x)))) \) a una expresión cualquiera \( M \) se obtiene \( (λx.(M(M x))) \). Si posteriormente se realiza la aplicación de este resultado a una expresión cualquiera \( N \) se obtiene \( (M(M N)) \), esto sería similar al resultado que se obtendría de aplicar una función con argumentos \( f \) y \( x \), con cuerpo \( f(f(x)) \) a dos valores de su dominio \( M \) y \( N \).
+En el inciso \eqref{eq:expresiones:f} se tiene una abstracción cuyo cuerpo es otra abstracción. El concepto interesante que ilustra esta expresión es el de la representación de funciones de varias variables. Al realizar la operación de abstracción de \( (λf.(λx.(f(f\, x)))) \) a una expresión cualquiera \( M \) se obtiene \( (λx.(M(M\, x))) \). Si posteriormente se realiza la aplicación de este resultado a una expresión cualquiera \( N \) se obtiene \( (M(M\, N)) \), esto sería similar al resultado que se obtendría de aplicar una función con argumentos \( f \) y \( x \), con cuerpo \( f(f(x)) \) a dos valores de su dominio \( M \) y \( N \).
 
 Otra manera de representar funciones de varias variables como abstracciones del cálculo lambda es codificando \emph{tuplas} o \emph{secuencias} y poder hacer referencia a sus elementos de manera individual en el sistema, sin embargo, representar secuencias es un mecanismo más complejo que se aborda en el siguiente capítulo.
 
@@ -117,11 +117,11 @@ En muchos casos la operación de sustitución se puede realizar de manera trivia
     \label{eq:sustituciones:a} \tag{a}
     \subst{x}{x}{y} & = y \\
     \label{eq:sustituciones:b} \tag{b}
-    \subst{(x(x(λy.y)))}{x}{z} & = ((z z)(λy.y)) \\
+    \subst{(x(x(λy.y)))}{x}{z} & = ((z\, z)(λy.y)) \\
     \label{eq:sustituciones:c} \tag{c}
-    \subst{\subst{(((w x)y)z)}{x}{a}}{y}{b} & = (((w a)b)z) \\
+    \subst{\subst{(((w\, x)y)z)}{x}{a}}{y}{b} & = (((w\, a)b)z) \\
     \label{eq:sustituciones:d} \tag{d}
-    \subst{(x x)}{x}{(λw.w)} & = ((λw.w)(λw.w))
+    \subst{(x\, x)}{x}{(λw.w)} & = ((λw.w)(λw.w))
   \end{align}
 \end{exmp}
 
@@ -138,7 +138,7 @@ Existen algunos detalles de la sustitución que se deben tomar en cuenta para ev
 
 Para entender la operación de sustitución se tiene que pensar que lo que le da sentido a un átomo \( x \) es una \( λ x \). Consideremos la expresión
 
-\[ (λx.(λy.((x y)z))) \]
+\[ (λx.(λy.((x\, y)z))) \]
 
 el átomo \( x \) que aparece en el cuerpo de la expresión se dice ser una variable \emph{ligada} a la \( λ x \), la cual se puede pensar como una especie de ``referencia'' a la expresión a la que la abstracción es aplicada, esto limita a la operación de sustitución a no romper la referencia de una variable ligada. De igual manera, el átomo \( y \) es una variable ligada a la \( λ y \) y debe mantener su referencia bajo la operación de sustitución. Sin embargo, el átomo \( z \) es lo que se llama variable \emph{libre}: No está en el \emph{alcance} de alguna \( λ z \) y puede ser libremente sustituida por alguna otra expresión.
 
@@ -163,9 +163,9 @@ Cuando se realiza un cambio de variable ligada sobre una abstracción \( (λx.M)
   Múltiples cambios de variable ligada
   \label{exmp:variableligada}
   \begin{align*}
-    \text{1. } & (λf.(λx.(f(f(f x))))) & \\
-    \text{2. } & (λg.(λx.(g(g(g x))))) & \text{Cambiando \( f \) por \( g \)} \\
-    \text{3. } & (λg.(λy.(g(g(g y))))) & \text{Cambiando \( x \) por \( y \)}
+    \text{1. } & (λf.(λx.(f(f(f\, x))))) & \\
+    \text{2. } & (λg.(λx.(g(g(g\, x))))) & \text{Cambiando \( f \) por \( g \)} \\
+    \text{3. } & (λg.(λy.(g(g(g\, y))))) & \text{Cambiando \( x \) por \( y \)}
   \end{align*}
 \end{exmp}
 
@@ -178,7 +178,7 @@ La definición de la operación de sustitución es recursiva y hace uso de la op
 \begin{itemize}
 \item \( \subst{x}{x}{M} \) resulta en \( M \);
 \item \( \subst{y}{x}{M} \) resulta en \( y \);
-\item \( \subst{(M N)}{x}{P} \) resulta en \( (\subst{M}{x}{P} \subst{N}{x}{P}) \);
+\item \( \subst{(M\, N)}{x}{P} \) resulta en \( (\subst{M}{x}{P} \subst{N}{x}{P}) \);
 \item \( \subst{(λx.M)}{x}{N} \) resulta en \( (λx.M) \) debido a que las referencias a \( x \) no deben eliminarse;
 \item \( \subst{(λy.M)}{x}{N} \) resulta en:
   \begin{itemize}
@@ -220,11 +220,11 @@ A continuación se presentan ejemplos de aplicación de abstracciones con los pa
   Procedimiento de múltiples aplicaciones
   \label{exmp:aplicacion8}
   \begin{align*}
-    \text{1. } & (((λf.(λx.(f(f(f x))))) g) y) \\
-    \text{2. } & ((λx.\subst{(f(f(f x)))}{f}{g}) y) \\
-    \text{3. } & ((λx.(g(g(g x)))) y) \\
-    \text{4. } & \subst{(g(g(g x)))}{x}{y} \\
-    \text{5. } & (g(g(g y)))
+    \text{1. } & (((λf.(λx.(f(f(f\, x))))) g) y) \\
+    \text{2. } & ((λx.\subst{(f(f(f\, x)))}{f}{g}) y) \\
+    \text{3. } & ((λx.(g(g(g\, x)))) y) \\
+    \text{4. } & \subst{(g(g(g\, x)))}{x}{y} \\
+    \text{5. } & (g(g(g\, y)))
   \end{align*}
 \end{exmp}
 
@@ -243,16 +243,16 @@ La \emph{equivalencia sintáctica} es una relación binaria entre expresiones qu
 
 Todos los cálculos lambda, al igual que la mayoría de los sistemas formales, comprenden la noción de equivalencia sintáctica. Sin embargo las equivalencias más interesantes son las que involucran transformaciones entre expresiones.
 
-La operación de cambio de variable ligada se relaciona con una equivalencia estructural entre dos expresiones. Cuando se realiza esta operación no se modifica la estructura de la expresión, únicamente se modifica el símbolo usado para representar un átomo. Considerando la expresión que representa a la función identidad \( (λx.x) \) se observa que tiene la misma estructura que la abstracción \( (λy.y) \) y que \( (λz.z) \), estas tres representan el mismo concepto. De igual manera otras expresiones como \( ((x y)z) \) o \( (λw.x) \) son estructuralmente equivalentes a \( ((a b)c) \) y \( (λf.h) \) respectivamente. A pesar de que no se escriben sintácticamente igual, la correspondencia que hay entre las posiciones de los átomos en una y otra expresión nos permite considerarlas como equivalentes. Sin embargo, la operación de cambio de variable ligada no considera cambios de nombres a átomos que sean variables libres. Esta relación de equivalencia es llamada \( α \)-convertibilidad y se denota como \( M \convertible{α} N \) para dos expresiones del cálculo lambda \( M \) y \( N \) en donde a partir de un número finito de cambios de variables ligadas en \( M \) o parte de \( M \) y en \( N \) o parte de \( N \) se puedan obtener expresiones sintácticamente equivalentes.
+La operación de cambio de variable ligada se relaciona con una equivalencia estructural entre dos expresiones. Cuando se realiza esta operación no se modifica la estructura de la expresión, únicamente se modifica el símbolo usado para representar un átomo. Considerando la expresión que representa a la función identidad \( (λx.x) \) se observa que tiene la misma estructura que la abstracción \( (λy.y) \) y que \( (λz.z) \), estas tres representan el mismo concepto. De igual manera otras expresiones como \( ((x\, y)z) \) o \( (λw.x) \) son estructuralmente equivalentes a \( ((a\, b)c) \) y \( (λf.h) \) respectivamente. A pesar de que no se escriben sintácticamente igual, la correspondencia que hay entre las posiciones de los átomos en una y otra expresión nos permite considerarlas como equivalentes. Sin embargo, la operación de cambio de variable ligada no considera cambios de nombres a átomos que sean variables libres. Esta relación de equivalencia es llamada \( α \)-convertibilidad y se denota como \( M \convertible{α} N \) para dos expresiones del cálculo lambda \( M \) y \( N \) en donde a partir de un número finito de cambios de variables ligadas en \( M \) o parte de \( M \) y en \( N \) o parte de \( N \) se puedan obtener expresiones sintácticamente equivalentes.
 
 Una técnica utilizada por algoritmos que verifican si dos expresiones \( M \) y \( N \) son \( α \)-convertibles es la de \emph{índices de De Bruijn}, esta transformación cambia la aparición de átomos por números naturales que representan la ``distancia'' de los átomos a las \( λ \) que hacen referencia.
 
 \begin{exmp}[índices de De Bruijn]
   \label{exmp:indices-debrujn}
-  La expresión \( (λz.((λy.(y(λx.x)))(λx.(z x)))) \) se escribe usando índices de De Bruijn como
+  La expresión \( (λz.((λy.(y(λx.x)))(λx.(z\, x)))) \) se escribe usando índices de De Bruijn como
   \label{exmp:debrujn}
 
-  \[ λ (λ 1 (λ 1)) (λ 2\ 1) \]
+  \[ λ (λ 1 (λ 1)) (λ 2\, 1) \]
 
   En la figura \ref{fig:debrujn} se puede observar de manera gráfica la transformación de una notación a otra para este ejemplo, visualizando las expresiones del cálculo lambda como árboles.
 \end{exmp}
@@ -261,7 +261,7 @@ Una técnica utilizada por algoritmos que verifican si dos expresiones \( M \) y
   \centering
 
   \begin{tikzpicture}[level/.style={sibling distance=60mm/#1}]
-    \node [draw] (term) {\( (λz.((λy.(y (λx.x))) (λx.(z x)))) \)};
+    \node [draw] (term) {\( (λz.((λy.(y (λx.x))) (λx.(z\, x)))) \)};
     \node [below of=term] (arrow1) {\( \Downarrow \)};
     \node [circle,draw,below of= arrow1] (z) {\( λ z \)}
       child {
@@ -309,7 +309,7 @@ Una técnica utilizada por algoritmos que verifican si dos expresiones \( M \) y
         }
       };
       \node [below=130pt of z2] (arrow3) {\( \Downarrow \)};
-      \node [draw,below of=arrow3](bruijn) {\( λ (λ 1 (λ 1)) (λ 2\ 1) \)};
+      \node [draw,below of=arrow3](bruijn) {\( λ (λ 1 (λ 1)) (λ 2\, 1) \)};
   \end{tikzpicture}
   
   \caption{Transformación gráfica del ejemplo \ref{exmp:debrujn}}
@@ -324,7 +324,7 @@ Esta relación de equivalencia es llama \( β \)-convertibilidad y se denota com
 
 Es importante enfatizar que la \( β \)-convertibilidad considera el proceso inverso de la aplicación de abstracciones, por ejemplo
 
-\[ (f(f(f x))) \convertible{β} (((λg.(λy.(g (g (g y))))) f) x) \]
+\[ (f(f(f\, x))) \convertible{β} (((λg.(λy.(g (g (g\, y))))) f) x) \]
 
 Todas las relaciones de equivalencia por definición cumplen con tres propiedades:
 
@@ -361,11 +361,11 @@ Al igual que Haskell Curry en \cite[p.~59]{Curry:CombinatoryLogicI} se utilizan 
 
 Las ecuaciones en la definición \ref{defn:sim} son muy parecidas a las propiedades de la \( β \)-conversión, con la excepción de que la \( β \)-conversión relaciona expresiones en donde sus partes fueron transformadas y \( \sim \) no, por ejemplo
 
-\[ (λf.((λx.(f x)) y)) \convertible{β} (λf.(f y)) \]
+\[ (λf.((λx.(f\, x)) y)) \convertible{β} (λf.(f\, y)) \]
 
 pero
 
-\[ (λf.((λx.(f x)) y)) \nsim (λf.(f y)) \]
+\[ (λf.((λx.(f\, x)) y)) \nsim (λf.(f\, y)) \]
 
 Para capturar la definición de \( β \)-convertibilidad con ecuaciones, es necesario definir a \( \sim \) en partes de una expresión. Las siguientes reglas, nombradas por Curry \cite[p.~59]{Curry:CombinatoryLogicI} como \( ν \), \( μ \) y \( ξ \), junto con las reglas de \(\sim\) completan la definición declarativa de \( β \)-convertibilidad:
 
@@ -375,9 +375,9 @@ Para capturar la definición de \( β \)-convertibilidad con ecuaciones, es nece
   \begin{subequations}
     \begin{align}
       \label{simbeta:nu} \tag{\( ν \)}
-      M \sim N & \implies (M Z) \sim (N Z) \\
+      M \sim N & \implies (M\, Z) \sim (N\, Z) \\
       \label{simbeta:mu} \tag{\( μ \)}
-      M \sim N & \implies (Z M) \sim (Z N) \\
+      M \sim N & \implies (Z\, M) \sim (Z\, N) \\
       \label{simbeta:xi} \tag{\( ξ \)}
       M \sim N & \implies (λx.M) \sim (λx.N)
     \end{align}
@@ -387,11 +387,11 @@ Para capturar la definición de \( β \)-convertibilidad con ecuaciones, es nece
 Con estas reglas, las inferencias lógicas nos permiten abordar la equivalencia sobre partes de una expresión.
 
 \begin{exmp}
-  Razonamiento para concluir que \( (λf.((λx.(f x)) y)) \sim (λf.(f y)) \)
+  Razonamiento para concluir que \( (λf.((λx.(f\, x)) y)) \sim (λf.(f\, y)) \)
   \label{exmp:razonamiento-sim}
   \begin{align*}
-    \text{1. } & ((λx.(f x)) y) \sim (f y) & & \text{por \( β \)} \\
-    \text{2. } & (λf.((λx.(f x)) y)) \sim (λf.(f y)) & & \text{por \( ξ \)}
+    \text{1. } & ((λx.(f\, x)) y) \sim (f\, y) & & \text{por \( β \)} \\
+    \text{2. } & (λf.((λx.(f\, x)) y)) \sim (λf.(f\, y)) & & \text{por \( ξ \)}
   \end{align*}
 \end{exmp}
 
@@ -399,7 +399,7 @@ Es posible incluir aún más reglas de equivalencia cuando se estudia el cálcul
 
 Por ejemplo, se pueden considerar dos abstracciones diferentes \( (λx.M) \) y \( (λy.N) \) que al ser aplicadas a cualquier expresión \( Z \) sean \( β \)-convertibles a una misma expresión \( W \). Si se relacionan las abstracciones del cálculo lambda con funciones, es natural pensar que \( M \) y \( N \) sean equivalentes, ya que por definición, dos funciones \( f \) y \( g \) son equivalentes si para toda \( x \) en su dominio \( f(x)=g(x) \). Por ejemplo, las funciones \( f(n)=\sum_{i=0}^{n}i \) y \( g(n)=\frac{n(n+1)}{2} \) a pesar de describir dos procedimientos diferentes para el cálculo de la suma de los primeros \( n \) números naturales son ``funcionalmente'' equivalentes ya que para todo natural \( f(n)=g(n) \). Por otro lado, si se relacionan las abstracciones del cálculo lambda con algoritmos, \( M \) y \( N \) no pudieran ser consideradas equivalentes ya que en el estudio de la complejidad algorítmica, el énfasis en la comparación entre dos procedimientos no es las entradas y salidas, si no el proceso que describen. Por ejemplo, el algoritmo de ordenamiento \emph{merge sort} logra ordenar una secuencia de \( n \) números de menor a mayor en \( \mathcal{O}(n \log n) \) mientras que el algoritmo \emph{bubble sort} computa el mismo resultado pero en \( \mathcal{O}(n^2) \).  La equivalencia ``funcional'' se pudiera incluír en la definición de \( \sim \) añadiendo la siguiente regla:
 
-\[ (M P) \sim (N P) \implies M \sim N \]
+\[ (M\, P) \sim (N\, P) \implies M \sim N \]
 
 Con esto se termina la introducción informal al cálculo lambda, las ideas que se han manejado en esta sección serán ahora formalizadas y definidas de manera rigurosa.
 
@@ -431,12 +431,12 @@ El lenguaje \( Λ \) se puede definir de diferentes maneras, a continuación se 
       \label{terminos:abstracciones} \tag{b}
       M \in Λ,\ x \in V & \implies (λx.M) \in Λ \\
       \label{terminos:aplicaciones} \tag{c}
-      M,\ N \in Λ & \implies (M N) \in Λ
+      M,\ N \in Λ & \implies (M\, N) \in Λ
     \end{align}
   \end{subequations}
 \end{defn}
 
-Cada una de estas tres reglas corresponde a las tres clases de términos lambda: la regla \eqref{terminos:atomos} define a todos los elementos de \( V \) como términos lambda, a estas variables se les llama \emph{átomos}; la regla \eqref{terminos:abstracciones} define a las cadenas de la forma \( (λx.M) \) (donde \( x \) es un átomo y \( M \) es un término lambda) como términos lambda, a estos términos se les llama \emph{abstracciones}; la regla \eqref{terminos:aplicaciones} define a las cadenas de la forma \( M N \) (donde \( M \) y \( N \) son términos lambda) como términos lambda, a estos términos se les llama \emph{aplicaciones}.
+Cada una de estas tres reglas corresponde a las tres clases de términos lambda: la regla \eqref{terminos:atomos} define a todos los elementos de \( V \) como términos lambda, a estas variables se les llama \emph{átomos}; la regla \eqref{terminos:abstracciones} define a las cadenas de la forma \( (λx.M) \) (donde \( x \) es un átomo y \( M \) es un término lambda) como términos lambda, a estos términos se les llama \emph{abstracciones}; la regla \eqref{terminos:aplicaciones} define a las cadenas de la forma \( (M\, N) \) (donde \( M \) y \( N \) son términos lambda) como términos lambda, a estos términos se les llama \emph{aplicaciones}.
 
 Una definición alternativa de \( Λ \) es haciendo uso de gramáticas libres de contexto:
 
@@ -446,13 +446,13 @@ Una definición alternativa de \( Λ \) es haciendo uso de gramáticas libres de
   \begin{subequations}
     \begin{align}
       \label{terminos-cfg:terminos} \tag{a}
-      T & \rightarrow E \mid F \mid A \\
+      T & \rightarrow E\ \mid\ F\ \mid\ A \\
       \label{terminos-cfg:atomos} \tag{b}
-      A & \rightarrow \mathtt{v}_{0} \mid A {}_{0} \\
+      A & \rightarrow \mathtt{v}_{0}\ \mid\ A {}_{0} \\
       \label{terminos-cfg:abstracciones} \tag{c}
-      F & \rightarrow \mathtt{(} λ A \mathtt{.} T \mathtt{)} \\
+      F & \rightarrow \mathtt{(} λ\ A\ \mathtt{.}\ T\ \mathtt{)} \\
       \label{terminos-cfg:aplicaciones} \tag{d}
-      E & \rightarrow \mathtt{(} T T \mathtt{)}
+      E & \rightarrow \mathtt{(}\ T\ T\ \mathtt{)}
     \end{align}
   \end{subequations}
 \end{defn}
@@ -464,9 +464,9 @@ Para facilitar la escritura y lectura de los términos lambda, en este trabajo s
 \item Cuando se hace referencia a cualquier átomo se utilizan las letras minúsculas \( x \), \( y \), \( z \), etc. Al igual que en el punto anterior, la aparición de una letra minúscula en un ejemplo, explicación, teorema o demostración hace referencia al mismo átomo.
 \item Los paréntesis son omitidos de acuerdo a las siguientes equivalencias sintácticas:
   \begin{itemize}
-  \item \( ((M N) P) \synteq M N P\), en general, se considera la aplicación de términos lambda con asociación a la izquierda. Se tiene que tener cuidado con respetar esta regla, por ejemplo \( (M(N(O P))) \synteq M(N(O P)) \not\synteq M N O P \).
-  \item \( (λx.(M N)) \synteq λx.(M N) \), en general, se puede escribir una abstracción omitiendo los paréntesis externos. Es importante escribir de manera explícita los paréntesis en algunos casos, por ejemplo \( ((λx.(M N)) O) \synteq (λx.(M N)) O \not\synteq λx.(M N)O \) ya que el lado derecho de la equivalencia es sintácticamente equivalente a \( (λx.((M N)O)) \).
-  \item \( (λx.(λy.(λz.M))) \synteq (λx y z.M) \), en general, si el cuerpo de una abstracción es también una abstracción, se pueden agrupar las variables ligadas y enlazadas. Éste abuso de notación es consistente con la reducción de funciones de varias variables usada por Schönfinkel \cite{Schonfinkel:Varargs}.
+  \item \( ((M\, N) P) \synteq M\, N\, P\), en general, se considera la aplicación de términos lambda con asociación a la izquierda. Se tiene que tener cuidado con respetar esta regla, por ejemplo \( (M(N(O\, P))) \synteq M(N(O\, P)) \not\synteq M\, N\, O\, P \).
+  \item \( (λx.(M N)) \synteq λx.(M N) \), en general, se puede escribir una abstracción omitiendo los paréntesis externos. Es importante escribir de manera explícita los paréntesis en algunos casos, por ejemplo \( ((λx.(M\, N)) O) \synteq (λx.(M\, N)) O \not\synteq λx.(M\, N)O \) ya que el lado derecho de la equivalencia es sintácticamente equivalente a \( (λx.((M\, N)O)) \).
+  \item \( (λx.(λy.(λz.M))) \synteq (λx\, y\, z.M) \), en general, si el cuerpo de una abstracción es también una abstracción, se pueden agrupar las variables ligadas y enlazadas. Éste abuso de notación es consistente con la reducción de funciones de varias variables usada por Schönfinkel \cite{Schonfinkel:Varargs}.
   \end{itemize}
 \item El símbolo \( \synteq \) denota la equivalencia sintáctica entre dos términos lambda.
 \end{itemize}
@@ -476,20 +476,20 @@ A continuación se muestran ejemplos de términos lambda asociados a términos s
 \begin{exmp}
   \label{exmp:notacion}
   \begin{align*}
-    (((x y)z) (y x)) & \synteq x y z (y x) \\
-    (λx.((u x)y)) & \synteq λx.y x y \\
-    (λy.(u(λx.y))) & \synteq λu.u(λx.y) \\
-    (((λy.((v u)u))z)y) & \synteq (λy.v u u) z y \\
-    (((u x)(y z))(λv.(v y))) & \synteq u x(y z)(λv.v y) \\
-    ((((λx.(λy.(λz.((x z) (y z))))) u) v) w) & \synteq (λx y z.x z(y z)) u v w
+    (((x\, y)z) (y\, x)) & \synteq x\, y\, z (y\, x) \\
+    (λx.((u\, x)y)) & \synteq λx.u\, x\, y \\
+    (λy.(u(λx.y))) & \synteq λy.u(λx.y) \\
+    (((λy.((v\, u)u))z)y) & \synteq (λy.v\, u\, u) z\, y \\
+    (((u\, x)(y\, z))(λv.(v\, y))) & \synteq u\, x(y\, z)(λv.v\, y) \\
+    ((((λx.(λy.(λz.((x\, z) (y\, z))))) u) v) w) & \synteq (λx\, y\, z.x\, z(y\, z)) u\, v\, w
   \end{align*}
 \end{exmp}
 
 Para hacer referencia a una secuencia con una cantidad arbitraria de términos lambda se usa la notación \( \vec{x}=x_{1},...,x_{n} \) cuando es secuencia de átomos y \( \vec{M}=M_{1},...,M_{n} \) cuando es secuencia de términos lambda en general. Con esta notación se puede abreviar
 
-\[ λ\vec{x}.M \synteq λx_{1} x_{2} ... x_{n}.M \]
+\[ λ\vec{x}.M \synteq λx_{1}\, x_{2}\, ...\, x_{n}.M \]
 
-\[ M \vec{N} \synteq M N_{1} N_{2} ... N_{n} \]
+\[ M \vec{N} \synteq M\, N_{1}\, N_{2}\, ...\, N_{n} \]
 
 En algunas demostraciones realizadas por inducción, se usa la expresión ``inducción sobre \( M \)'' para referirse a la inducción sobre la \emph{longitud} de \( M \).
 
@@ -498,14 +498,14 @@ En algunas demostraciones realizadas por inducción, se usa la expresión ``indu
   \label{defn:longitud}
   \begin{align*}
     \|x\| & = 1 \\
-    \|M N\| & = \|M\| + \|N\| \\
+    \|M\, N\| & = \|M\| + \|N\| \\
     \|λx.M\| & = 1 + \|M\|
   \end{align*}
 \end{defn}
 
-Por ejemplo, la longitud del término lambda \( x(λy.y u x) \) es \( 5 \).
+Por ejemplo, la longitud del término lambda \( x(λy.y\, u\, x) \) es \( 5 \).
 
-Una cuestión importante al momento de demostrar un teorema o definir un concepto por inducción sobre un término lambda es que usualmente la inducción matemática relaciona proposiciones con números naturales. Sin embargo es posible tener dos términos diferentes \( M \) y \( N \) tal que \( \|M\| = \|N\| \), por ejemplo \( λx.x \) y \( z z \) tienen longitud \( 2 \). La inducción sobre la longitud de un término lambda considera la estructura del término, de tal manera que para una proposición \( P \) sobre un término lambda \( M \), los casos base de la inducción son aquellos en donde la estructura no es compuesta (en átomos cuya longitud siempre es \( 1 \)) y la hipótesis de inducción considera que \( P \) se cumple para los subtérminos de \( M \) cuya longitud siempre es estrictamente menor que \( \|M\| \).
+Una cuestión importante al momento de demostrar un teorema o definir un concepto por inducción sobre un término lambda es que usualmente la inducción matemática relaciona proposiciones con números naturales. Sin embargo es posible tener dos términos diferentes \( M \) y \( N \) tal que \( \|M\| = \|N\| \), por ejemplo \( λx.x \) y \( z\, z \) tienen longitud \( 2 \). La inducción sobre la longitud de un término lambda considera la estructura del término, de tal manera que para una proposición \( P \) sobre un término lambda \( M \), los casos base de la inducción son aquellos en donde la estructura no es compuesta (en átomos cuya longitud siempre es \( 1 \)) y la hipótesis de inducción considera que \( P \) se cumple para los subtérminos de \( M \) cuya longitud siempre es estrictamente menor que \( \|M\| \).
 
 El concepto de aparición de un término lambda en otro se formaliza a partir del concepto de subtérmino:
 
@@ -515,7 +515,7 @@ El concepto de aparición de un término lambda en otro se formaliza a partir de
   \begin{align*}
     \Sub(x) & = \{ x \} \\
     \Sub(λx.M) & = \Sub(M) \cup \{ λx.M \} \\
-    \Sub(M N) & = \Sub(M) \cup \Sub(N) \cup \{ M N \}
+    \Sub(M\, N) & = \Sub(M) \cup \Sub(N) \cup \{ M\, N \}
   \end{align*}
 \end{defn}
 
@@ -524,19 +524,19 @@ El concepto de aparición de un término lambda en otro se formaliza a partir de
   \label{defn:aparicion}
 \end{defn}
 
-Un subtérmino \( N \) de \( M \) puede aparecer varias veces en \( M \), cuando dos subtérminos \( N_{1} \) y \( N_{2} \) de \( M \) no tienen apariciones de átomos en común, se dice que son \emph{disjuntas}. Cuando \( N \) es subtérmino de \( M \) se le llama \emph{activo} si aparece en una aplicación de la forma \( N Z \), de lo contrario, se le llama \emph{pasivo}.
+Un subtérmino \( N \) de \( M \) puede aparecer varias veces en \( M \), cuando dos subtérminos \( N_{1} \) y \( N_{2} \) de \( M \) no tienen apariciones de átomos en común, se dice que son \emph{disjuntas}. Cuando \( N \) es subtérmino de \( M \) se le llama \emph{activo} si aparece en una aplicación de la forma \( N\, Z \), de lo contrario, se le llama \emph{pasivo}.
 
 Cuando \( λx.M \) es un subtérmino de \( P \), se dice que la aparición \( M \) es el \emph{alcance} de la aparición del átomo \( x \) que acompaña a la \( λ \).
 
 \begin{exmp}
-  Sea \( M \synteq λx.x y (λz.y) \):
+  Sea \( M \synteq λx.x\, y (λz.y) \):
   \label{exmp:subterminos-apariciones}
   \begin{itemize}
-  \item el término \( x y \subset M \);
+  \item el término \( x\, y \subset M \);
   \item el átomo \( z \not\subset M \) pero si aparece en \( M \), debido a que \( z \) acompaña a \( λ \);
-  \item el término \( y(λz.y) \) a pesar de parecer ser un subtérmino de \( M \) no lo es, esto se puede corroborar escribiendo los términos sin el abuso de notación: \( y(λz.y) \synteq (y(λz.y)) \) y \( M \synteq λx.x y(λz.y) \synteq (λx.((x y)(λz.y))) \), en este caso, la clave está en observar la estructura de la aplicación \( x y(λz.y) \).
+  \item el término \( y(λz.y) \) a pesar de parecer ser un subtérmino de \( M \) no lo es, esto se puede corroborar escribiendo los términos sin el abuso de notación: \( y(λz.y) \synteq (y(λz.y)) \) y \( M \synteq λx.x y(λz.y) \synteq (λx.((x\, y)(λz.y))) \), en este caso, la clave está en observar la estructura de la aplicación \( x\, y(λz.y) \).
   \item Las apariciones de \( x \) y \( λz.y \) en \( M \) son disjuntas.
-  \item Los términos \( x \) y \( (x y) \) son subtérminos activos de \( M \), mientras que \( y \) y \( λz.y \) son subtérminos pasivos.
+  \item Los términos \( x \) y \( (x\, y) \) son subtérminos activos de \( M \), mientras que \( y \) y \( λz.y \) son subtérminos pasivos.
   \end{itemize}
 \end{exmp}
 
@@ -555,7 +555,7 @@ Las variables de un término lambda se pueden clasificar de diferentes maneras d
 Es importante aclarar la diferencia entre un átomo \( x \) como subtérmino de un término lambda \( M \) y una aparición de \( x \) en \( M \): la aparición hace referencia a la posición de \( x \) en \( M \). Por ejemplo, en el término lambda \( (λx.x) x \) la primera aparición del átomo \( x \) es una variable enlazada, la segunda aparición es una variable ligada y la tercera aparición es una variable libre.
 
 \begin{exmp}
-  Sea \( M \synteq x(λy.x y) \):
+  Sea \( M \synteq x(λy.x\, y) \):
   \label{exmp:clasifvar}
   \begin{itemize}
   \item El átomo \( x \) aparece como variable libre dos veces en \( M \);
@@ -571,17 +571,17 @@ En la definición formal de algunos conceptos es conveniente hacer referencia a 
   \begin{align*}
     \FV(x) & = \{ x \} \\
     \FV(λx.M) & = \FV(M) \setminus \{ x \} \\
-    \FV(M N) & = \FV(M) \cup \FV(N)
+    \FV(M\, N) & = \FV(M) \cup \FV(N)
   \end{align*}
   Cuando \( \FV(M)=\emptyset \) se dice que \( M \) es un \emph{combinador} o \emph{término cerrado}.
 \end{defn}
 
 \begin{exmp}
-  Consideremos los términos \( x(λx.x y z) \), \( λx y z.y \) y \( (λy.x)λx.y\).
+  Consideremos los términos \( x(λx.x\, y\, z) \), \( λx\, y\, z.y \) y \( (λy.x)λx.y\).
   \label{exmp:varlib}
   \begin{itemize}
-  \item \( \FV(x(λx.x y z)) = \{x,\ y,\ z\} \);
-  \item \( \FV(λx y z.y)=\emptyset \), por lo tanto es un combinador;
+  \item \( \FV(x(λx.x\, y\, z)) = \{x,\ y,\ z\} \);
+  \item \( \FV(λx\, y\, z.y)=\emptyset \), por lo tanto es un combinador;
   \item \( \FV((λy.x)λx.y)=\{ x,\ y \} \).
   \end{itemize}
 \end{exmp}
@@ -591,7 +591,7 @@ En ocaciones es importante distinguir los términos lambda cerrados de aquellos 
 \begin{defn}[Términos cerrados]
   Se denota como \( Λ^{0} \) al conjunto
   \label{defn:termcerr}
-  \[ \{ M \in Λ \mid M \text{es un término cerrado} \} \]
+  \[ \{ M \in Λ \mid M \text{ es un término cerrado} \} \]
 \end{defn}
 
 La notación \( Λ^{0} \) se puede generalizar para identificar diferentes subconjuntos de \( Λ \) a partir de las variables libres de los términos lambda:
@@ -611,34 +611,34 @@ Todos los términos lambda en \( Λ \setminus Λ^{0} \) tienen al menos una clau
 \end{defn}
 
 \begin{exmp} \label{exmp:clausura}
-  Consideremos el términio lambda \( M \synteq λz.x y z \)
+  Consideremos el términio lambda \( M \synteq λz.x\, y\, z \)
   \begin{itemize}
-  \item \( λx y.λz.x y z \) es una clausura de \( M \);
-  \item \( λy x z.x y z \) es una clausura de \( M \);
-  \item \( λz x y.λz.x y z \) no es una clausura de \( M \).
+  \item \( λx\, y.λz.x\, y\, z \) es una clausura de \( M \);
+  \item \( λy\, x\, z.x\, y\, z \) es una clausura de \( M \);
+  \item \( λz\, x\, y.λz.x\, y\, z \) no es una clausura de \( M \).
   \end{itemize}
 \end{exmp}
 
-Al escribir términos lambda con repetición de aplicaciones suele ser conveniente utilizar una notación más compacta. Cuando se aplica \( n \) veces un término \( F \) por la izquierda a otro término \( M \) se denota \( F^{n} M \). Cuando se aplica \( n \) veces un término \( M \) por la derecha a otro término \( F \) se denota \( F M^{\sim n}\). La definición formal de esta notación es:
+Al escribir términos lambda con repetición de aplicaciones suele ser conveniente utilizar una notación más compacta. Cuando se aplica \( n \) veces un término \( F \) por la izquierda a otro término \( M \) se denota \( F^{n}\, M \). Cuando se aplica \( n \) veces un término \( M \) por la derecha a otro término \( F \) se denota \( F\, M^{\sim n}\). La definición formal de esta notación es:
 
 \begin{align*}
-  F^{n+1} M & \synteq F (F^{n} M) \\
-  F^{0} M & \synteq M
+  F^{n+1}\, M & \synteq F (F^{n}\, M) \\
+  F^{0}\, M & \synteq M
 \end{align*}
 
 \begin{align*}
-  F M^{\sim n+1} & \synteq (F M^{\sim n}) M \\
-  F M^{\sim 0} & \synteq F
+  F\, M^{\sim n+1} & \synteq (F\, M^{\sim n}) M \\
+  F\, M^{\sim 0} & \synteq F
 \end{align*}
 
 \begin{exmp}
-  El término lambda \( λf x.f(f(f(f x))) \) se puede escribir de manera compacta como
-  \[ λf x.f^{4} x \]
+  El término lambda \( λf\, x.f(f(f(f\, x))) \) se puede escribir de manera compacta como
+  \[ λf\, x.f^{4}\, x \]
 \end{exmp}
 
 \begin{exmp}
-  El término lambda \( λf x.f x x x x \) se puede escribir de manera compacta como
-  \[ λf x.f x^{\sim 4} \]
+  El término lambda \( λf\, x.f\, x\, x\, x\, x \) se puede escribir de manera compacta como
+  \[ λf\, x.f\, x^{\sim 4} \]
 \end{exmp}
 
 \begin{defn}[Sustitución]
@@ -647,7 +647,7 @@ Al escribir términos lambda con repetición de aplicaciones suele ser convenien
   \begin{align*}
     x[x:=N] & \synteq N; \\
     a[x:=N] & \synteq a && a \not \synteq x; \\
-    (P Q)[x:=N] & \synteq P[x:=N] Q[x:=N]; \\
+    (P\, Q)[x:=N] & \synteq P[x:=N]\, Q[x:=N]; \\
     (λx.P)[x:=N] & \synteq λx.P; \\
     (λy.P)[x:=N] & \synteq λy.P && x \not\synteq y,\ x \not\in \FV(P); \\
     (λy.P)[x:=N] & \synteq λy.P[x:=N] && x \not\synteq y,\ x \in \FV(P),\ y \not\in \FV(N); \\
@@ -664,39 +664,39 @@ Al escribir términos lambda con repetición de aplicaciones suele ser convenien
     \end{align*}
   \item Caso \( a[x:=N] \), donde \( a \not\synteq x \)
     \begin{align*}
-      z[w:=x x] \synteq z
+      z[w:=x\, x] \synteq z
     \end{align*}
-  \item Caso \( (P Q)[x:=N] \)
+  \item Caso \( (P\, Q)[x:=N] \)
     \begin{align*}
-      (y x x)[x:=y] & \synteq ((y x) x) \\
-                    & \synteq (y x)[x:=y] x[x:=y] \\
-                    & \synteq (y[x:=y] x[x:=y]) y \\
-                    & \synteq y y y
+      (y\, x\, x)[x:=y] & \synteq ((y\, x) x)[x:=y] \\
+                        & \synteq (y\, x)[x:=y]\, x[x:=y] \\
+                        & \synteq (y[x:=y]\, x[x:=y]) y \\
+                        & \synteq y\, y\, y
     \end{align*}
   \item Caso \( (λx.P)[x:=N] \)
     \begin{align*}
-      (λf x.f f x)[f:=g] \synteq λf x.f f x
+      (λf\, x.f\, f\, x)[f:=g] \synteq λf\, x.f\, f\, x
     \end{align*}
   \item Caso \( (λy.P)[x:=N] \), donde  \( x \not\synteq y \), \( x \not\in \FV(P) \)
     \begin{align*}
-      (λf x.f f x)[f:=g] \synteq λf x.f f x
+      (λf\, x.f\, f\, x)[f:=g] \synteq λf\, x.f\, f\, x
     \end{align*}
   \item Caso \( (λy.P)[x:=N] \), donde \( x \not\synteq y \), \( x \in \FV(P) \), \( y \not\in \FV(N) \)
     \begin{align*}
-      (λf.xλx.f f x)[x:=y] & \synteq λf.(xλx.f f x)[x:=y] \\
-                           & \synteq λf.x[x:=y](λx.f f x)[x:=y] \\
-                           & \synteq λf.yλx.f f x
+      (λf.x\, λx.f\, f\, x)[x:=y] & \synteq λf.(x\, λx.f\, f\, x)[x:=y] \\
+                                  & \synteq λf.x[x:=y]\, (λx.f\, f\, x)[x:=y] \\
+                                  & \synteq λf.y\, λx.f\, f\, x
     \end{align*}
   \item Caso \( (λy.P)[x:=N] \), donde \( x \not\synteq y \), \( x \in \FV(P) \), \( y \in \FV(N) \) y \( z \not\in \FV(N P) \)
     \begin{align*}
-      (λf.xλx.f f x)[x:=f] & \synteq λg.(x λx.f f x)[f:=g][x:=f] \\
-                           & \synteq λg.(x[f:=g](λx.f f x)[f:=g])[x:=f] \\
-                           & \synteq λg.(x λx.(f f x)[f:=g])[x:=f] \\
-                           & \synteq λg.(x λx.((f f)[f:=g] x[f:=g]))[x:=f] \\
-                           & \synteq λg.(x λx.((f[f:=g] f[f:=g]) x))[x:=f] \\
-                           & \synteq λg.(x λx.g g x)[x:=f] \\
-                           & \synteq λg.x[x:=f] (λx.g g x)[x:=f] \\
-                           & \synteq λg.f λx.g g x
+      (λf.x\, λx.f\, f\, x)[x:=f] & \synteq λg.(x\, λx.f\, f\, x)[f:=g][x:=f] \\
+                                  & \synteq λg.(x[f:=g](λx.f\, f\, x)[f:=g])[x:=f] \\
+                                  & \synteq λg.(x\, λx.(f\, f\, x)[f:=g])[x:=f] \\
+                                  & \synteq λg.(x\, λx.((f\, f)[f:=g] x[f:=g]))[x:=f] \\
+                                  & \synteq λg.(x\, λx.((f[f:=g]\, f[f:=g]) x))[x:=f] \\
+                                  & \synteq λg.(x\, λx.g\, g\, x)[x:=f] \\
+                                  & \synteq λg.x[x:=f] (λx.g\, g\, x)[x:=f] \\
+                                  & \synteq λg.f\, λx.g\, g\, x
     \end{align*}
   \end{itemize}
 \end{exmp}
@@ -704,7 +704,7 @@ Al escribir términos lambda con repetición de aplicaciones suele ser convenien
 En el último caso es importante observar que las apariciones ligadas de \( x \) no se sustituyen.
 
 \begin{lem}
-  Si \( (y x) \not\in \FV(L) \) y \( x \not\synteq y \), entonces
+  Si \( (y\, x) \not\in \FV(L) \) y \( x \not\synteq y \), entonces
   \[ M[x:=N][y:=L] \synteq M[y:=L][x:=N[y:=L]] \]
 \end{lem}
 
@@ -716,29 +716,29 @@ En contraste a la operación de sustitución en donde no se permite introducir o
   \begin{itemize}
   \item \( x \) es un contexto;
   \item \( [\quad] \) es un contexto;
-  \item Si \( C_{1}[\quad] \) y \( C_{2}[\quad] \) son contextos, entonces \( C_{1}[\quad] C_{2}[\quad] \) y \( λx.C_{1}[\quad] \) también lo son.
+  \item Si \( C_{1}[\quad] \) y \( C_{2}[\quad] \) son contextos, entonces \( C_{1}[\quad]\, C_{2}[\quad] \) y \( λx.C_{1}[\quad] \) también lo son.
   \end{itemize}
 \end{defn}
 
 Si \( C[\quad] \) es un contexto y \( M \in Λ \), entonces \( C[M] \) denota el resultado de reemplazar por \( M \) los hoyos de \( C[\quad] \). Al realizar esto, las variables libres de \( M \) pueden convertirse en variables ligadas de \( C[M] \).
 
 \begin{exmp}
-  Consideremos el contexto \( C[\quad] \synteq λx.x λy.[\quad] \) y el término lambda \( M \synteq (x y) \).
+  Consideremos el contexto \( C[\quad] \synteq λx.x\, λy.[\quad] \) y el término lambda \( M \synteq (x y) \).
   
   \begin{align*}
-    C[M] & \synteq (λx.xλy.[\quad])[(x y)] \\
-         & \synteq (λx.xλy.(x y))
+    C[M] & \synteq (λx.x\, λy.[\quad])[(x\, y)] \\
+         & \synteq (λx.x\, λy.(x\, y))
   \end{align*}
   
   El caso análogo con la sustitución es
 
   \begin{align*}
-    (λx.x λy.w)[w:=(x y)] & \synteq λz.(x λy.w)[x:=z][w:=(x y)] \\
-                          & \synteq λz.(x[x:=z] (λy.w)[x:=z])[w:=(x y)] \\
-                          & \synteq λz.(z λy.w)[w:=(x y)] \\
-                          & \synteq λz.z[w:=(x y)] (λy.w)[w:=(x y)] \\
-                          & \synteq λz.z λv.w[w:=(x y)] \\
-                          & \synteq λz.z λv.(x y)
+    (λx.x\, λy.w)[w:=(x\, y)] & \synteq λz.(x\, λy.w)[x:=z][w:=(x\, y)] \\
+                              & \synteq λz.(x[x:=z] (λy.w)[x:=z])[w:=(x\, y)] \\
+                              & \synteq λz.(z\, λy.w)[w:=(x y)] \\
+                              & \synteq λz.z[w:=(x\, y)] (λy.w)[w:=(x\, y)] \\
+                              & \synteq λz.z\, λv.w[w:=(x\, y)] \\
+                              & \synteq λz.z\, λv.(x\, y)
   \end{align*}
 \end{exmp}
 
@@ -806,12 +806,12 @@ En el caso particular de la teoría \( \bs{λKβ} \) se considera que \( \mathca
 
   \begin{equation}
     \label{teorialambda:mu} \tag{\( μ \)}
-    \infer{Z M = Z N}{M = N}
+    \infer{Z\, M = Z\, N}{M = N}
   \end{equation}
   
   \begin{equation}
     \label{teorialambda:nu} \tag{\( ν \)}
-    \infer{M Z = N Z}{M = N}
+    \infer{M\, Z = N\, Z}{M = N}
   \end{equation}
   \begin{equation}
     \label{teorialambda:xi} \tag{\( ξ \)}
@@ -844,7 +844,7 @@ La frase ``módulo convertibilidad'' se refiere al conjunto de todas las clases 
 
 \begin{exmp}
   \label{exmp:demostrabilidad}
-  Consideramos los términos lambda \( M \synteq (λf.x((λy.y f) λz.z))w \) y \( N \synteq x w \). Se muestra que
+  Consideramos los términos lambda \( M \synteq (λf.x((λy.y\, f) λz.z))w \) y \( N \synteq x\, w \). Se muestra que
 
   \[ \bs{λ} \vdash M = N \]
 
@@ -864,23 +864,23 @@ La frase ``módulo convertibilidad'' se refiere al conjunto de todas las clases 
     level 3/.style={sibling distance=20em},
     level 4/.style={sibling distance=10em}
     ]
-    \node [equat] (foo1) {\( (λf.x((λy.y f) λz.z))w = x w \)}
+    \node [equat] (foo1) {\( (λf.x((λy.y\, f) λz.z))w = x\, w \)}
     child {
-      node [equat] (foo3) {\( (λf.x f)w = x w \)}
+      node [equat] (foo3) {\( (λf.x\, f)w = x\, w \)}
     }
     child {
-      node [equat] (foo5) {\( (λf.x((λy.y f) λz.z))w = (λf.x f)w \)}
+      node [equat] (foo5) {\( (λf.x((λy.y\, f) λz.z))w = (λf.x\, f)w \)}
       child {
-        node [equat] (foo7) {\( λf.x((λy.y f) λz.z) = λf.x f \)}
+        node [equat] (foo7) {\( λf.x((λy.y\, f) λz.z) = λf.x\, f \)}
         child {
-          node [equat] (foo9) {\( x((λy.y f) λz.z) = x f \)}
+          node [equat] (foo9) {\( x((λy.y\, f) λz.z) = x\, f \)}
           child {
-            node [equat] (foo11) {\( (λy.y f)λz.z = f \)}
+            node [equat] (foo11) {\( (λy.y\, f)λz.z = f \)}
             child {
               node [equat] (foo13) {\( (λz.z)f = f \)}
             }
             child {
-              node [equat] (foo14) {\( (λy.y f)λz.z = (λz.z) f \)}
+              node [equat] (foo14) {\( (λy.y\, f)λz.z = (λz.z) f \)}
             }
             edge from parent [] node [right] {\( (μ) \)}
           }
@@ -904,8 +904,8 @@ La frase ``módulo convertibilidad'' se refiere al conjunto de todas las clases 
   Tres términos lambda de suma importancia son
   \begin{align*}
     \bs{I} & \synteq λx.x \\
-    \bs{K} & \synteq λx y.x \\
-    \bs{S} & \synteq λx y z.x z(y z)
+    \bs{K} & \synteq λx\, y.x \\
+    \bs{S} & \synteq λx\, y\, z.x\, z(y\, z)
   \end{align*}
 \end{defn}
 
@@ -914,9 +914,9 @@ La frase ``módulo convertibilidad'' se refiere al conjunto de todas las clases 
   Para todo término \( M,N,L \in Λ \)
 
   \begin{align*}
-    \bs{I} M & =_{\bs{λ}} M \\
-    \bs{K} M N & =_{\bs{λ}} M \\
-    \bs{S} M N L & =_{\bs{λ}} M L (N L)
+    \bs{I}\, M & =_{\bs{λ}} M \\
+    \bs{K}\, M\, N & =_{\bs{λ}} M \\
+    \bs{S}\, M\, N\, L & =_{\bs{λ}} M\, L (N\, L)
   \end{align*}
 \end{cor}
 
@@ -942,7 +942,7 @@ Estos tres combinadores generan en la teoría \( \bs{λ} \) al conjunto \( Λ^{0
   \begin{enumerate}
   \item Si \( M = x \), entonces \( λx.M = \bs{I} \);
   \item Si \( x \not\in \FV(M) \), entonces \( λx.M = (\bs{K} M) \);
-  \item Si \( M = PQ \), entonces \( λx.M = \bs{S}(λx.P)(λx.Q) \).
+  \item Si \( M = P\, Q \), entonces \( λx.M = \bs{S}(λx.P)(λx.Q) \).
   \end{enumerate}
 \end{lem}
 
@@ -951,23 +951,23 @@ Estos tres combinadores generan en la teoría \( \bs{λ} \) al conjunto \( Λ^{0
   \begin{enumerate}
   \item
     \begin{align*}
-      (\bs{I} N) &= N \\
-                 &= ((λx.x) N) \\
-                 &= ((λx.M) N)
+      (\bs{I}\, N) &= N \\
+                   &= ((λx.x) N) \\
+                   &= ((λx.M) N)
     \end{align*}
   \item
     \begin{align*}
-      ((\bs{K} M) N) &= (λxy.x)M N \\
-                     &= (λy.M)N \\
-                     &= ((λx.M)N)
+      ((\bs{K}\, M) N) &= (λx\, y.x)M\, N \\
+                       &= (λy.M)N \\
+                       &= ((λx.M)N)
     \end{align*}
   \item
     \begin{align*}
-      \bs{S}(λx.P)(λx.Q) &= (λabc.(a c)(b c))(λx.P)(λx.Q) \\
+      \bs{S}(λx.P)(λx.Q) &= (λabc.(a\, c)(b\, c))(λx.P)(λx.Q) \\
                          &= λc.((λx.P)c)((λx.Q)c) \\
                          &= λc.P[x:=c]Q[x:=c] \\
-                         &= λc.(P Q)[x:=c] \\
-                         &= λx.PQ \\
+                         &= λc.(P\, Q)[x:=c] \\
+                         &= λx.P\, Q \\
                          &= λx.M
     \end{align*}
   \end{enumerate}
@@ -990,20 +990,20 @@ La demostración de la proposición \ref{prop:ski} consiste en la construcción 
   \item Si \( N = a \)
     \begin{enumerate}
     \item \label{item:ski:1a} Si \( a = x \) se transforma \( λx.N \) a \( \bs{I} \) en \( M \).
-    \item \label{item:ski:1b}Si \( a \not= x \) se transforma \( λx.N \) a \( (\bs{K} a) \) en \( M \).
+    \item \label{item:ski:1b}Si \( a \not= x \) se transforma \( λx.N \) a \( (\bs{K}\, a) \) en \( M \).
     \end{enumerate}
-  \item \( N = (P Q) \)
+  \item \( N = (P\, Q) \)
     \begin{enumerate}
-    \item \label{item:ski:2a} Si \( x \not\in \FV(P) \) y \( x \not\in \FV(Q) \) se transforma \( λx.PQ \) a \( \bs{S} (\bs{K} P) (\bs{K} Q) \) en \( M \).
-    \item \label{item:ski:2b} Si \( x \not\in \FV(P) \) y \( x \in \FV(Q) \) se transforma \( λx.PQ \) a \( \bs{S} (\bs{K} P) (λx.Q) \) en \( M \).
-    \item \label{item:ski:2c} Si \( x \in \FV(P) \) y \( x \not\in \FV(Q) \) se transforma \( λx.PQ \) a \( \bs{S} (λx.P) (\bs{K} Q) \) en \( M \).
-    \item \label{item:ski:2d} Si \( x \in \FV(P) \) y \( x \in \FV(Q) \) se transforma \( λx.PQ \) a \( \bs{S} (λ.P) (λx.Q) \) en  \( M \).
+    \item \label{item:ski:2a} Si \( x \not\in \FV(P) \) y \( x \not\in \FV(Q) \) se transforma \( λx.P\, Q \) a \( \bs{S} (\bs{K}\, P) (\bs{K}\, Q) \) en \( M \).
+    \item \label{item:ski:2b} Si \( x \not\in \FV(P) \) y \( x \in \FV(Q) \) se transforma \( λx.P\, Q \) a \( \bs{S} (\bs{K}\, P) (λx.Q) \) en \( M \).
+    \item \label{item:ski:2c} Si \( x \in \FV(P) \) y \( x \not\in \FV(Q) \) se transforma \( λx.P\, Q \) a \( \bs{S} (λx.P) (\bs{K}\, Q) \) en \( M \).
+    \item \label{item:ski:2d} Si \( x \in \FV(P) \) y \( x \in \FV(Q) \) se transforma \( λx.P\, Q \) a \( \bs{S} (λx.P) (λx.Q) \) en  \( M \).
     \end{enumerate}
   \end{enumerate}
 
   En los casos \ref{item:ski:2a}, \ref{item:ski:2b}, \ref{item:ski:2c}, \ref{item:ski:2d} se forman abstracciones con longitud menor a \( λx.N \), por lo tanto serán las que se transformarán después. Ya que la longitud de estas abstracciones es estrictamente menor a \( λx.N \) y los casos base \ref{item:ski:1a} y \ref{item:ski:1b} de la transformación no introducen abstracciones, en una cantidad finita de pasos el término \( M \) transformado no tendrá abstracciones de la forma \( λx.N \).
 
-  Para un término \( M \) con sólo una abstracción, \( \mathit{a} \) aplicaciones y \( \mathit{v} \) variables ligadas (no enlazadas) una cota superior para la máxima cantidad de pasos se calcula considerando que para los términos de la forma \( λx.a \) se cumple el caso \ref{item:ski:1b} (el cual aumenta la cantidad de aplicaciones en 1) y que para los términos de la forma \( λx.PQ \) se cumple el caso \ref{item:ski:2d} (el cual aumenta la cantidad de aplicaciones en 2) ya que en estos casos se produce el término con mas aplicaciones, las cuales determinan la cantidad de veces que se repite el algoritmo por cada abstracción en \( M \). Para calcular la cota superior de la cantidad de aplicaciones \( a' \) que produce el algoritmo para un término con \( n \) abstracciones se plantea la siguiente relación de recurrencia:
+  Para un término \( M \) con sólo una abstracción, \( \mathit{a} \) aplicaciones y \( \mathit{v} \) variables ligadas (no enlazadas) una cota superior para la máxima cantidad de pasos se calcula considerando que para los términos de la forma \( λx.a \) se cumple el caso \ref{item:ski:1b} (el cual aumenta la cantidad de aplicaciones en 1) y que para los términos de la forma \( λx.P\, Q \) se cumple el caso \ref{item:ski:2d} (el cual aumenta la cantidad de aplicaciones en 2) ya que en estos casos se produce el término con mas aplicaciones, las cuales determinan la cantidad de veces que se repite el algoritmo por cada abstracción en \( M \). Para calcular la cota superior de la cantidad de aplicaciones \( a' \) que produce el algoritmo para un término con \( n \) abstracciones se plantea la siguiente relación de recurrencia:
 
   \begin{align*}
     \mathit{a}'_{0} &= \mathit{a} \\
@@ -1047,7 +1047,7 @@ En el artículo \cite{Church:LambdaConversion}, Alonzo Church presenta una defin
   \begin{align*}
     x \in V & \implies x \in Λ_{I} \\
     M \in Λ_{I},\ x \in \FV{M} & \implies λx.M \in Λ_{I} \\
-    M, N \in Λ_{I} & \implies M N \in Λ_{I}
+    M, N \in Λ_{I} & \implies M\, N \in Λ_{I}
   \end{align*}
 \end{defn}
 
@@ -1064,9 +1064,9 @@ Contraria a esta suposición, en la computación, el tema central son los proced
 
 La teoría \( \bs{λ} \) también es intensional: existen dos términos lambda \( F \) y \( G \) tales que para tódo término \( X \)
 
-\[ \bs{λ} \vdash F X = G X \]
+\[ \bs{λ} \vdash F\, X = G\, X \]
 
-Pero no \( \bs{λ} \vdash F=G \). Por ejemplo, \( F \synteq y \) y \( G \synteq λx.y x \)
+Pero no \( \bs{λ} \vdash F=G \). Por ejemplo, \( F \synteq y \) y \( G \synteq λx.y\, x \)
 
 Cuando se plantea formalizar un cálculo lambda que sea extensional, surge la pregunta, ¿Qué es demostrable en el sistema extensional que no es demostrable en \( \bs{λ} \). A continuación se presentan tres diferentes agregados a la teoría \( \bs{λ} \) las cuales incluyen la propiedad de extensionalidad y que han sido propuestas en la literatura \cite{HindleySeldin:LambdaCalculusAndCombinators,Barendregt:Bible}. Las teorías extendidas son llamadas \( \bs{λζ} \), \( \bs{λ+ext} \) y \( \bs{λη} \) de acuerdo a la regla que se añade a la definición \ref{defn:teorialambda}.
 
@@ -1078,15 +1078,15 @@ Cuando se plantea formalizar un cálculo lambda que sea extensional, surge la pr
     \begin{subequations}
       \begin{align}
         \label{extensionalidad:zeta} \tag{\( ζ \)}
-        \infer{M = N}{M x = N x} & & \text{si \( x \not\in \FV(M N) \)} \\
+        \infer{M = N}{M\, x = N\, x} & & \text{si \( x \not\in \FV(M\, N) \)} \\
         \label{extensionalidad:ext} \tag{ext}
-        \infer{M = N}{M P = N P} & & \forall P \in Λ
+        \infer{M = N}{M\, P = N\, P} & & \forall P \in Λ
       \end{align}
     \end{subequations}
   \item[Axiomas]
     \begin{align}
       \label{extensionalidad:eta} \tag{\( η \)}
-      λx.M x = M & & \text{si \( x \not\in \FV(M) \)}
+      λx.M\, x = M & & \text{si \( x \not\in \FV(M) \)}
     \end{align}
   \end{description}
 \end{defn}
@@ -1147,8 +1147,8 @@ Transformaciones de términos con un paso.
 
 \begin{exmp}
   \begin{align*}
-    (λx.(λy.y x)z)v &\contract{(λx.(λy.y x)z)v} (λy.y v)z ,\\
-    (λx.(λy.y x)z)v &\contract{(λy.y x)z} (λx.z x)v.
+    (λx.(λy.y\, x)z)v &\contract{(λx.(λy.y\, x)z)v} (λy.y\, v)z ,\\
+    (λx.(λy.y\, x)z)v &\contract{(λy.y\, x)z} (λx.z\, x)v.
   \end{align*}
 \end{exmp}
 
@@ -1162,7 +1162,7 @@ Reducciones basadas en contracciones, de Barendregt
   Si dice que una relación binaria \( \bs{R} \) sobre \( Λ \) es:
   \begin{enumerate}
   \item Una \emph{relación compatible} cuando
-    \[ (M,M') \in \bs{R} \implies (ZM,ZM') \in \bs{R},\ (MZ,M'Z) \in \bs{R},\ (λx.M,λx.M') \in \bs{R} \]
+    \[ (M,M') \in \bs{R} \implies (Z\, M,Z\, M') \in \bs{R},\ (M\, Z,M'\, Z) \in \bs{R},\ (λx.M,λx.M') \in \bs{R} \]
     para toda \( M, M', Z \in Λ \).
   \item Una \emph{relación de congruencia} cuando \( \bs{R} \) es compatible, reflexiva, transitiva y simétrica.
   \item Una \emph{relación de reducción} cuando \( \bs{R} \) es compatible, reflexiva y transitiva.
@@ -1200,8 +1200,8 @@ Sean \( \bs{R}_{1} \) y \( \bs{R}_{2} \) nociones de reducción, la relación \(
   \item R-reducción en un paso, denotada \( \contract{R} \) y definida de manera inductiva como:
     \begin{align*}
       \text{(1)} && (M,N) \in \bs{R} &\implies M \contract{R} N \\
-      \text{(2)} && M \contract{R} N &\implies Z M \contract{R} Z N \\
-      \text{(3)} && M \contract{R} N &\implies M Z \contract{R} N Z \\ 
+      \text{(2)} && M \contract{R} N &\implies Z\, M \contract{R} Z\, N \\
+      \text{(3)} && M \contract{R} N &\implies M\, Z \contract{R} N\, Z \\ 
       \text{(4)} && M \contract{R} N &\implies λx.M \contract{R} λx.N
     \end{align*}
   \item R-reducción, denotada \( \reduce{R} \) y definida de manera inductiva como:
@@ -1244,7 +1244,7 @@ Esto significa que \( \bs{R} = \{ (M,N) : ... \} \), por ejemplo, \( \bs{β} \) 
 El proceso de pasar de un redex a su contractum es llamado \emph{contracción}. En lugar de escribir ``\( M \) es una \( R-fn \)'' usualmente se escribe ``\( M \) está en \( R-fn \)'', pensando en una máquina que ha llegado a su estado final.
 
 \begin{exmp}
-  \( (λx.x x)λy.y \) es un \( β \)-redex. Por lo tanto \( (λx.x x)(λy.y)z \) no está en \( β-fn \); sin embargo este término tiene la \( β-fn \) \( z \).
+  \( (λx.x\, x)λy.y \) es un \( β \)-redex. Por lo tanto \( (λx.x\, x)(λy.y)z \) no está en \( β-fn \); sin embargo este término tiene la \( β-fn \) \( z \).
 \end{exmp}
 
 Plantear las ideas para pasar del concepto de contracción al de reducción y posteriormente al de convertibilidad.

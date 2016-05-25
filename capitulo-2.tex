@@ -4,7 +4,7 @@
 
 El álgebra booleana es una rama del álgebra en donde las expresiones tienen asociado un valor de \emph{falso} o \emph{verdadero}. Estas expresiones son fundamentales en el estudio de circuitos y programas escritos en lenguajes de programación.
 
-Los términos lambda no tienen asignados un valor de verdad y las operaciones que se plantearon en los primeros dos capítulos involucraron el concepto de falso y verdadero únicamente en el metalenguaje y asociando estos valores no a los términos lambda en sí, si no a propiedades de estos, por ejemplo, es falso que \( \| λx.x \| = 5 \) y es verdadero que \( \bs{K}\, x \reduce{β} λx.y \). Sin embargo es posible codificar los valores de verdad como elementos de \( Λ \) y construir abstracciones que emulen las propiedades de las operaciones booleanas bajo la \( β \)-reducción. De esta manera se pueden escribir términos que, de acuerdo con la codificación establecida, representen expresiones booleanas y términos lambda al mismo tiempo.
+Los términos lambda no tienen asignados un valor de verdad y las operaciones que se plantearon en los primeros dos capítulos involucraron el concepto de falso y verdadero únicamente en el metalenguaje y asociando estos valores no a los términos lambda en sí, si no a propiedades de estos, por ejemplo, es falso que \( \| λx.x \| = 5 \) y es verdadero que \( (\bs{K}\, x) \reduce{β} (λx.y) \). Sin embargo es posible codificar los valores de verdad como elementos de \( Λ \) y construir abstracciones que emulen las propiedades de las operaciones booleanas bajo la \( β \)-reducción. De esta manera se pueden escribir términos que, de acuerdo con la codificación establecida, representen expresiones booleanas y términos lambda al mismo tiempo.
 
 En los lenguajes de programación usualmente se mezclan las expresiones booleanas con otras expresiones y objetos a partir de \emph{predicados}, éstos son funciones con algún dominio \( X \) y codominio \( \{ \mathrm{falso},\ \mathrm{verdadero} \} \). Por ejemplo, al escribir un programa en donde se necesite tomar una desición a partir de si un número \verb!n! es positivo o negativo se escribiría (en pseudocódigo):
 
@@ -23,6 +23,7 @@ La codificación de valores de verdad y operaciones booleanas es común incluso 
 Al igual que el cálculo lambda, otras teorías que fundamentan las ciencias de la computación también carecen de expresiones y operaciones booleanas. En el caso de la máquina de Turing los cambios de estado en la ejecución de un programa se determinan a partir de su función de transición y predicados simples de igualdad entre símbolos del alfabeto de cinta se realizan en un paso, sin embargo, predicados mas complejos requieren ser codificados con estados, transiciones y anotaciones en su cinta.
 
 \subsection{Valores de verdad}
+\label{sec:valores-de-verdad}
 
 En el álgebra booleana, los valores de las expresiones son falso y verdadero. El nombre de estos valores no es de relevancia y usualmente falso se representa como 0 y verdadero como 1. El aspecto importante de estos valores es que son distintos y si un valor \( x \) no es uno, entonces es el otro.
 
@@ -30,20 +31,20 @@ Podemos ignorar la representación concreta de estos valores y pensar en una sit
 
 Detrás del concepto de falso y verdadero, está el concepto de \emph{desición}, la codificación que se desarrolla está basada en este concepto y aparece en \cite[p.~133]{Barendregt:Bible}.
 
-Supongamos que \( P \) es un término lambda el cual puede ser aplicado a una oración \( O \), al \( β \)-reducir \( P\, O \) se obtiene una decisión \( D \) la cual al ser aplicada a dos términos lambda \( M \) y \( N \) se \( β \)-reduce a \( M \) si la oración \( O \) es verdadera y a \( M \) si es falsa:
+Supongamos que \( P \) es un término lambda el cual puede ser aplicado a una oración \( O \), al \( β \)-reducir \( (P\, O) \) se obtiene una decisión \( D \) la cual al ser aplicada a dos términos lambda \( M \) y \( N \) se \( β \)-reduce a \( M \) si la oración \( O \) es verdadera y a \( M \) si es falsa:
 
 \[ P\, O \reduce{β} D, \]
 \[ D\, M\, N \reduce{β} \begin{cases} M & \text{si \( O \) es verdadera}\\ N & \text{si \( O \) es falsa}\end{cases} .\]
 
-Para fines prácticos no es necesario saber cómo es \( P \) ni \( O \), lo importante es que cuando \( O \) es cierta, \( D \) eligirá \( M \) y si \( O \) es falsa, eligirá \( N \). Por lo tanto, \( P\, O = D \) es un término lambda de la forma
+Para fines prácticos no es necesario saber cómo es \( P \) ni \( O \), lo importante es que cuando \( O \) es cierta, \( D \) eligirá \( M \) y si \( O \) es falsa, eligirá \( N \). Por lo tanto, \( (P\, O) = D \) es un término lambda de la forma
 
 \[ λx\, y.Q \]
 
-Si \( D \) es una desición tomada por que \( O \) es verdadera, podemos asegurar que \( D\, M\, N = M \), por lo tanto:
+Si \( D \) es una desición tomada por que \( O \) es verdadera, podemos asegurar que \( (D\, M\, N) = M \), por lo tanto:
 
 \[ D \synteq λx\, y.x \]
 
-Si \( D \) es una desición tomada por que \( O \) es falsa, podemos asegurar que \( D\, M\, N = N \), por lo tanto:
+Si \( D \) es una desición tomada por que \( O \) es falsa, podemos asegurar que \( (D\, M\, N) = N \), por lo tanto:
 
 \[ D \synteq λx\, y.y \]
 
@@ -63,7 +64,15 @@ Utilizar \( \bs{T} \) y \( \bs{F} \) en términos lambda es similar a imitar a \
 
 Las expresiones booleanas se conforman de operaciones y valores de verdad. Las operaciones más básicas son la conjunción, la disyunción y la negación, también llamadas \( AND \), \( OR \), \( NOT \) y denotadas \( \land \), \( \lor \) y \( \lnot \) respectivamente.
 
-La conjunción y la disyunción son operaciones binarias definidas en \( \{ \mathrm{falso},\ \mathrm{verdadero} \}^{2} \to \{ \mathrm{falso},\ \mathrm{verdadero} \}\) y la negación es una operación unaria definida en \( \{ \mathrm{falso},\ \mathrm{verdadero} \} \to \{ \mathrm{falso},\ \mathrm{verdadero} \} \). Las siguientes tablas de verdad establecen los resultados de estas tres operaciones para cada valor en su dominio:
+La conjunción y la disyunción son operaciones binarias definidas en
+
+\[ \{ \mathrm{falso},\ \mathrm{verdadero} \}^{2} \to \{ \mathrm{falso},\ \mathrm{verdadero} \} \]
+
+y la negación es una operación unaria definida en
+
+\[ \{ \mathrm{falso},\ \mathrm{verdadero} \} \to \{ \mathrm{falso},\ \mathrm{verdadero} \}. \]
+
+Las tablas de verdad en el cuadro \ref{tab:and-or-not} establecen los resultados de estas tres operaciones para cada valor en su dominio.
 
 \begin{table}[h!]
   \centering
@@ -87,6 +96,8 @@ La conjunción y la disyunción son operaciones binarias definidas en \( \{ \mat
     verdadero & falso \\
     \hline
   \end{tabular}
+  \caption{Tablas de verdad para \( \land \), \( \lor \) y \( \lnot \)}
+  \label{tab:and-or-not}
 \end{table}
 
 En el álgebra booleana, las expresiones se escriben en notación de infijo, utilizan paréntesis para agrupar expresiones y cuando los paréntesis son omitidos la negación tiene mayor presedencia que la conjunción y la conjunción tiene mayor presedencia que la disyunción, por ejemplo:
@@ -95,241 +106,659 @@ En el álgebra booleana, las expresiones se escriben en notación de infijo, uti
 \[ \lnot (\mathrm{falso} \lor \mathrm{falso}) \]
 \[ \mathrm{verdadero} \land (\mathrm{falso} \lor \mathrm{falso}) \]
 
-Esta notación es conveniente para escribir expresiones booleanas de manera concisa, pero es únicamente una conveniencia sintáctica del álgebra booleana. La codificación que se desarrolla de las operaciones seguirá las convenciones sintácticas del cálculo lambda, es decir, suponiendo que \( \bs{\land} \), \( \bs{\lor} \), \( \bs{\lnot} \) son términos lambda, las expresiones mencionadas escribirían con notación de prefijo:
+Esta notación es conveniente para escribir expresiones booleanas de manera concisa, pero es únicamente una conveniencia sintáctica del álgebra booleana. La codificación que se desarrolla de las operaciones seguirá las convenciones sintácticas del cálculo lambda, por ejemplo, suponiendo que \( \bs{\land} \), \( \bs{\lor} \), \( \bs{\lnot} \) son términos lambda, las expresiones mencionadas escribirían con notación de prefijo:
 
 \[ \bs{\lor} (\bs{\land}\, \bs{T}\, \bs{F}) \bs{F} \]
 \[ \bs{\lnot} (\bs{\lor}\, \bs{F}\, \bs{F}) \]
 \[ \bs{\land}\, \bs{T} (\bs{\lor}\, \bs{F}\, \bs{F}) \]
 
-Al igual que los valores de verdad, las operaciones básicas serán codificadas como abstracciones del cálculo
-
-\hrulefill
-
-\hrulefill
-
-\paragraph{Reescribir} Esto se tiene que escribir bien, ver al final de la sección otra metodología para desarrollar las ideas.
-
-Uno de los atributos del cálculo lambda es que nos permite codificar información usando términos lambda y definir algoritmos utilizando reducciones que manipulen estos términos. Un buen ejemplo de esto es la  representación de valores de verdad, de los cuales podemos derivar las operaciones elementales del álgebra booleana.
-
-Se establecen primero los cimientos de este sistema booleano primitivo determinando la representación de los valores \emph{verdadero} y \emph{falso}. Los algoritmos que se elaboran en esta subsección se basan en los términos que se les asocia a estos dos valores.
-
-\subsection{Valores de verdad}
-\label{sec:valores-de-verdad}
-
-Es posible formular predicados lógicos con la notación del cálculo lambda. Se le asignan términos lambda a los valores de falso y verdadero. El término asociado a verdadero es \( λx\, y.x \) y el término asociado a falso es \( λx\, y.y \).
-
-A partir de estos términos se pueden obtener nuevos términos lambda para los operadores básicos del álgebra booleana, para el resto de la sección se define \( \bs{V} \synteq λx\, y.x \) (verdadero) y \( \bs{F} \synteq λx\, y.y \) (falso), es decir, \( \bs{V} \) es una función de dos parámetros que al ser evaluada regresa el primer argumento y \( \bs{F} \) es una función de dos parámetros que al ser evaluada regresa el segundo argumento.
-
-\subsection{Conectivos lógicos}
-\label{sec:conectivos-logicos}
-
-Explorando con esta representación podemos obtener términos lambda obtenidos a partir de la aplicación de las combinaciones de estos dos valores.
-
-Combinaciones de la aplicación de dos valores de verdad.
+Al igual que los valores de verdad, las operaciones básicas son codificadas como abstracciones del cálculo lambda. Hay varias metodologías para derivar términos lambda para las operaciones booleanas a partir de \( \bs{T} \) y \( \bs{F} \), en esta sección se abordarán dos:
 
 \begin{itemize}
-\item \( \bs{V}\, \bs{V} \)
-  \begin{enumerate}
-  \item \( (λx\, y.x)(λx\, y.x) \)
-  \item \( \contract{β} λy\, x\, w.x \)
-  \end{enumerate}
-  Función de tres parámetros que al ser evaluada regresa el segundo argumento.
-\item \( \bs{V}\, \bs{F} \)
-  \begin{enumerate}
-  \item \( (λx\, y.x)(λx\, y.y) \)
-  \item \(\contract{β} λy\, x\, w.w \)
-  \end{enumerate}
-  Función de tres parámetros que al ser evaluada regresa el tercer argumento.
-\item \( \bs{F}\, \bs{V} \)
-  \begin{enumerate}
-  \item \( (λx\, y.y)(λx\, y.x) \)
-  \item \(\contract{β} λy.y \)
-  \end{enumerate}
-  Función de un parámetro que al ser evaluada regresa el argumento.
-\item \( \bs{F} \bs{F} \)
-  \begin{enumerate}
-  \item \( (λx\, y.y)(λx\, y.y) \)
-  \item \(\contract{β} λy.y \)
-  \end{enumerate}
-  Función de un parámetro que al ser evaluada regresa el argumento
+\item Combinando valores de verdad
+\item Programando las operaciones
 \end{itemize}
 
-Combinaciones de la aplicación de tres valores de verdad.
+La primer metodología parte de la observación de que la codificación de falso y verdadero son abstracciones, por lo tanto, es posible \( β \)-reducirlas al aplicarlas a otros términos; se explora la clase de términos lambda en \( \{ \bs{T},\ \bs{F} \}^{+} \).
 
-\begin{itemize}
-\item \( \bs{V}\, \bs{V}\, \bs{V} \)
-  \begin{enumerate}
-  \item \( (λy\, x\, w.x)(λx\, y.x) \)
-  \item \( \contract{β} λx\, w.x \)
-  \item \( \contract{α} \bs{V} \)
-  \end{enumerate}
-\item \( \bs{V}\, \bs{V}\, \bs{F} \)
-  \begin{enumerate}
-  \item \( (λy\, x\, w.x)(λx\, y.y) \)
-  \item \( \contract{β} λx\, w.x \)
-  \item \( \contract{α} \bs{V} \)
-  \end{enumerate}
-\item \( \bs{V}\, \bs{F}\, \bs{V} \)
-  \begin{enumerate}
-  \item \( (λy\, x\, w.w)(λx\, y.x) \)
-  \item \( \contract{β} λx\, w.w \)
-  \item \( \contract{α} \bs{F} \)
-  \end{enumerate}
-\item \( \bs{V}\, \bs{F}\, \bs{F} \)
-  \begin{enumerate}
-  \item \( (λy\, x\, w.w)(λx\, y.y) \)
-  \item \( \contract{β} λx\, w.w \)
-  \item \( \contract{α} \bs{F} \)
-  \end{enumerate}
-\item \( \bs{F}\, \bs{V}\, \bs{V} \)
-  \begin{enumerate}
-  \item \( (λy.y)(λx\, y.x) \)
-  \item \( \contract{β} λx\, y.x \)
-  \item \( \synteq \bs{V} \)
-  \end{enumerate}
-\item \( \bs{F}\, \bs{V}\, \bs{F} \)
-  \begin{enumerate}
-  \item \( (λy.y)(λx\, y.y) \)
-  \item \( \contract{β} λx\, y.y \)
-  \item \( \synteq \bs{F} \)
-  \end{enumerate}
-\item \( \bs{F} \bs{F} \bs{V} \)
-  \begin{enumerate}
-  \item \( (λy.y)(λx\, y.x) \)
-  \item \( \contract{β} λx\, y.y \)
-  \item \( \synteq \bs{F} \)
-  \end{enumerate}
-\item \( \bs{F}\, \bs{F}\, \bs{F} \)
-  \begin{enumerate}
-  \item \( (λy.y)(λx\, y.y) \)
-  \item \( \contract{β} λx\, y.x \)
-  \item \( \synteq \bs{V} \)
-  \end{enumerate}
-\end{itemize}
+La segunda metodología presenta la construcción del operador condicional, a partir del cual se derivan las operaciones booleanas como si fueran programas de computadora.
 
-Un vistazo superficial a estas dos tablas me dice que nos será de más ayuda la segunda, ya que a partir de valores de verdad se obtienen otros valores de verdad. Si suponemos que hay dos predicados \( P \) y \( Q \) los cuales pueden tomar los valores \( \bs{V} \) o \( \bs{F} \), podemos ver estas combinaciones como
+\subsubsection{Combinaciones de valores de verdad}
+\label{sec:combinacion-valores}
 
-\begin{table}
+Una manera de obtener términos lambda a partir de \( \bs{F} \) y \( \bs{T} \) es \( β \)-reducir combinaciones de aplicaciones entre estos valores. En el cuadro \ref{tab:verdad-pares} se muestran los términos obtenidos al reducir combinaciones de dos valores de verdad.
+
+\begin{table}[h!]
   \centering
-  \begin{tabular}{|c|c|c|c|c|c|}
+  \begin{tabular}{|c||l|}
     \hline
-    \( P \)      & \( Q \)      & \( P\, P\, P \)  & \( P\, P\, Q \)  & \( P\, Q\, P \)  & \( P\, Q\, Q \)  \\ [0.5ex]
-    \hline\hline
-    \( \bs{F} \) & \( \bs{F} \) & \( \bs{F} \)     & \( \bs{F} \)     & \( \bs{F} \)     & \( \bs{F} \) \\
+    \( \bs{F}\, \bs{F} \) & \( (λx\, y.y)\bs{F} \reduce{β} λy.y \synteq \bs{I} \) \\
     \hline
-    \( \bs{F} \) & \( \bs{V} \) & \( \bs{F} \)     & \( \bs{V} \)     & \( \bs{F} \)     & \( \bs{V} \) \\
+    \( \bs{F}\, \bs{T} \) & \( (λx\, y.y)\bs{T} \reduce{β} λy.y \synteq \bs{I} \) \\
     \hline
-    \( \bs{V} \) & \( \bs{F} \) & \( \bs{V} \)     & \( \bs{V} \)     & \( \bs{F} \)     & \( \bs{F} \) \\
+    \( \bs{T}\, \bs{F} \) & \( (λx\, y.x)\bs{F} \reduce{β} λy.\bs{F} \synteq \bs{K}\, \bs{F} \) \\
     \hline
-    \( \bs{V} \) & \( \bs{V} \) & \( \bs{V} \)     & \( \bs{V} \)     & \( \bs{V} \)     & \( \bs{V} \) \\
+    \( \bs{T}\, \bs{T} \) & \( (λx\, y.x)\bs{T} \reduce{β} λy.\bs{T} \synteq \bs{K}\, \bs{T} \) \\
     \hline
   \end{tabular}
-  \caption{Tabla de verdad de algunas combinaciones}
-  \label{tab:boollambda}
+  \caption{Posibles combinaciones de valores de verdad por pares.}
+  \label{tab:verdad-pares}
 \end{table}
 
-\begin{itemize}
-\item \( P\, P\, Q \) o \( Q\, Q\, Q \)
-\item \( P\, P\, Q \) o \( Q\, Q\, P \)
-\item \( P\, Q\, P \) o \( Q\, P\, Q \)
-\item \( P\, Q\, Q \) o \( Q\, P\, P \)
-\end{itemize}
-
-Teniendo en cuenta que el conjunto de valores que puede tomar \( P \) es el mismo que puede tomar \( Q \), solo consideramos una de las columnas. Se prosigue construyendo una tabla de verdad de estas cuatro posibilidades:
-
-Por los valores de las tablas de verdad, encontramos que:
-
-\[ \land \synteq λp\, q.p\, q\, p \]
-
-\[ \lor \synteq λp\, q.p\, p\, q \]
-
-Con este procedimiento logramos obtener las operaciones booleanas básicas de conjunción (asociado a la compuerta lógica \( \mathrm{AND} \)) y disyunción (asociado a la compuerta lógica \( \mathrm{OR} \)). Para poder completar la incrustación del álgebra booleana en el cálculo lambda necesitamos poder representar la operación de negación, la cual derivaremos con otra metodología.
-
-El término lambda que representa la negación debe ser una abstracción que tenga como parámetro un predicado \( p \) y que regrese un término de dos parámetros que regrese el primero si \( p \) es falso y el segundo si \( p \) es verdadero. La forma de éste término es \( λp\, x\, y.? \) donde \( ? \) es un término por definir. Para encontrar este término incógnita hacemos la observación que si \( p \) es verdadero el primer argumento que le apliquemos será el resultado, mientras que si \( p \) es falso, el segundo argumento que le apliquemos será el resultado. Por lo tanto
-
-\[ (λp\, x\, y.p\, y\, x) \bs{V} \contract{β} λx\, y.y \synteq \bs{F} \]
-
-\[ (λp\, x\, y.p\, y\, x) \bs{F} \contract{β} λx\, y.x \synteq \bs{V} \]
-
-Bajo este mismo procedimiento podemos encontrar otras operaciones útiles relacionadas con estructuras de control como condicionales. Para tener un término lambda de la condicional ``Si \( P \) entonces \( M \), de lo contrario \( N \)'', donde \( P \) es un valor de verdad con esta codificación y \( M \) y \( N \) son términos cualesquiera, se construye como \( λp\, m\, n.? \), donde \( ? \) debe de resultar en \( m \) si \( p \) es verdadero y en \( n \) si \( p \) es falso. Por lo tanto
-
-\[ \mathrm{Condicional} \synteq λp\, m\, n.p\, m\, n \]
-
-Este término debe ser aplicado como
-
-\[ (((\mathrm{Condicional}\, \mathrm{Predicado}) \mathrm{Consecuente}) \mathrm{Contrario}) \]
-
-para ser \( β \)-reducido de manera correcta.
-
-Queda pendiente expandir el trabajo de lógica proposicional que se ha desarrollado a la admisión de mas de dos valores de verdad, buscando ser consistente con la metodología de derivación de términos utilizada.
-
-\subsection*{Cambios en la metodología}
-
-Explicar de manera clara por qué \( T \synteq λx\ y.x \) y \( F \synteq λx\ y.y \). Si se comienza formulando el término lambda para la expresión condicional \emph{if-then-else} se pueden construír de manera mas explícita los conectivos lógicos:
-
-\[ B \synteq λp\, t\, f.p\, t\, f \]
+En las reducciones de \ref{tab:verdad-pares} se pueden observar cuatro términos, a partir de estos se puede descubrir la operación de negación:
 
 \begin{itemize}
-\item Si \( p \) es \( λx\, y.x \) entonces se \( β \)-reduce a \( t \)
-\item Si \( p \) es \( λx\, y.y \) entonces se \( β \)-reduce a \( f \)
+\item \( (\bs{F}\, \bs{F}) \) se reduce a la abstracción identidad, esto significa que para cualquier término \( M \in Λ \)
+  \[ \bs{λ} \vdash (\bs{F}\, \bs{F}\, M) = M \]
+\item Al igual que la primer reducción \( (\bs{F}\, \bs{T}) \) se reduce a \( \bs{I} \), por lo tanto se concluye que para cualesquiera términos \( M \in Λ \), \( N \in \{ \bs{F},\ \bs{T} \} \)
+  \[ \bs{λ} \vdash (\bs{F}\, N\, M) = M \]
+\item \( (\bs{T}\, \bs{F}) \) se reduce a la abstracción constante de \( \bs{F} \), esto significa que para cualquier término \( M \in Λ \)
+  \[ \bs{λ} \vdash (\bs{T}\, \bs{F}\, M) = \bs{F} \]
+\item Al igual que la tercer reducción \( (\bs{T}\, \bs{T}) \) se reduce a \( (\bs{K}\, \bs{T}) \), por lo tanto se concluye que para cualesquiera términos \( M \in Λ \), \( N \in \{ \bs{F},\ \bs{T} \} \)
+  \[ \bs{λ} \vdash (\bs{T}\, N\, M) = N \]
 \end{itemize}
 
-De esta manera se pueden ``programar'' los conectivos lógicos de la siguiente manera
+Debido a las reducciones mostradas en el cuadro \ref{tab:verdad-pares} se puede analizar que a partir de un témino \( \bs{F} \), se puede obtener \( \bs{T} \) al reducir \( (\bs{F}\, N\, \bs{T}) \) y que a partir de un término \( \bs{T} \), se puede obtener \( \bs{F} \) al reducir \( (\bs{T}\, \bs{F}\, M) \). Considerando que \( N \synteq \bs{F} \) y \( M \synteq \bs{T} \) las reducciones serían:
 
-\subsubsection*{Conjunción}
+\[ \bs{F}\, \bs{F}\, \bs{T} \reduce{β} \bs{T} \]
+\[ \bs{T}\, \bs{F}\, \bs{T} \reduce{β} \bs{F} \]
+
+Si se considera que \( P \in \{ \bs{F},\ \bs{T} \} \)
+
+\[ P\, \bs{F}\, \bs{T} \reduce{β} \bs{\lnot}\, P \]
+
+\begin{rem}[Sobre la \( β \)-reducción]
+  En el tratamiento de la codificación del álgebra booleana en el cálculo lambda, cuando se \( β \)-reducen términos lambda que tienen como subtérminos valores que suponemos son \( \bs{F} \) o \( \bs{T} \) se extiende la teoría \( \bs{λ} \) con la siguiente ecuación:
+
+  \begin{align*}
+    P\, \bs{T}\, \bs{F} &= P && \text{si \( P \in \{ \bs{F},\ \bs{T} \} \)}
+  \end{align*}
+\end{rem}
+
+\begin{defn}[Operación de negación]
+  \label{defn:negacion}
+  El término lambda \( \bs{\lnot} \synteq (λp.p\, \bs{F}\, \bs{T}) \) se reduce a \( \bs{T} \) cuando es aplicado a \( \bs{F} \) y viceversa
+
+  \begin{align*}
+    \bs{\lnot}\, \bs{F} &\synteq (λp.p\, \bs{F}\, \bs{T}) \bs{F} \\
+                        &\contract{β} \bs{F}\, \bs{F}\, \bs{T} \\
+                        &\reduce{β} \bs{T}
+  \end{align*}
+  \begin{align*}
+    \bs{\lnot}\, \bs{T} &\synteq (λp.p\, \bs{F}\, \bs{T}) \bs{T} \\
+                        &\contract{β} \bs{T}\, \bs{F}\, \bs{T} \\
+                        &\reduce{β} \bs{F}
+  \end{align*}
+\end{defn}
+
+Las reducciones del cuadro \ref{tab:verdad-pares} se pueden aplicar a \( \bs{F} \) y \( \bs{T} \) para obtener todas las posibles combinaciones de aplicaciones de valores de verdad de la forma \( ((P\, M) N) \), en el cuadro \ref{tab:verdad-tripletas} se muestran las reducciones de las nuevas aplicaciones.
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|c||l|}
+    \hline
+    \( \bs{F}\, \bs{F}\, \bs{F} \) & \( \bs{I}\, \bs{F} \reduce{β} \bs{F} \) \\
+    \hline
+    \( \bs{F}\, \bs{F}\, \bs{T} \) & \( \bs{I}\, \bs{T} \reduce{β} \bs{T} \) \\
+    \hline
+    \( \bs{F}\, \bs{T}\, \bs{F} \) & \( \bs{I}\, \bs{F} \reduce{β} \bs{F} \) \\
+    \hline
+    \( \bs{F}\, \bs{T}\, \bs{T} \) & \( \bs{I}\, \bs{T} \reduce{β} \bs{T} \) \\
+    \hline
+    \( \bs{T}\, \bs{F}\, \bs{F} \) & \( \bs{K}\, \bs{F}\, \bs{F} \reduce{β} \bs{F} \) \\
+    \hline
+    \( \bs{T}\, \bs{F}\, \bs{T} \) & \( \bs{K}\, \bs{F}\, \bs{T} \reduce{β} \bs{F} \) \\
+    \hline
+    \( \bs{T}\, \bs{T}\, \bs{F} \) & \( \bs{K}\, \bs{T}\, \bs{F} \reduce{β} \bs{T} \) \\
+    \hline
+    \( \bs{T}\, \bs{T}\, \bs{T} \) & \( \bs{K}\, \bs{T}\, \bs{T} \reduce{β} \bs{T} \) \\
+    \hline
+  \end{tabular}
+  \caption{Posibles combinaciones de valores de verdad con asociación a la izquierda.}
+  \label{tab:verdad-tripletas}
+\end{table}
+
+Al observar el cuadro \ref{tab:verdad-tripletas}, se distinguen algúnos patrones en los resultados de las reducciones, por ejemplo, si \( P \) es un valor de verdad cualquiera, \( (P\, \bs{F}\, \bs{F}) \) se reduce a \( \bs{F} \) y \( (P\, \bs{T}\, \bs{T}) \) se reduce a \( \bs{T} \), las combinaciones mas interesantes se presentan en los renglones 2, 3, 6 y 7.
+
+En búsqueda de las operaciones binarias de conjunción y disyunción se desarrollan tablas de verdad con las posibles combinaciones de dos términos \( P, Q \in \{ \bs{F},\ \bs{T} \} \). La cantidad de combinaciones de estos valores es \( 2 \times \binom 3 2 = 2 \times \frac{3!}{2!} = 6 \) y son \( (P\, Q\, \bs{F}) ,\ (P\, Q\, \bs{T}) ,\ (P\, \bs{F}\, Q) ,\ (P\, \bs{T}\, Q) ,\ (\bs{F}\, P\, Q) ,\ (\bs{T}\, P\, Q) \). Las tablas de verdad de estas combinaciones intercambiando las posiciones de \( P \) y \( Q \) serían las mismas ya que ambos términos toman los valores de falso y verdadero en las tablas de verdad. En el cuadro \ref{tab:verdad-pq} se muestran estas tablas.
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|c|c||c|c|c|c|c|c|}
+    \hline
+    \( P \) & \( Q \) & \( P\, Q\, \bs{F} \) & \( P\, Q\, \bs{T} \) & \( P\, \bs{F}\, Q \) & \( P\, \bs{T}\, Q \) & \( \bs{F}\, P\, Q \) & \( \bs{T}\, P\, Q \) \\ [0.5ex]
+    \hline
+    \hline
+    \( \bs{F} \) & \( \bs{F} \) & \( \bs{F} \) & \( \bs{T} \) & \( \bs{F} \) & \( \bs{F} \) & \( \bs{F} \) & \( \bs{F} \) \\
+    \( \bs{F} \) & \( \bs{T} \) & \( \bs{F} \) & \( \bs{T} \) & \( \bs{T} \) & \( \bs{T} \) & \( \bs{T} \) & \( \bs{F} \) \\
+    \( \bs{T} \) & \( \bs{F} \) & \( \bs{F} \) & \( \bs{F} \) & \( \bs{F} \) & \( \bs{T} \) & \( \bs{F} \) & \( \bs{T} \) \\
+    \( \bs{T} \) & \( \bs{T} \) & \( \bs{T} \) & \( \bs{T} \) & \( \bs{F} \) & \( \bs{T} \) & \( \bs{T} \) & \( \bs{T} \) \\
+    \hline
+  \end{tabular}
+  \caption{Tablas de verdad considerando dos variables \( P \) y \( Q \) en aplicaciones de tres términos}
+  \label{tab:verdad-pq}
+\end{table}
+
+Las columnas de la combinación \( (P\, Q\, \bs{F}) \) y \( (P\, \bs{T}\, Q) \) del cuadro \ref{tab:verdad-pq} corresponden a la operación de conjunción y disyunción respectivamente, como aparecen en el cuadro \ref{tab:and-or-not}. Las otras combinaciones corresponden a operaciones no básicas del álgebra booleana: \( (P\, Q\, \bs{T}) \) es la implicación material; \( (P\, \bs{F}\, Q) \) es la no implicación inversa; \( (\bs{F}\, P\, Q) \) es la proyección de \( Q \); y \( (\bs{T}\, P\, Q) \) es la proyección de \( P \).
+
+Ya que  \( \bs{λ} \vdash (P\, Q\, \bs{F}) = (\bs{\land}\, P\, Q) \) y \( \bs{λ} \vdash (P\, \bs{T}\, Q) = (\bs{\lor}\, P\, Q) \), se construyen los términos \( \bs{\land} \) y \( \bs{\lor} \) abstrayendo a \( P \) y \( Q \) de las igualdades.
+
+\begin{defn}[Operación de conjunción]
+  \label{defn:conjuncion}
+  El término lambda que representa la conjunción es
+
+  \[ \bs{\land} \synteq λp\, q.p\, q\, \bs{F} \]
+
+  y cumple las siguientes propiedades de \( β \)-reducción al ser aplicada a valores de verdad:
+
+  \begin{align*}
+    \bs{\land}\, \bs{F}\, \bs{F} &\synteq (λp\, q.p\, q\, \bs{F}) \bs{F}\, \bs{F} \\
+                                 &\reduce{β} \bs{F}\, \bs{F}\, \bs{F} \\
+                                 &\reduce{β} \bs{F}
+  \end{align*}
+
+  \begin{align*}
+    \bs{\land}\, \bs{F}\, \bs{T} &\synteq (λp\, q.p\, q\, \bs{F}) \bs{F}\, \bs{T} \\
+                                 &\reduce{β} \bs{F}\, \bs{T}\, \bs{F} \\
+                                 &\reduce{β} \bs{F}
+  \end{align*}
+
+  \begin{align*}
+    \bs{\land}\, \bs{T}\, \bs{F} &\synteq (λp\, q.p\, q\, \bs{F}) \bs{T}\, \bs{F} \\
+                                 &\reduce{β} \bs{T}\, \bs{F}\, \bs{F} \\
+                                 &\reduce{β} \bs{F}
+  \end{align*}
+
+  \begin{align*}
+    \bs{\land}\, \bs{T}\, \bs{T} &\synteq (λp\, q.p\, q\, \bs{F}) \bs{T}\, \bs{T} \\
+                                 &\reduce{β} \bs{T}\, \bs{T}\, \bs{F} \\
+                                 &\reduce{β} \bs{T}
+  \end{align*}
+\end{defn}
+
+\begin{defn}[Operación de disyunción]
+  \label{defn:disyuncion}
+  El término lambda que representa la disyunción es
+
+  \[ \bs{\lor} \synteq λp\, q.p\, \bs{T}\, q \]
+
+  y cumple las siguientes propiedades de \( β \)-reducción al ser aplicada a valores de verdad:
+
+  \begin{align*}
+    \bs{\lor}\, \bs{F}\, \bs{F} &\synteq (λp\, q.p\, \bs{T}\, q) \bs{F}\, \bs{F} \\
+                                &\reduce{β} \bs{F}\, \bs{T}\, \bs{F} \\
+                                &\reduce{β} \bs{F}
+  \end{align*}
+
+  \begin{align*}
+    \bs{\lor}\, \bs{F}\, \bs{T} &\synteq (λp\, q.p\, \bs{T}\, q) \bs{F}\, \bs{T} \\
+                                &\reduce{β} \bs{F}\, \bs{T}\, \bs{T} \\
+                                &\reduce{β} \bs{T}
+  \end{align*}
+
+  \begin{align*}
+    \bs{\lor}\, \bs{T}\, \bs{F} &\synteq (λp\, q.p\, \bs{T}\, q) \bs{T}\, \bs{F} \\
+                                &\reduce{β} \bs{T}\, \bs{T}\, \bs{F} \\
+                                &\reduce{β} \bs{T}
+  \end{align*}
+
+  \begin{align*}
+    \bs{\lor}\, \bs{T}\, \bs{T} &\synteq (λp\, q.p\, \bs{T}\, q) \bs{T}\, \bs{T} \\
+                                &\reduce{β} \bs{T}\, \bs{T}\, \bs{T} \\
+                                &\reduce{β} \bs{T}
+  \end{align*}
+\end{defn}
+
+Esta metodología para encontrar operaciones del álgebra booleana, aplicando los términos codificados de los valores de verdad, es tediosa pero hasta cierto grado efectiva. Como en los casos de las operaciones no básicas mostradas en el cuadro \ref{tab:verdad-pq}, operaciones del álgebra booleana pueden ser ``descubiertas'' y no construídas. Ya que la negación, la conjunción y la disyunción fueron descubiertas con este método, cualquier operación booleana eventualmente será encontrada como combinación de valores de verdad. Sin embargo, descubrir la codificación de una operación booleana complicada utilizando este método es un proceso muy tardado.
+
+\subsubsection{Programación de operaciones booleanas}
+\label{sec:programacion-operaciones}
+
+Otra metodología que permite construír las operaciones booleanas como términos lambda es la de partir de un algorítmo que las describa. Usualmente las operaciones booleanas no son definidas como procedimientos, si no como operaciones primitivas del lenguaje utilizado para describirlos.
+
+Consideremos dos términos \( M \) y \( N \). Ya que \( (\bs{T}\, M\, N) \reduce{β} M \) y \( (\bs{F}\, M\, N) \reduce{β} N \), si \( M \reduce{β} M' \) y \( N \reduce{β} N' \), entonces
+
+\[ \bs{T}\, M\, N \reduce{β} M' \]
+
+\[ \bs{F}\, M\, N \reduce{β} N' \]
+
+Es decir, si \( P \in \{ \bs{F},\ \bs{T} \} \):
+
+\[ P\, M\, N \reduce{β} \begin{cases} M' & P \synteq \bs{T} \\ N' & P \synteq \bs{F} \end{cases} \]
+
+Esta aplicación de un valor de verdad a dos términos lambda cualquiera permite capturar el concepto de una expresión o sentencia condicional, usualmente llamada en los lenguajes de programación como sentencia \verb!if-then-else!.
+
+\begin{defn}[Expresión condicional]
+  \label{defn:condicional}
+  El término lambda que representa a la expresión condicional es
+
+  \[ \bs{\prec} \synteq λp\, m\, n.p\, m\, n \]
+
+  Y si \( P \) es un valor de verdad, entonces
+
+  \begin{align*}
+    \bs{\prec}\, P\, M\, N &\synteq (λp\, m\, n.p\, m\, n)P\, M\, N \\
+                           &\reduce{β} P\, M\, N
+  \end{align*}
+
+  Un programa de la forma
 
 \begin{verbatim}
-Conjuncion (predicado1, predicado2) =
-    Si predicado1, entonces:
-        Si predicado2, entonces:
-            Verdadero
-        De lo contrario:
-            Falso
-    De lo contrario:
-        Falso
+Si P, entonces:
+    M
+De lo contrario:
+    N
+Fin
 \end{verbatim}
 
-\begin{align*}
-  \land & \synteq λp\, q.B\, p (B\, q\, T\, F) F \\
-        & \contract{β} λp\, q.p (B\, q\, T\, F) F \\
-        & \contract{β} λp\, q.p (q\, T\, F) F \\
-        & \reduce{β} λp\, q.p\, q\, F
-\end{align*}
+  Puede ser traducido a \( (\bs{\prec}\, P\, M\, N) \)
+\end{defn}
 
-\subsubsection*{Disyunción}
+Consideremos la siguiente definición en pseudocódigo de la operación de negación:
 
 \begin{verbatim}
-Disyuncion (predicado1, predicado2) =
-    Si predicado1, entonces:
-        T
-    De lo contrario:
-        Si predicado2, entonces:
-            T
-        De lo contrario:
-            F
-\end{verbatim}
-
-\begin{align*}
-  \lor & \synteq λp\, q.B\, p\, T (B\, q\, T\, F) \\
-       & \contract{β} λp\, q.p\, T (B\, q\, T\, F) \\
-       & \contract{β} λp\, q.p\, T (q\, T\, F) \\
-       & \reduce{β} λp\, q.p\, T\, q
-\end{align*}
-
-\subsubsection*{Negación}
-
-\begin{verbatim}
-Negacion (predicado) =
+Negacion (predicado) :=
     Si predicado, entonces:
-        F
+        Regresa Falso
     De lo contrario:
-        T
+        Regresa Verdadero
+    Fin
+Fin
 \end{verbatim}
 
+El pseudocódigo se traduce al cálculo lambda como
+
+\[ \bs{\lnot} \synteq λp.\bs{\prec}\, p\, \bs{F}\, \bs{T} \]
+
+El cuerpo de la abstracción puede ser \( β \)-reducido para obtener el término de la definición \ref{defn:negacion}
+
 \begin{align*}
-  \lnot & \synteq λp.B\, p\, F\, T \\
-        & \contract{β} λp.p\, F\, T
+  λp.\bs{\prec}\, p\, \bs{F}\, \bs{T} &\synteq λp.(λp\, m\, n.p\, m\, n) p\, \bs{F}\, \bs{T} \\
+                                      &\reduce{β} λp.p\, \bs{F}\, \bs{T}
 \end{align*}
+
+Para la operación de conjunción, se considera el siguiente pseudocódigo:
+
+\begin{verbatim}
+Conjuncion (predicado1, predicado2) :=
+    Si predicado1, entonces:
+        Si predicado2, entonces:
+            Regresa Verdadero
+        De lo contrario:
+            Regresa Falso
+        Fin
+    De lo contrario:
+        Regresa Falso
+    Fin
+Fin
+\end{verbatim}
+
+Traducido al cálculo lambda como
+
+\[ \bs{\land} \synteq λp_{1}\, p_{2}.\bs{\prec}\, p_{1} (\bs{\prec}\, p_{2}\, \bs{T}\, \bs{F}) \bs{F} \]
+
+Al \( β \)-reducir el cuerpo de la abstracción se obtiene el término de la definición \ref{defn:conjuncion}
+
+\begin{align*}
+  λp_{1}\, p_{2}.\bs{\prec}\, p_{1} (\bs{\prec}\, p_{2}\, \bs{T}\, \bs{F}) \bs{F}
+  &\synteq λp_{1}\, p_{2}.(λp\, m\, n.p\, m\, n) p_{1} ((λp\, m\, n.p\, m\, n) p_{2}\, \bs{T}\, \bs{F}) \bs{F} \\
+  &\reduce{β} λp_{1}\, p_{2}.p_{1} ((λp\, m\, n.p\, m\, n) p_{2}\, \bs{T}\, \bs{F}) \bs{F} \\
+  &\reduce{β} λp_{1}\, p_{2}.p_{1} (p_{2}\, \bs{T}\, \bs{F}) \bs{F} \\
+  &=_{\bs{λ}} λp_{1}\, p_{2}.p_{1}\, p_{2}\, \bs{F}
+\end{align*}
+
+De igual manera, considerando el siguiente pseudocódigo de la operación de disyunción:
+
+\begin{verbatim}
+Disyuncion (predicado1, predicado2) :=
+    Si predicado1, entonces:
+        Regresa Verdadero
+    De lo contrario:
+        Si predicado2, entonces:
+            Regresa Verdadero
+        De lo contrario:
+            Regresa Falso
+        Fin
+    Fin
+Fin
+\end{verbatim}
+
+Se traduce al cálculo lambda como
+
+\[ \bs{\lor} \synteq λp_{1}\, p_{2}.\bs{\prec}\, p_{1}\, \bs{T} (\bs{\prec}\, p_{2}\, \bs{T}\, \bs{F}) \]
+
+Y al \( β \)-reducir el cuerpo de la abstracción se obtiene el término de la definición \ref{defn:disyuncion}
+
+\begin{align*}
+  λp_{1}\, p_{2}.\bs{\prec}\, p_{1}\, \bs{T} (\bs{\prec}\, p_{2}\, \bs{T}\, \bs{F})
+  &\synteq λp_{1}\, p_{2}.(λp\, m\, n.p\, m\, n) p_{1}\, \bs{T} ((λp\, m\, n.p\, m\, n) p_{2}\, \bs{T}\, \bs{F}) \\
+  &\reduce{β} λp_{1}\, p_{2}.p_{1}\, \bs{T} ((λp\, m\, n.p\, m\, n) p_{2}\, \bs{T}\, \bs{F}) \\
+  &\reduce{β} λp_{1}\, p_{2}.p_{1}\, \bs{T} (p_{2}\, \bs{T}\, \bs{F}) \\
+  &=_{\bs{λ}} λp_{1}\, p_{2}.p_{1}\, \bs{T}\, p_{2}
+\end{align*}
+
+Utilizando esta técnica, se puede obtener el término lambda para una operación a partir del pseudocódigo basado en valores de verdad y la sentencia \verb!if-then-else!. Teniendo estos resultados resulta natural, generalizar el pseudocódigo para construír un término lambda que a partir de la tabla de verdad de una operación booleana binaria, resulte en la abstracción que codifica la operación.
+
+
+\begin{defn}[Traducción de operaciones booleanas binarias]
+  \label{defn:op-bool-bin-lambda}
+  Sea \( \bs{\odot} \) una operación booleana binaria con la siguiente tabla de verdad
+
+  \begin{center}
+    \begin{tabular}{|c|c||c|}
+      \hline
+      \( P \) & \( Q \) & \( P \bs{\odot} Q \) \\ [0.5ex]
+      \hline\hline
+      \( \bs{F} \) & \( \bs{F} \) & \( x_{1} \) \\
+      \hline
+      \( \bs{F} \) & \( \bs{T} \) & \( x_{2} \) \\
+      \hline
+      \( \bs{T} \) & \( \bs{F} \) & \( x_{3} \) \\
+      \hline
+      \( \bs{T} \) & \( \bs{T} \) & \( x_{4} \) \\
+      \hline
+    \end{tabular}
+  \end{center}
+
+  El procedimiento generalizado es
+
+\begin{verbatim}
+OperacionBooleana(x1, x2, x3, x4) :=
+    Binaria(predicado1, predicado2) :=
+        Si predicado1, entonces:
+            Si predicado2, entonces:
+                Regresa x4
+            De lo contrario:
+                Regresa x3
+            Fin
+        De lo contrario:
+            Si predicado2, entonces:
+                Regresa x2
+            De lo contrario:
+                Regresa x1
+            Fin
+        Fin
+    Fin
+    Regresa Binaria
+Fin
+\end{verbatim}
+
+  Y la traducción al cálculo lambda es
+
+  \[ λx_{1}\, x_{2}\, x_{3}\, x_{4}.(λp_{1}\, p_{2}.(\bs{\prec}\, p_{1} (\bs{\prec}\, p_{2}\, x_{4}\, x_{3}) (\bs{\prec}\, p_{2}\, x_{2}\, x_{1}))) \]
+  
+\end{defn}
+
+\begin{exmp}[Operaciones \emph{NAND} y \emph{NOR}]
+  \label{ejmp:nand-nor}
+  Estas operaciones booleanas binarias conforman los conjuntos unitarios \( \{ \mathrm{NAND} \} \) y \( \{ \mathrm{NOR} \} \) los cuales son conjuntos funcionalmene completos, es decir, únicamente con la operación NAND se puede emular cualquier operación booleana y únicamente con la operación NOR se puede emular cualquier operación booleana.
+
+  
+  La operación \emph{NAND} se denota \( P \uparrow Q \) y tiene la siguiente tabla de verdad
+
+  \begin{center}
+    \begin{tabular}{|c|c||c|}
+      \hline
+      \( P \) & \( Q \) & \( P \uparrow Q \) \\ [0.5ex]
+      \hline\hline
+      \( \bs{F} \) & \( \bs{F} \) & \( \bs{T} \) \\
+      \hline
+      \( \bs{F} \) & \( \bs{T} \) & \( \bs{T} \) \\
+      \hline
+      \( \bs{T} \) & \( \bs{F} \) & \( \bs{T} \) \\
+      \hline
+      \( \bs{T} \) & \( \bs{T} \) & \( \bs{F} \) \\
+      \hline
+    \end{tabular}
+  \end{center}
+
+  Con el proceso de traducción mostrado en la definición \ref{defn:op-bool-bin-lambda}, el término lambda \( \bs{\uparrow} \) que codifica la operación NAND sería
+  
+  \begin{align*}
+    \bs{\uparrow}
+    &\synteq λp_{1}\, p_{2}. \bs{\prec}\, p_{1} (\bs{\prec}\, p_{2}\, \bs{F}\, \bs{T}) (\bs{\prec}\, p_{2}\, \bs{T}\, \bs{T}) \\
+    &\reduce{β} λp_{1}\, p_{2}.p_{1} (p_{2}\, \bs{F}\, \bs{T}) \bs{T}
+  \end{align*}
+
+  La operación \emph{NOR} se denota \( P \downarrow Q \) y tiene la siguiente tabla de verdad
+
+  \begin{center}
+    \begin{tabular}{|c|c||c|}
+      \hline
+      \( P \) & \( Q \) & \( P \downarrow Q \) \\ [0.5ex]
+      \hline\hline
+      \( \bs{F} \) & \( \bs{F} \) & \( \bs{T} \) \\
+      \hline
+      \( \bs{F} \) & \( \bs{T} \) & \( \bs{F} \) \\
+      \hline
+      \( \bs{T} \) & \( \bs{F} \) & \( \bs{F} \) \\
+      \hline
+      \( \bs{T} \) & \( \bs{T} \) & \( \bs{F} \) \\
+      \hline
+    \end{tabular}
+  \end{center}
+
+  Usando el mismo proceso de traducción que con la operación NAND, se obtiene
+
+  \begin{align*}
+    \bs{\downarrow}
+    &\synteq λp_{1}\, p_{2}. \bs{\prec}\, p_{1} (\bs{\prec}\, p_{2}\, \bs{F}\, \bs{F}) (\bs{\prec}\, p_{2}\, \bs{F}\, \bs{T}) \\
+    &\reduce{β} λp_{1}\, p_{2}.p_{1}\, \bs{F} (p_{2}\, \bs{F}\, \bs{T})
+  \end{align*}
+
+\end{exmp}
+
+Cuando se generaliza el método de traducción de \ref{defn:op-bool-bin-lambda} a operaciones booleanas \( n \)-árias, se obtiene un término bosquejado de la siguiente manera
+
+\begin{center}
+  \begin{tikzpicture}[level/.style={sibling distance=100mm/#1, level distance=10mm}]
+    \node (args1) {\( λx_{1}\, ...\, x_{2^{n}} \)}
+    child {
+      node (args2) {\( λp_{1}\, ...\, p_{n} \)}
+      child {
+        node (p1) {\( \bs{\prec}\, p_{1} \)}
+        child {
+          node (p2a) {\( \bs{\prec}\, p_{2} \)}
+          child {
+            node (dots1) {\( ... \)}
+            child {
+              node (pna) {\( \bs{\prec}\, p_{n} \)}
+              child {
+                node (x2n) {\( x_{2^{n}} \)}
+              }
+              child {
+                node (x2n1) {\( x_{2^{n}-1} \)}
+              }
+            }
+            child {
+              node (dots3) {\( ... \)}
+            }
+          }
+          child {
+            node (dots2) {\( ... \)}
+          }
+        }
+        child {
+          node (p2b) {\( \bs{\prec}\, p_{2} \)}
+          child {
+            node (dots4) {\( ... \)}
+          }
+          child {
+            node (dots5) {\( ... \)}
+            child {
+              node (dots6) {\( ... \)}
+            }
+            child {
+              node (pnb) {\( \bs{\prec}\, p_{n} \)}
+              child {
+                node (x2) {\( x_{2} \)}
+              }
+              child {
+                node (x1) {\( x_{1} \)}
+              }
+            }
+          }
+        }
+      }
+    };
+  \end{tikzpicture}
+\end{center}
+
+\subsection{Extensiones al álgebra booleana}
+\label{sec:boolean-extensiones}
+
+Conociendo el proceso de codificación del álgebra booleana en el cálculo lambda, resulta simple adaptar la codificación.
+
+Consideremos el caso en donde, además de tener los valores de falso y verdadero, se desea incorporar un valor ``desconocido'' utilizado para representar un valor que no es ni falso, ni verdadero. La interpretación de estos valores es similar a \ref{defn:valores-verdad}, pero en lugar de decidir sobre dos términos, se decide sobre tres.
+
+\begin{defn}[Valores de álgebra trivalente]
+  La codificación en términos lambda de los valores de ésta álgebra trivalente son
+
+  \begin{align*}
+    \bs{T} &\synteq λx\, y\, z.x \\
+    \bs{F} &\synteq λx\, y\, z.y \\
+    \bs{U} &\synteq λx\, y\, z.z 
+  \end{align*}
+\end{defn}
+
+Al igual que en la codificación bivalente, se puede codificar un término \( \bs{\prec_{3}} \), similar a \( \bs{\prec} \) de la definición \ref{defn:condicional} pero con tres ramificaciones
+
+\begin{defn}[Condicional trivalente]
+  \[ \bs{\prec_{3}} \synteq λp\, m\, n\, o.p\, m\, n\, o \]
+
+  De tal manera que, si \( P \in \{ \bs{T},\ \bs{F},\ \bs{U} \} \)
+
+  \[ (\bs{\prec_{3}}\, P\, M\, N\, O) \reduce{β} \begin{cases} M & P \synteq \bs{T}; \\ N & P \synteq \bs{F}; \\ O & P \synteq \bs{U}. \end{cases} \]
+\end{defn}
+
+Sea \( \odot \) una operación trivalente binaria con la siguiente tabla de valores
+
+\begin{center}
+  \begin{tabular}{|c|c||c|}
+    \hline
+    \( P \) & \( Q \) & \( P \odot Q \) \\ [0.5ex] \hline\hline
+    \( \bs{T} \) & \( \bs{T} \) & \( x_{1} \) \\ \hline
+    \( \bs{T} \) & \( \bs{F} \) & \( x_{2} \) \\ \hline
+    \( \bs{T} \) & \( \bs{U} \) & \( x_{3} \) \\ \hline
+    \( \bs{F} \) & \( \bs{T} \) & \( x_{4} \) \\ \hline
+    \( \bs{F} \) & \( \bs{F} \) & \( x_{5} \) \\ \hline
+    \( \bs{F} \) & \( \bs{U} \) & \( x_{6} \) \\ \hline
+    \( \bs{U} \) & \( \bs{T} \) & \( x_{7} \) \\ \hline
+    \( \bs{U} \) & \( \bs{F} \) & \( x_{8} \) \\ \hline
+    \( \bs{U} \) & \( \bs{U} \) & \( x_{9} \) \\ \hline
+  \end{tabular}
+\end{center}
+
+El procedimiento en pseudocódigo que la describe es:
+
+\begin{verbatim}
+OperacionTrivalente(x1, x2, x3, x4, x5, x6, x7, x8, x9) :=
+    Binaria(predicado1, predicado2) :=
+        Si predicado1 es verdadero, entonces:
+            Si predicado2 es verdadero, entonces:
+                Regresa x1
+            Si predicado2 es falso, entonces:
+                Regresa x2
+            Si predicado2 es desconocido, entonces:
+                Regresa x3
+            Fin
+        Si predicado1 es falso, entonces:
+            Si predicado2 es verdadero, entonces:
+                Regresa x4
+            Si predicado2 es falso, entonces:
+                Regresa x5
+            Si predicado2 es desconocido, entonces:
+                Regresa x6
+            Fin
+        Si predicado1 es desconocido, entonces:
+            Si predicado2 es verdadero, entonces:
+                Regresa x7
+            Si predicado2 es falso, entonces:
+                Regresa x8
+            Si predicado2 es desconocido, entonces:
+                Regresa x9
+            Fin
+        Fin
+    Fin
+    Regresa Binaria
+Fin
+\end{verbatim}
+
+Traducido al cálculo lambda como
+
+\[ λx_{1}\, x_{2}\, x_{3}\, x_{4}\, x_{5}\, x_{6}\, x_{7}\, x_{8}\, x_{9}.(λp_{1}\, p_{2}.(\bs{\prec_{3}}\, p_{1}\, R_{1}\, R_{2}\, R_{3})) \]
+
+Donde
+
+\begin{align*}
+  R_{1} &\synteq (\bs{\prec_{3}}\, p_{2}\, x_{1}\, x_{2}\, x_{3}) \\
+  R_{2} &\synteq (\bs{\prec_{3}}\,  p_{2}\, x_{4}\, x_{5}\, x_{6}) \\
+  R_{3} &\synteq (\bs{\prec_{3}}\, p_{2}\, x_{7}\, x_{8}\, x_{9})
+\end{align*}
+
+\subsection{Lógica en el cálculo lambda}
+\label{sec:logica-lambda}
+
+En esta sección se abordó la codificación de valores de verdad y operaciones como la conjunción, disyunción y negación. Usualmente en las ciencias de la computación y las matemáticas, estos objetos se abordan desde la perspectiva algebraica y desde la perspectiva lógica.
+
+En el cálculo lambda se distinguen las dos perspectivas por el lenguaje en el que se manejan los objetos, en el caso del álgebra booleana, los valores de verdad y las operaciones booleanas se codifican como términos lambda y pueden ser combinados con otros términos lambda que no forman parte del álgebra booleana. Por otra parte, la lógica proposicional estudia proposiciones, las cuales son enunciados matemáticos a los cuales se les puede atribuír el valor de falso o verdadero y que, a partir de conectivos lógicos como \( \lnot \), \( \land \) y \( \lor \), se infieren verdades sobre los enunciados.
+
+El cálculo lambda se puede extender de tal manera que nos permita inferir verdades sobre sus términos, en esta subsección se abordan los cálculos lambda aumentados con nociones \emph{ilativas}, denotados \( \mathit{i}\bs{λ} \). El tratamiento de esta extensión está basado en el apéndice B ``Lógica combinatoria ilativa'' de \cite[pp.~573--576]{Barendregt:Bible}.
+
+\begin{defn}[Términos \( \mathit{i}\bs{λ} \)]
+  \label{defn:ilativo-terminos}
+  Los términos de la teoría \( \mathit{i}\bs{λ} \), denotados \( \mathit{i}Λ \) se definen sobre el alfabeto de \( Λ \) extendido con un conjunto \( C \) de \emph{constantes lógicas}.
+
+  \begin{align*}
+    M \in Λ &\implies M \in \mathit{i}Λ \\
+    c \in C &\implies c \in \mathit{i}Λ \\
+    M, N \in \mathit{i}Λ &\implies (M\, N) \in \mathit{i}Λ
+  \end{align*}
+\end{defn}
+
+\begin{defn}[Fórmulas en \( \mathit{i}\bs{λ} \)]
+  \label{defn:ilativo-formulas}
+  Las fórmulas de la teoría \( \mathit{i}\bs{λ} \) se definen de la siguiente manera
+  
+  \begin{itemize}
+  \item Si \( M, N \in \mathit{i}Λ \), entonces \( M = N \) es una fórmula.
+  \item Si \( M \in \mathit{i}Λ \), entonces \( M \) es una fórmula.
+  \end{itemize}
+
+  En el estudio de teorías ilativas, la interpretación de \( \mathit{i}\bs{λ} \vdash M \) y \( \mathit{i}\bs{λ} \vdash M = N \) es ``La fórmula \( M \) es verdadera'' y ``La fórmula \( M = N \) es verdadera'' respectivamente.
+\end{defn}
+
+\subsubsection{Teoría \( \mathit{i}\bs{λ}_{KR} \)}
+
+Constantes \( C = \{ \bs{N} \} \) con la interpretación \( \lnot\, M \) es \( (\bs{N}\, M) \)
+
+Paradoja de Kleene-Rosser
+
+\[ X \synteq λx.\bs{N} (x\, x) \]
+
+\[ X\, X = (λx.\bs{N} (x\, x)) X = \bs{N} (X\, X) \]
+
+Se puede derivar que una fórmula \( X\, X = \lnot (X\, X) \), es decir, en \( \mathit{i}\bs{λ}_{KR} \) se pueden derivar contradicciones.
+
+\subsubsection{Teoría \( \mathit{i}\bs{λ}_{0} \)}
+
+Constantes \( C = \{ \bs{F},\ \bs{Q},\ \bs{E},\ \bs{Ξ},\ \bs{Π},\ \bs{P} \} \) con las siguientes interpretaciones
+
+\begin{itemize}
+\item \( M \in N \) es \( N\, M \)
+\item \( M \implies N \) es \( \bs{P}\, M\, N \)
+\item \( M \subseteq N \) es \( \bs{Ξ}\, M\, N \)
+\item \( N^{M} \) es \( \bs{F}\, M\, N \)
+\item \( \forall x\ M \) es \( \bs{Ξ} (λx.M) \)
+\end{itemize}
+
+\subsubsection*{Pendientes}
+
+\begin{itemize}
+\item Definibilidad de \( \bs{E} \), \( \bs{F} \), \( \bs{P} \) y \( \bs{Π} \) a partir de \( \bs{Q} \), \( \bs{Ξ} \).
+\item Inconsistencia de \( \mathit{i}\bs{λ}_{0} \) por la paradoja de Curry ``Una teoría lambda ilativa es inconsistente si cada \( M \) puede ser derivada'' (la paradoja de Kleene-Rosser es una consecuencia de la paradoja de Curry).
+\item Mencionar la técnica utilizada por Church para ``escapar'' de la paradoja de Curry y presentar el ``tradeoff'' de tener un sistema suficientemente poderoso: Equivalencia \( \bs{λ} \) y máquina de Turing \emph{vs.} separar la noción ilativa de la abstracción.
+\end{itemize}
 
 \section{Aritmética}
 \label{sec:aritmetica}
@@ -526,6 +955,21 @@ Abstracción de la noción de repetición sobre la estructura de un numeral, con
 Combinador Y, ordenes de evaluación, funciones recursivas.
 
 \[ \bs{Y} \synteq λf.(λx.f(x\, x))(λx.f(x\, x)) \]
+
+{\center Derivación de \( \bs{Y} \)}
+\begin{align}
+  F &\synteq λn.\bs{\prec}\, (\bs{0^{?}}\, n) \bar{1} (\bs{\times}\, n (F (\bs{-}\, n\, \bar{1}))) \\
+  F' &\synteq λf\, n.\bs{\prec}\, (\bs{0^{?}}\, n) \bar{1} (\bs{\times}\, n (f (\bs{-}\, n\, \bar{1})))\\
+  F'' &\synteq λf'\, n.\bs{\prec}\, (\bs{0^{?}}\, n) \bar{1} (\bs{\times}\, n (f'\, f' (\bs{-}\, n\, \bar{1}))) \\
+  C &\synteq λf''.f''\, f'' \\
+  C\, F'' &\reduce{β} \text{ función factorial a partir de \( F'' \)} \\
+  F''' &\synteq (λf'''.f' (f'''\, f''')) \\
+  F'''\, F''' &\reduce{β} f'(F'''\, F''') \\
+  C^{*} &\synteq λf'.(λf'''.f' (f'''\, f'''))(λf'''.f' (f'''\, f''')) \\
+  C^{*}\, F' &\reduce{β} \text{ función factorial a partir de \( F' \)}
+\end{align}
+
+\[ Y \synteq C^{*} \]
 
 Presentar una breve introducción sobre los combinadores y hablar del combinador \( \bs{Y} \) y cómo nos permite expresar funciones recursivas en el cálculo lambda.
 

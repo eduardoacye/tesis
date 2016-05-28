@@ -137,13 +137,13 @@ Una manera de codificar funciones de varias variables como abstracciones del cá
 
 En el cálculo lambda se pueden realizar algunas operaciones para transformar expresiones, estas operaciones son parte del metalenguaje y consisten de una serie de cambios mecánicos a la estructura de las expresiones de acuerdo a un criterio particular.
 
-En la subsección anterior se mencionan dos operaciones que se abordaron tangencialmente: el intercambio en una expresión de un átomo por otra expresión y la operación de aplicación de abstracciones.
+En la sección \ref{sec:expresiones} se describió de manera tangencial el acto de \emph{reducir} una aplicación basándonos en la noción de \emph{cambiar} una expresión por otra, en esta sección se describen operaciones basadas en esta misma noción.
 
-La \emph{sustitución} es la operación que nos permite transformar una expresión cualquiera \( M \) intercambiando las apariciones de un átomo \( x \) por alguna otra expresión \( M \), este procedimiento se denota
+La \emph{sustitución} es la operación que nos permite transformar una expresión cualquiera \( M \) cambiando las apariciones de un átomo \( x \) por alguna otra expresión \( M \), este procedimiento se denota
 
 \[ \subst{M}{x}{N} \]
 
-En muchos casos la operación de sustitución se puede realizar de manera trivial: \\
+En muchos casos la operación de sustitución se puede realizar de fácilmente:
 
 \begin{exmp}
   Sustituciones sencillas
@@ -152,7 +152,7 @@ En muchos casos la operación de sustitución se puede realizar de manera trivia
     \label{eq:sustituciones:a} \tag{a}
     \subst{x}{x}{y} & = y \\
     \label{eq:sustituciones:b} \tag{b}
-    \subst{(x(x(λy.y)))}{x}{z} & = ((z\, z)(λy.y)) \\
+    \subst{(x(x(λy.y)))}{x}{z} & = (z(z(λy.y))) \\
     \label{eq:sustituciones:c} \tag{c}
     \subst{\subst{(((w\, x)y)z)}{x}{a}}{y}{b} & = (((w\, a)b)z) \\
     \label{eq:sustituciones:d} \tag{d}
@@ -160,7 +160,7 @@ En muchos casos la operación de sustitución se puede realizar de manera trivia
   \end{align}
 \end{exmp}
 
-Existen algunos detalles de la sustitución que se deben tomar en cuenta para evitar obtener expresiones erróneas, en particular cuando se sustituye en expresiones que contienen abstracciones. Para ilustrar estos casos especiales, consideremos la abstracción lambda análoga a la función constante \( (λx.y) \), la cual al ser aplicada a cualquier otra expresión, resultará siempre en el átomo \( y \). Si se realiza la operación \( \subst{(λx.y)}{y}{z} \) se obtiene la expresión \( (λx.z) \) la cual también es análoga a la función constante pero con el átomo \( z \). Si no se tiene cuidado, sustituir un átomo por otro en esta abstracción puede resultar en una expresión con diferente interpretación.
+Existen algunos detalles sutiles de la sustitución que se deben tomar en cuenta para evitar obtener expresiones erróneas, en particular cuando se sustituye en expresiones que contienen abstracciones. Para ilustrar estos casos especiales, consideremos la abstracción lambda análoga a una función constante \( (λx.y) \), en donde reducir la aplicación de ésta en cualquier otra expresión, resulta siempre en el átomo \( y \). Si se realiza la sustitución \( \subst{(λx.y)}{y}{z} \) se obtiene la expresión \( (λx.z) \) la cual también es análoga a una función constante pero con el átomo \( z \). Si no se tiene cuidado, sustituir un átomo por otro en esta abstracción puede resultar en una expresión con diferente \emph{interpretación}.
 
 \begin{exmp}
   Caso patológico de la sustitución ingenua
@@ -171,16 +171,16 @@ Existen algunos detalles de la sustitución que se deben tomar en cuenta para ev
   Se puede pensar que el resultado es \( (λx.x) \) la cuál es análoga a la función identidad, sin embargo, la sustitución no permite cambiar las expresiones de esta manera.
 \end{exmp}
 
-Para entender la operación de sustitución se tiene que pensar que lo que le da sentido a un átomo \( x \) es una \( λ x \). Consideremos la expresión
+Para entender la operación de sustitución se tiene que pensar que lo que le da sentido a una variable \( x \) es una \( λ x \). Consideremos la expresión
 
 \[ (λx.(λy.((x\, y)z))) \]
 
-el átomo \( x \) que aparece en el cuerpo de la expresión se dice ser una variable \emph{ligada} a la \( λ x \), la cual se puede pensar como una especie de ``referencia'' a la expresión a la que la abstracción es aplicada, esto limita a la operación de sustitución a no romper la referencia de una variable ligada. De igual manera, el átomo \( y \) es una variable ligada a la \( λ y \) y debe mantener su referencia bajo la operación de sustitución. Sin embargo, el átomo \( z \) es lo que se llama variable \emph{libre}: No está en el \emph{alcance} de alguna \( λ z \) y puede ser libremente sustituida por alguna otra expresión.
+el átomo \( x \) que aparece en el cuerpo de la expresión se dice ser una variable \emph{ligada} a la \( λ x \), la cual se puede pensar como una especie de ``referencia'' a la expresión a la que la abstracción es aplicada, esto limita a la operación de sustitución a no \emph{romper} la referencia de una variable ligada. De igual manera, el átomo \( y \) es una variable ligada a la \( λ y \) y debe mantener su referencia bajo la operación de sustitución. Sin embargo, el átomo \( z \) es lo que se llama variable \emph{libre}: No está en el \emph{alcance} de alguna \( λ z \) y puede ser libremente sustituida por alguna otra expresión.
 
-En el ejemplo \ref{exmp:sustitucion3} se pretende sustituir la variable libre \( y \) por una expresión \( x \), lo cual no debería presentar problemas, sin embargo, una sustitución tal cual de \( y \) por \( x \) introduciría una referencia a la \( λ x \) de la expresión, la cuál no existía previamente. Con esto se identifica que la operación de sustitución \( \subst{M}{x}{y} \) no debe introducir o eliminar referencias a alguna \( λ \) en \( M \).
+En el ejemplo \ref{exmp:sustitucion3} se pretende sustituir la variable libre \( y \) por una expresión \( x \), lo cual no debería presentar problemas, sin embargo, una sustitución tal cual de \( y \) por \( x \) \emph{introduciría} una referencia a la \( λ x \) de la expresión, la cuál no existía previamente. Con esto se identifica que la operación de sustitución \( \subst{M}{x}{N} \) no debe introducir o eliminar referencias a alguna \( λ \) en \( M \).
 
 
-Para resolver el problema presentado en el ejemplo \ref{exmp:sustitucion3} se debe considerar otra operación llamada \emph{cambio de variable ligada}. Se parte de la observación que en una expresión del cálculo lambda, las referencias entre \( λ x \) y los átomos \( x \) (para cualquier átomo \( x \)) es más importante que el símbolo con el que se representa el átomo. En las expresiones simbólicas de funciones sucede lo mismo, al expresar \( f(x)=x^{2} \) y \( f(y)=y^{2} \) hacemos referencia a la misma regla de correspondencia y por lo tanto a la misma función (sin considerar el dominio y el codominio de \( f \)). En el cálculo lambda, cambiar el símbolo que representa el átomo \( x \) en la expresión \( (λx.y) \) por otro símbolo no utilizado como \( z \) nos permite realizar la sustitución sin problemas.
+Para resolver el problema presentado en el ejemplo \ref{exmp:sustitucion3} se debe considerar otra operación llamada \emph{cambio de variable ligada}. Se parte de la observación que en una expresión del cálculo lambda, las referencias entre \( λ x \) y las variables \( x \) son más importantes que el símbolo con el que se representa el átomo. En las expresiones simbólicas de funciones sucede lo mismo, al expresar \( f(x)=x^{2} \) y \( f(y)=y^{2} \) hacemos referencia a la misma regla de correspondencia y por lo tanto a la misma función (sin considerar el dominio y el codominio de \( f \)). En el cálculo lambda, cambiar el símbolo que representa el átomo \( x \) en la expresión \( (λx.y) \) por otro símbolo no utilizado como \( z \) nos permite realizar la sustitución sin problemas.
 
 \begin{exmp}
   Procedimiento de sustitución para el ejemplo \ref{exmp:sustitucion3}
@@ -192,7 +192,9 @@ Para resolver el problema presentado en el ejemplo \ref{exmp:sustitucion3} se de
   \end{align*}
 \end{exmp}
 
-Cuando se realiza un cambio de variable ligada sobre una abstracción \( (λx.M) \) se cambia tanto el átomo \( x \) acompañado por la \( λ \), llamada variable \emph{enlazada} como todas las apariciones del átomo en el cuerpo de la abstracción, también llamado \emph{alcance de} \( λ x \). En el ejemplo \ref{exmp:sustitucion4} el cambio de variable ligada únicamente cambió la variable enlazada, en otras expresiones el cambio de variable ligada puede realizarse múltiples veces para transformar varias abstracciones.
+Cuando se realiza un cambio de variable ligada sobre una abstracción \( (λx.M) \) se cambia tanto el átomo \( x \) acompañado por la \( λ \), llamada variable \emph{enlazada} como todas las apariciones del átomo en el cuerpo de la abstracción, también llamado \emph{alcance de} \( λ x \) a menos que en \( M \) se encuentre una expresión de la forma \( (λx.N) \), ya que las \( x \) en \( N \) hacen referencia a la \( λx \) de \( (λx.N) \) no de \( (λx.M) \).
+
+En el ejemplo \ref{exmp:sustitucion4} el cambio de variable ligada únicamente cambió la variable enlazada, en otras expresiones el cambio de variable ligada puede realizarse múltiples veces para transformar varias abstracciones.
 
 \begin{exmp}
   Múltiples cambios de variable ligada
@@ -208,7 +210,7 @@ El cambio de variable ligada en una abstracción \( (λx.M) \) de \( x \) a \( y
 
 \[ (λy.\subst{M}{x}{y}) \]
 
-La definición de la operación de sustitución es recursiva y hace uso de la operación de cambio de variable ligada, considerando a \( x \), \( y \), \( z \) como átomos diferentes y \( M \), \( N \) y \( P \) como expresiones cualquiera diferentes:
+La definición de la operación de sustitución es recursiva y hace uso de la operación de cambio de variable ligada, considerando a \( x \), \( y \), \( z \) como átomos diferentes y \( M \), \( N \) y \( P \) como expresiones cualquiera:
 
 \begin{itemize}
 \item \( \subst{x}{x}{M} \) resulta en \( M \);
@@ -223,16 +225,16 @@ La definición de la operación de sustitución es recursiva y hace uso de la op
   \end{itemize}
 \end{itemize}
 
-La operación de \emph{aplicación de abstracciones} es el mecanismo mediante el cual se puede ``concretar'' una abstracción haciendo uso de otra expresión como valor de la variable enlazada. De la misma manera en como se efectúa la aplicación de funciones en la matemática clásica, el concretar una función consiste en sustituir todas las apariciones del argumento por el valor en el que la función es aplicada.
+La operación de \emph{reducción de aplicaciones} es el mecanismo mediante el cual se puede ``concretar'' una abstracción haciendo uso de otra expresión como valor de la variable enlazada. De la misma manera en como se efectúa la evaluación de funciones en la matemática clásica, el concretar una función consiste en sustituir todas las apariciones del argumento por el valor en el que la función es aplicada.
 
-La definición de la aplicación de una abstracción \( (λx.M) \) en una expresión \( N \) es
+La definición de la reducción de la aplicación de \( (λx.M) \) en una expresión cualquiera \( N \) es
 
 \[ \subst{M}{x}{N} \]
 
-A continuación se presentan ejemplos de aplicación de abstracciones con los pasos de la transformación
+A continuación se presentan ejemplos de reducciones con los pasos de la transformación
 
 \begin{exmp}
-  Procedimiento de aplicación de \( (λx.x) \) a \( y \)
+  Procedimiento de reducir la aplicación de \( (λx.x) \) en \( y \)
   \label{exmp:aplicacion6}
   \begin{align*}
     \text{1. } & ((λx.x) y) \\
@@ -242,7 +244,7 @@ A continuación se presentan ejemplos de aplicación de abstracciones con los pa
 \end{exmp}
 
 \begin{exmp}
-  Procedimiento de aplicación de \( (λw.w) \) a \( x \)
+  Procedimiento de reducir la aplicación de \( (λw.w) \) en \( x \) dentro de otra expresión
   \label{exmp:aplicacion7}
   \begin{align*}
     \text{1. } & (λx.((λw.w)x)) \\
@@ -252,8 +254,8 @@ A continuación se presentan ejemplos de aplicación de abstracciones con los pa
 \end{exmp}
 
 \begin{exmp}
-  Procedimiento de múltiples aplicaciones
-  \label{exmp:aplicacion8}
+  Procedimiento de múltiples reducciones
+   \label{exmp:aplicacion8}
   \begin{align*}
     \text{1. } & (((λf.(λx.(f(f(f\, x))))) g) y) \\
     \text{2. } & ((λx.\subst{(f(f(f\, x)))}{f}{g}) y) \\
@@ -272,20 +274,43 @@ El cálculo lambda se considera formalmente como una \emph{teoría ecuacional}, 
 
 Es tan relevante la formalización de las nociones de equivalencia que considerar alguna equivalencia entre dos expresiones que se escriben diferente puede cambiar por completo el sistema formal que se estudia. En el desarrollo histórico del cálculo lambda, el estudio de los criterios que permiten establecer que dos expresiones son equivalentes ha dado pie a una gran diversidad de variantes de la teoría original; es por ello que en la literatura se suele hablar de \emph{los cálculos lambda} y no únicamente de un cálculo lambda.
 
-Como se aborda en la subsección anterior, con la operación de sustitución se puede transformar expresiones del cálculo lambda y definir otras operaciones como el cambio de variable ligada y la aplicación de abstracciones. Usualmente, las transformaciones de expresiones se pueden asociar a nociones de equivalencia. En terminología del cálculo lambda, las nociones de equivalencia entre expresiones son asociadas a la propiedad de \emph{convertibilidad}, la cual significa que si dos expresiones \( M \) y \( N \) son equivalentes en el sistema, es posible transformar \( M \) a \( N \) y viceversa por medio de un número finito de operaciones.
+Como se aborda en la sección \ref{sec:operaciones}, con la operación de sustitución se puede transformar expresiones del cálculo lambda y definir otras operaciones como el cambio de variable ligada y la reducción de aplicaciones. Usualmente, las transformaciones de expresiones se pueden asociar a nociones de equivalencia. En terminología del cálculo lambda, las nociones de equivalencia entre expresiones son asociadas a la propiedad de \emph{convertibilidad}, la cual significa que si dos expresiones \( M \) y \( N \) son equivalentes en el sistema, es posible transformar \( M \) a \( N \) y viceversa por medio de un número finito de operaciones.
 
-La \emph{equivalencia sintáctica} es una relación binaria entre expresiones que no está asociada a una transformación. Se considera como una equivalencia trivial, ya que asevera la igualdad entre dos expresiones que son escritas exactamente igual, símbolo por símbolo a excepción de abusos de notación. Por ejemplo, la expresión \( \sin^{2}(x) \) es un abuso de notación de \( \left( \sin(x) \right)^{2} \) y ambas son sintácticamente iguales.  En el cálculo lambda, la equivalencia sintáctica es denotada como \( M \synteq N \) cuando \( M \) es sintácticamente la misma expresión que \( N \).
+En esta sección se describen algunos criterios de equivalencia entre expresiones del cálculo lambda y las maneras en las que las equivalencias se relacionan entre sí.
+
+\subsection{Equivalencia sintáctica}
+\label{sec:equivalencia-sintactica}
+
+La \emph{equivalencia sintáctica} es una relación binaria entre expresiones que no está asociada a una transformación. Se considera como una equivalencia trivial, ya que asevera la igualdad entre dos expresiones que son escritas exactamente igual, símbolo por símbolo a excepción de abusos de notación. Por ejemplo, la expresión \( \sin^{2}(x) \) es un abuso de notación de \( \left( \sin(x) \right)^{2} \) y ambas se consideran exactamente iguales. En el cálculo lambda, la equivalencia sintáctica es denotada como
+
+\[ M \synteq N \]
+
+cuando \( M \) es sintácticamente la misma expresión que \( N \).
 
 Todos los cálculos lambda, al igual que la mayoría de los sistemas formales, comprenden la noción de equivalencia sintáctica. Sin embargo las equivalencias más interesantes son las que involucran transformaciones entre expresiones.
 
-La operación de cambio de variable ligada se relaciona con una equivalencia estructural entre dos expresiones. Cuando se realiza esta operación no se modifica la estructura de la expresión, únicamente se modifica el símbolo usado para representar un átomo. Considerando la expresión que representa a la función identidad \( (λx.x) \) se observa que tiene la misma estructura que la abstracción \( (λy.y) \) y que \( (λz.z) \), estas tres representan el mismo concepto. De igual manera otras expresiones como \( ((x\, y)z) \) o \( (λw.x) \) son estructuralmente equivalentes a \( ((a\, b)c) \) y \( (λf.h) \) respectivamente. A pesar de que no se escriben sintácticamente igual, la correspondencia que hay entre las posiciones de los átomos en una y otra expresión nos permite considerarlas como equivalentes. Sin embargo, la operación de cambio de variable ligada no considera cambios de nombres a átomos que sean variables libres. Esta relación de equivalencia es llamada \( α \)-convertibilidad y se denota como \( M \convertible{α} N \) para dos expresiones del cálculo lambda \( M \) y \( N \) en donde a partir de un número finito de cambios de variables ligadas en \( M \) o parte de \( M \) y en \( N \) o parte de \( N \) se puedan obtener expresiones sintácticamente equivalentes.
+\subsection{\( α \)-convertibilidad}
+\label{sec:alfa-convertibilidad}
+
+La operación de cambio de variable ligada se relaciona con una equivalencia estructural entre dos expresiones. Cuando se realiza esta operación no se modifica la estructura de la expresión, únicamente se modifica el símbolo usado para representar un átomo.
+
+Considerando la expresión análoga a la función identidad \( (λx.x) \) se observa que tiene la misma estructura que la abstracción \( (λy.y) \) y que \( (λz.z) \), estas tres representan el mismo concepto. De igual manera otras expresiones como \( ((x\, y)z) \) o \( (λw.x) \) son estructuralmente equivalentes a \( ((a\, b)c) \) y \( (λf.h) \) respectivamente. A pesar de que no se escriben sintácticamente igual, la correspondencia que hay entre las posiciones de los átomos en una y otra expresión nos permite considerarlas como equivalentes. Sin embargo, la operación de cambio de variable ligada no considera cambios de nombres a átomos que sean variables libres.
+
+Esta relación de equivalencia es llamada \( α \)-convertibilidad y se denota como
+
+\[ M \convertible{α} N \]
+
+para dos expresiones del cálculo lambda \( M \) y \( N \) en donde a partir de un número finito de cambios de variables ligadas en \( M \) o parte de \( M \) y en \( N \) o parte de \( N \) se puedan obtener expresiones sintácticamente equivalentes.
+
+\subsubsection{Índices de De Bruijn}
 
 Una técnica utilizada por algoritmos que verifican si dos expresiones \( M \) y \( N \) son \( α \)-convertibles es la de \emph{índices de De Bruijn}, esta transformación cambia la aparición de átomos por números naturales que representan la ``distancia'' de los átomos a las \( λ \) que hacen referencia.
 
 \begin{exmp}[índices de De Bruijn]
-  \label{exmp:indices-debrujn}
-  La expresión \( (λz.((λy.(y(λx.x)))(λx.(z\, x)))) \) se escribe usando índices de De Bruijn como
   \label{exmp:debrujn}
+  \[ (λz.((λy.(y(λx.x)))(λx.(z\, x)))) \]
+  
+  Se escribe usando índices de De Bruijn como
 
   \[ λ (λ 1 (λ 1)) (λ 2\, 1) \]
 
@@ -351,25 +376,37 @@ Una técnica utilizada por algoritmos que verifican si dos expresiones \( M \) y
   \label{fig:debrujn}
 \end{figure}
 
-Una desventaja de utilizar la notación de De Bruijn es que ciertas expresiones del cálculo lambda no pueden ser escritas, en particular, los átomos no pueden ser variables libres para que esta transformación pueda ser realizada.
+Una desventaja de utilizar la notación de De Bruijn es que ciertas expresiones del cálculo lambda no pueden ser escritas, en particular, los átomos no pueden ser variables libres para que esta notación pueda ser utilizada.
 
-Al igual que el cambio de variable ligada, la operación de aplicación de abstracciones es utilizada para describir una equivalencia entre expresiones. La noción básica de esta equivalencia consiste en observar que al aplicar una abstracción \( (λx.M) \) a una expresión \( N \), el resultado de dicha operación siempre es el mismo. De manera similar a la aplicación de funciones, cuando se define una función \( f(x)=x^{2} \), la aplicación \( f(3) \) se suele igualar al resultado de la aplicación: \( f(3)=8 \).
+\subsection{\( β \)-convertibilidad}
+\label{sec:beta-convertibildad}
 
-Esta relación de equivalencia es llama \( β \)-convertibilidad y se denota como \( M \convertible{β} N \) para dos expresiones \( M \) y \( N \) en donde a partir de un número finito de aplicaciones de abstracciones, cambios de variable ligada o el proceso inverso de aplicación de abstracciones en \( M \) o parte de \( M \) y \( N \) o parte de \( N \) se puedan obtener expresiones sintácticamente equivalentes.
+Al igual que el cambio de variable ligada, la operación de reducción de aplicaciones es utilizada para describir una equivalencia entre expresiones. La idea básica de esta equivalencia consiste en observar que al aplicar una abstracción \( (λx.M) \) a una expresión \( N \), el resultado de su reducción siempre es el mismo. De manera similar a la aplicación de funciones, cuando se define una función \( f(x)=x^{2} \), la aplicación \( f(3) \) se suele igualar al resultado de la aplicación: \( f(3)=8 \).
 
-Es importante enfatizar que la \( β \)-convertibilidad considera el proceso inverso de la aplicación de abstracciones, por ejemplo
+Esta relación de equivalencia es llama \( β \)-convertibilidad y se denota como
+
+\[ M \convertible{β} N \]
+
+para dos expresiones \( M \) y \( N \) en donde a partir de un número finito de reducciones a aplicaciones, reducciones inversas y cambios de variable ligada en \( M \) o parte de \( M \) y \( N \) o parte de \( N \) se puedan obtener expresiones sintácticamente equivalentes.
+
+El proceso inverso a la reducción de aplicaciones se puede ilustrar considerando la reducción de \( (((λg.(λy.(g (g (g\, y))))) f) x) \) a \( (f(f(f\, x))) \). No es posible reducir la segunda expresión a la primera, pero ya la segunda expresión es una reducción de la primera, ambas son \( β \)-convertibles:
 
 \[ (f(f(f\, x))) \convertible{β} (((λg.(λy.(g (g (g\, y))))) f) x) \]
 
-Todas las relaciones de equivalencia por definición cumplen con tres propiedades:
+\subsection{Relaciones de equivalencia}
+\label{sec:relaciones-de-equivalencia}
+
+Todas las nociones de convertibilidad son relaciones de equivalencia, las cuales por definición cumplen con tres propiedades.
+
+Sea \( \sim \) una relación de equivalencia
 
 \begin{enumerate}[a.]
-\item Toda expresión \( M \) es equivalente a sí misma. \label{enum:rela:a}
-\item Si una expresión \( M \) es relacionada con una equivalencia a otra expresión \( N \), entonces \( N \) también es relacionada a \( M \). \label{enum:rela:b}
-\item Si una expresión \( M \) se relaciona con una equivalencia a otra expresión \( N \) y \( N \) se relaciona con la misma equivalencia a \( P \), entonces, \( M \) y \( P \) se relacionan con esta equivalencia. \label{enum:rela:c}
+\item Toda expresión \( M \) es equivalente a sí misma, es decir, \( M \sim M \). \label{enum:rela:a}
+\item Si una expresión \( M \) es relacionada con una equivalencia a otra expresión \( N \), entonces \( N \) también es relacionada a \( M \), es decir \( M \sim N \implies N \sim M \). \label{enum:rela:b}
+\item Si una expresión \( M \) se relaciona con una equivalencia a otra expresión \( N \) y \( N \) se relaciona con la misma equivalencia a \( P \), entonces, \( M \) y \( P \) se relacionan con esta equivalencia, es decir, \( M \sim N,\ N \sim P \implies M \sim P \). \label{enum:rela:c}
 \end{enumerate}
 
-La equivalencia sintáctica corresponde al inciso \ref{enum:rela:a} de las propiedades de equivalencias mencionadas y es llamada propiedad de \emph{reflexividad}; al igual que la \( α \)-conversión y la \( β \)-conversión, la equivalencia sintáctica no está asociada a una regla de inferencia. En los incisos \ref{enum:rela:b} y \ref{enum:rela:c} se tienen propiedades que parten de expresiones equivalentes y basado en si estas expresiones son equivalentes o no, ciertas propiedades se deben cumplir. En el inciso \ref{enum:rela:b} la propiedad es llamada \emph{simetría}, mientras que en el inciso \ref{enum:rela:c} la propiedad es llamada \emph{transitividad}.
+La equivalencia sintáctica corresponde al inciso \ref{enum:rela:a} de las propiedades de equivalencias mencionadas y es llamada propiedad de \emph{reflexividad}; al igual que la \( α \)-conversión y la \( β \)-conversión, la equivalencia sintáctica no está asociada a una regla de inferencia. En los incisos \ref{enum:rela:b} y \ref{enum:rela:c} se tienen inferencias que parten de expresiones equivalentes y basado en si estas expresiones son equivalentes o no, ciertas propiedades se deben cumplir. En el inciso \ref{enum:rela:b} la propiedad es llamada \emph{simetría}, mientras que en el inciso \ref{enum:rela:c} la propiedad es llamada \emph{transitividad}.
 
 La \( α \)-conversión y la \( β \)-conversión fueron definidas como equivalencias independientes y su definición cumple con las tres propiedades mencionadas a pesar de ser definidas en base a un procedimiento y no en una regla declarativa, sin embargo, es deseable referirse a una sola equivalencia de expresiones que tenga las propiedades de \emph{reflexividad}, \emph{simetría} y \emph{transitividad} y posteriormente considerar otras reglas que la equivalencia deba de cumplir.
 
@@ -419,14 +456,14 @@ Para capturar la definición de \( β \)-convertibilidad con ecuaciones, es nece
   \end{subequations}
 \end{defn}
 
-Con estas reglas, las inferencias lógicas nos permiten abordar la equivalencia sobre partes de una expresión.
+Con estas reglas y a partir de un razonamiento lógico, podemos demostrar la \( β \)-equivalencia entre dos expresiones.
 
 \begin{exmp}
-  Razonamiento para concluir que \( (λf.((λx.(f\, x)) y)) \sim (λf.(f\, y)) \)
+  Razonamiento para concluir que \( (λf.((λx.(f\, x)) y)) \convertible{β} (λf.(f\, y)) \)
   \label{exmp:razonamiento-sim}
   \begin{align*}
-    \text{1. } & ((λx.(f\, x)) y) \sim (f\, y) & & \text{por \( β \)} \\
-    \text{2. } & (λf.((λx.(f\, x)) y)) \sim (λf.(f\, y)) & & \text{por \( ξ \)}
+    \text{1. } & ((λx.(f\, x)) y) \convertible{β} (f\, y) & & \text{por \( β \)} \\
+    \text{2. } & (λf.((λx.(f\, x)) y)) \convertible{β} (λf.(f\, y)) & & \text{por \( ξ \)}
   \end{align*}
 \end{exmp}
 
@@ -436,7 +473,7 @@ Por ejemplo, se pueden considerar dos abstracciones diferentes \( (λx.M) \) y \
 
 \[ (M\, P) \sim (N\, P) \implies M \sim N \]
 
-Con esto se termina la introducción informal al cálculo lambda, las ideas que se han manejado en esta sección serán ahora formalizadas y definidas de manera rigurosa.
+Con esto se termina la introducción informal al cálculo lambda, las ideas que se han manejado en esta sección son formalizadas y definidas de manera rigurosa en el capítulo \ref{ch:formalizacion}.
 
 %%% Local Variables:
 %%% mode: latex

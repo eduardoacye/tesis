@@ -1,1033 +1,851 @@
+La teoría del cálculo lambda se puede formalizar de diferentes perspectivas, en este trabajo se abordan dos: a partir de la \emph{reducibilidad y convertibilidad} de expresiones y a partir de \emph{sistemas formales}. La primera consiste en definir transformaciones de expresiones mediante procedimientos, mientras que la segunda define axiomas y reglas de inferencia.
 
-\section{Álgebra Booleana}
-\label{sec:algebra-booleana}
+Independientemente de la perspectiva de la formalización, los conceptos son los mismos y las definiciones equivalentes. En ambos casos se formaliza la teoría \( \bs{λ} \), también llamado cálculo-\( λ K β \).
 
-El álgebra booleana es una rama del álgebra en donde las expresiones tienen asociado un valor de \emph{falso} o \emph{verdadero}. Estas expresiones son fundamentales en el estudio de circuitos y programas escritos en lenguajes de programación.
+De acuerdo a Barendregt \cite[p.~22]{Barendregt:Bible}, el objeto de estudio principal de la teoría \( \bs{λ} \) es el conjunto de términos lambda módulo convertibilidad, estas nociones serán presentadas en las siguientes subsecciones.
 
-Los términos lambda no tienen asignados un valor de verdad y las operaciones que se plantearon en los primeros dos capítulos involucraron el concepto de falso y verdadero únicamente en el metalenguaje y asociando estos valores no a los términos lambda en sí, si no a propiedades de estos, por ejemplo, es falso que \( \| λx.x \| = 5 \) y es verdadero que \( (\bs{K}\, x) \reduce{β} (λx.y) \). Sin embargo es posible codificar los valores de verdad como elementos de \( Λ \) y construir abstracciones que emulen las propiedades de las operaciones booleanas bajo la \( β \)-reducción. De esta manera se pueden escribir términos que, de acuerdo con la codificación establecida, representen expresiones booleanas y términos lambda al mismo tiempo.
+\section{Términos lambda}
+\label{sec:terminos-lambda}
 
-En los lenguajes de programación usualmente se mezclan las expresiones booleanas con otras expresiones y objetos a partir de \emph{predicados}, éstos son funciones con algún dominio \( X \) y codominio \( \{ \mathrm{falso},\ \mathrm{verdadero} \} \). Por ejemplo, al escribir un programa en donde se necesite tomar una desición a partir de si un número \verb!n! es positivo o negativo se escribiría (en pseudocódigo):
+Esta subsección está basada principalmente en el capítulo 2 de \cite{Barendregt:Bible}.
 
-\begin{verbatim}
-Si esPositivo(n), entonces:
-    ...
-De lo contrario:
-    ...
-Fin
-\end{verbatim}
+Los \emph{términos lambda} son las \emph{fórmulas bien formadas} del cálculo lambda, es decir, las expresiones válidas del sistema. El conjunto de todos los términos lambda es un lenguaje formal, denotado como \( Λ \).
 
-En este ejemplo \verb!esPositivo! es un predicado que es evaluado a falso si \verb!n! no es positivo y a verdadero si lo es.
+El lenguaje \( Λ \) se puede definir de diferentes maneras, a continuación se presenta una definición inductiva y posteriormente una construcción a partir de una gramática libre de contexto.
 
-La codificación de valores de verdad y operaciones booleanas es común incluso en lenguajes de programación populares, por ejemplo en C, el tipo \verb!bool! es codificado como un entero, en donde falso es 0 y verdadero cualquier otro entero, a su vez, los enteros son codificados usualmente como secuencias de 32 bits en complemento a dos. Por lo tanto, si \verb!esPositivo! fuera una función de C: \verb!esPositivo(8)! sería evaluado a 1 y \verb!esPositivo(-8)! sería evaluado a 0.
-
-Al igual que el cálculo lambda, otras teorías que fundamentan las ciencias de la computación también carecen de expresiones y operaciones booleanas. En el caso de la máquina de Turing los cambios de estado en la ejecución de un programa se determinan a partir de su función de transición y predicados simples de igualdad entre símbolos del alfabeto de cinta se realizan en un paso, sin embargo, predicados mas complejos requieren ser codificados con estados, transiciones y anotaciones en su cinta.
-
-\subsection{Valores de verdad}
-\label{sec:valores-de-verdad}
-
-En el álgebra booleana, los valores de las expresiones son falso y verdadero. El nombre de estos valores no es de relevancia y usualmente falso se representa como 0 y verdadero como 1. El aspecto importante de estos valores es que son distintos y si un valor \( x \) no es uno, entonces es el otro.
-
-Podemos ignorar la representación concreta de estos valores y pensar en una situación hipotética: Una persona omnisciente y muda llamada \( P \) puede decirme si una oración que le digo es falsa o verdadera dándole una manzana y una pera; si me regresa la manzana significa que la oración es verdadera y si me regresa la pera significa que la oración es falsa. En este planteamiento irreal e hipotético, no fué necesario conocer la estructura de la verdad y la falsedad, solo fué necesario tener a alguien que tomara una desición (en este caso \( P \)) y proveer dos objetos que podemos distinguir entre sí (en este caso la manzana y la pera). Las desiciones de esta persona pueden ser los conceptos de falso y verdadero si nunca podemos conocer los valores booleanos.
-
-Detrás del concepto de falso y verdadero, está el concepto de \emph{desición}, la codificación que se desarrolla está basada en este concepto y aparece en \cite[p.~133]{Barendregt:Bible}.
-
-Supongamos que \( P \) es un término lambda el cual puede ser aplicado a una oración \( O \), al \( β \)-reducir \( (P\, O) \) se obtiene una decisión \( D \) la cual al ser aplicada a dos términos lambda \( M \) y \( N \) se \( β \)-reduce a \( M \) si la oración \( O \) es verdadera y a \( M \) si es falsa:
-
-\[ P\, O \reduce{β} D, \]
-\[ D\, M\, N \reduce{β} \begin{cases} M & \text{si \( O \) es verdadera}\\ N & \text{si \( O \) es falsa}\end{cases} .\]
-
-Para fines prácticos no es necesario saber cómo es \( P \) ni \( O \), lo importante es que cuando \( O \) es cierta, \( D \) eligirá \( M \) y si \( O \) es falsa, eligirá \( N \). Por lo tanto, \( (P\, O) = D \) es un término lambda de la forma
-
-\[ λx\, y.Q \]
-
-Si \( D \) es una desición tomada por que \( O \) es verdadera, podemos asegurar que \( (D\, M\, N) = M \), por lo tanto:
-
-\[ D \synteq λx\, y.x \]
-
-Si \( D \) es una desición tomada por que \( O \) es falsa, podemos asegurar que \( (D\, M\, N) = N \), por lo tanto:
-
-\[ D \synteq λx\, y.y \]
-
-Teniendo los términos lambda que representan la desición de \( P \) ante una oración falsa y ante una oración verdadera, se puede considerar que estos términos representan el concepto de falso y verdadero.
-
-\begin{defn}[Valores de verdad]
-  \label{defn:valores-verdad}
-  El concepto de falso y verdadero es codificado en el cálculo lambda como los términos \( \bs{T} \) y \( \bs{F} \) respectivamente.
-  \begin{align*}
-    \bs{T} &\synteq λx\, y.x & \bs{F} &\synteq λx\, y.y
-  \end{align*}
+\begin{defn}[Términos lambda]
+  El conjunto \( Λ \) tiene elementos que son cadenas conformadas por símbolos en el alfabeto \( Σ=\{\mathtt{(},\ \mathtt{)},\ \mathtt{.},\ λ\} \cup V \), donde \( V \) es un conjunto infinito \( \{v_{0},\ v_{00},\ ... \} \) de variables. \( Λ \) es el conjunto más pequeño que satisface:
+  \label{defn:terminos}
+  \begin{subequations}
+    \begin{align}
+      \label{terminos:atomos} \tag{a}
+      x \in V & \implies x \in Λ \\
+      \label{terminos:abstracciones} \tag{b}
+      M \in Λ,\ x \in V & \implies (λx.M) \in Λ \\
+      \label{terminos:aplicaciones} \tag{c}
+      M,\ N \in Λ & \implies (M\, N) \in Λ
+    \end{align}
+  \end{subequations}
 \end{defn}
 
-Utilizar \( \bs{T} \) y \( \bs{F} \) en términos lambda es similar a imitar a \( P \) y determinar cuando \( O \) es verdadera o falsa. Esto es debido a que se pueden plantear predicados que sean conceptualmente ilógicos, por ejemplo, si \verb!esPositivo! se define de tal manera que sin importar en que valor sea evaluado siempre resulte en falso, los programas que se escriban no van a funcionar suponiendo que \verb!esPositivo! calcula lo que debe de calcular, sin embargo lo importante de codificar el álgebra booleana es poder manipular los valores de falso y verdadero, no representar un término \( P \) que determine verdades absolutas.
+Cada una de estas tres reglas corresponde a las tres clases de términos lambda: la regla \eqref{terminos:atomos} define a todos los elementos de \( V \) como términos lambda, a estas variables se les llama \emph{átomos}; la regla \eqref{terminos:abstracciones} define a las cadenas de la forma \( (λx.M) \) (donde \( x \) es un átomo y \( M \) es un término lambda) como términos lambda, a estos términos se les llama \emph{abstracciones}; la regla \eqref{terminos:aplicaciones} define a las cadenas de la forma \( (M\, N) \) (donde \( M \) y \( N \) son términos lambda) como términos lambda, a estos términos se les llama \emph{aplicaciones}.
 
-\subsection{Expresiones booleanas}
+Una definición alternativa de \( Λ \) es haciendo uso de gramáticas libres de contexto:
 
-Las expresiones booleanas se conforman de operaciones y valores de verdad. Las operaciones más básicas son la conjunción, la disyunción y la negación, también llamadas \( AND \), \( OR \), \( NOT \) y denotadas \( \land \), \( \lor \) y \( \lnot \) respectivamente.
+\begin{defn}[Términos lambda]
+  El conjunto de términos lambda es el lenguaje generado por la gramática libre de contexto \( G \) con categorías sintácticas \( T \) (términos lambda), \( E \) (aplicaciones), \( F \) (abstracciones) y \( A \) (átomos); símbolos terminales \( \{\mathtt{(},\ \mathtt{)},\ \mathtt{.},\ λ,\ v,\ {}_{0}\} \); símbolo inicial \( T \) y con las siguientes reglas de producción:
+  \label{terminos-cfg}
+  \begin{subequations}
+    \begin{align}
+      \label{terminos-cfg:terminos} \tag{a}
+      T & \rightarrow E\ \mid\ F\ \mid\ A \\
+      \label{terminos-cfg:atomos} \tag{b}
+      A & \rightarrow \mathtt{v}_{0}\ \mid\ A {}_{0} \\
+      \label{terminos-cfg:abstracciones} \tag{c}
+      F & \rightarrow \mathtt{(} λ\ A\ \mathtt{.}\ T\ \mathtt{)} \\
+      \label{terminos-cfg:aplicaciones} \tag{d}
+      E & \rightarrow \mathtt{(}\ T\ T\ \mathtt{)}
+    \end{align}
+  \end{subequations}
+\end{defn}
 
-La conjunción y la disyunción son operaciones binarias definidas en
-
-\[ \{ \mathrm{falso},\ \mathrm{verdadero} \}^{2} \to \{ \mathrm{falso},\ \mathrm{verdadero} \} \]
-
-y la negación es una operación unaria definida en
-
-\[ \{ \mathrm{falso},\ \mathrm{verdadero} \} \to \{ \mathrm{falso},\ \mathrm{verdadero} \}. \]
-
-Las tablas de verdad en el cuadro \ref{tab:and-or-not} establecen los resultados de estas tres operaciones para cada valor en su dominio.
-
-\begin{table}[h!]
-  \centering
-  \small
-  \begin{tabular}{|c|c|c|c|}
-    \hline
-    \( x \) & \( y \) & \( x \land y \) & \( x \lor y \) \\ [0.5ex]
-    \hline\hline
-    falso & falso & falso & falso \\
-    falso & verdadero & falso & verdadero \\
-    verdadero & falso & falso & verdadero \\
-    verdadero & verdadero & verdadero & verdadero \\
-    \hline
-  \end{tabular}
-  \hfill
-  \begin{tabular}{|c|c|}
-    \hline
-    \( x \) & \( \lnot x \) \\ [0.5ex]
-    \hline\hline
-    falso & verdadero  \\
-    verdadero & falso \\
-    \hline
-  \end{tabular}
-  \caption{Tablas de verdad para \( \land \), \( \lor \) y \( \lnot \)}
-  \label{tab:and-or-not}
-\end{table}
-
-En el álgebra booleana, las expresiones se escriben en notación de infijo, utilizan paréntesis para agrupar expresiones y cuando los paréntesis son omitidos la negación tiene mayor presedencia que la conjunción y la conjunción tiene mayor presedencia que la disyunción, por ejemplo:
-
-\[ \mathrm{verdadero} \land \mathrm{falso} \lor \lnot \mathrm{falso} \]
-\[ \lnot (\mathrm{falso} \lor \mathrm{falso}) \]
-\[ \mathrm{verdadero} \land (\mathrm{falso} \lor \mathrm{falso}) \]
-
-Esta notación es conveniente para escribir expresiones booleanas de manera concisa, pero es únicamente una conveniencia sintáctica del álgebra booleana. La codificación que se desarrolla de las operaciones seguirá las convenciones sintácticas del cálculo lambda, por ejemplo, suponiendo que \( \bs{\land} \), \( \bs{\lor} \), \( \bs{\lnot} \) son términos lambda, las expresiones mencionadas escribirían con notación de prefijo:
-
-\[ \bs{\lor} (\bs{\land}\, \bs{T}\, \bs{F}) \bs{F} \]
-\[ \bs{\lnot} (\bs{\lor}\, \bs{F}\, \bs{F}) \]
-\[ \bs{\land}\, \bs{T} (\bs{\lor}\, \bs{F}\, \bs{F}) \]
-
-Al igual que los valores de verdad, las operaciones básicas son codificadas como abstracciones del cálculo lambda. Hay varias metodologías para derivar términos lambda para las operaciones booleanas a partir de \( \bs{T} \) y \( \bs{F} \), en esta sección se abordarán dos:
+Para facilitar la escritura y lectura de los términos lambda, en este trabajo se hacen las siguientes consideraciones sobre la notación:
 
 \begin{itemize}
-\item Combinando valores de verdad
-\item Programando las operaciones
+\item Cuando se hace referencia a cualquier término lambda se utilizan las letras mayúsculas \( M \), \( N \), \( P \), etc. Es importante establecer que si en un ejemplo, explicación, teorema o demostración se hace referencia a un término lambda con una letra mayúscula, cualquier otra aparición de esta letra hace referencia a este mismo término dentro de ese contexto.
+\item Cuando se hace referencia a cualquier átomo se utilizan las letras minúsculas \( x \), \( y \), \( z \), etc. Al igual que en el punto anterior, la aparición de una letra minúscula en un ejemplo, explicación, teorema o demostración hace referencia al mismo átomo.
+\item Los paréntesis son omitidos de acuerdo a las siguientes equivalencias sintácticas:
+  \begin{itemize}
+  \item \( ((M\, N) P) \synteq M\, N\, P\), en general, se considera la aplicación de términos lambda con asociación a la izquierda. Se tiene que tener cuidado con respetar esta regla, por ejemplo \( (M(N(O\, P))) \synteq M(N(O\, P)) \not\synteq M\, N\, O\, P \).
+  \item \( (λx.(M N)) \synteq λx.(M N) \), en general, se puede escribir una abstracción omitiendo los paréntesis externos. Es importante escribir de manera explícita los paréntesis en algunos casos, por ejemplo \( ((λx.(M\, N)) O) \synteq (λx.(M\, N)) O \not\synteq λx.(M\, N)O \) ya que el lado derecho de la equivalencia es sintácticamente equivalente a \( (λx.((M\, N)O)) \).
+  \item \( (λx.(λy.(λz.M))) \synteq (λx\, y\, z.M) \), en general, si el cuerpo de una abstracción es también una abstracción, se pueden agrupar las variables ligadas y enlazadas. Éste abuso de notación es consistente con la reducción de funciones de varias variables usada por Schönfinkel \cite{Schonfinkel:Varargs}.
+  \end{itemize}
+\item El símbolo \( \synteq \) denota la equivalencia sintáctica entre dos términos lambda.
 \end{itemize}
 
-La primer metodología parte de la observación de que la codificación de falso y verdadero son abstracciones, por lo tanto, es posible \( β \)-reducirlas al aplicarlas a otros términos; se explora la clase de términos lambda en \( \{ \bs{T},\ \bs{F} \}^{+} \).
+A continuación se muestran ejemplos de términos lambda asociados a términos sintácticamente equivalentes pero escritos con abuso de notación:
 
-La segunda metodología presenta la construcción del operador condicional, a partir del cual se derivan las operaciones booleanas como si fueran programas de computadora.
-
-\subsubsection{Combinaciones de valores de verdad}
-\label{sec:combinacion-valores}
-
-Una manera de obtener términos lambda a partir de \( \bs{F} \) y \( \bs{T} \) es \( β \)-reducir combinaciones de aplicaciones entre estos valores. En el cuadro \ref{tab:verdad-pares} se muestran los términos obtenidos al reducir combinaciones de dos valores de verdad.
-
-\begin{table}[h!]
-  \centering
-  \begin{tabular}{|c||l|}
-    \hline
-    \( \bs{F}\, \bs{F} \) & \( (λx\, y.y)\bs{F} \reduce{β} λy.y \synteq \bs{I} \) \\
-    \hline
-    \( \bs{F}\, \bs{T} \) & \( (λx\, y.y)\bs{T} \reduce{β} λy.y \synteq \bs{I} \) \\
-    \hline
-    \( \bs{T}\, \bs{F} \) & \( (λx\, y.x)\bs{F} \reduce{β} λy.\bs{F} \synteq \bs{K}\, \bs{F} \) \\
-    \hline
-    \( \bs{T}\, \bs{T} \) & \( (λx\, y.x)\bs{T} \reduce{β} λy.\bs{T} \synteq \bs{K}\, \bs{T} \) \\
-    \hline
-  \end{tabular}
-  \caption{Posibles combinaciones de valores de verdad por pares.}
-  \label{tab:verdad-pares}
-\end{table}
-
-En las reducciones de \ref{tab:verdad-pares} se pueden observar cuatro términos, a partir de estos se puede descubrir la operación de negación:
-
-\begin{itemize}
-\item \( (\bs{F}\, \bs{F}) \) se reduce a la abstracción identidad, esto significa que para cualquier término \( M \in Λ \)
-  \[ \bs{λ} \vdash (\bs{F}\, \bs{F}\, M) = M \]
-\item Al igual que la primer reducción \( (\bs{F}\, \bs{T}) \) se reduce a \( \bs{I} \), por lo tanto se concluye que para cualesquiera términos \( M \in Λ \), \( N \in \{ \bs{F},\ \bs{T} \} \)
-  \[ \bs{λ} \vdash (\bs{F}\, N\, M) = M \]
-\item \( (\bs{T}\, \bs{F}) \) se reduce a la abstracción constante de \( \bs{F} \), esto significa que para cualquier término \( M \in Λ \)
-  \[ \bs{λ} \vdash (\bs{T}\, \bs{F}\, M) = \bs{F} \]
-\item Al igual que la tercer reducción \( (\bs{T}\, \bs{T}) \) se reduce a \( (\bs{K}\, \bs{T}) \), por lo tanto se concluye que para cualesquiera términos \( M \in Λ \), \( N \in \{ \bs{F},\ \bs{T} \} \)
-  \[ \bs{λ} \vdash (\bs{T}\, N\, M) = N \]
-\end{itemize}
-
-Debido a las reducciones mostradas en el cuadro \ref{tab:verdad-pares} se puede analizar que a partir de un témino \( \bs{F} \), se puede obtener \( \bs{T} \) al reducir \( (\bs{F}\, N\, \bs{T}) \) y que a partir de un término \( \bs{T} \), se puede obtener \( \bs{F} \) al reducir \( (\bs{T}\, \bs{F}\, M) \). Considerando que \( N \synteq \bs{F} \) y \( M \synteq \bs{T} \) las reducciones serían:
-
-\[ \bs{F}\, \bs{F}\, \bs{T} \reduce{β} \bs{T} \]
-\[ \bs{T}\, \bs{F}\, \bs{T} \reduce{β} \bs{F} \]
-
-Si se considera que \( P \in \{ \bs{F},\ \bs{T} \} \)
-
-\[ P\, \bs{F}\, \bs{T} \reduce{β} \bs{\lnot}\, P \]
-
-\begin{rem}[Sobre la \( β \)-reducción]
-  En el tratamiento de la codificación del álgebra booleana en el cálculo lambda, cuando se \( β \)-reducen términos lambda que tienen como subtérminos valores que suponemos son \( \bs{F} \) o \( \bs{T} \) se extiende la teoría \( \bs{λ} \) con la siguiente ecuación:
-
+\begin{exmp}
+  \label{exmp:notacion}
   \begin{align*}
-    P\, \bs{T}\, \bs{F} &= P && \text{si \( P \in \{ \bs{F},\ \bs{T} \} \)}
+    (((x\, y)z) (y\, x)) & \synteq x\, y\, z (y\, x) \\
+    (λx.((u\, x)y)) & \synteq λx.u\, x\, y \\
+    (λy.(u(λx.y))) & \synteq λy.u(λx.y) \\
+    (((λy.((v\, u)u))z)y) & \synteq (λy.v\, u\, u) z\, y \\
+    (((u\, x)(y\, z))(λv.(v\, y))) & \synteq u\, x(y\, z)(λv.v\, y) \\
+    ((((λx.(λy.(λz.((x\, z) (y\, z))))) u) v) w) & \synteq (λx\, y\, z.x\, z(y\, z)) u\, v\, w
   \end{align*}
-\end{rem}
-
-\begin{defn}[Operación de negación]
-  \label{defn:negacion}
-  El término lambda \( \bs{\lnot} \synteq (λp.p\, \bs{F}\, \bs{T}) \) se reduce a \( \bs{T} \) cuando es aplicado a \( \bs{F} \) y viceversa
-
-  \begin{align*}
-    \bs{\lnot}\, \bs{F} &\synteq (λp.p\, \bs{F}\, \bs{T}) \bs{F} \\
-                        &\contract{β} \bs{F}\, \bs{F}\, \bs{T} \\
-                        &\reduce{β} \bs{T}
-  \end{align*}
-  \begin{align*}
-    \bs{\lnot}\, \bs{T} &\synteq (λp.p\, \bs{F}\, \bs{T}) \bs{T} \\
-                        &\contract{β} \bs{T}\, \bs{F}\, \bs{T} \\
-                        &\reduce{β} \bs{F}
-  \end{align*}
-\end{defn}
-
-Las reducciones del cuadro \ref{tab:verdad-pares} se pueden aplicar a \( \bs{F} \) y \( \bs{T} \) para obtener todas las posibles combinaciones de aplicaciones de valores de verdad de la forma \( ((P\, M) N) \), en el cuadro \ref{tab:verdad-tripletas} se muestran las reducciones de las nuevas aplicaciones.
-
-\begin{table}[h!]
-  \centering
-  \begin{tabular}{|c||l|}
-    \hline
-    \( \bs{F}\, \bs{F}\, \bs{F} \) & \( \bs{I}\, \bs{F} \reduce{β} \bs{F} \) \\
-    \hline
-    \( \bs{F}\, \bs{F}\, \bs{T} \) & \( \bs{I}\, \bs{T} \reduce{β} \bs{T} \) \\
-    \hline
-    \( \bs{F}\, \bs{T}\, \bs{F} \) & \( \bs{I}\, \bs{F} \reduce{β} \bs{F} \) \\
-    \hline
-    \( \bs{F}\, \bs{T}\, \bs{T} \) & \( \bs{I}\, \bs{T} \reduce{β} \bs{T} \) \\
-    \hline
-    \( \bs{T}\, \bs{F}\, \bs{F} \) & \( \bs{K}\, \bs{F}\, \bs{F} \reduce{β} \bs{F} \) \\
-    \hline
-    \( \bs{T}\, \bs{F}\, \bs{T} \) & \( \bs{K}\, \bs{F}\, \bs{T} \reduce{β} \bs{F} \) \\
-    \hline
-    \( \bs{T}\, \bs{T}\, \bs{F} \) & \( \bs{K}\, \bs{T}\, \bs{F} \reduce{β} \bs{T} \) \\
-    \hline
-    \( \bs{T}\, \bs{T}\, \bs{T} \) & \( \bs{K}\, \bs{T}\, \bs{T} \reduce{β} \bs{T} \) \\
-    \hline
-  \end{tabular}
-  \caption{Posibles combinaciones de valores de verdad con asociación a la izquierda.}
-  \label{tab:verdad-tripletas}
-\end{table}
-
-Al observar el cuadro \ref{tab:verdad-tripletas}, se distinguen algúnos patrones en los resultados de las reducciones, por ejemplo, si \( P \) es un valor de verdad cualquiera, \( (P\, \bs{F}\, \bs{F}) \) se reduce a \( \bs{F} \) y \( (P\, \bs{T}\, \bs{T}) \) se reduce a \( \bs{T} \), las combinaciones mas interesantes se presentan en los renglones 2, 3, 6 y 7.
-
-En búsqueda de las operaciones binarias de conjunción y disyunción se desarrollan tablas de verdad con las posibles combinaciones de dos términos \( P, Q \in \{ \bs{F},\ \bs{T} \} \). La cantidad de combinaciones de estos valores es \( 2 \times \binom 3 2 = 2 \times \frac{3!}{2!} = 6 \) y son \( (P\, Q\, \bs{F}) ,\ (P\, Q\, \bs{T}) ,\ (P\, \bs{F}\, Q) ,\ (P\, \bs{T}\, Q) ,\ (\bs{F}\, P\, Q) ,\ (\bs{T}\, P\, Q) \). Las tablas de verdad de estas combinaciones intercambiando las posiciones de \( P \) y \( Q \) serían las mismas ya que ambos términos toman los valores de falso y verdadero en las tablas de verdad. En el cuadro \ref{tab:verdad-pq} se muestran estas tablas.
-
-\begin{table}[h!]
-  \centering
-  \begin{tabular}{|c|c||c|c|c|c|c|c|}
-    \hline
-    \( P \) & \( Q \) & \( P\, Q\, \bs{F} \) & \( P\, Q\, \bs{T} \) & \( P\, \bs{F}\, Q \) & \( P\, \bs{T}\, Q \) & \( \bs{F}\, P\, Q \) & \( \bs{T}\, P\, Q \) \\ [0.5ex]
-    \hline
-    \hline
-    \( \bs{F} \) & \( \bs{F} \) & \( \bs{F} \) & \( \bs{T} \) & \( \bs{F} \) & \( \bs{F} \) & \( \bs{F} \) & \( \bs{F} \) \\
-    \( \bs{F} \) & \( \bs{T} \) & \( \bs{F} \) & \( \bs{T} \) & \( \bs{T} \) & \( \bs{T} \) & \( \bs{T} \) & \( \bs{F} \) \\
-    \( \bs{T} \) & \( \bs{F} \) & \( \bs{F} \) & \( \bs{F} \) & \( \bs{F} \) & \( \bs{T} \) & \( \bs{F} \) & \( \bs{T} \) \\
-    \( \bs{T} \) & \( \bs{T} \) & \( \bs{T} \) & \( \bs{T} \) & \( \bs{F} \) & \( \bs{T} \) & \( \bs{T} \) & \( \bs{T} \) \\
-    \hline
-  \end{tabular}
-  \caption{Tablas de verdad considerando dos variables \( P \) y \( Q \) en aplicaciones de tres términos}
-  \label{tab:verdad-pq}
-\end{table}
-
-Las columnas de la combinación \( (P\, Q\, \bs{F}) \) y \( (P\, \bs{T}\, Q) \) del cuadro \ref{tab:verdad-pq} corresponden a la operación de conjunción y disyunción respectivamente, como aparecen en el cuadro \ref{tab:and-or-not}. Las otras combinaciones corresponden a operaciones no básicas del álgebra booleana: \( (P\, Q\, \bs{T}) \) es la implicación material; \( (P\, \bs{F}\, Q) \) es la no implicación inversa; \( (\bs{F}\, P\, Q) \) es la proyección de \( Q \); y \( (\bs{T}\, P\, Q) \) es la proyección de \( P \).
-
-Ya que  \( \bs{λ} \vdash (P\, Q\, \bs{F}) = (\bs{\land}\, P\, Q) \) y \( \bs{λ} \vdash (P\, \bs{T}\, Q) = (\bs{\lor}\, P\, Q) \), se construyen los términos \( \bs{\land} \) y \( \bs{\lor} \) abstrayendo a \( P \) y \( Q \) de las igualdades.
-
-\begin{defn}[Operación de conjunción]
-  \label{defn:conjuncion}
-  El término lambda que representa la conjunción es
-
-  \[ \bs{\land} \synteq λp\, q.p\, q\, \bs{F} \]
-
-  y cumple las siguientes propiedades de \( β \)-reducción al ser aplicada a valores de verdad:
-
-  \begin{align*}
-    \bs{\land}\, \bs{F}\, \bs{F} &\synteq (λp\, q.p\, q\, \bs{F}) \bs{F}\, \bs{F} \\
-                                 &\reduce{β} \bs{F}\, \bs{F}\, \bs{F} \\
-                                 &\reduce{β} \bs{F}
-  \end{align*}
-
-  \begin{align*}
-    \bs{\land}\, \bs{F}\, \bs{T} &\synteq (λp\, q.p\, q\, \bs{F}) \bs{F}\, \bs{T} \\
-                                 &\reduce{β} \bs{F}\, \bs{T}\, \bs{F} \\
-                                 &\reduce{β} \bs{F}
-  \end{align*}
-
-  \begin{align*}
-    \bs{\land}\, \bs{T}\, \bs{F} &\synteq (λp\, q.p\, q\, \bs{F}) \bs{T}\, \bs{F} \\
-                                 &\reduce{β} \bs{T}\, \bs{F}\, \bs{F} \\
-                                 &\reduce{β} \bs{F}
-  \end{align*}
-
-  \begin{align*}
-    \bs{\land}\, \bs{T}\, \bs{T} &\synteq (λp\, q.p\, q\, \bs{F}) \bs{T}\, \bs{T} \\
-                                 &\reduce{β} \bs{T}\, \bs{T}\, \bs{F} \\
-                                 &\reduce{β} \bs{T}
-  \end{align*}
-\end{defn}
-
-\begin{defn}[Operación de disyunción]
-  \label{defn:disyuncion}
-  El término lambda que representa la disyunción es
-
-  \[ \bs{\lor} \synteq λp\, q.p\, \bs{T}\, q \]
-
-  y cumple las siguientes propiedades de \( β \)-reducción al ser aplicada a valores de verdad:
-
-  \begin{align*}
-    \bs{\lor}\, \bs{F}\, \bs{F} &\synteq (λp\, q.p\, \bs{T}\, q) \bs{F}\, \bs{F} \\
-                                &\reduce{β} \bs{F}\, \bs{T}\, \bs{F} \\
-                                &\reduce{β} \bs{F}
-  \end{align*}
-
-  \begin{align*}
-    \bs{\lor}\, \bs{F}\, \bs{T} &\synteq (λp\, q.p\, \bs{T}\, q) \bs{F}\, \bs{T} \\
-                                &\reduce{β} \bs{F}\, \bs{T}\, \bs{T} \\
-                                &\reduce{β} \bs{T}
-  \end{align*}
-
-  \begin{align*}
-    \bs{\lor}\, \bs{T}\, \bs{F} &\synteq (λp\, q.p\, \bs{T}\, q) \bs{T}\, \bs{F} \\
-                                &\reduce{β} \bs{T}\, \bs{T}\, \bs{F} \\
-                                &\reduce{β} \bs{T}
-  \end{align*}
-
-  \begin{align*}
-    \bs{\lor}\, \bs{T}\, \bs{T} &\synteq (λp\, q.p\, \bs{T}\, q) \bs{T}\, \bs{T} \\
-                                &\reduce{β} \bs{T}\, \bs{T}\, \bs{T} \\
-                                &\reduce{β} \bs{T}
-  \end{align*}
-\end{defn}
-
-Esta metodología para encontrar operaciones del álgebra booleana, aplicando los términos codificados de los valores de verdad, es tediosa pero hasta cierto grado efectiva. Como en los casos de las operaciones no básicas mostradas en el cuadro \ref{tab:verdad-pq}, operaciones del álgebra booleana pueden ser ``descubiertas'' y no construídas. Ya que la negación, la conjunción y la disyunción fueron descubiertas con este método, cualquier operación booleana eventualmente será encontrada como combinación de valores de verdad. Sin embargo, descubrir la codificación de una operación booleana complicada utilizando este método es un proceso muy tardado.
-
-\subsubsection{Programación de operaciones booleanas}
-\label{sec:programacion-operaciones}
-
-Otra metodología que permite construír las operaciones booleanas como términos lambda es la de partir de un algorítmo que las describa. Usualmente las operaciones booleanas no son definidas como procedimientos, si no como operaciones primitivas del lenguaje utilizado para describirlos.
-
-Consideremos dos términos \( M \) y \( N \). Ya que \( (\bs{T}\, M\, N) \reduce{β} M \) y \( (\bs{F}\, M\, N) \reduce{β} N \), si \( M \reduce{β} M' \) y \( N \reduce{β} N' \), entonces
-
-\[ \bs{T}\, M\, N \reduce{β} M' \]
-
-\[ \bs{F}\, M\, N \reduce{β} N' \]
-
-Es decir, si \( P \in \{ \bs{F},\ \bs{T} \} \):
-
-\[ P\, M\, N \reduce{β} \begin{cases} M' & P \synteq \bs{T} \\ N' & P \synteq \bs{F} \end{cases} \]
-
-Esta aplicación de un valor de verdad a dos términos lambda cualquiera permite capturar el concepto de una expresión o sentencia condicional, usualmente llamada en los lenguajes de programación como sentencia \verb!if-then-else!.
-
-\begin{defn}[Expresión condicional]
-  \label{defn:condicional}
-  El término lambda que representa a la expresión condicional es
-
-  \[ \bs{\prec} \synteq λp\, m\, n.p\, m\, n \]
-
-  Y si \( P \) es un valor de verdad, entonces
-
-  \begin{align*}
-    \bs{\prec}\, P\, M\, N &\synteq (λp\, m\, n.p\, m\, n)P\, M\, N \\
-                           &\reduce{β} P\, M\, N
-  \end{align*}
-
-  Un programa de la forma
-
-\begin{verbatim}
-Si P, entonces:
-    M
-De lo contrario:
-    N
-Fin
-\end{verbatim}
-
-  Puede ser traducido a \( (\bs{\prec}\, P\, M\, N) \)
-\end{defn}
-
-Consideremos la siguiente definición en pseudocódigo de la operación de negación:
-
-\begin{verbatim}
-Negacion (predicado) :=
-    Si predicado, entonces:
-        Regresa Falso
-    De lo contrario:
-        Regresa Verdadero
-    Fin
-Fin
-\end{verbatim}
-
-El pseudocódigo se traduce al cálculo lambda como
-
-\[ \bs{\lnot} \synteq λp.\bs{\prec}\, p\, \bs{F}\, \bs{T} \]
-
-El cuerpo de la abstracción puede ser \( β \)-reducido para obtener el término de la definición \ref{defn:negacion}
-
-\begin{align*}
-  λp.\bs{\prec}\, p\, \bs{F}\, \bs{T} &\synteq λp.(λp\, m\, n.p\, m\, n) p\, \bs{F}\, \bs{T} \\
-                                      &\reduce{β} λp.p\, \bs{F}\, \bs{T}
-\end{align*}
-
-Para la operación de conjunción, se considera el siguiente pseudocódigo:
-
-\begin{verbatim}
-Conjuncion (predicado1, predicado2) :=
-    Si predicado1, entonces:
-        Si predicado2, entonces:
-            Regresa Verdadero
-        De lo contrario:
-            Regresa Falso
-        Fin
-    De lo contrario:
-        Regresa Falso
-    Fin
-Fin
-\end{verbatim}
-
-Traducido al cálculo lambda como
-
-\[ \bs{\land} \synteq λp_{1}\, p_{2}.\bs{\prec}\, p_{1} (\bs{\prec}\, p_{2}\, \bs{T}\, \bs{F}) \bs{F} \]
-
-Al \( β \)-reducir el cuerpo de la abstracción se obtiene el término de la definición \ref{defn:conjuncion}
-
-\begin{align*}
-  λp_{1}\, p_{2}.\bs{\prec}\, p_{1} (\bs{\prec}\, p_{2}\, \bs{T}\, \bs{F}) \bs{F}
-  &\synteq λp_{1}\, p_{2}.(λp\, m\, n.p\, m\, n) p_{1} ((λp\, m\, n.p\, m\, n) p_{2}\, \bs{T}\, \bs{F}) \bs{F} \\
-  &\reduce{β} λp_{1}\, p_{2}.p_{1} ((λp\, m\, n.p\, m\, n) p_{2}\, \bs{T}\, \bs{F}) \bs{F} \\
-  &\reduce{β} λp_{1}\, p_{2}.p_{1} (p_{2}\, \bs{T}\, \bs{F}) \bs{F} \\
-  &=_{\bs{λ}} λp_{1}\, p_{2}.p_{1}\, p_{2}\, \bs{F}
-\end{align*}
-
-De igual manera, considerando el siguiente pseudocódigo de la operación de disyunción:
-
-\begin{verbatim}
-Disyuncion (predicado1, predicado2) :=
-    Si predicado1, entonces:
-        Regresa Verdadero
-    De lo contrario:
-        Si predicado2, entonces:
-            Regresa Verdadero
-        De lo contrario:
-            Regresa Falso
-        Fin
-    Fin
-Fin
-\end{verbatim}
-
-Se traduce al cálculo lambda como
-
-\[ \bs{\lor} \synteq λp_{1}\, p_{2}.\bs{\prec}\, p_{1}\, \bs{T} (\bs{\prec}\, p_{2}\, \bs{T}\, \bs{F}) \]
-
-Y al \( β \)-reducir el cuerpo de la abstracción se obtiene el término de la definición \ref{defn:disyuncion}
-
-\begin{align*}
-  λp_{1}\, p_{2}.\bs{\prec}\, p_{1}\, \bs{T} (\bs{\prec}\, p_{2}\, \bs{T}\, \bs{F})
-  &\synteq λp_{1}\, p_{2}.(λp\, m\, n.p\, m\, n) p_{1}\, \bs{T} ((λp\, m\, n.p\, m\, n) p_{2}\, \bs{T}\, \bs{F}) \\
-  &\reduce{β} λp_{1}\, p_{2}.p_{1}\, \bs{T} ((λp\, m\, n.p\, m\, n) p_{2}\, \bs{T}\, \bs{F}) \\
-  &\reduce{β} λp_{1}\, p_{2}.p_{1}\, \bs{T} (p_{2}\, \bs{T}\, \bs{F}) \\
-  &=_{\bs{λ}} λp_{1}\, p_{2}.p_{1}\, \bs{T}\, p_{2}
-\end{align*}
-
-Utilizando esta técnica, se puede obtener el término lambda para una operación a partir del pseudocódigo basado en valores de verdad y la sentencia \verb!if-then-else!. Teniendo estos resultados resulta natural, generalizar el pseudocódigo para construír un término lambda que a partir de la tabla de verdad de una operación booleana binaria, resulte en la abstracción que codifica la operación.
-
-
-\begin{defn}[Traducción de operaciones booleanas binarias]
-  \label{defn:op-bool-bin-lambda}
-  Sea \( \bs{\odot} \) una operación booleana binaria con la siguiente tabla de verdad
-
-  \begin{center}
-    \begin{tabular}{|c|c||c|}
-      \hline
-      \( P \) & \( Q \) & \( P \bs{\odot} Q \) \\ [0.5ex]
-      \hline\hline
-      \( \bs{F} \) & \( \bs{F} \) & \( x_{1} \) \\
-      \hline
-      \( \bs{F} \) & \( \bs{T} \) & \( x_{2} \) \\
-      \hline
-      \( \bs{T} \) & \( \bs{F} \) & \( x_{3} \) \\
-      \hline
-      \( \bs{T} \) & \( \bs{T} \) & \( x_{4} \) \\
-      \hline
-    \end{tabular}
-  \end{center}
-
-  El procedimiento generalizado es
-
-\begin{verbatim}
-OperacionBooleana(x1, x2, x3, x4) :=
-    Binaria(predicado1, predicado2) :=
-        Si predicado1, entonces:
-            Si predicado2, entonces:
-                Regresa x4
-            De lo contrario:
-                Regresa x3
-            Fin
-        De lo contrario:
-            Si predicado2, entonces:
-                Regresa x2
-            De lo contrario:
-                Regresa x1
-            Fin
-        Fin
-    Fin
-    Regresa Binaria
-Fin
-\end{verbatim}
-
-  Y la traducción al cálculo lambda es
-
-  \[ λx_{1}\, x_{2}\, x_{3}\, x_{4}.(λp_{1}\, p_{2}.(\bs{\prec}\, p_{1} (\bs{\prec}\, p_{2}\, x_{4}\, x_{3}) (\bs{\prec}\, p_{2}\, x_{2}\, x_{1}))) \]
-  
-\end{defn}
-
-\begin{exmp}[Operaciones \emph{NAND} y \emph{NOR}]
-  \label{ejmp:nand-nor}
-  Estas operaciones booleanas binarias conforman los conjuntos unitarios \( \{ \mathrm{NAND} \} \) y \( \{ \mathrm{NOR} \} \) los cuales son conjuntos funcionalmene completos, es decir, únicamente con la operación NAND se puede emular cualquier operación booleana y únicamente con la operación NOR se puede emular cualquier operación booleana.
-
-  
-  La operación \emph{NAND} se denota \( P \uparrow Q \) y tiene la siguiente tabla de verdad
-
-  \begin{center}
-    \begin{tabular}{|c|c||c|}
-      \hline
-      \( P \) & \( Q \) & \( P \uparrow Q \) \\ [0.5ex]
-      \hline\hline
-      \( \bs{F} \) & \( \bs{F} \) & \( \bs{T} \) \\
-      \hline
-      \( \bs{F} \) & \( \bs{T} \) & \( \bs{T} \) \\
-      \hline
-      \( \bs{T} \) & \( \bs{F} \) & \( \bs{T} \) \\
-      \hline
-      \( \bs{T} \) & \( \bs{T} \) & \( \bs{F} \) \\
-      \hline
-    \end{tabular}
-  \end{center}
-
-  Con el proceso de traducción mostrado en la definición \ref{defn:op-bool-bin-lambda}, el término lambda \( \bs{\uparrow} \) que codifica la operación NAND sería
-  
-  \begin{align*}
-    \bs{\uparrow}
-    &\synteq λp_{1}\, p_{2}. \bs{\prec}\, p_{1} (\bs{\prec}\, p_{2}\, \bs{F}\, \bs{T}) (\bs{\prec}\, p_{2}\, \bs{T}\, \bs{T}) \\
-    &\reduce{β} λp_{1}\, p_{2}.p_{1} (p_{2}\, \bs{F}\, \bs{T}) \bs{T}
-  \end{align*}
-
-  La operación \emph{NOR} se denota \( P \downarrow Q \) y tiene la siguiente tabla de verdad
-
-  \begin{center}
-    \begin{tabular}{|c|c||c|}
-      \hline
-      \( P \) & \( Q \) & \( P \downarrow Q \) \\ [0.5ex]
-      \hline\hline
-      \( \bs{F} \) & \( \bs{F} \) & \( \bs{T} \) \\
-      \hline
-      \( \bs{F} \) & \( \bs{T} \) & \( \bs{F} \) \\
-      \hline
-      \( \bs{T} \) & \( \bs{F} \) & \( \bs{F} \) \\
-      \hline
-      \( \bs{T} \) & \( \bs{T} \) & \( \bs{F} \) \\
-      \hline
-    \end{tabular}
-  \end{center}
-
-  Usando el mismo proceso de traducción que con la operación NAND, se obtiene
-
-  \begin{align*}
-    \bs{\downarrow}
-    &\synteq λp_{1}\, p_{2}. \bs{\prec}\, p_{1} (\bs{\prec}\, p_{2}\, \bs{F}\, \bs{F}) (\bs{\prec}\, p_{2}\, \bs{F}\, \bs{T}) \\
-    &\reduce{β} λp_{1}\, p_{2}.p_{1}\, \bs{F} (p_{2}\, \bs{F}\, \bs{T})
-  \end{align*}
-
 \end{exmp}
 
-Cuando se generaliza el método de traducción de \ref{defn:op-bool-bin-lambda} a operaciones booleanas \( n \)-árias, se obtiene un término bosquejado de la siguiente manera
+Para hacer referencia a una secuencia con una cantidad arbitraria de términos lambda se usa la notación \( \vec{x}=x_{1},...,x_{n} \) cuando es secuencia de átomos y \( \vec{M}=M_{1},...,M_{n} \) cuando es secuencia de términos lambda en general. Con esta notación se puede abreviar
 
-\begin{center}
-  \begin{tikzpicture}[level/.style={sibling distance=100mm/#1, level distance=10mm}]
-    \node (args1) {\( λx_{1}\, ...\, x_{2^{n}} \)}
+\[ λ\vec{x}.M \synteq λx_{1}\, x_{2}\, ...\, x_{n}.M \]
+
+\[ M \vec{N} \synteq M\, N_{1}\, N_{2}\, ...\, N_{n} \]
+
+En algunas demostraciones realizadas por inducción, se usa la expresión ``inducción sobre \( M \)'' para referirse a la inducción sobre la \emph{longitud} de \( M \).
+
+\begin{defn}[Longitud]
+  La longitud de un término lambda, denotado como \( \| M \| \), es la cantidad de apariciones de átomos en el término lambda, se determina a partir de la estructura del término lambda como:
+  \label{defn:longitud}
+  \begin{align*}
+    \|x\| & = 1 \\
+    \|M\, N\| & = \|M\| + \|N\| \\
+    \|λx.M\| & = 1 + \|M\|
+  \end{align*}
+\end{defn}
+
+Por ejemplo, la longitud del término lambda \( x(λy.y\, u\, x) \) es \( 5 \).
+
+Una cuestión importante al momento de demostrar un teorema o definir un concepto por inducción sobre un término lambda es que usualmente la inducción matemática relaciona proposiciones con números naturales. Sin embargo es posible tener dos términos diferentes \( M \) y \( N \) tal que \( \|M\| = \|N\| \), por ejemplo \( λx.x \) y \( z\, z \) tienen longitud \( 2 \). La inducción sobre la longitud de un término lambda considera la estructura del término, de tal manera que para una proposición \( P \) sobre un término lambda \( M \), los casos base de la inducción son aquellos en donde la estructura no es compuesta (en átomos cuya longitud siempre es \( 1 \)) y la hipótesis de inducción considera que \( P \) se cumple para los subtérminos de \( M \) cuya longitud siempre es estrictamente menor que \( \|M\| \).
+
+El concepto de aparición de un término lambda en otro se formaliza a partir del concepto de subtérmino:
+
+\begin{defn}[Subtérmino]
+  \( M \) es un subtérmino de \( N \), denotado \( M \subset N \) si \( M \in \Sub(N) \) es la colección de subtérminos de \( N \) definida de manera inductiva como
+  \label{defn:subtermino}
+  \begin{align*}
+    \Sub(x) & = \{ x \} \\
+    \Sub(λx.M) & = \Sub(M) \cup \{ λx.M \} \\
+    \Sub(M\, N) & = \Sub(M) \cup \Sub(N) \cup \{ M\, N \}
+  \end{align*}
+\end{defn}
+
+\begin{defn}[Aparición]
+  La aparición de \( M \) en \( N \) implica que \( M \subset N \) o que \( M \) es \emph{el} átomo del argumento de una abstracción en \( N \).
+  \label{defn:aparicion}
+\end{defn}
+
+Un subtérmino \( N \) de \( M \) puede aparecer varias veces en \( M \), cuando dos subtérminos \( N_{1} \) y \( N_{2} \) de \( M \) no tienen apariciones de átomos en común, se dice que son \emph{disjuntas}. Cuando \( N \) es subtérmino de \( M \) se le llama \emph{activo} si aparece en una aplicación de la forma \( N\, Z \), de lo contrario, se le llama \emph{pasivo}.
+
+Cuando \( λx.M \) es un subtérmino de \( P \), se dice que la aparición \( M \) es el \emph{alcance} de la aparición del átomo \( x \) que acompaña a la \( λ \).
+
+\begin{exmp}
+  Sea \( M \synteq λx.x\, y (λz.y) \):
+  \label{exmp:subterminos-apariciones}
+  \begin{itemize}
+  \item el término \( x\, y \subset M \);
+  \item el átomo \( z \not\subset M \) pero si aparece en \( M \), debido a que \( z \) acompaña a \( λ \);
+  \item el término \( y(λz.y) \) a pesar de parecer ser un subtérmino de \( M \) no lo es, esto se puede corroborar escribiendo los términos sin el abuso de notación: \( y(λz.y) \synteq (y(λz.y)) \) y \( M \synteq λx.x y(λz.y) \synteq (λx.((x\, y)(λz.y))) \), en este caso, la clave está en observar la estructura de la aplicación \( x\, y(λz.y) \).
+  \item Las apariciones de \( x \) y \( λz.y \) en \( M \) son disjuntas.
+  \item Los términos \( x \) y \( (x\, y) \) son subtérminos activos de \( M \), mientras que \( y \) y \( λz.y \) son subtérminos pasivos.
+  \end{itemize}
+\end{exmp}
+
+Las variables de un término lambda se pueden clasificar de diferentes maneras de acuerdo a la posición que tienen en el término y a los subtérminos a los que se asocian.
+
+\begin{defn}[Clasificación de variables]
+  La aparición de un átomo \( x \) en un término \( P \) es llamada:
+  \label{defn:clasifvar}
+  \begin{itemize}
+  \item \emph{variable ligada} si es un subtérmino de \( M \) en una abstracción \( λx.M \) en \( P \);
+  \item \emph{variable enlazada} si y sólo si es la \( x \) que acompaña la \( λ \) de \( λx.M \) en \( P \);
+  \item \emph{variable libre} en otro caso.
+  \end{itemize}
+\end{defn}
+
+Es importante aclarar la diferencia entre un átomo \( x \) como subtérmino de un término lambda \( M \) y una aparición de \( x \) en \( M \): la aparición hace referencia a la posición de \( x \) en \( M \). Por ejemplo, en el término lambda \( (λx.x) x \) la primera aparición del átomo \( x \) es una variable enlazada, la segunda aparición es una variable ligada y la tercera aparición es una variable libre.
+
+\begin{exmp}
+  Sea \( M \synteq x(λy.x\, y) \):
+  \label{exmp:clasifvar}
+  \begin{itemize}
+  \item El átomo \( x \) aparece como variable libre dos veces en \( M \);
+  \item El átomo \( y \) aparece como variable ligada en \( M \).
+  \end{itemize}
+\end{exmp}
+
+En la definición formal de algunos conceptos es conveniente hacer referencia a las variables libres de un término lambda:
+
+\begin{defn}[Variables libres]
+  El conjunto de variables libres de un término lambda \( M \) se denota \( \FV(M) \) y se define de manera inductiva como:
+  \label{defn:varlib}
+  \begin{align*}
+    \FV(x) & = \{ x \} \\
+    \FV(λx.M) & = \FV(M) \setminus \{ x \} \\
+    \FV(M\, N) & = \FV(M) \cup \FV(N)
+  \end{align*}
+  Cuando \( \FV(M)=\emptyset \) se dice que \( M \) es un \emph{combinador} o \emph{término cerrado}.
+\end{defn}
+
+\begin{exmp}
+  Consideremos los términos \( x(λx.x\, y\, z) \), \( λx\, y\, z.y \) y \( (λy.x)λx.y\).
+  \label{exmp:varlib}
+  \begin{itemize}
+  \item \( \FV(x(λx.x\, y\, z)) = \{x,\ y,\ z\} \);
+  \item \( \FV(λx\, y\, z.y)=\emptyset \), por lo tanto es un combinador;
+  \item \( \FV((λy.x)λx.y)=\{ x,\ y \} \).
+  \end{itemize}
+\end{exmp}
+
+En ocaciones es importante distinguir los términos lambda cerrados de aquellos que contienen variables libres, para ello se identifica el subconjunto de \( Λ \) que contiene a todos los términos cerrados:
+
+\begin{defn}[Términos cerrados]
+  Se denota como \( Λ^{0} \) al conjunto
+  \label{defn:termcerr}
+  \[ \{ M \in Λ \mid M \text{ es un término cerrado} \} \]
+\end{defn}
+
+La notación \( Λ^{0} \) se puede generalizar para identificar diferentes subconjuntos de \( Λ \) a partir de las variables libres de los términos lambda:
+
+\[ Λ^{0}(\vec{x})=\{ M \in Λ \mid \FV(M) \subseteq \{ \vec{x} \} \} \]
+
+De tal manera que:
+
+\[ Λ^{0}=Λ^{0}(\emptyset) \]
+
+Todos los términos lambda en \( Λ \setminus Λ^{0} \) tienen al menos una clausura en \( Λ^{0} \).
+
+\begin{defn}[Clausura] \label{defn:clausura}
+  La clausura de un término lambda \( M \) con \( \FV(M) \not= \emptyset \) es un término lambda
+  \[ (λ\vec{x}.M) \]
+  con \( \vec{x}=\FV(M) \)
+\end{defn}
+
+\begin{exmp} \label{exmp:clausura}
+  Consideremos el términio lambda \( M \synteq λz.x\, y\, z \)
+  \begin{itemize}
+  \item \( λx\, y.λz.x\, y\, z \) es una clausura de \( M \);
+  \item \( λy\, x\, z.x\, y\, z \) es una clausura de \( M \);
+  \item \( λz\, x\, y.λz.x\, y\, z \) no es una clausura de \( M \).
+  \end{itemize}
+\end{exmp}
+
+Al escribir términos lambda con repetición de aplicaciones suele ser conveniente utilizar una notación más compacta. Cuando se aplica \( n \) veces un término \( F \) por la izquierda a otro término \( M \) se denota \( F^{n}\, M \). Cuando se aplica \( n \) veces un término \( M \) por la derecha a otro término \( F \) se denota \( F\, M^{\sim n}\). La definición formal de esta notación es:
+
+\begin{align*}
+  F^{n+1}\, M & \synteq F (F^{n}\, M) \\
+  F^{0}\, M & \synteq M
+\end{align*}
+
+\begin{align*}
+  F\, M^{\sim n+1} & \synteq (F\, M^{\sim n}) M \\
+  F\, M^{\sim 0} & \synteq F
+\end{align*}
+
+\begin{exmp}
+  El término lambda \( λf\, x.f(f(f(f\, x))) \) se puede escribir de manera compacta como
+  \[ λf\, x.f^{4}\, x \]
+\end{exmp}
+
+\begin{exmp}
+  El término lambda \( λf\, x.f\, x\, x\, x\, x \) se puede escribir de manera compacta como
+  \[ λf\, x.f\, x^{\sim 4} \]
+\end{exmp}
+
+\begin{defn}[Sustitución]
+  \label{defn:sustitucion}
+  Para cualquier \( M \), \( N \) y \( x \), se define \( M[x:=N] \) como el resultado de sustituir cada aparición libre de \( x \) por \( N \) en \( M \) de acuerdo a las siguientes reglas:
+  \begin{align*}
+    x[x:=N] & \synteq N; \\
+    a[x:=N] & \synteq a && a \not \synteq x; \\
+    (P\, Q)[x:=N] & \synteq P[x:=N]\, Q[x:=N]; \\
+    (λx.P)[x:=N] & \synteq λx.P; \\
+    (λy.P)[x:=N] & \synteq λy.P && x \not\synteq y,\ x \not\in \FV(P); \\
+    (λy.P)[x:=N] & \synteq λy.P[x:=N] && x \not\synteq y,\ x \in \FV(P),\ y \not\in \FV(N); \\
+    (λy.P)[x:=N] & \synteq λz.P[y:=z][x:=N] && x \not\synteq y,\ x \in \FV(P),\ y \in \FV(N),\ z \not\in \FV(N P).
+  \end{align*}
+\end{defn}
+
+\begin{exmp} \label{exmp:sustitucion}
+  Procedimientos de sustituciones para cada uno de los casos de la definición \ref{defn:sustitucion}:
+  \begin{itemize}
+  \item Caso \( x[x:=N] \)
+    \begin{align*}
+      y[y:=λx.x] \synteq λx.x
+    \end{align*}
+  \item Caso \( a[x:=N] \), donde \( a \not\synteq x \)
+    \begin{align*}
+      z[w:=x\, x] \synteq z
+    \end{align*}
+  \item Caso \( (P\, Q)[x:=N] \)
+    \begin{align*}
+      (y\, x\, x)[x:=y] & \synteq ((y\, x) x)[x:=y] \\
+                        & \synteq (y\, x)[x:=y]\, x[x:=y] \\
+                        & \synteq (y[x:=y]\, x[x:=y]) y \\
+                        & \synteq y\, y\, y
+    \end{align*}
+  \item Caso \( (λx.P)[x:=N] \)
+    \begin{align*}
+      (λf\, x.f\, f\, x)[f:=g] \synteq λf\, x.f\, f\, x
+    \end{align*}
+  \item Caso \( (λy.P)[x:=N] \), donde  \( x \not\synteq y \), \( x \not\in \FV(P) \)
+    \begin{align*}
+      (λf\, x.f\, f\, x)[f:=g] \synteq λf\, x.f\, f\, x
+    \end{align*}
+  \item Caso \( (λy.P)[x:=N] \), donde \( x \not\synteq y \), \( x \in \FV(P) \), \( y \not\in \FV(N) \)
+    \begin{align*}
+      (λf.x\, λx.f\, f\, x)[x:=y] & \synteq λf.(x\, λx.f\, f\, x)[x:=y] \\
+                                  & \synteq λf.x[x:=y]\, (λx.f\, f\, x)[x:=y] \\
+                                  & \synteq λf.y\, λx.f\, f\, x
+    \end{align*}
+  \item Caso \( (λy.P)[x:=N] \), donde \( x \not\synteq y \), \( x \in \FV(P) \), \( y \in \FV(N) \) y \( z \not\in \FV(N P) \)
+    \begin{align*}
+      (λf.x\, λx.f\, f\, x)[x:=f] & \synteq λg.(x\, λx.f\, f\, x)[f:=g][x:=f] \\
+                                  & \synteq λg.(x[f:=g](λx.f\, f\, x)[f:=g])[x:=f] \\
+                                  & \synteq λg.(x\, λx.(f\, f\, x)[f:=g])[x:=f] \\
+                                  & \synteq λg.(x\, λx.((f\, f)[f:=g] x[f:=g]))[x:=f] \\
+                                  & \synteq λg.(x\, λx.((f[f:=g]\, f[f:=g]) x))[x:=f] \\
+                                  & \synteq λg.(x\, λx.g\, g\, x)[x:=f] \\
+                                  & \synteq λg.x[x:=f] (λx.g\, g\, x)[x:=f] \\
+                                  & \synteq λg.f\, λx.g\, g\, x
+    \end{align*}
+  \end{itemize}
+\end{exmp}
+
+En el último caso es importante observar que las apariciones ligadas de \( x \) no se sustituyen.
+
+\begin{lem}
+  Si \( (y\, x) \not\in \FV(L) \) y \( x \not\synteq y \), entonces
+  \[ M[x:=N][y:=L] \synteq M[y:=L][x:=N[y:=L]] \]
+\end{lem}
+
+En contraste a la operación de sustitución en donde no se permite introducir o quitar referencias a variables enlazadas, el \emph{contexto} es un término con ``hoyos'':
+
+\begin{defn}[Contexto]
+  \label{defn:contexto}
+  Un contexto es un término lambda denotado \( C[\quad] \) definido de manera inductiva:
+  \begin{itemize}
+  \item \( x \) es un contexto;
+  \item \( [\quad] \) es un contexto;
+  \item Si \( C_{1}[\quad] \) y \( C_{2}[\quad] \) son contextos, entonces \( C_{1}[\quad]\, C_{2}[\quad] \) y \( λx.C_{1}[\quad] \) también lo son.
+  \end{itemize}
+\end{defn}
+
+Si \( C[\quad] \) es un contexto y \( M \in Λ \), entonces \( C[M] \) denota el resultado de reemplazar por \( M \) los hoyos de \( C[\quad] \). Al realizar esto, las variables libres de \( M \) pueden convertirse en variables ligadas de \( C[M] \).
+
+\begin{exmp}
+  Consideremos el contexto \( C[\quad] \synteq λx.x\, λy.[\quad] \) y el término lambda \( M \synteq (x y) \).
+  
+  \begin{align*}
+    C[M] & \synteq (λx.x\, λy.[\quad])[(x\, y)] \\
+         & \synteq (λx.x\, λy.(x\, y))
+  \end{align*}
+  
+  El caso análogo con la sustitución es
+
+  \begin{align*}
+    (λx.x\, λy.w)[w:=(x\, y)] & \synteq λz.(x\, λy.w)[x:=z][w:=(x\, y)] \\
+                              & \synteq λz.(x[x:=z] (λy.w)[x:=z])[w:=(x\, y)] \\
+                              & \synteq λz.(z\, λy.w)[w:=(x y)] \\
+                              & \synteq λz.z[w:=(x\, y)] (λy.w)[w:=(x\, y)] \\
+                              & \synteq λz.z\, λv.w[w:=(x\, y)] \\
+                              & \synteq λz.z\, λv.(x\, y)
+  \end{align*}
+\end{exmp}
+
+\section{Teoría \( \bs{λKβ} \)}
+\label{sec:teorialambda}
+
+El objetivo principal de esta subsección es presentar una formalización del cálculo lambda descrito en el capítulo \ref{ch:nocion-informal} desde el punto de vista de teorías formales. El nombre técnico de la teoría formal principal de este trabajo es \( \bs{λKβ} \), se pueden realizar modificaciones y extensiones a esta teoría y los siguientes conceptos permiten estudiar las implicaciones de estos cambios.
+
+Una \emph{teoría formal} \( \mathcal{T} \) es una tripleta \( (\mathcal{F},\mathcal{A},\mathcal{R}) \) donde
+
+\begin{itemize}
+\item \( \mathcal{F} \) es el conjunto de todas las \emph{fórmulas} \( X = Y \) con \( X \) y \( Y \) elementos de un lenguaje formal;
+\item \( \mathcal{A} \) es un conjunto de \emph{axiomas} y \( \mathcal{A} \subseteq \mathcal{F} \);
+\item \( \mathcal{R} \) es un conjunto de \emph{reglas}.
+\end{itemize}
+
+Una regla es una función \( φ \colon \mathcal{F}^{n} \to \mathcal{F} \) con \( n \geq 1 \). Una secuencia de fórmulas \( \langle A_{1},...,A_{n},B \rangle \) tal que
+
+\[ φ(A_{1},...,A_{n})=B \]
+
+es llamada una \emph{instancia} de \( φ \), donde las \emph{premisas} de la instancia son las fórmulas \( \langle A_{1},...,A_{n} \rangle \) y la \emph{conclusión} de la instancia es \( B \). Las instancias se denotan
+
+\[ \infer{B}{A_{1} & ... & A_{n}} \]
+
+\begin{rem}
+  En la literatura se pueden encuentrar diferentes maneras de trabajar con teorías formales, dependiendo del estilo de las teorías y de la manera en como se formaliza su definición, por ejemplo en \cite{Troelstra:ProofTheory} las reglas se definen como conjuntos de secuencias \( \langle A_{1},...,A_{n+1} \rangle \) con \( n \) premisas y una conclusión, en donde los axiomas se definen como las reglas en \( \mathcal{R} \) con cero premisas. La definición de teoría formal es del estilo Hilbert y está basada en \cite[pp.~69--70]{HindleySeldin:LambdaCalculusAndCombinators}.
+\end{rem}
+
+Si consideramos un conjunto \( Γ \subseteq \mathcal{F} \), una \emph{deducción} deuna fórmula \( B \) desde \( Γ \) es un árbol dirigido de fórmulas en donde los vértices de un extremo son elementos de \( \mathcal{A} \) o \( Γ \), los vértices intermedios son deducidos a partir de los vértices que inciden en ellos a partir de una regla y el vértice de el otro extremo siendo \( B \). Las fórmulas que no sean axiomas cuyo grado de entrada sea cero son llamadas \emph{suposiciones}. Si y solo si existe una deducción para una fórmula \( B \), se dice que \( B \) es demostrable en \( \mathcal{T} \) suponiendo \( Γ \), denotado
+
+\[ \mathcal{T},Γ \vdash B \]
+
+En caso que la deducción no tenga suposiciones, se dice que es una \emph{demostración} y que \( B \) es un \emph{teorema}. Cuando \( Γ = \emptyset \) se escribe
+
+\[ \mathcal{T} \vdash B \]
+
+A continuación se presenta la definición de la teoría \( \bs{λKβ} \), debido a que esta teoría será la que se estudia principalmente en este trabajo, se acorta el nombre \( \bs{λKβ} \) a \( \bs{λ} \).
+
+
+En el caso particular de la teoría \( \bs{λKβ} \) se considera que \( \mathcal{F} \) tiene elementos \( M = N \) donde \( M,N \in Λ \).
+
+
+\begin{defn}[Teoría \( \bs{λ} \)]
+  \label{defn:teorialambda}
+  El conjunto de fórmulas tiene como elementos ecuaciones de la forma:
+
+  \begin{align*}
+    M = N & & \forall M,N \in Λ
+  \end{align*}
+  
+  Los axiomas son:
+
+  \begin{subequations}
+    \begin{align}
+      \label{teorialambda:alpha} \tag{\( α \)}
+      λx.M & = λy.M[x:=y] & &  \forall y \not\in \FV(M) \\
+      \label{teorialambda:beta} \tag{\( β \)}
+      (λx.M)N & = M[x:=N] \\
+      \label{teorialambda:rho} \tag{\( ρ \)}
+      M & = M
+    \end{align}
+  \end{subequations}
+
+  Y las reglas:
+
+  \begin{equation}
+    \label{teorialambda:mu} \tag{\( μ \)}
+    \infer{Z\, M = Z\, N}{M = N}
+  \end{equation}
+  
+  \begin{equation}
+    \label{teorialambda:nu} \tag{\( ν \)}
+    \infer{M\, Z = N\, Z}{M = N}
+  \end{equation}
+  \begin{equation}
+    \label{teorialambda:xi} \tag{\( ξ \)}
+    \infer{λx.M = λx.N}{M = N}
+  \end{equation}
+  \begin{equation}
+    \label{teorialambda:tau} \tag{\( τ \)}
+    \infer{M = P}{M = N & N = P}
+  \end{equation}
+  \begin{equation}
+    \label{teorialambda:sigma} \tag{\( σ \)}
+    \infer{N = M}{M = N}
+  \end{equation}
+  
+\end{defn}
+
+Al inicio de esta sección, se menciona que el objeto de estudio de la teoría \( \bs{λ} \) es el conjunto de términos lambda módulo convertibilidad. La \emph{convertibilidad} es la noción básica de equivalencia de términos lambda y las ecuaciones de la teoría \( \bs{λ} \) formalizan esta noción.
+
+La relación binaria \( = \) en las ecuaciones de la teoría, es una relación de equivalencia y al igual que toda relación de equivalencia es \emph{reflexiva}, \emph{simétrica} y \emph{transitiva}, en \( = \) estas propiedades son descritas en las reglas \eqref{teorialambda:rho}, \eqref{teorialambda:sigma} y \eqref{teorialambda:tau} respectivamente. La \emph{clase de equivalencia} de un término lambda \( M \) con respecto a esta relación de equivalencia es el conjunto de todos los términos lambda \( N \) tal que \( M = N \), denotado:
+
+\[ [M]_{\bs{λ}} = \{ N \in Λ \mid M = N \} \]
+
+
+La frase ``módulo convertibilidad'' se refiere al conjunto de todas las clases de equivalencia de \( Λ \) considerando la relación de equivalencia de la teoría formal con la que se esté trabajando. Que este conjunto sea el objeto de estudio de la teoría \( \bs{λ} \) significa que cada elemento de \( Λ \) módulo convertibilidad (denotado \( Λ / =_{\bs{λ}} \)) es distinto y representa a una clase de términos lambda considerados en \( \bs{λ} \) como equivalentes.
+
+\begin{defn}[Demostrabilidad]
+  \label{defn:demostrabilidad}
+  La demostrabilidad en \( \bs{λ} \) de una ecuación \( M = N \) es denotada \( \bs{λ} \vdash M = N \) e implica que \( M = N \) es un teorema en \( \bs{λ} \). En caso que la ecuación sea demostrable se dice que \( M \) y \( N \) son términos \emph{convertibles}.
+\end{defn}
+
+\begin{exmp}
+  \label{exmp:demostrabilidad}
+  Consideramos los términos lambda \( M \synteq (λf.x((λy.y\, f) λz.z))w \) y \( N \synteq x\, w \). Se muestra que
+
+  \[ \bs{λ} \vdash M = N \]
+
+  formulando el árbol de deducción de la figura \ref{fig:demostrabilidad}.
+\end{exmp}
+
+\begin{rem}
+  Es posible formular mas de un árbol de deducción para un teorema en una teoría formal.
+\end{rem}
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[
+    equat/.style={rectangle,draw},grow=up,edge from parent/.style={draw,latex-},
+    level 1/.style={sibling distance=20em, level distance=5em},
+    level 2/.style={sibling distance=40em},
+    level 3/.style={sibling distance=20em},
+    level 4/.style={sibling distance=10em}
+    ]
+    \node [equat] (foo1) {\( (λf.x((λy.y\, f) λz.z))w = x\, w \)}
     child {
-      node (args2) {\( λp_{1}\, ...\, p_{n} \)}
+      node [equat] (foo3) {\( (λf.x\, f)w = x\, w \)}
+    }
+    child {
+      node [equat] (foo5) {\( (λf.x((λy.y\, f) λz.z))w = (λf.x\, f)w \)}
       child {
-        node (p1) {\( \bs{\prec}\, p_{1} \)}
+        node [equat] (foo7) {\( λf.x((λy.y\, f) λz.z) = λf.x\, f \)}
         child {
-          node (p2a) {\( \bs{\prec}\, p_{2} \)}
+          node [equat] (foo9) {\( x((λy.y\, f) λz.z) = x\, f \)}
           child {
-            node (dots1) {\( ... \)}
+            node [equat] (foo11) {\( (λy.y\, f)λz.z = f \)}
             child {
-              node (pna) {\( \bs{\prec}\, p_{n} \)}
-              child {
-                node (x2n) {\( x_{2^{n}} \)}
-              }
-              child {
-                node (x2n1) {\( x_{2^{n}-1} \)}
-              }
+              node [equat] (foo13) {\( (λz.z)f = f \)}
             }
             child {
-              node (dots3) {\( ... \)}
+              node [equat] (foo14) {\( (λy.y\, f)λz.z = (λz.z) f \)}
             }
+            edge from parent [] node [right] {\( (μ) \)}
           }
-          child {
-            node (dots2) {\( ... \)}
-          }
+          edge from parent [] node [right] {\( (ξ) \)}
         }
-        child {
-          node (p2b) {\( \bs{\prec}\, p_{2} \)}
-          child {
-            node (dots4) {\( ... \)}
-          }
-          child {
-            node (dots5) {\( ... \)}
-            child {
-              node (dots6) {\( ... \)}
-            }
-            child {
-              node (pnb) {\( \bs{\prec}\, p_{n} \)}
-              child {
-                node (x2) {\( x_{2} \)}
-              }
-              child {
-                node (x1) {\( x_{1} \)}
-              }
-            }
-          }
-        }
+        edge from parent [] node [right] {\( (ν) \)}
       }
     };
+    \node [above=0em of foo13] (bar1) {\( (β) \)};
+    \node [above=0em of foo14] (bar2) {\( (β) \)};
+    \node [above=0em of foo11] (bar3) {\( (τ) \)};
+    \node [above=0em of foo1] (bar4) {\( (τ) \)};
+    \node [above=0em of foo3] (bar5) {\( (β) \)};
   \end{tikzpicture}
-\end{center}
+  \caption{Árbol de deducción para la ecuación del ejemplo \ref{exmp:demostrabilidad}}
+  \label{fig:demostrabilidad}
+\end{figure}
 
-\subsection{Extensiones al álgebra booleana}
-\label{sec:boolean-extensiones}
-
-Conociendo el proceso de codificación del álgebra booleana en el cálculo lambda, resulta simple adaptar la codificación.
-
-Consideremos el caso en donde, además de tener los valores de falso y verdadero, se desea incorporar un valor ``desconocido'' utilizado para representar un valor que no es ni falso, ni verdadero. La interpretación de estos valores es similar a \ref{defn:valores-verdad}, pero en lugar de decidir sobre dos términos, se decide sobre tres.
-
-\begin{defn}[Valores de álgebra trivalente]
-  La codificación en términos lambda de los valores de ésta álgebra trivalente son
-
+\begin{defn}[Combinadores SKI]
+  \label{defn:ski}
+  Tres términos lambda de suma importancia son
   \begin{align*}
-    \bs{T} &\synteq λx\, y\, z.x \\
-    \bs{F} &\synteq λx\, y\, z.y \\
-    \bs{U} &\synteq λx\, y\, z.z 
+    \bs{I} & \synteq λx.x \\
+    \bs{K} & \synteq λx\, y.x \\
+    \bs{S} & \synteq λx\, y\, z.x\, z(y\, z)
   \end{align*}
 \end{defn}
 
-Al igual que en la codificación bivalente, se puede codificar un término \( \bs{\prec_{3}} \), similar a \( \bs{\prec} \) de la definición \ref{defn:condicional} pero con tres ramificaciones
-
-\begin{defn}[Condicional trivalente]
-  \[ \bs{\prec_{3}} \synteq λp\, m\, n\, o.p\, m\, n\, o \]
-
-  De tal manera que, si \( P \in \{ \bs{T},\ \bs{F},\ \bs{U} \} \)
-
-  \[ (\bs{\prec_{3}}\, P\, M\, N\, O) \reduce{β} \begin{cases} M & P \synteq \bs{T}; \\ N & P \synteq \bs{F}; \\ O & P \synteq \bs{U}. \end{cases} \]
-\end{defn}
-
-Sea \( \odot \) una operación trivalente binaria con la siguiente tabla de valores
-
-\begin{center}
-  \begin{tabular}{|c|c||c|}
-    \hline
-    \( P \) & \( Q \) & \( P \odot Q \) \\ [0.5ex] \hline\hline
-    \( \bs{T} \) & \( \bs{T} \) & \( x_{1} \) \\ \hline
-    \( \bs{T} \) & \( \bs{F} \) & \( x_{2} \) \\ \hline
-    \( \bs{T} \) & \( \bs{U} \) & \( x_{3} \) \\ \hline
-    \( \bs{F} \) & \( \bs{T} \) & \( x_{4} \) \\ \hline
-    \( \bs{F} \) & \( \bs{F} \) & \( x_{5} \) \\ \hline
-    \( \bs{F} \) & \( \bs{U} \) & \( x_{6} \) \\ \hline
-    \( \bs{U} \) & \( \bs{T} \) & \( x_{7} \) \\ \hline
-    \( \bs{U} \) & \( \bs{F} \) & \( x_{8} \) \\ \hline
-    \( \bs{U} \) & \( \bs{U} \) & \( x_{9} \) \\ \hline
-  \end{tabular}
-\end{center}
-
-El procedimiento en pseudocódigo que la describe es:
-
-\begin{verbatim}
-OperacionTrivalente(x1, x2, x3, x4, x5, x6, x7, x8, x9) :=
-    Binaria(predicado1, predicado2) :=
-        Si predicado1 es verdadero, entonces:
-            Si predicado2 es verdadero, entonces:
-                Regresa x1
-            Si predicado2 es falso, entonces:
-                Regresa x2
-            Si predicado2 es desconocido, entonces:
-                Regresa x3
-            Fin
-        Si predicado1 es falso, entonces:
-            Si predicado2 es verdadero, entonces:
-                Regresa x4
-            Si predicado2 es falso, entonces:
-                Regresa x5
-            Si predicado2 es desconocido, entonces:
-                Regresa x6
-            Fin
-        Si predicado1 es desconocido, entonces:
-            Si predicado2 es verdadero, entonces:
-                Regresa x7
-            Si predicado2 es falso, entonces:
-                Regresa x8
-            Si predicado2 es desconocido, entonces:
-                Regresa x9
-            Fin
-        Fin
-    Fin
-    Regresa Binaria
-Fin
-\end{verbatim}
-
-Traducido al cálculo lambda como
-
-\[ λx_{1}\, x_{2}\, x_{3}\, x_{4}\, x_{5}\, x_{6}\, x_{7}\, x_{8}\, x_{9}.(λp_{1}\, p_{2}.(\bs{\prec_{3}}\, p_{1}\, R_{1}\, R_{2}\, R_{3})) \]
-
-Donde
-
-\begin{align*}
-  R_{1} &\synteq (\bs{\prec_{3}}\, p_{2}\, x_{1}\, x_{2}\, x_{3}) \\
-  R_{2} &\synteq (\bs{\prec_{3}}\,  p_{2}\, x_{4}\, x_{5}\, x_{6}) \\
-  R_{3} &\synteq (\bs{\prec_{3}}\, p_{2}\, x_{7}\, x_{8}\, x_{9})
-\end{align*}
-
-\subsection{Lógica en el cálculo lambda}
-\label{sec:logica-lambda}
-
-En esta sección se abordó la codificación de valores de verdad y operaciones como la conjunción, disyunción y negación. Usualmente en las ciencias de la computación y las matemáticas, estos objetos se abordan desde la perspectiva algebraica y desde la perspectiva lógica.
-
-En el cálculo lambda se distinguen las dos perspectivas por el lenguaje en el que se manejan los objetos, en el caso del álgebra booleana, los valores de verdad y las operaciones booleanas se codifican como términos lambda y pueden ser combinados con otros términos lambda que no forman parte del álgebra booleana. Por otra parte, la lógica proposicional estudia proposiciones, las cuales son enunciados matemáticos a los cuales se les puede atribuír el valor de falso o verdadero y que, a partir de conectivos lógicos como \( \lnot \), \( \land \) y \( \lor \), se infieren verdades sobre los enunciados.
-
-El cálculo lambda se puede extender de tal manera que nos permita inferir verdades sobre sus términos, en esta subsección se abordan los cálculos lambda aumentados con nociones \emph{ilativas}, denotados \( \mathit{i}\bs{λ} \). El tratamiento de esta extensión está basado en el apéndice B ``Lógica combinatoria ilativa'' de \cite[pp.~573--576]{Barendregt:Bible}.
-
-\begin{defn}[Términos \( \mathit{i}\bs{λ} \)]
-  \label{defn:ilativo-terminos}
-  Los términos de la teoría \( \mathit{i}\bs{λ} \), denotados \( \mathit{i}Λ \) se definen sobre el alfabeto de \( Λ \) extendido con un conjunto \( C \) de \emph{constantes lógicas}.
+\begin{cor}
+  \label{cor:ski}
+  Para todo término \( M,N,L \in Λ \)
 
   \begin{align*}
-    M \in Λ &\implies M \in \mathit{i}Λ \\
-    c \in C &\implies c \in \mathit{i}Λ \\
-    M, N \in \mathit{i}Λ &\implies (M\, N) \in \mathit{i}Λ
+    \bs{I}\, M & =_{\bs{λ}} M \\
+    \bs{K}\, M\, N & =_{\bs{λ}} M \\
+    \bs{S}\, M\, N\, L & =_{\bs{λ}} M\, L (N\, L)
   \end{align*}
+\end{cor}
+
+Estos tres combinadores generan en la teoría \( \bs{λ} \) al conjunto \( Λ^{0} \) con combinaciones de aplicaciones. Debido a que \( \bs{SKK} =_{\bs{λ}} \bs{I} \), sólo es necesario combinar con aplicaciones a \( \bs{K} \) y a \( \bs{S} \) para generar cualquier término cerrado.
+
+\begin{defn}[Bases]
+  \label{defn:bases}
+  \begin{enumerate}
+  \item Sea \( \mathcal{X} \subset Λ \). El conjunto de términos \emph{generado} por \( \mathcal{X} \), denotado \( \mathcal{X}^{+} \), es el conjunto mas pequeño tal que
+    \begin{enumerate}
+    \item \( \mathcal{X} \subseteq \mathcal{X}^{+} \),
+    \item \( M, N \in \mathcal{X}^{+} \implies (M N) \in \mathcal{X}^{+} \).
+    \end{enumerate}
+  \item Sea \( \mathcal{P} \subset Λ \). \( \mathcal{X} \subset Λ \) es una \emph{base} para \( \mathcal{P} \) si para toda \( M \in \mathcal{P} \) existe \( N \in \mathcal{X}^{+} \) tal que \( N = M \).
+  \item \( \mathcal{X} \) es llamada una \emph{base} si \( \mathcal{X} \) es una base para \( Λ^{0} \).
+  \end{enumerate}
 \end{defn}
 
-\begin{defn}[Fórmulas en \( \mathit{i}\bs{λ} \)]
-  \label{defn:ilativo-formulas}
-  Las fórmulas de la teoría \( \mathit{i}\bs{λ} \) se definen de la siguiente manera
+\begin{lem}
+  \label{lem:ski}
+  Sea \( λx.M \) una abstracción tal que \( \Sub(M) \) no contiene abstracciones
+
+  \begin{enumerate}
+  \item Si \( M = x \), entonces \( λx.M = \bs{I} \);
+  \item Si \( x \not\in \FV(M) \), entonces \( λx.M = (\bs{K} M) \);
+  \item Si \( M = P\, Q \), entonces \( λx.M = \bs{S}(λx.P)(λx.Q) \).
+  \end{enumerate}
+\end{lem}
+
+\begin{proof}
+  Ver \ref{defn:ski} y \ref{cor:ski}
+  \begin{enumerate}
+  \item
+    \begin{align*}
+      (\bs{I}\, N) &= N \\
+                   &= ((λx.x) N) \\
+                   &= ((λx.M) N)
+    \end{align*}
+  \item
+    \begin{align*}
+      ((\bs{K}\, M) N) &= (λx\, y.x)M\, N \\
+                       &= (λy.M)N \\
+                       &= ((λx.M)N)
+    \end{align*}
+  \item
+    \begin{align*}
+      \bs{S}(λx.P)(λx.Q) &= (λabc.(a\, c)(b\, c))(λx.P)(λx.Q) \\
+                         &= λc.((λx.P)c)((λx.Q)c) \\
+                         &= λc.P[x:=c]Q[x:=c] \\
+                         &= λc.(P\, Q)[x:=c] \\
+                         &= λx.P\, Q \\
+                         &= λx.M
+    \end{align*}
+  \end{enumerate}
+\end{proof}
+
+\begin{prop}
+  \label{prop:ski}
+  \( \{ \bs{S}, \bs{K}, \bs{I} \} \) es una base, es decir, para todo término \( M \in Λ^{0} \), existe un término \( M' \) compuesto de aplicaciones de \( \bs{S} \), \( \bs{K} \) e \( \bs{I} \) tal que \( M = M' \).
+\end{prop}
+
+La demostración de la proposición \ref{prop:ski} consiste en la construcción de un algoritmo para transformar \( M \) a \( M' \).
+
+\begin{proof}
+  \label{proof:ski}
+  Sea \( M \in Λ^{0} \), se construye un término \( M' \in \{ \bs{S},\bs{K},\bs{I} \}^{+} \) tal que \( M' = M \) enumerando los subtérminos en \( M \) que sean abstracciones de menor a mayor longitud.
+
+  Sea \( λx.N \) la abstracción con menor longitud en \( M \), según la estructura de \( N \) se aplican las siguientes transformaciones:
+
+  \begin{enumerate}
+  \item Si \( N = a \)
+    \begin{enumerate}
+    \item \label{item:ski:1a} Si \( a = x \) se transforma \( λx.N \) a \( \bs{I} \) en \( M \).
+    \item \label{item:ski:1b}Si \( a \not= x \) se transforma \( λx.N \) a \( (\bs{K}\, a) \) en \( M \).
+    \end{enumerate}
+  \item \( N = (P\, Q) \)
+    \begin{enumerate}
+    \item \label{item:ski:2a} Si \( x \not\in \FV(P) \) y \( x \not\in \FV(Q) \) se transforma \( λx.P\, Q \) a \( \bs{S} (\bs{K}\, P) (\bs{K}\, Q) \) en \( M \).
+    \item \label{item:ski:2b} Si \( x \not\in \FV(P) \) y \( x \in \FV(Q) \) se transforma \( λx.P\, Q \) a \( \bs{S} (\bs{K}\, P) (λx.Q) \) en \( M \).
+    \item \label{item:ski:2c} Si \( x \in \FV(P) \) y \( x \not\in \FV(Q) \) se transforma \( λx.P\, Q \) a \( \bs{S} (λx.P) (\bs{K}\, Q) \) en \( M \).
+    \item \label{item:ski:2d} Si \( x \in \FV(P) \) y \( x \in \FV(Q) \) se transforma \( λx.P\, Q \) a \( \bs{S} (λx.P) (λx.Q) \) en  \( M \).
+    \end{enumerate}
+  \end{enumerate}
+
+  En los casos \ref{item:ski:2a}, \ref{item:ski:2b}, \ref{item:ski:2c}, \ref{item:ski:2d} se forman abstracciones con longitud menor a \( λx.N \), por lo tanto serán las que se transformarán después. Ya que la longitud de estas abstracciones es estrictamente menor a \( λx.N \) y los casos base \ref{item:ski:1a} y \ref{item:ski:1b} de la transformación no introducen abstracciones, en una cantidad finita de pasos el término \( M \) transformado no tendrá abstracciones de la forma \( λx.N \).
+
+  Para un término \( M \) con sólo una abstracción, \( \mathit{a} \) aplicaciones y \( \mathit{v} \) variables ligadas (no enlazadas) una cota superior para la máxima cantidad de pasos se calcula considerando que para los términos de la forma \( λx.a \) se cumple el caso \ref{item:ski:1b} (el cual aumenta la cantidad de aplicaciones en 1) y que para los términos de la forma \( λx.P\, Q \) se cumple el caso \ref{item:ski:2d} (el cual aumenta la cantidad de aplicaciones en 2) ya que en estos casos se produce el término con mas aplicaciones, las cuales determinan la cantidad de veces que se repite el algoritmo por cada abstracción en \( M \). Para calcular la cota superior de la cantidad de aplicaciones \( a' \) que produce el algoritmo para un término con \( n \) abstracciones se plantea la siguiente relación de recurrencia:
+
+  \begin{align*}
+    \mathit{a}'_{0} &= \mathit{a} \\
+    \mathit{a}'_{n} &= 2 \times \mathit{a}'_{n-1} + \mathit{v}
+  \end{align*}
+
+  Esta recurrencia describe la función \( \mathit{a}' \colon \mathbb{N} \to \mathbb{N} \):
+
+  \[ \mathit{a}'(n) = 2^{n} \times \mathit{a} + (2^{n}-1) \times \mathit{v} \]
+
+  Para la cota superior de la cantidad de pasos realizados por el algoritmo para un término \( M \) con \( n \) abstracciones, se plantea la siguiente relación de recurrencia basada en \( \mathit{a}' \) y en el hecho de que la cantidad de variables ligadas y no enlazadas no aumenta en los pasos del algoritmo:
+
+  \begin{align*}
+    \mathit{p}_{0} &= 0 \\
+    \mathit{p}_{n} &= \mathit{p}_{n-1} + \mathit{a}'(n-1) + \mathit{v}
+  \end{align*}
+
+  Esta recurrencia describe la función \( \mathit{p} \colon \mathbb{N} \to \mathbb{N} \):
+
+  \begin{align*}
+    \mathit{p}(n) &= (\mathit{a} + \mathit{v}) \times \sum_{i=0}^{n-1} 2^{i} \\
+                  &= (\mathit{a} + \mathit{v}) \times (2^{n}-1)
+  \end{align*}
   
-  \begin{itemize}
-  \item Si \( M, N \in \mathit{i}Λ \), entonces \( M = N \) es una fórmula.
-  \item Si \( M \in \mathit{i}Λ \), entonces \( M \) es una fórmula.
-  \end{itemize}
+\end{proof}
 
-  En el estudio de teorías ilativas, la interpretación de \( \mathit{i}\bs{λ} \vdash M \) y \( \mathit{i}\bs{λ} \vdash M = N \) es ``La fórmula \( M \) es verdadera'' y ``La fórmula \( M = N \) es verdadera'' respectivamente.
+\subsection{Lemas y corolarios sobre términos lambda en \( \bs{λKβ} \)}
+\label{sec:lemas-y-corolarios}
+
+Resultados sobre términos lambda en la teoría \( \bs{λKβ} \).
+
+\section{Otras teorías}
+\label{sec:otras-teorias}
+
+\subsection{\( \bs{λIβ} \)}
+
+En el artículo \cite{Church:LambdaConversion}, Alonzo Church presenta una definición del cálculo lambda con un conjunto restringido de términos lambda. A la teoría que considera a este conjunto restringido de términos lambda (denotado \( Λ_{I} \)) y los axiomas y reglas de inferencia de la teoría \( \bs{λ} \) cambiando \( Λ \) por \( Λ_{I} \) se le conoce como teoría \( \bs{λIβ} \) (o el cálculo \( λI \)).
+
+\begin{defn}[Términos en \( Λ_{I} \)]
+  \label{defn:lambdaI}
+  \begin{align*}
+    x \in V & \implies x \in Λ_{I} \\
+    M \in Λ_{I},\ x \in \FV{M} & \implies λx.M \in Λ_{I} \\
+    M, N \in Λ_{I} & \implies M\, N \in Λ_{I}
+  \end{align*}
 \end{defn}
 
-\subsubsection{Teoría \( \mathit{i}\bs{λ}_{KR} \)}
+La diferencia fundamental entre las teorías \( \bs{λKβ} \) y \( \bs{λIβ} \) es el término lambda \( \bs{K} \), ya que \( \bs{K} \in Λ \setminus Λ_{I} \) pero \( \bs{K} \not\in Λ_{I} \). Esto es debido a que el subtérmino \( λy.x \) en \( \bs{K} \) de la definición \ref{defn:ski} no puede existir en \( Λ_{I} \) debido a que \( y \not\in \FV(x) \).
 
-Constantes \( C = \{ \bs{N} \} \) con la interpretación \( \lnot\, M \) es \( (\bs{N}\, M) \)
+\subsection{Extensionalidad}
+\label{sec:extensionalidad}
 
-Paradoja de Kleene-Rosser
+El concepto de igualdad de funciones usado en la mayoría de las ramas de la matemática es lo que se conoce como ``extensional'', esta propiedad de las relaciones de equivalencia hace referencia a las características externas de los objetos que compara, en el caso de las funciones, se incluye la suposición de que para funciones \( f \) y \( g \) con el mismo dominio
 
-\[ X \synteq λx.\bs{N} (x\, x) \]
+\[ \forall x [ f(x)=g(x) ] \implies f=g \]
 
-\[ X\, X = (λx.\bs{N} (x\, x)) X = \bs{N} (X\, X) \]
+Contraria a esta suposición, en la computación, el tema central son los procedimientos y procesos que describen los programas o algoritmos, cuyas igualdades ``intensional'', es decir, si dos programas computan la misma función matemática, no necesariamente se dice que son el mismo programa ya que uno pudiera ser mas eficiente que otro (la característica de eficiencia es interna a cada algorítmo).
 
-Se puede derivar que una fórmula \( X\, X = \lnot (X\, X) \), es decir, en \( \mathit{i}\bs{λ}_{KR} \) se pueden derivar contradicciones.
+La teoría \( \bs{λ} \) también es intensional: existen dos términos lambda \( F \) y \( G \) tales que para tódo término \( X \)
 
-\subsubsection{Teoría \( \mathit{i}\bs{λ}_{0} \)}
+\[ \bs{λ} \vdash F\, X = G\, X \]
 
-Constantes \( C = \{ \bs{F},\ \bs{Q},\ \bs{E},\ \bs{Ξ},\ \bs{Π},\ \bs{P} \} \) con las siguientes interpretaciones
+Pero no \( \bs{λ} \vdash F=G \). Por ejemplo, \( F \synteq y \) y \( G \synteq λx.y\, x \)
 
-\begin{itemize}
-\item \( M \in N \) es \( N\, M \)
-\item \( M \implies N \) es \( \bs{P}\, M\, N \)
-\item \( M \subseteq N \) es \( \bs{Ξ}\, M\, N \)
-\item \( N^{M} \) es \( \bs{F}\, M\, N \)
-\item \( \forall x\ M \) es \( \bs{Ξ} (λx.M) \)
-\end{itemize}
+Cuando se plantea formalizar un cálculo lambda que sea extensional, surge la pregunta, ¿Qué es demostrable en el sistema extensional que no es demostrable en \( \bs{λ} \). A continuación se presentan tres diferentes agregados a la teoría \( \bs{λ} \) las cuales incluyen la propiedad de extensionalidad y que han sido propuestas en la literatura \cite{HindleySeldin:LambdaCalculusAndCombinators,Barendregt:Bible}. Las teorías extendidas son llamadas \( \bs{λζ} \), \( \bs{λ+ext} \) y \( \bs{λη} \) de acuerdo a la regla que se añade a la definición \ref{defn:teorialambda}.
 
-\subsubsection*{Pendientes}
+\begin{defn}[Reglas de extensionalidad]
+  \label{defn:extensionalidad}
+  Cada una de las siguientes reglas nos permite añadir a \( \bs{λ} \) la propiedad de extensionalidad.
+  \begin{description}
+  \item[Reglas de inferencia]
+    \begin{subequations}
+      \begin{align}
+        \label{extensionalidad:zeta} \tag{\( ζ \)}
+        \infer{M = N}{M\, x = N\, x} & & \text{si \( x \not\in \FV(M\, N) \)} \\
+        \label{extensionalidad:ext} \tag{ext}
+        \infer{M = N}{M\, P = N\, P} & & \forall P \in Λ
+      \end{align}
+    \end{subequations}
+  \item[Axiomas]
+    \begin{align}
+      \label{extensionalidad:eta} \tag{\( η \)}
+      λx.M\, x = M & & \text{si \( x \not\in \FV(M) \)}
+    \end{align}
+  \end{description}
+\end{defn}
 
-\begin{itemize}
-\item Definibilidad de \( \bs{E} \), \( \bs{F} \), \( \bs{P} \) y \( \bs{Π} \) a partir de \( \bs{Q} \), \( \bs{Ξ} \).
-\item Inconsistencia de \( \mathit{i}\bs{λ}_{0} \) por la paradoja de Curry ``Una teoría lambda ilativa es inconsistente si cada \( M \) puede ser derivada'' (la paradoja de Kleene-Rosser es una consecuencia de la paradoja de Curry).
-\item Mencionar la técnica utilizada por Church para ``escapar'' de la paradoja de Curry y presentar el ``tradeoff'' de tener un sistema suficientemente poderoso: Equivalencia \( \bs{λ} \) y máquina de Turing \emph{vs.} separar la noción ilativa de la abstracción.
-\end{itemize}
+La regla \eqref{extensionalidad:zeta} dice, de manera informal, que si \( M \) y \( N \) tienen el mismo efecto sobre un objeto no especificado \( x \), entonces \( M = N \). La regla \eqref{extensionalidad:ext} tiene una infinidad de premisas, una por cada término lambda \( P \), por lo tanto, las deducciones en donde se involucre esta regla serán árboles infinitos.
 
-\section{Aritmética}
-\label{sec:aritmetica}
+\subsection{Equivalencia de teorías}
+\label{sec:equivalenciateorias}
 
-Así como se pueden representar los valores de verdad de falso y verdadero en el cálculo lambda, también podemos encontrar representaciones para los números naturales. En esta sección se aborda una representación llamada numerales de Church, también se presentan términos lambda para operar números naturales con esta representación.
+Comparación entre teorías formales, énfasis en \( η \) contra \( ζ \) contra \( ext \).
 
-Para cada \( n \in \mathbb{N} \) el numeral de Church de \( n \) es un término lambda denotado como \( \bar{n} \) definido como:
+Ver \cite{HindleySeldin:LambdaCalculusAndCombinators}, \cite{Troelstra:ProofTheory}, \cite{Mendelson:Logic}.
 
-\[ \bar{n} \synteq λx\, y.x^{n}\, y \]
+Sea \( \mathcal{T} \) una teoría formal, se considera extender \( \mathcal{T} \) añadiendo una nueva regla \( \mathcal{R} \). Es natural preguntarse primer si \( \mathcal{R} \) es derivable en \( \mathcal{T} \). Pero ¿qué significa exactamente que \( \mathcal{R} \) sea derivable?
 
-En la siguiente tabla se puede apreciar mejor la estructura de los numerales de Church
+\begin{defn}[Regla]
+  \label{defn:regla}
+  Una regla \( \mathcal{R} \) de \( n \) premisas es un conjunto de secuencias \( \mathcal{S}_{0},...,\mathcal{S}_{n-1},\mathcal{S} \) de longitud \( n+1 \), donde \( \mathcal{S}_{i},\mathcal{S} \) son elementos de deducción. Un elemento de \( \mathcal{R} \) se dice ser una \emph{instancia} de \( \mathcal{R} \). Una instancia se denota
 
-\begin{table}
-  \centering
-  \begin{tabular}{|c|c|}
-    \hline
-    \( n \) & \( \bar{n} \) \\ [0.5ex]
-    \hline\hline
-    0 & \( λx\, y.y \) \\
-    \hline
-    1 & \( λx\, y.x\, y \) \\
-    \hline
-    2 & \( λx\, y.x(x\, y) \) \\
-    \hline
-    3 & \( λx\, y.x(x(x\, y)) \) \\
-    \hline
-    ... & ... \\
-    \hline
-  \end{tabular}
-  \caption{Numerales de Church}
-  \label{tab:numerales}
-\end{table}
+  \[ \infer{\mathcal{S}}{\mathcal{S}_{0} & \mathcal{S}_{1} & ... & \mathcal{S}_{n-1}} \]
 
-Como se observa en la tabla, un numeral de Church es una abstracción descurrificada de dos argumentos la cual al ser evaluada es reducida a la \( n \)-ésima composición del primer argumento evaluada en el segundo argumento.
+  \( \mathcal{S} \) es la \emph{conclusión} y las \( \mathcal{S}_{i} \) son las \emph{premisas}. Un \emph{axioma} es una regla de cero premisas. Instancias de axiomas aparecen en árboles de deducción simplemente como vértices superiores o de manera equivalente como elementos de deducción con una línea sobre ellos:
 
-Una manera de entender esta representación es pensar en los números naturales como un conteo de uno en uno; el 0 es no contar; el 1 es contar uno mas que el 0; el 2 es uno mas que el 1, así que el 2 es uno mas que el uno mas que el 0; el 3 es uno mas que el 2, así que el 3 es uno mas que el uno mas que el uno mas que el 0 y así sucesivamente. La idea de ``el uno mas'' es la del sucesor, si consideramos a \( x \) como una función sucesor y a \( y \) como el 0, podemos expresar \( x(x(x(y))) \) como \( \mathrm{sucesor}(\mathrm{sucesor}(\mathrm{sucesor}(0))) \), así que
+  \[ \infer{S}{} \]
+\end{defn}
 
-\begin{align*}
-\mathrm{sucesor}(\mathrm{sucesor}(\mathrm{sucesor}(0))) & = \mathrm{sucesor}(\mathrm{sucesor}(1)) \\
-                             & = \mathrm{sucesor}(2) \\
-                             & = 3
-\end{align*}
+\begin{defn}[Reglas derivables y admisibles]
+  \label{defn:regla-derivable}
+  Sea \( \mathcal{R} \) una regla determinada por una función \( φ \colon \mathcal{F}^{n} \to \mathcal{F} \). Se dice que \( \mathcal{R} \) es \emph{derivable} en \( \mathcal{T} \) si y solo si, por cada instancia de \( \mathcal{R} \), su conclusión es deducible en \( \mathcal{T} \) a partir de sus premisas, es decir
 
-Es interesante pensar en diferentes maneras de expresar las operaciones mas elementales de la aritmétima como términos lambda que operen sobre esta representación. A continuación se presenta una exploración de los términos lambda correspondientes a algunas operaciones elementales de la aritmética: suma, multiplicación, exponenciación y resta. La suma es una repetición de la operación sucesor, la multiplicación una repetición de suma, la exponenciación una repetición de multiplicaciones y la resta una repetición de la operación predecesor. Esto nos lleva a identificar las operaciones de sucesor y predecesor como los algoritmos base para el resto de las operaciones primitivas.
+  \[ \mathcal{T},\ A_{1},...,A_{n} \vdash B \].
 
-El término \emph{sucesor} debe ser uno tal que al ser aplicado a un numeral \( \bar{n} \) se pueda \( β \)-reducir al numeral \( \bar{n+1} \). Considerando la definición de \( \bar{n} \synteq λx\, y.x^{n}\, y \), lo que buscamos es una manera de agregarle una \( x \) a la composición en el cuerpo de \( \bar{n} \) para obtener \( λx\, y.x^{n+1}\, y \). Se construye este término considerando primero que será aplicado a un numeral
+  Se dice que \( \mathcal{R} \) es \emph{admisible} en \( \mathcal{T} \) si y solo si, añadir \( \mathcal{R} \) a \( \mathcal{T} \) como una nueva regla no va a incrementar la cantidad de teoremas de \( \mathcal{T} \).
 
-\[ \mathrm{sucesor} \synteq λ\bar{n}.? \] 
+  Se dice que \( \mathcal{R} \) es \emph{correcta} en \( \mathcal{T} \) si y solo si, por cada instancia de \( \mathcal{R} \), si todas las premisas son demostrables en \( \mathcal{T} \), entonces también es demostrable la conclusión, es decir, si y solo si
 
-Además el resultado de \( β \)-reducir esta aplicación deberá ser una función de dos argumentos (como lo son todos los numerales de Church):
+  \[ (\mathcal{T} \vdash A_{1}),...,(\mathcal{T} \vdash A_{n}) \implies (\mathcal{T} \vdash B) \]
 
-\[ \mathrm{sucesor} \synteq λ\bar{n}.λx\, y.? \]
+  Finalmente, una sola fórmula \( C \), como un nuevo axioma propuesto, se dice ser tanto \emph{derivable} como \emph{admisible} en \( \mathcal{T} \) si y solo si
 
-Tomando en cuenta que \( \bar{n}\, x\, y \synteq x^{n}\, y \) y que \( x\, x^{n} y \synteq x^{n+1}\, y \):
+  \[ \mathcal{T} \vdash C \]
+\end{defn}
 
-\[ \mathrm{sucesor} \synteq λn\, x\, y.x(n\, x\, y) \]
+\section{Teoría de reducción}
+\label{sec:teoriareduccion}
 
-A continuación se \( β \)-reduce la aplicación de \( \mathrm{sucesor} \) al numeral \( \bar{4} \synteq λx\, y.x(x(x(x\, y))) \):
+1.14 y 2.9
 
-\begin{align*}
-                & \mathrm{sucesor}\, \bar{4} \\
-\synteq         & (λn\, x\, y.x(n\, x\, y)) (λx\, y.x(x(x(x\, y)))) \\
-\convertible{α} & (λn\, x\, y.x(n\, x\, y)) (λf\, z.f(f(f(f\, z)))) \\
-\contract{β}    & (λx\, y.x(((λf\, z.f (f (f (f\, z)))) x) y)) \\
-\contract{β}    & (λx\, y.x((λz.x(x(x(x\, z)))) y)) \\
-\contract{β}    & (λx\, y.x(x(x(x(x\, y))))) \\
-\synteq         & \bar{5}
-\end{align*}
+\subsection{Contracciones}
+\label{sec:contracciones}
 
-La otra operación elemental en la aritmética es el \emph{predecesor}, el término que represente esta operación debe ser uno que cumpla con la siguiente definición:
+Transformaciones de términos con un paso.
 
-\begin{align*}
-\mathrm{predecesor}\, \bar{0} & \reduce{β} \bar{0} \\
-\mathrm{predecesor}\, \bar{n} & \reduce{β} \bar{n-1}
-\end{align*}
+\begin{defn}[Contracciones Hindley y Seldin]
+  \label{defn:contraccion}
+  Dado un término lambda \( X \), una \emph{contracción} en \( X \) es una tripleta \( \langle X,R,Y \rangle \), denotada \( X \contract{R} Y \), donde \( R \) es una aparición de un \emph{redex} en \( X \) y \( Y \) es el resultado de contraer \( R \) en \( X \).
+\end{defn}
 
-El término lambda del predecesor con la representación de numerales de Church es mucho mas compleja que la del sucesor. Se pudiera pensar que la misma idea utilizada en la derivación del sucesor aplicaría para la derivación del predecesor: si tenemos \( n \) aplicaciones de \( x \) a \( y \), al aplicar el término que buscamos a un numeral de Church se debe \( β \)-reducir a otro numeral con una aplicación de \( x \) menos, se utiliza \( y \) para añadir una \( x \) mas en el cuerpo del numeral. Sin embargo, la estructura de los numerales no nos permite quitar una \( x \) usando \( y \) facilmente ya que el numeral puede ser aplicado a dos términos, el que representa las \( x \) y el que representa a la \( y \); la variable que determina el valor del numeral es  \( x \) y la sustitución de \( x \) por otro término en esta representación se hace con \emph{cada} aparición de \( x \) en el cuerpo del numeral, por otro lado, al sustituír la \( y \) por otro término solo podemos hacer mas complejo el término o sustituírla por otra variable.
+\begin{exmp}
+  \begin{align*}
+    (λx.(λy.y\, x)z)v &\contract{(λx.(λy.y\, x)z)v} (λy.y\, v)z ,\\
+    (λx.(λy.y\, x)z)v &\contract{(λy.y\, x)z} (λx.z\, x)v.
+  \end{align*}
+\end{exmp}
 
-Para derivar el término del predecesor vamos a presentar un término con una estructura similar a los numerales de Church:
-
-\[ λx\, y\, z.z\, x^{n}\, y \]
-
-La diferencia entre este término y un numeral de Church es que podemos modificar su estructura por enfrente, por atrás y en las composiciones intermedias. Si este término representara \( \bar{n+1} \) pudieramos obtener el cuerpo de \( \bar{n} \) de la siguiente manera:
-
-\begin{align*}
-             & (λx\, y\, z.z\, x^{n}\, y) x\, y (λa.a) \\
-\contract{β} & (((λy\, z.z\, x^{n}\, y) y) (λa.a)) \\
-\reduce{β}   & ((λz.z\, x^{n}\, y) (λa.a)) \\
-\contract{β} & (λa.a) x^{n}\, y \\
-\contract{β} & x^{n}\, y
-\end{align*}
-
-Es decir, mantenemos las \( x \) y la \( y \) y le aplicamos a \( x^{n} y \) el término lambda que representa a la función identidad. Esta manera conveniente de representar a los numerales resulta ser incompleta, ya que no se podrá obtener \( x^{n-1} y \) a partir del resultado (ya que la \( z \) no aparece en el término resultante). Sin embargo, si logramos tener un término que nos genera este término modificado pudiéramos realizar esta transformación dentro de la función predecesor sería mas fácil encontrar \( \bar{n-1} \).
-
-La estructura del sucesor sería:
-
-\[ λn\, x\, y.?\, (λa.a) \]
-
-Donde \( ? \) debe ser tal que al \( β \)-reducirse resulte en un término con la forma \( λz.z\, x^{n-1}\, y \). Es conveniente desmenuzar el problema de encontrar este término desconocido: primero sabemos que el numeral de Church \( \bar{n} \) puede ser aplicado a dos términos y el primer término al que sea aplicado se sustituirá en todas las apariciones de \( x \), como queremos que la \( β \)-reducción nos genere una función cuyo argumento sea la primer variable en la composición del numeral, tenemos que encontrar una manera de propagar un término de la forma \( λw.w\, x^{m}\, y \) de tal manera que al aplicarle otro término nos resulte \( λw.w\, x^{m+1}\, y \). De esta manera al aplicar este otro término una y otra vez, resulte \( λw.w\, x^{n-1}\, y \) con el cual podemos obtener el cuerpo del predecesor sustituyendo \( w \) por \( λa.a \).
-
-Este otro término que buscamos será el que sustituirá a la \( x \) en \( \bar{n} \) para que:
-
-\[ ?(λw.w\, x^{m}\, y) \reduce{β} λw.w\, x^{m+1}\, y \]
-
-Lo que sucede en cada aplicación de este estilo es que se compone una \( x \) en cada aplicación y se deja explícita una \( w \) que podrá ser sustituída como valor. El término que nos permite hacer esto tiene la siguiente forma:
-
-\[ λg\, w.w (g\, x) \]
-
-Al ser aplicado a un término \( λw.w\, x^{m}\, y \) la variable \( g \) será sustituída por este término y el resultado será \( λw.w((λr.r\, x^{m}\, y) x) \) (nótese el cambio de nombre de la variable ligada \( w \) en el argumento), lo cual se reduce a \( λw.w\, x^{m+1}\, y \) el cual mantiene su estructura original.
-
-El percance con esta aproximación a la solución es que el primer valor al que se le aplica el término \( λg\, w.w (g\, x) \) debe ser \( λw.w\, y \).
-
-Para visualizar una manera de resolver el problema, es conveniente expresar cómo se verían las aplicaciones de \( λg\, w.w (g\, x) \) para un numeral de Church en particular. Si consideramos la aplicación de \( \bar{4}\, (λg\, w.w(g\, x)) \):
-
-\begin{align*}
-             & \bar{4} (λg\, w.w(g\, x)) \\
-\synteq      & ( (λx\, y.x^{4}\, y) (λg.(λw.(w (g\, x)))) ) \\
-\synteq      & ( (λx\, y.x(x(x(x\, y)))) (λg.(λw.(w (g\, x)))) ) \\
-\contract{β} & (λy.(λg.(λw.(w (g\, x))))((λg.(λw.(w (g\, x))))((λg.(λw.(w (g\, x))))((λg.(λw.(w (g\, x)))) y))))
-\end{align*}
-
-Esto nos lleva al segundo paso para encontrar la función predecesor, en el desarrollo anterior notamos que la primer aplicación de \( λg\, w.w (g\, x) \) es en la variable \( y \) la cual está ligada por la \( λ \) del término. Sabemos que para obtener \( λw.w\, x^{3}\, y \) debemos \( β \)-reducir el término:
-
-\[ ((λg.(λw.(w (g\, x)))) ((λg.(λw.(w (g\, x)))) ((λg.(λw.(w (g\, x)))) (λw.w\, y)))) \]
-
-Con esto podemos encontrar el valor que tiene que tomar \( y \) en el numeral ya que:
-
-\[ ((λg.(λw.(w (g\, x)))) y) \reduce{β} λw.w\, y \]
-
-El término que buscamos es el que debe sustituír a la variable \( y \) en la reducción:
-
-\begin{align*}
-           & ((λg.(λw.(w (g\, x)))) ?) \\
-\reduce{β} & (λw.(w (?\, x)))
-\end{align*}
-
-El término \( ? \) debe ser una función que al ser aplicada a \( x \) se reduzca a \( y \). El término \( λu.y \) cumple con esta propiedad y será el que utilizaremos.
-
-Considerando los términos determinados en el procedimiento anterior, podemos decir cómo será la función predecesor. Primero se aplica \( (λg.(λw.(w (g\, x)))) \) a \( \bar{n} \), este término resultante se aplica a \( λu.y \), \( β \)-reducir esta aplicación nos resulta \( λw.w\, x^{n-1}\, y \) la cual puede ser aplicada a la función identidad \( λa.a \) para obtener \( x^{n-1}\, y \). Lo cual nos lleva al término completo de predecesor:
-
-\[ (λn.(λx\, y.(((n (λg.(λw.(w (g\, x))))) (λu.y)) (λa.a)))) \]
-
-Teniendo los términos lambda de sucesor y predecesor se puede abordar la derivación de operaciones mas complejas como la de adición, multiplicación, exponenciación y sustracción de numerales de Church siguiendo el mismo enfoque. En este trabajo no se abordan otras operaciones como la división debido al aumento de complejidad por no ser una operación interna, es decir, la división de dos naturales puede ser un racional y no se definió una representación de términos lambda para el conjunto de los racionales.
-
-Un término lambda para la adición de dos numerales \( \bar{m} \) y \( \bar{n} \) es
-
-\[ λm\, n.(λx\, y.n\, \mathrm{sucesor}\, m) \]
-
-y se obtuvo a partir de la observación de que realizar la suma \( m+n \) es equivalente a computar el \( n \)-ésimo sucesor de \( m \).
-
-Utilizando la estructura de \( \bar{n} \) podemos aplicar \( \bar{n}\, \mathrm{sucesor}\, \bar{m} \) para obtener la \( n \)-ésima composición de la función sucesor aplicada al numeral \( \bar{m} \):
-
-\begin{align*}
-             & \bar{n}\, \mathrm{sucesor}\, \bar{m} \\
-\synteq      & (( (λx\, y.x^{n}\, y) \mathrm{sucesor}) (λx\, y.x^{m}\, y)) \\
-\contract{β} & ( (λy.\mathrm{sucesor}^{n}\, y) (λx\, y.x^{m}\, y)) \\
-\contract{β} & \mathrm{sucesor}^{n}\, λx\, y.x^{m}\, y \\
-\reduce{β}   & λx\, y.x^{m+n}\, y \\
-\synteq      & \bar{m+n}
-\end{align*}
-
-Un término lambda para la multiplicación de dos numerales de Church es
-
-\[ λm\, n\, x\, y.n (m\, x) y \]
-
-el cual aborda la idea de componer \( m\, n \) consigo mismo \( n \) veces (lo cual equivaldría a sumar \( n \) veces \( m \).
-
-En el caso de la adición y la multiplicación, el orden en el que aplicamos el término a los numerales no es de importancia ya que son operaciones conmutativas, \( m+n = n+m \) y \( m \times n = n \times m \). Sin embargo en la sustracción y la exponenciación no se tiene esta propiedad, por lo que es importante el orden en el que se aplican los numerales a los términos, para ello consideraremos el orden como \( m-n \) y \( m^{n} \).
-
-Basándonos en el término de la adición podemos obtener un término de la sustracción el cual es
-
-\[ λm\, n\, x\, y.n\, \mathrm{predecesor}\, m \].
-
-Ya que en la adición se dejó explícito el acto de aumentar \( m \) veces en 1 a \( n \), cambiamos el término de \( \mathrm{sucesor} \) por el de \( \mathrm{predecesor} \) y ahora se decrementa \( m \) veces en 1 a \( n \).
-
-Un término lambda para la exponenciación es
-
-\[ λm\, n.n\, m \]
-
-es curioso tener una representación tan sencilla para una operación tan compleja como esta. A diferencia de los anteriores términos, al aplicarle a ésta exponenciación dos numerales, el numeral resultante tendrá las variables compuestas las variables que no se componen en las entradas, es decir, si \( \bar{m} \synteq λf\, g.f^{m}\, g \) y \( \bar{n} \synteq λx\, y.x^{n}\, y \), el resultado será \( \bar{m^{n}} \synteq λg\, y.g^{m^{n}}\, y \).
-
-Para corroborar que estas representaciones calculan de manera correcta la operación correspondiente para los numerales de Church se pueden realizar varias pruebas con diferentes numerales de entrada. En este trabajo no se desarrollarán ejemplos para estos términos.
-
-Los mecanismos que hemos utilizado para derivar las operaciones se basan en construír términos que vayan transformando entradas con una estructura determinada de tal manera que nos acerquemos poco a poco al cálculo de la operación deseada; esta labor llega a ser bastante tediosa y carece de interés algorítmico. A continuación se presenta una manera mas interesante y elegante de abordar el problema de representar operaciones aritméticas.
-
-Se introduce el término lambda que me permite generar hiperoperaciones aritméticas:
-
-\[ λf\, u\, m\, n.n (λw.f\, m\, w) u \]
-
-Abstracción de la noción de repetición sobre la estructura de un numeral, considerar propiedades de conmutatividad y asociatividad en operaciones. Abordar el problema del cómputo de operaciones inversas. Determinar un término que nos genere elementos de la secuencia de hiperoperaciones.
-
-\section{Procesos recursivos}
-
-Combinador Y, ordenes de evaluación, funciones recursivas.
-
-\[ \bs{Y} \synteq λf.(λx.f(x\, x))(λx.f(x\, x)) \]
-
-{\center Derivación de \( \bs{Y} \)}
-\begin{align}
-  F &\synteq λn.\bs{\prec}\, (\bs{0^{?}}\, n) \bar{1} (\bs{\times}\, n (F (\bs{-}\, n\, \bar{1}))) \\
-  F' &\synteq λf\, n.\bs{\prec}\, (\bs{0^{?}}\, n) \bar{1} (\bs{\times}\, n (f (\bs{-}\, n\, \bar{1})))\\
-  F'' &\synteq λf'\, n.\bs{\prec}\, (\bs{0^{?}}\, n) \bar{1} (\bs{\times}\, n (f'\, f' (\bs{-}\, n\, \bar{1}))) \\
-  C &\synteq λf''.f''\, f'' \\
-  C\, F'' &\reduce{β} \text{ función factorial a partir de \( F'' \)} \\
-  F''' &\synteq (λf'''.f' (f'''\, f''')) \\
-  F'''\, F''' &\reduce{β} f'(F'''\, F''') \\
-  C^{*} &\synteq λf'.(λf'''.f' (f'''\, f'''))(λf'''.f' (f'''\, f''')) \\
-  C^{*}\, F' &\reduce{β} \text{ función factorial a partir de \( F' \)}
-\end{align}
-
-\[ Y \synteq C^{*} \]
-
-Presentar una breve introducción sobre los combinadores y hablar del combinador \( \bs{Y} \) y cómo nos permite expresar funciones recursivas en el cálculo lambda.
-
-Como ejemplos prácticos de esta subsección sería adecuado desarrollar el término para el cálculo de factoriales o algúna otra función de una sola variable que transforme un numeral de Church en otro. También pudiera expandir la recursividad a términos multivariables currificados como la función Ackermann (abstracción a la generación de hiperoperaciones, ver \emph{The Book of Numbers} de Conway).
-
-\section{Pares ordenados}
-
-Construcción axiomática de pares ordenados, listas, \( n \)-tuplas, árboles y otras estructuras complejas.
-
-Presentar la representación de pares ordenados para la construcción de estructuras mas complejas.
-
-\[ \mathrm{Car}(\mathrm{Cons}(x,y)) = x \]
-
-\[ \mathrm{Cdr}(\mathrm{Cons}(x,y)) = y \]
-
-Esta sección es apropiada para comenzar a relacionar la teoría de autómatas, lenguajes regulares y libres de contexto con sistemas medianamente complejos que se pueden incrustar en el cálculo lambda sin modificar el sistema. Un problema pudiece ser el no determinismo, pero pudiera solventar esto con el desarrollo de operaciones funcionales sobre listas (map, filter, fold, etc).
-
-\subsection*{Cambios en la metodología}
-
-Expandir el concepto de valores de verdad al de pares ordenados
-
-\subsubsection*{Constructor}
-
-\begin{verbatim}
-CreaPar (primero, segundo) =
-    Elige (x) =
-        Si x, entonces:
-            primero
-        De lo contrario:
-            segundo
-    Elige
-\end{verbatim}
-
-\begin{align*}
-  \otimes & \synteq λa\, d.λx.B\, x\, a\, d \\
-          & \contract{β} λa\, d.λx.x\, a\, d \\
-          & \synteq λa\, d\, x.x\, a\, d
-\end{align*}
-
-\subsubsection*{Selectores}
-
-\begin{verbatim}
-Primero (Elige) =
-    Elige(T)
-\end{verbatim}
-
-\begin{align*}
-  \otimes_{1} & \synteq λx.x\, T
-\end{align*}
-
-\begin{verbatim}
-Segundo (Elige) =
-    Elige(F)
-\end{verbatim}
-
-\begin{align*}
-  \otimes_{2} & \synteq λx.x\, F
-\end{align*}
+\subsection{Reducciones}
+\label{sec:reducciones}
+
+Reducciones basadas en contracciones, de Barendregt
+
+\begin{defn}[Relación compatible]
+  \label{defn:compatible}
+  Si dice que una relación binaria \( \bs{R} \) sobre \( Λ \) es:
+  \begin{enumerate}
+  \item Una \emph{relación compatible} cuando
+    \[ (M,M') \in \bs{R} \implies (Z\, M,Z\, M') \in \bs{R},\ (M\, Z,M'\, Z) \in \bs{R},\ (λx.M,λx.M') \in \bs{R} \]
+    para toda \( M, M', Z \in Λ \).
+  \item Una \emph{relación de congruencia} cuando \( \bs{R} \) es compatible, reflexiva, transitiva y simétrica.
+  \item Una \emph{relación de reducción} cuando \( \bs{R} \) es compatible, reflexiva y transitiva.
+  \end{enumerate}
+  \emph{compatible} cuando
+
+\end{defn}
+
+\begin{note}
+  Una relación \( \bs{R} \subseteq Λ^{2} \) es compatible cuando
+
+  \[ (M,M') \in \bs{R} \implies (C[M],C[M']) \in \bs{R} \]
+
+  para toda \( M, M' \in Λ \) y todo contexto \( C[\quad] \), con un hoyo.
+\end{note}
+
+\begin{defn}
+  \label{defn:nocion-reduccion}
+  Una \emph{noción de reducción} en \( Λ \) es una relación binaria \( \bs{R} \) en \( Λ \).
+\end{defn}
+
+Sean \( \bs{R}_{1} \) y \( \bs{R}_{2} \) nociones de reducción, la relación \( \bs{R}_{1} \cup \bs{R}_{2} \) se denota \( \bs{R}_{1}\bs{R}_{2} \).
+
+
+\begin{defn}[Reducción \( \bs{β} \)]
+  La regla \eqref{teorialambda:beta} en la teoría \( \bs{λ} \) se puede definir como la reducción:
+  
+  \[ \bs{β} = \{ ((λx.M)N,M[x:=N]) : M, N \in Λ \} \]
+\end{defn}
+
+\begin{defn}
+  Sea \( \bs{R} \) una noción de reducción en \( Λ \), \( \bs{R} \) introduce las relaciones binarias:
+
+  \begin{itemize}
+  \item R-reducción en un paso, denotada \( \contract{R} \) y definida de manera inductiva como:
+    \begin{align*}
+      \text{(1)} && (M,N) \in \bs{R} &\implies M \contract{R} N \\
+      \text{(2)} && M \contract{R} N &\implies Z\, M \contract{R} Z\, N \\
+      \text{(3)} && M \contract{R} N &\implies M\, Z \contract{R} N\, Z \\ 
+      \text{(4)} && M \contract{R} N &\implies λx.M \contract{R} λx.N
+    \end{align*}
+  \item R-reducción, denotada \( \reduce{R} \) y definida de manera inductiva como:
+    \begin{align*}
+      \text{(1)} && M \contract{R} N &\implies M \reduce{R} N \\
+      \text{(2)} && M \reduce{R} M \\
+      \text{(3)} && M \reduce{R} N,\ N \reduce{R} L &\implies M \reduce{R} L
+    \end{align*}
+  \item R-convertibilidad, denotada \( \convertible{R} \) y definida de manera inductiva como:
+    \begin{align*}
+      \text{(1)} && M \reduce{R} N &\implies M \convertible{R} N \\
+      \text{(2)} && M \convertible{R} N &\implies N \convertible{R} M \\
+      \text{(3)} && M \convertible{R} N,\ N \convertible{R} L &\implies M \convertible{R} L
+    \end{align*}
+  \end{itemize}
+\end{defn}
+
+\begin{lem}
+  Las relaciones \( \contract{R} \), \( \reduce{R} \) y \( \convertible{R} \) son compatibles. Por lo tanto \( \reduce{R} \) es una relación de reducción y \( \convertible{R} \) es una relación de congruencia.
+\end{lem}
+
+\begin{proof}
+  
+\end{proof}
+
+Usualmente una noción de reducción se introduce de la siguiente manera: ``Sea \( \bs{R} \) definida por las siguientes \emph{reglas de contracción} \ \( \bs{R} \colon M \contract{} N \text{ dado que } ... \)''.
+
+Esto significa que \( \bs{R} = \{ (M,N) : ... \} \), por ejemplo, \( \bs{β} \) pudo haber sido introducida por la siguiente regla de contracción
+
+\[ \bs{β} : (λx.M)N \contract{} M[x:=N] \]
+
+\begin{defn}
+  \begin{enumerate}
+  \item Un \( R \)-redex es un término \( M \) tal que \( (M,N) \in R \) para algún término \( N \). En este caso \( N \) es llamado un \( R \)-contractum de \( M \).
+  \item Un término \( M \) es llamado una forma normal de \( R \), denotado \( R-fn \), si \( M \) no contiene algún \( R \)-redex.
+  \item Un término \( N \) es una \( R-fn \) de \( M \) (o \( M \) tiene la \( R-fn \) \( N \)) si \( N \) es una \( R-fn \) y \( M \convertible{R} N \).
+  \end{enumerate}
+\end{defn}
+
+El proceso de pasar de un redex a su contractum es llamado \emph{contracción}. En lugar de escribir ``\( M \) es una \( R-fn \)'' usualmente se escribe ``\( M \) está en \( R-fn \)'', pensando en una máquina que ha llegado a su estado final.
+
+\begin{exmp}
+  \( (λx.x\, x)λy.y \) es un \( β \)-redex. Por lo tanto \( (λx.x\, x)(λy.y)z \) no está en \( β-fn \); sin embargo este término tiene la \( β-fn \) \( z \).
+\end{exmp}
+
+Plantear las ideas para pasar del concepto de contracción al de reducción y posteriormente al de convertibilidad.
+
+Gráficas de reducción.
+
+Teorema de Church-Rosser y toda la magia necesaria para abordarlo y la magia que valga la pena mencionar en la que CR es importante va aquí.
+
+Probablemente es buena idea separar la sección ``Noción informal del cálculo lambda'' y ``Formalización del cálculo lambda'' en dos capítulos diferentes. ¿Valdrá la pena abordar árboles de Böhm?
 
 
 %%% Local Variables:

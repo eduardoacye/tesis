@@ -1,46 +1,82 @@
-El cálculo lambda es un sistema formal originalmente creado por Alonzo Church en 1932 \cite{Church:FoundationsLogic} con la finalidad de expresar, manipular y estudiar funciones para el desarrollo de los fundamentos de la lógica y las matemáticas \cite[p.~248]{Church:FoundationsLogic}. A lo largo de la historia, este sistema se ha adaptado para el estudio de los fundamentos de la computación y como sustento teórico para el desarrollo de lenguajes de programación.
+El cálculo lambda es un sistema formal originalmente creado por Alonzo Church en 1932 con la finalidad de expresar, manipular y estudiar funciones para el desarrollo de los fundamentos de la lógica y las matemáticas \cite[p.~248]{Church:FoundationsLogic}. A lo largo de la historia, este sistema se ha adaptado para el estudio de los fundamentos de la computación y como sustento teórico para el desarrollo de lenguajes de programación.
 
-Tres características fundamentales del cálculo lambda son el lenguaje utilizado para describir expresiones; la interpretación, representación y manejo de funciones; y las nociones de transformación y equivalencia de expresiones.
+Tres características fundamentales del cálculo lambda son
 
-Este capítulo consiste de dos secciones: primero se introduce informalmente el cálculo lambda, en donde se enfatiza las diferencias conceptuales, operacionales y de notación entre este sistema, la matemática clásica y la lógica de primer orden; en la segunda sección se presenta la formalización del cálculo lambda.
+\begin{itemize}
+\item El lenguaje e interpretación de las expresiones
+\item La manipulación y transformación de expresiones
+\item Las nociones de equivalencia entre expresiones
+\end{itemize}
 
-El contenido de este capítulo está basado en los primeros cuatro capítulos del libro \emph{The Lambda Calculus, Its Syntax and Semantics} por H.P. Barendregt \cite{Barendregt:Bible} y los capítulos 1, 3, 6, 7 y 8 del libro \emph{Lambda Calculus and Combinators, an Introduction} por J.R. Hindley y J.P. Seldin \cite{HindleySeldin:LambdaCalculusAndCombinators}.
+En este capítulo se describen estas tres características del cálculo lambda de manera informal, enfatizando las diferencias sintácticas, conceptuales y operacionales entre este sistema, la matemática clásica y la lógica de primer orden.
 
-\section{Noción informal del cálculo lambda}
-\label{sec:informal}
+El contenido de este capítulo está basado en los primeros dos capítulos del libro \emph{The Lambda Calculus, Its Syntax and Semantics} por H.P. Barendregt \cite{Barendregt:Bible}; los capítulos 1 y 3 del libro \emph{Lambda Calculus and Combinators, an Introduction} por J.R. Hindley y J.P. Seldin \cite{HindleySeldin:LambdaCalculusAndCombinators}; y la monografía titulada \emph{The Calculi of Lambda-Conversion} por Alonzo Church \cite{Church:LambdaConversion}.
 
-En el estudio del cálculo lambda existen dos lenguajes, el de las expresiones del sistema y el que se utiliza para describir y analizar estas expresiones, llamado metalenguaje.
+En el estudio del cálculo lambda existen dos \emph{lenguajes}
 
-El lenguaje de las expresiones es un \emph{lenguaje formal} que especifica las secuencias de símbolos que representan expresiones válidas del cálculo lambda, se relaciona con las clases de objetos del sistema que son válidos manipular, comparar y representar. Por otro lado, el metalenguaje permite describir \emph{cómo} es que estas expresiones son manipuladas y comparadas, así como los mecanismos para representar conceptos y objetos matemáticos como expresiones.
+\begin{itemize}
+\item El lenguaje de las expresiones del sistema
+\item El \emph{metalenguaje} que describe al cálculo lambda
+\end{itemize}
 
-\subsection{Expresiones}
+El lenguaje de las expresiones es un \emph{lenguaje formal} que especifica las secuencias de símbolos que representan expresiones válidas del cálculo lambda, se relaciona con las clases de objetos del sistema que son válidos manipular, comparar y representar. Por otro lado, el metalenguaje es un lenguaje informal que permite describir \emph{cómo} es que estas expresiones son manipuladas y analizadas, así como los mecanismos para representar conceptos y objetos matemáticos como expresiones.
+
+\section{Expresiones}
 \label{sec:expresiones}
 
-Existen tres clases de expresiones en el cálculo lambda: \emph{átomos}, \emph{abstracciones} y \emph{aplicaciones}.
+Existen tres clases de expresiones en el cálculo lambda: los \emph{átomos}, las \emph{abstracciones} y las \emph{aplicaciones}.
 
-Las expresiones más simples son los átomos, usualmente representados con un símbolo como \( x \), \( y \) o \( z \). Estas expresiones también son llamadas variables y al igual que en la matemática clásica y la lógica de primer orden, no tienen mucha importancia por sí solas, pero al estar asociadas a cuantificadores (\( \forall x \) y \( \exists x \)) o a funciones (\( f(x) \)) pueden representar valores complejos.
+\subsection{Átomos}
+\label{sec:atomos}
 
-Las abstracciones y aplicaciones son expresiones con estructura, es posible identificar y referirse a sus partes. Estos son complementarias: las abstracciones representan la generalización de una expresión y se asocian al concepto de \emph{función}, mientras que las aplicaciones representan el acto de concretar una expresión y se asocian al concepto de \emph{aplicación de funciones}.
+Las expresiones más simples son los \emph{átomos}, estos son objetos sintácticos usualmente representados con un símbolo como \( x \), \( y \) o \( z \). Los átomos son la representación simbólica de las variables \cite[p.~577]{Barendregt:Bible}.
+
+Cuando se tiene una expresión que se conforma de varias \( x \) se refiere al símbolo como ``el átomo \( x \)'', sin embargo es posible tener diferentes variables representadas con el mismo símbolo en la expresión y para referirse a una de ellas en particular se debe especificar en que parte de la expresión se encuentra la variable \( x \) a la que se hace referencia.
+
+Al igual que en la matemática clásica y en la lógica de primer orden, las variables más relevantes son las que se \emph{cuantifican}, por ejemplo en el estudio de funciones, la \( x \) en \( f(x) = M \) y en el estudio de enunciados lógicos, la \( y \) en \( \forall y\ M \) o \( \exists y\ M \).
+
+En matemáticas y en computación es usual \emph{nombrar} valores, por ejemplo, declarar que \( x = 8 \) y expresar a \( x \) en diferentes contextos que no necesariamente son expresiones lógicas y funciones. En el cálculo lambda, los nombres son parte del metalenguaje y no del lenguaje de las expresiones.
+
+\subsection{Abstracciones}
+\label{sec:abstracciones}
+
+Las abstracciones son expresiones con \emph{estructura}, es decir, se conforman de \emph{partes} identificables. Las expresiones que son abstracciones representan la generalización de una expresión y son usualmente asociadas al concepto de \emph{función}.
 
 La definición de función en la matemática clásica es el de una relación entre un conjunto de entradas, llamado \emph{dominio} y un conjunto de salidas, llamado \emph{codominio}. Esta relación tiene además la propiedad de que cada elemento del dominio se asocia exactamente con un elemento del codominio, formalmente, sean \( A \) y \( B \) dos conjuntos, una función \( f \) con dominio \( A \) y codominio \( B \) es un subconjunto del producto cartesiano \( A \times B \), tal que para toda \( a \in A \), existe \( b \in B \) tal que \( (a,\ b) \in f \) y si \( (a,\ b^{\prime}) \in f \) con \( b^{\prime} \in B \), entonces \( b=b^{\prime} \).
 
 Las funciones tienen varias maneras de ser representadas. En la definición anterior la representación es la de pares ordenados, en donde la primer componente del par es un elemento en el dominio y la segunda es un elemento en el codominio. Dependiendo del uso que se le dá a las funciones, puede ser conveniente representarlas simbólicamente con expresiones, gráficamente con dibujos, numéricamente con tablas o incluso verbalmente con palabras.
 
-Las abstracciones en el cálculo lambda son representadas simbólicamente con un átomo y con otra expresión, se escriben de la forma \( (λx.M) \) donde \( x \) es algún átomo llamado variable enlazada o argumento y \( M \) es alguna expresión ya sea otra abstracción, una aplicación o un átomo a la cual llamamos cuerpo de la abstracción.
+Las abstracciones en el cálculo lambda son representadas simbólicamente con un átomo y con otra expresión, se escriben de la forma \( (λx.M) \) donde \( x \) es algún átomo llamado variable enlazada o argumento y \( M \) es alguna expresión ya sea otra abstracción, una aplicación o un átomo a la cual llamamos cuerpo de la abstracción. Un ejemplo de abstracción es \( (λy.y) \) en donde el argumento y cuerpo de la abstracción son el átomo \( y \).
 
-Debido a la notación utilizada puede parecer que las abstracciones se relacionan directamente con las funciones \( f(x)=M \) o con fórmulas lógicas \( \forall x\ M \). Sin embargo, tanto las expresiones de funciones como las fórmulas lógicas están basadas en conjuntos y en operaciones sobre estos conjuntos, en contraste con el cálculo lambda, por definición no existen conjuntos, números, valores de verdad ni cuantificadores lógicos en el lenguaje.
+Además de la semejanza sintáctica con las funciones y las expresiones lógicas cuantificadas, las abstracciones proveen el mecanismo para asociarle un valor a una variable. Sin embargo, tanto las expresiones de funciones como las fórmulas lógicas están basadas en conjuntos y en operaciones sobre conjuntos: \( f(x)=M \) asocia a \( x \) un valor en el dominio de \( f \) en \( M \) y \( \exists x\ M \) asocia a \( x \) valores en el dominio del discurso en el enunciado \( M \). En contraste con el cálculo lambda, por definición no existen conjuntos, números, valores de verdad, ni cuantificadores lógicos en el lenguaje.
 
-Es posible utilizar la definición de función para \emph{describir} operaciones y transformaciones de expresiones en el cálculo lambda, o utilizar lógica de primer orden para aseverar verdades en el sistema, o cuantificar propiedades de las expresiones utilizando números, sin embargo estos objetos matemáticos no están incrustados en el lenguaje de las expresiones y conforman lo que es el metalenguaje.
+Es posible utilizar la definición de función para \emph{describir} operaciones y transformaciones de expresiones en el cálculo lambda, o utilizar lógica de primer orden para aseverar verdades en el sistema, o utilizar aritmética para cuantificar propiedades de las expresiones del cálculo lambda, sin embargo estos objetos matemáticos no están incrustados en el lenguaje de las expresiones y conforman lo que es el \emph{metalenguaje}.
 
-Las aplicaciones son expresiones conformadas a partir de otras dos expresiones, se escriben de la forma \( (M\, N) \) donde \( M \) y \( N \) son cualesquiera átomos, abstracciones o aplicaciones. El concepto relacionado con las aplicaciones en la matemática clásica es el del acto de obtener un elemento del codominio de una función a partir de un elemento en su dominio, por ejemplo, considerando la función \( f(x)=x^{2} \), la aplicación de \( f \) en \( 4 \) es \( f(4) \).  La notación del cálculo lambda es similar a la notación tradicional \( f(x) \), solo que con el paréntesis abierto antes de la función, es decir, \( (f\, x) \). De manera similar a la aplicación de funciones, existe una operación la cual permite transformar expresiones de la forma \( (M\, N) \) donde \( N \) es cualquier expresión y \( M \) es una abstracción, a otra expresión \( Z \) similar al cuerpo de \( M \) pero con el argumento de \( M \) intercambiado por \( N \).
+
+\subsection{Aplicaciones}
+\label{sec:aplicaciones}
+
+Las aplicaciones, al igual que las abstracciones, son expresiones con estructura. Se conforman por otras dos expresiones y se escriben de la forma \( (M\, N) \) donde \( M \) y \( N \) son cualesquiera átomos, abstracciones o aplicaciones. Este tipo de expresiones son de cierta manera complementarias a las abstracciones ya que representan un potencial acto de concretar una expresión.
+
+El concepto relacionado con las aplicaciones en la matemática clásica es el de \emph{aplicación de funciones}, sin embargo, en el cálculo lambda se hace una distinción entre la expresión sintáctica de una aplicación y el acto de ``evaluar'' una aplicación.
+
+En el estudio de funciones, la aplicación de una función \( f \) en \( x \) se denota \( f(x) \) y es considerada igual al resultado de obtener el elemento del codominio de \( f \) a partir del valor de \( x \). Por ejemplo, considerando la función \( f(x)=x^{2} \), la expresión sintáctica de la aplicación de esta función a 8 es \( f(8) \), mientras que el valor de la evaluación de esta aplicación es 64. La notación de una abstracción del cálculo lambda es similar a la notación de aplicación de funciones, pero con el paréntesis abierto antes del nombre de la función, es decir, \( (f\, x) \) en lugar de \( f(x) \).
+
+En el cálculo lambda, el concepto relacionado con la evaluación de funciones es el de \emph{reducción} de expresiones. En particular cuando se tiene la aplicación de una abstracción \( (λx.M) \) en algúna expresión \( N \), se dice que \( ((λx.M) N) \) se \emph{reduce} a una expresión \( Z \) la cual es similar a \( M \) solo que con \( x \) cambiada por \( N \). En la evaluación de funciones, el procedimiento es parecido, por ejemplo \( f(3) \) donde \( f = 2x^{2}+x-8 \), se evalúa sustituyendo las \( x \) de \( 2x^{2}+x-8 \) por 3, obteniendo así la expresión aritmética \( 2(3)^{2}+3-8 \), la cual puede ser operada para obtener el resultado 13.
 
 Las abstracciones y aplicaciones del cálculo lambda son en algunos aspectos más restrictivos que las funciones y la aplicación de funciones. La función considera dos conjuntos cualquiera y no importa que propiedades tengan sus elementos o que operaciones se pueden realizar sobre ellos. Por otro lado, las abstracciones y aplicaciones sólo pueden ser descritas a partir de otras expresiones del cálculo lambda.
 
-Cuando se desea representar alguna función en el cálculo lambda, se deben \emph{codificar} como expresiones del lenguaje los elementos del dominio y el codominio de la función, así como las operaciones entre elementos de ambos conjuntos. Por ejemplo, para representar la función \( f \colon \mathbb{N} \to \mathbb{N} \) dada por \( f(x)=x^{2} \) primero se deben codificar los números naturales con expresiones del cálculo lambda, esta codificación debe ser acompañada de la codificación de las operaciones aritméticas elementales como la suma y resta así como de los predicados sobre números naturales como discriminar entre el mayor de dos números o si un número es cero; posteriormente se debe expresar la operación de exponenciación de cualquier número natural como base y el número \( 2 \) como exponente.
+\subsection{Extensiones}
+\label{sec:extensiones}
 
-El hecho de tener un lenguaje tan reducido y minimalista para las expresiones del cálculo lambda nos permite entender con detalle y precisión todos los procesos de manipulación y transformación de expresiones y siendo que todo lo que se representa con el cálculo lambda debe ser codificado como expresiones, los objetos representados pueden ser entendidos de la misma manera.
+Cuando se desea representar en el cálculo lambda alguna función, se deben \emph{codificar} como expresiones del lenguaje los elementos del dominio y el codominio de la función, así como las operaciones entre elementos de ambos conjuntos. Por ejemplo, para representar la función \( f \colon \mathbb{N} \to \mathbb{N} \) dada por \( f(x)=x^{2} \) primero se deben codificar los números naturales con expresiones del cálculo lambda, esta codificación debe ser acompañada de la codificación de las operaciones aritméticas elementales como la suma y resta así como de los predicados sobre números naturales como discriminar entre el mayor de dos números o si un número es cero; posteriormente se debe expresar la operación de exponenciación de cualquier número natural como base y el número \( 2 \) como exponente. La codificación es similar a la implementación de algoritmos y estructuras de datos en lenguajes de programación.
 
-Con solo átomos, aplicaciones y abstracciones se pueden formular expresiones complejas. A continuación se presentan seis ejemplos de expresiones y se describen diferentes maneras en las cuales estas se pueden componer para formar otras expresiones más complejas.
+El hecho de tener un lenguaje tan reducido y minimalista para las expresiones del cálculo lambda nos obliga a entender con detalle y precisión todos los procesos de manipulación y transformación de expresiones y siendo que todo lo que se representa con el cálculo lambda debe ser codificado como expresiones, los objetos representados pueden ser entendidos de la misma manera.
+
+\subsection{Ejemplos}
+\label{sec:ejemplos}
+
+Con solo átomos, aplicaciones y abstracciones se pueden formular expresiones complejas. A continuación se presentan seis ejemplos de expresiones del cálculo lambda y se describen diferentes maneras en las cuales estas se pueden componer para formar otras expresiones más complejas.
 
 \begin{exmp}
   Algunas expresiones del cálculo lambda
@@ -66,10 +102,10 @@ Con solo átomos, aplicaciones y abstracciones se pueden formular expresiones co
 
 Los átomos por si solos son expresiones válidas, en el inciso \eqref{eq:expresiones:a} aparece el átomo \( x \), como tal no tiene mucha utilidad, no podemos decir que toma valores en algún conjunto o que representa algún valor en particular como falso o verdadero, es tan sólo un símbolo. Al ser parte de otra expresión, un átomo puede tener más relevancia, en el inciso \eqref{eq:expresiones:b} el átomo \( x \) es el cuerpo de la abstracción \( (λx.x) \) y ahora tiene el potencial de ser cambiado por cualquier otra expresión debido a que también es el argumento.
 
-En el inciso \eqref{eq:expresiones:c} se tiene la aplicación del átomo \( y \) en la abstracción del inciso \eqref{eq:expresiones:b}. A pesar de ser contraintuitivo, las expresiones de aplicación se componen de dos expresiones cualesquiera, por lo tanto, a pesar de estar asociada conceptualmente con la aplicación de funciones, la expresión \( (y (λx.x)) \) es válida. La expresión del inciso \eqref{eq:expresiones:d} contiene la expresión anterior en una abstracción en la primer parte de la aplicación y nos permite observar dos ideas importantes: primero, las abstracciones pueden ser aplicadas a abstracciones; segundo, al realizar la operación de aplicar \( (λy.(y(λx.x))) \) a \( (λw.w) \), el átomo \( y \) es intercambiado por la expresión \( (λw.w) \) la cual a su vez puede ser aplicada a la expresión \( (λx.x) \).
+En el inciso \eqref{eq:expresiones:c} se tiene la aplicación del átomo \( y \) en la abstracción del inciso \eqref{eq:expresiones:b}. A pesar de ser contraintuitivo, las expresiones de aplicación se componen de dos expresiones cualesquiera, por lo tanto, a pesar de estar asociada conceptualmente con la aplicación de funciones, la expresión \( (y (λx.x)) \) es válida. La expresión del inciso \eqref{eq:expresiones:d} contiene la expresión anterior en una abstracción en la primer parte de la aplicación y nos permite observar dos ideas importantes: primero, las abstracciones pueden ser aplicadas a abstracciones; segundo, al reducir la aplicación de \( (λy.(y(λx.x))) \) a \( (λw.w) \), el átomo \( y \) es cambiado por la expresión \( (λw.w) \), el resultado puede ser reducido nuevamente para obtener la expresión \( (λx.x) \).
 
 \begin{exmp}
-  Procedimiento de aplicar \( (λy.(y (λx.x))) \) en \( (λw.w) \)
+  Procedimiento de reducir la aplicación de \( (λy.(y (λx.x))) \) en \( (λw.w) \)
   \label{exmp:aplicacion}
   \begin{align*}
     \text{1. } & ((λy.(y (λx.x)))(λw.w)) & \text{expresión del inciso \eqref{eq:expresiones:d}} \\
@@ -78,25 +114,25 @@ En el inciso \eqref{eq:expresiones:c} se tiene la aplicación del átomo \( y \)
   \end{align*}
 \end{exmp}
 
-En el inciso \eqref{eq:expresiones:e} se presenta una abstracción cuyo cuerpo es la aplicación de su argumento sobre sí mismo. Lo interesante de esta expresión es que es que encapsula la idea de replicar a partir de la aplicación cualquier expresión a la que sea aplicada. Por ejemplo, si aplicamos \( (λx.(x\, x)) \) al átomo \( y \) y se realiza el procedimiento de aplicación como en el ejemplo \ref{exmp:aplicacion}, se obtiene \( (y\, y) \) y en general al realizar la operación de aplicación sobre \( ((λx.(x\, x))M) \) donde \( M \) es cualquier expresión, se obtiene \( (M\, M) \). Con ésta expresión se puede formular una expresión auto-replicante en el cálculo lambda:
+En el inciso \eqref{eq:expresiones:e} se presenta una abstracción cuyo cuerpo es la aplicación de su argumento sobre sí mismo. Lo interesante de esta expresión es que es que encapsula la idea de replicar cualquier expresión a la que sea aplicada. Por ejemplo, si aplicamos \( (λx.(x\, x)) \) al átomo \( y \) y se realiza el procedimiento de reducción como en el ejemplo \ref{exmp:aplicacion}, se obtiene \( (y\, y) \) y en general al realizar la reducción de \( ((λx.(x\, x))M) \) donde \( M \) es cualquier expresión, se obtiene \( (M\, M) \). Con esta expresión se puede formular una expresión auto-replicante en el cálculo lambda:
 
 \begin{exmp}
-  Procedimiento de aplicar \( (λx.(x\, x)) \) a \( (λx.(x\, x)) \)
+  Procedimiento de reducir la aplicación de \( (λx.(x\, x)) \) en \( (λx.(x\, x)) \)
   \label{exmp:aplicacion2}
   \begin{align*}
     \text{1. } & ((λx.(x\, x))(λx.(x\, x))) & \text{expresión del inciso \eqref{eq:expresiones:e} aplicada a sí misma} \\
-    \intertext{\centering En \( (x\, x) \) se cambia cada \( x \) por \( (λx.(x\, x)) \)}
-    \text{2. } & ((λx.(x\, x))(λx.(x\, x))) & \text{resultado del procedimiento.}
+    \intertext{En \( (x\, x) \) de la expresión izquierda se cambia cada \( x \) por \( (λx.(x\, x)) \)}
+    \text{2. } & ((λx.(x\, x))(λx.(x\, x))) & \text{resultado de la reducción.}
   \end{align*}
 \end{exmp}
 
 A este tipo de expresiones se les llaman ``quines'' \cite[pp.~431--437]{Hofstadter:GEB} término originalmente asociado a una paradoja sobre sistemas lógicos \cite{Quine:Paradox}. En la actualidad, el término ``quine'' hace referencia a un programa cuya \emph{salida} es el programa mismo.
 
-En el inciso \eqref{eq:expresiones:f} se tiene una abstracción cuyo cuerpo es otra abstracción. El concepto interesante que ilustra esta expresión es el de la representación de funciones de varias variables. Al realizar la operación de abstracción de \( (λf.(λx.(f(f\, x)))) \) a una expresión cualquiera \( M \) se obtiene \( (λx.(M(M\, x))) \). Si posteriormente se realiza la aplicación de este resultado a una expresión cualquiera \( N \) se obtiene \( (M(M\, N)) \), esto sería similar al resultado que se obtendría de aplicar una función con argumentos \( f \) y \( x \), con cuerpo \( f(f(x)) \) a dos valores de su dominio \( M \) y \( N \).
+En el inciso \eqref{eq:expresiones:f} se tiene una abstracción cuyo cuerpo es otra abstracción. El concepto interesante que ilustra esta expresión es el de representación de abstracciones de varias variables. Al reducir la aplicación de \( (λf.(λx.(f(f\, x)))) \) en una expresión cualquiera \( M \), se obtiene \( (λx.(M(M\, x))) \). Si posteriormente se reduce la aplicación de este resultado a una expresión cualquiera \( N \) se obtiene \( (M(M\, N)) \). El resultado final es similar al resultado que se obtendría al evaluar en \( M \) y \( N \) una función \( g(f,x) = f(f(x)) \), es decir, \( g(M,N) = M(M(N)) \).
 
-Otra manera de representar funciones de varias variables como abstracciones del cálculo lambda es codificando \emph{tuplas} o \emph{secuencias} y poder hacer referencia a sus elementos de manera individual en el sistema, sin embargo, representar secuencias es un mecanismo más complejo que se aborda en el siguiente capítulo.
+Una manera de codificar funciones de varias variables como abstracciones del cálculo lambda es codificar a \emph{tuplas} o \emph{secuencias} y poder hacer referencia a sus elementos de manera individual, sin embargo, representar secuencias es un procedimiento más complejo que se aborda en la sección \ref{sec:pares-ordenados}.
 
-\subsection{Operaciones}
+\section{Operaciones}
 \label{sec:operaciones}
 
 En el cálculo lambda se pueden realizar algunas operaciones para transformar expresiones, estas operaciones son parte del metalenguaje y consisten de una serie de cambios mecánicos a la estructura de las expresiones de acuerdo a un criterio particular.
@@ -106,7 +142,6 @@ En la subsección anterior se mencionan dos operaciones que se abordaron tangenc
 La \emph{sustitución} es la operación que nos permite transformar una expresión cualquiera \( M \) intercambiando las apariciones de un átomo \( x \) por alguna otra expresión \( M \), este procedimiento se denota
 
 \[ \subst{M}{x}{N} \]
-
 
 En muchos casos la operación de sustitución se puede realizar de manera trivial: \\
 
@@ -230,7 +265,7 @@ A continuación se presentan ejemplos de aplicación de abstracciones con los pa
 
 El cálculo lambda es un sistema maleable y se permite definir operaciones arbitrarias sobre expresiones para estudiar como el sistema se comporta en diferentes contextos, por ejemplo, se puede considerar una operación similar a la sustitución que permite introducir referencias a una o más \( λ \) en una expresión, sin embargo, el presente trabajo está constituido para entender plenamente las ideas centrales del cálculo lambda haciendo solamente uso de las operaciones de \emph{sustitución}, \emph{cambio de variable ligada} y \emph{aplicación de abstracciones}.
 
-\subsection{Equivalencias}
+\section{Equivalencias}
 \label{sec:equivalencias}
 
 El cálculo lambda se considera formalmente como una \emph{teoría ecuacional}, esto significa que los axiomas del sistema formal son ecuaciones que relacionan expresiones del lenguaje. Esto hace que el concepto de \emph{equivalencia} de expresiones sea de suma importancia.
@@ -402,863 +437,6 @@ Por ejemplo, se pueden considerar dos abstracciones diferentes \( (λx.M) \) y \
 \[ (M\, P) \sim (N\, P) \implies M \sim N \]
 
 Con esto se termina la introducción informal al cálculo lambda, las ideas que se han manejado en esta sección serán ahora formalizadas y definidas de manera rigurosa.
-
-\section{Formalización del cálculo lambda}
-\label{sec:formalizacion}
-
-La teoría del cálculo lambda se puede formalizar de diferentes perspectivas, en este trabajo se abordan dos: a partir de la \emph{reducibilidad y convertibilidad} de expresiones y a partir de \emph{sistemas formales}. La primera consiste en definir transformaciones de expresiones mediante procedimientos, mientras que la segunda define axiomas y reglas de inferencia.
-
-Independientemente de la perspectiva de la formalización, los conceptos son los mismos y las definiciones equivalentes. En ambos casos se formaliza la teoría \( \bs{λ} \), también llamado cálculo-\( λ K β \).
-
-De acuerdo a Barendregt \cite[p.~22]{Barendregt:Bible}, el objeto de estudio principal de la teoría \( \bs{λ} \) es el conjunto de términos lambda módulo convertibilidad, estas nociones serán presentadas en las siguientes subsecciones.
-
-\subsection{Términos lambda}
-\label{sec:terminos-lambda}
-
-Esta subsección está basada principalmente en el capítulo 2 de \cite{Barendregt:Bible}.
-
-Los \emph{términos lambda} son las \emph{fórmulas bien formadas} del cálculo lambda, es decir, las expresiones válidas del sistema. El conjunto de todos los términos lambda es un lenguaje formal, denotado como \( Λ \).
-
-El lenguaje \( Λ \) se puede definir de diferentes maneras, a continuación se presenta una definición inductiva y posteriormente una construcción a partir de una gramática libre de contexto.
-
-\begin{defn}[Términos lambda]
-  El conjunto \( Λ \) tiene elementos que son cadenas conformadas por símbolos en el alfabeto \( Σ=\{\mathtt{(},\ \mathtt{)},\ \mathtt{.},\ λ\} \cup V \), donde \( V \) es un conjunto infinito \( \{v_{0},\ v_{00},\ ... \} \) de variables. \( Λ \) es el conjunto más pequeño que satisface:
-  \label{defn:terminos}
-  \begin{subequations}
-    \begin{align}
-      \label{terminos:atomos} \tag{a}
-      x \in V & \implies x \in Λ \\
-      \label{terminos:abstracciones} \tag{b}
-      M \in Λ,\ x \in V & \implies (λx.M) \in Λ \\
-      \label{terminos:aplicaciones} \tag{c}
-      M,\ N \in Λ & \implies (M\, N) \in Λ
-    \end{align}
-  \end{subequations}
-\end{defn}
-
-Cada una de estas tres reglas corresponde a las tres clases de términos lambda: la regla \eqref{terminos:atomos} define a todos los elementos de \( V \) como términos lambda, a estas variables se les llama \emph{átomos}; la regla \eqref{terminos:abstracciones} define a las cadenas de la forma \( (λx.M) \) (donde \( x \) es un átomo y \( M \) es un término lambda) como términos lambda, a estos términos se les llama \emph{abstracciones}; la regla \eqref{terminos:aplicaciones} define a las cadenas de la forma \( (M\, N) \) (donde \( M \) y \( N \) son términos lambda) como términos lambda, a estos términos se les llama \emph{aplicaciones}.
-
-Una definición alternativa de \( Λ \) es haciendo uso de gramáticas libres de contexto:
-
-\begin{defn}[Términos lambda]
-  El conjunto de términos lambda es el lenguaje generado por la gramática libre de contexto \( G \) con categorías sintácticas \( T \) (términos lambda), \( E \) (aplicaciones), \( F \) (abstracciones) y \( A \) (átomos); símbolos terminales \( \{\mathtt{(},\ \mathtt{)},\ \mathtt{.},\ λ,\ v,\ {}_{0}\} \); símbolo inicial \( T \) y con las siguientes reglas de producción:
-  \label{terminos-cfg}
-  \begin{subequations}
-    \begin{align}
-      \label{terminos-cfg:terminos} \tag{a}
-      T & \rightarrow E\ \mid\ F\ \mid\ A \\
-      \label{terminos-cfg:atomos} \tag{b}
-      A & \rightarrow \mathtt{v}_{0}\ \mid\ A {}_{0} \\
-      \label{terminos-cfg:abstracciones} \tag{c}
-      F & \rightarrow \mathtt{(} λ\ A\ \mathtt{.}\ T\ \mathtt{)} \\
-      \label{terminos-cfg:aplicaciones} \tag{d}
-      E & \rightarrow \mathtt{(}\ T\ T\ \mathtt{)}
-    \end{align}
-  \end{subequations}
-\end{defn}
-
-Para facilitar la escritura y lectura de los términos lambda, en este trabajo se hacen las siguientes consideraciones sobre la notación:
-
-\begin{itemize}
-\item Cuando se hace referencia a cualquier término lambda se utilizan las letras mayúsculas \( M \), \( N \), \( P \), etc. Es importante establecer que si en un ejemplo, explicación, teorema o demostración se hace referencia a un término lambda con una letra mayúscula, cualquier otra aparición de esta letra hace referencia a este mismo término dentro de ese contexto.
-\item Cuando se hace referencia a cualquier átomo se utilizan las letras minúsculas \( x \), \( y \), \( z \), etc. Al igual que en el punto anterior, la aparición de una letra minúscula en un ejemplo, explicación, teorema o demostración hace referencia al mismo átomo.
-\item Los paréntesis son omitidos de acuerdo a las siguientes equivalencias sintácticas:
-  \begin{itemize}
-  \item \( ((M\, N) P) \synteq M\, N\, P\), en general, se considera la aplicación de términos lambda con asociación a la izquierda. Se tiene que tener cuidado con respetar esta regla, por ejemplo \( (M(N(O\, P))) \synteq M(N(O\, P)) \not\synteq M\, N\, O\, P \).
-  \item \( (λx.(M N)) \synteq λx.(M N) \), en general, se puede escribir una abstracción omitiendo los paréntesis externos. Es importante escribir de manera explícita los paréntesis en algunos casos, por ejemplo \( ((λx.(M\, N)) O) \synteq (λx.(M\, N)) O \not\synteq λx.(M\, N)O \) ya que el lado derecho de la equivalencia es sintácticamente equivalente a \( (λx.((M\, N)O)) \).
-  \item \( (λx.(λy.(λz.M))) \synteq (λx\, y\, z.M) \), en general, si el cuerpo de una abstracción es también una abstracción, se pueden agrupar las variables ligadas y enlazadas. Éste abuso de notación es consistente con la reducción de funciones de varias variables usada por Schönfinkel \cite{Schonfinkel:Varargs}.
-  \end{itemize}
-\item El símbolo \( \synteq \) denota la equivalencia sintáctica entre dos términos lambda.
-\end{itemize}
-
-A continuación se muestran ejemplos de términos lambda asociados a términos sintácticamente equivalentes pero escritos con abuso de notación:
-
-\begin{exmp}
-  \label{exmp:notacion}
-  \begin{align*}
-    (((x\, y)z) (y\, x)) & \synteq x\, y\, z (y\, x) \\
-    (λx.((u\, x)y)) & \synteq λx.u\, x\, y \\
-    (λy.(u(λx.y))) & \synteq λy.u(λx.y) \\
-    (((λy.((v\, u)u))z)y) & \synteq (λy.v\, u\, u) z\, y \\
-    (((u\, x)(y\, z))(λv.(v\, y))) & \synteq u\, x(y\, z)(λv.v\, y) \\
-    ((((λx.(λy.(λz.((x\, z) (y\, z))))) u) v) w) & \synteq (λx\, y\, z.x\, z(y\, z)) u\, v\, w
-  \end{align*}
-\end{exmp}
-
-Para hacer referencia a una secuencia con una cantidad arbitraria de términos lambda se usa la notación \( \vec{x}=x_{1},...,x_{n} \) cuando es secuencia de átomos y \( \vec{M}=M_{1},...,M_{n} \) cuando es secuencia de términos lambda en general. Con esta notación se puede abreviar
-
-\[ λ\vec{x}.M \synteq λx_{1}\, x_{2}\, ...\, x_{n}.M \]
-
-\[ M \vec{N} \synteq M\, N_{1}\, N_{2}\, ...\, N_{n} \]
-
-En algunas demostraciones realizadas por inducción, se usa la expresión ``inducción sobre \( M \)'' para referirse a la inducción sobre la \emph{longitud} de \( M \).
-
-\begin{defn}[Longitud]
-  La longitud de un término lambda, denotado como \( \| M \| \), es la cantidad de apariciones de átomos en el término lambda, se determina a partir de la estructura del término lambda como:
-  \label{defn:longitud}
-  \begin{align*}
-    \|x\| & = 1 \\
-    \|M\, N\| & = \|M\| + \|N\| \\
-    \|λx.M\| & = 1 + \|M\|
-  \end{align*}
-\end{defn}
-
-Por ejemplo, la longitud del término lambda \( x(λy.y\, u\, x) \) es \( 5 \).
-
-Una cuestión importante al momento de demostrar un teorema o definir un concepto por inducción sobre un término lambda es que usualmente la inducción matemática relaciona proposiciones con números naturales. Sin embargo es posible tener dos términos diferentes \( M \) y \( N \) tal que \( \|M\| = \|N\| \), por ejemplo \( λx.x \) y \( z\, z \) tienen longitud \( 2 \). La inducción sobre la longitud de un término lambda considera la estructura del término, de tal manera que para una proposición \( P \) sobre un término lambda \( M \), los casos base de la inducción son aquellos en donde la estructura no es compuesta (en átomos cuya longitud siempre es \( 1 \)) y la hipótesis de inducción considera que \( P \) se cumple para los subtérminos de \( M \) cuya longitud siempre es estrictamente menor que \( \|M\| \).
-
-El concepto de aparición de un término lambda en otro se formaliza a partir del concepto de subtérmino:
-
-\begin{defn}[Subtérmino]
-  \( M \) es un subtérmino de \( N \), denotado \( M \subset N \) si \( M \in \Sub(N) \) es la colección de subtérminos de \( N \) definida de manera inductiva como
-  \label{defn:subtermino}
-  \begin{align*}
-    \Sub(x) & = \{ x \} \\
-    \Sub(λx.M) & = \Sub(M) \cup \{ λx.M \} \\
-    \Sub(M\, N) & = \Sub(M) \cup \Sub(N) \cup \{ M\, N \}
-  \end{align*}
-\end{defn}
-
-\begin{defn}[Aparición]
-  La aparición de \( M \) en \( N \) implica que \( M \subset N \) o que \( M \) es \emph{el} átomo del argumento de una abstracción en \( N \).
-  \label{defn:aparicion}
-\end{defn}
-
-Un subtérmino \( N \) de \( M \) puede aparecer varias veces en \( M \), cuando dos subtérminos \( N_{1} \) y \( N_{2} \) de \( M \) no tienen apariciones de átomos en común, se dice que son \emph{disjuntas}. Cuando \( N \) es subtérmino de \( M \) se le llama \emph{activo} si aparece en una aplicación de la forma \( N\, Z \), de lo contrario, se le llama \emph{pasivo}.
-
-Cuando \( λx.M \) es un subtérmino de \( P \), se dice que la aparición \( M \) es el \emph{alcance} de la aparición del átomo \( x \) que acompaña a la \( λ \).
-
-\begin{exmp}
-  Sea \( M \synteq λx.x\, y (λz.y) \):
-  \label{exmp:subterminos-apariciones}
-  \begin{itemize}
-  \item el término \( x\, y \subset M \);
-  \item el átomo \( z \not\subset M \) pero si aparece en \( M \), debido a que \( z \) acompaña a \( λ \);
-  \item el término \( y(λz.y) \) a pesar de parecer ser un subtérmino de \( M \) no lo es, esto se puede corroborar escribiendo los términos sin el abuso de notación: \( y(λz.y) \synteq (y(λz.y)) \) y \( M \synteq λx.x y(λz.y) \synteq (λx.((x\, y)(λz.y))) \), en este caso, la clave está en observar la estructura de la aplicación \( x\, y(λz.y) \).
-  \item Las apariciones de \( x \) y \( λz.y \) en \( M \) son disjuntas.
-  \item Los términos \( x \) y \( (x\, y) \) son subtérminos activos de \( M \), mientras que \( y \) y \( λz.y \) son subtérminos pasivos.
-  \end{itemize}
-\end{exmp}
-
-Las variables de un término lambda se pueden clasificar de diferentes maneras de acuerdo a la posición que tienen en el término y a los subtérminos a los que se asocian.
-
-\begin{defn}[Clasificación de variables]
-  La aparición de un átomo \( x \) en un término \( P \) es llamada:
-  \label{defn:clasifvar}
-  \begin{itemize}
-  \item \emph{variable ligada} si es un subtérmino de \( M \) en una abstracción \( λx.M \) en \( P \);
-  \item \emph{variable enlazada} si y sólo si es la \( x \) que acompaña la \( λ \) de \( λx.M \) en \( P \);
-  \item \emph{variable libre} en otro caso.
-  \end{itemize}
-\end{defn}
-
-Es importante aclarar la diferencia entre un átomo \( x \) como subtérmino de un término lambda \( M \) y una aparición de \( x \) en \( M \): la aparición hace referencia a la posición de \( x \) en \( M \). Por ejemplo, en el término lambda \( (λx.x) x \) la primera aparición del átomo \( x \) es una variable enlazada, la segunda aparición es una variable ligada y la tercera aparición es una variable libre.
-
-\begin{exmp}
-  Sea \( M \synteq x(λy.x\, y) \):
-  \label{exmp:clasifvar}
-  \begin{itemize}
-  \item El átomo \( x \) aparece como variable libre dos veces en \( M \);
-  \item El átomo \( y \) aparece como variable ligada en \( M \).
-  \end{itemize}
-\end{exmp}
-
-En la definición formal de algunos conceptos es conveniente hacer referencia a las variables libres de un término lambda:
-
-\begin{defn}[Variables libres]
-  El conjunto de variables libres de un término lambda \( M \) se denota \( \FV(M) \) y se define de manera inductiva como:
-  \label{defn:varlib}
-  \begin{align*}
-    \FV(x) & = \{ x \} \\
-    \FV(λx.M) & = \FV(M) \setminus \{ x \} \\
-    \FV(M\, N) & = \FV(M) \cup \FV(N)
-  \end{align*}
-  Cuando \( \FV(M)=\emptyset \) se dice que \( M \) es un \emph{combinador} o \emph{término cerrado}.
-\end{defn}
-
-\begin{exmp}
-  Consideremos los términos \( x(λx.x\, y\, z) \), \( λx\, y\, z.y \) y \( (λy.x)λx.y\).
-  \label{exmp:varlib}
-  \begin{itemize}
-  \item \( \FV(x(λx.x\, y\, z)) = \{x,\ y,\ z\} \);
-  \item \( \FV(λx\, y\, z.y)=\emptyset \), por lo tanto es un combinador;
-  \item \( \FV((λy.x)λx.y)=\{ x,\ y \} \).
-  \end{itemize}
-\end{exmp}
-
-En ocaciones es importante distinguir los términos lambda cerrados de aquellos que contienen variables libres, para ello se identifica el subconjunto de \( Λ \) que contiene a todos los términos cerrados:
-
-\begin{defn}[Términos cerrados]
-  Se denota como \( Λ^{0} \) al conjunto
-  \label{defn:termcerr}
-  \[ \{ M \in Λ \mid M \text{ es un término cerrado} \} \]
-\end{defn}
-
-La notación \( Λ^{0} \) se puede generalizar para identificar diferentes subconjuntos de \( Λ \) a partir de las variables libres de los términos lambda:
-
-\[ Λ^{0}(\vec{x})=\{ M \in Λ \mid \FV(M) \subseteq \{ \vec{x} \} \} \]
-
-De tal manera que:
-
-\[ Λ^{0}=Λ^{0}(\emptyset) \]
-
-Todos los términos lambda en \( Λ \setminus Λ^{0} \) tienen al menos una clausura en \( Λ^{0} \).
-
-\begin{defn}[Clausura] \label{defn:clausura}
-  La clausura de un término lambda \( M \) con \( \FV(M) \not= \emptyset \) es un término lambda
-  \[ (λ\vec{x}.M) \]
-  con \( \vec{x}=\FV(M) \)
-\end{defn}
-
-\begin{exmp} \label{exmp:clausura}
-  Consideremos el términio lambda \( M \synteq λz.x\, y\, z \)
-  \begin{itemize}
-  \item \( λx\, y.λz.x\, y\, z \) es una clausura de \( M \);
-  \item \( λy\, x\, z.x\, y\, z \) es una clausura de \( M \);
-  \item \( λz\, x\, y.λz.x\, y\, z \) no es una clausura de \( M \).
-  \end{itemize}
-\end{exmp}
-
-Al escribir términos lambda con repetición de aplicaciones suele ser conveniente utilizar una notación más compacta. Cuando se aplica \( n \) veces un término \( F \) por la izquierda a otro término \( M \) se denota \( F^{n}\, M \). Cuando se aplica \( n \) veces un término \( M \) por la derecha a otro término \( F \) se denota \( F\, M^{\sim n}\). La definición formal de esta notación es:
-
-\begin{align*}
-  F^{n+1}\, M & \synteq F (F^{n}\, M) \\
-  F^{0}\, M & \synteq M
-\end{align*}
-
-\begin{align*}
-  F\, M^{\sim n+1} & \synteq (F\, M^{\sim n}) M \\
-  F\, M^{\sim 0} & \synteq F
-\end{align*}
-
-\begin{exmp}
-  El término lambda \( λf\, x.f(f(f(f\, x))) \) se puede escribir de manera compacta como
-  \[ λf\, x.f^{4}\, x \]
-\end{exmp}
-
-\begin{exmp}
-  El término lambda \( λf\, x.f\, x\, x\, x\, x \) se puede escribir de manera compacta como
-  \[ λf\, x.f\, x^{\sim 4} \]
-\end{exmp}
-
-\begin{defn}[Sustitución]
-  \label{defn:sustitucion}
-  Para cualquier \( M \), \( N \) y \( x \), se define \( M[x:=N] \) como el resultado de sustituir cada aparición libre de \( x \) por \( N \) en \( M \) de acuerdo a las siguientes reglas:
-  \begin{align*}
-    x[x:=N] & \synteq N; \\
-    a[x:=N] & \synteq a && a \not \synteq x; \\
-    (P\, Q)[x:=N] & \synteq P[x:=N]\, Q[x:=N]; \\
-    (λx.P)[x:=N] & \synteq λx.P; \\
-    (λy.P)[x:=N] & \synteq λy.P && x \not\synteq y,\ x \not\in \FV(P); \\
-    (λy.P)[x:=N] & \synteq λy.P[x:=N] && x \not\synteq y,\ x \in \FV(P),\ y \not\in \FV(N); \\
-    (λy.P)[x:=N] & \synteq λz.P[y:=z][x:=N] && x \not\synteq y,\ x \in \FV(P),\ y \in \FV(N),\ z \not\in \FV(N P).
-  \end{align*}
-\end{defn}
-
-\begin{exmp} \label{exmp:sustitucion}
-  Procedimientos de sustituciones para cada uno de los casos de la definición \ref{defn:sustitucion}:
-  \begin{itemize}
-  \item Caso \( x[x:=N] \)
-    \begin{align*}
-      y[y:=λx.x] \synteq λx.x
-    \end{align*}
-  \item Caso \( a[x:=N] \), donde \( a \not\synteq x \)
-    \begin{align*}
-      z[w:=x\, x] \synteq z
-    \end{align*}
-  \item Caso \( (P\, Q)[x:=N] \)
-    \begin{align*}
-      (y\, x\, x)[x:=y] & \synteq ((y\, x) x)[x:=y] \\
-                        & \synteq (y\, x)[x:=y]\, x[x:=y] \\
-                        & \synteq (y[x:=y]\, x[x:=y]) y \\
-                        & \synteq y\, y\, y
-    \end{align*}
-  \item Caso \( (λx.P)[x:=N] \)
-    \begin{align*}
-      (λf\, x.f\, f\, x)[f:=g] \synteq λf\, x.f\, f\, x
-    \end{align*}
-  \item Caso \( (λy.P)[x:=N] \), donde  \( x \not\synteq y \), \( x \not\in \FV(P) \)
-    \begin{align*}
-      (λf\, x.f\, f\, x)[f:=g] \synteq λf\, x.f\, f\, x
-    \end{align*}
-  \item Caso \( (λy.P)[x:=N] \), donde \( x \not\synteq y \), \( x \in \FV(P) \), \( y \not\in \FV(N) \)
-    \begin{align*}
-      (λf.x\, λx.f\, f\, x)[x:=y] & \synteq λf.(x\, λx.f\, f\, x)[x:=y] \\
-                                  & \synteq λf.x[x:=y]\, (λx.f\, f\, x)[x:=y] \\
-                                  & \synteq λf.y\, λx.f\, f\, x
-    \end{align*}
-  \item Caso \( (λy.P)[x:=N] \), donde \( x \not\synteq y \), \( x \in \FV(P) \), \( y \in \FV(N) \) y \( z \not\in \FV(N P) \)
-    \begin{align*}
-      (λf.x\, λx.f\, f\, x)[x:=f] & \synteq λg.(x\, λx.f\, f\, x)[f:=g][x:=f] \\
-                                  & \synteq λg.(x[f:=g](λx.f\, f\, x)[f:=g])[x:=f] \\
-                                  & \synteq λg.(x\, λx.(f\, f\, x)[f:=g])[x:=f] \\
-                                  & \synteq λg.(x\, λx.((f\, f)[f:=g] x[f:=g]))[x:=f] \\
-                                  & \synteq λg.(x\, λx.((f[f:=g]\, f[f:=g]) x))[x:=f] \\
-                                  & \synteq λg.(x\, λx.g\, g\, x)[x:=f] \\
-                                  & \synteq λg.x[x:=f] (λx.g\, g\, x)[x:=f] \\
-                                  & \synteq λg.f\, λx.g\, g\, x
-    \end{align*}
-  \end{itemize}
-\end{exmp}
-
-En el último caso es importante observar que las apariciones ligadas de \( x \) no se sustituyen.
-
-\begin{lem}
-  Si \( (y\, x) \not\in \FV(L) \) y \( x \not\synteq y \), entonces
-  \[ M[x:=N][y:=L] \synteq M[y:=L][x:=N[y:=L]] \]
-\end{lem}
-
-En contraste a la operación de sustitución en donde no se permite introducir o quitar referencias a variables enlazadas, el \emph{contexto} es un término con ``hoyos'':
-
-\begin{defn}[Contexto]
-  \label{defn:contexto}
-  Un contexto es un término lambda denotado \( C[\quad] \) definido de manera inductiva:
-  \begin{itemize}
-  \item \( x \) es un contexto;
-  \item \( [\quad] \) es un contexto;
-  \item Si \( C_{1}[\quad] \) y \( C_{2}[\quad] \) son contextos, entonces \( C_{1}[\quad]\, C_{2}[\quad] \) y \( λx.C_{1}[\quad] \) también lo son.
-  \end{itemize}
-\end{defn}
-
-Si \( C[\quad] \) es un contexto y \( M \in Λ \), entonces \( C[M] \) denota el resultado de reemplazar por \( M \) los hoyos de \( C[\quad] \). Al realizar esto, las variables libres de \( M \) pueden convertirse en variables ligadas de \( C[M] \).
-
-\begin{exmp}
-  Consideremos el contexto \( C[\quad] \synteq λx.x\, λy.[\quad] \) y el término lambda \( M \synteq (x y) \).
-  
-  \begin{align*}
-    C[M] & \synteq (λx.x\, λy.[\quad])[(x\, y)] \\
-         & \synteq (λx.x\, λy.(x\, y))
-  \end{align*}
-  
-  El caso análogo con la sustitución es
-
-  \begin{align*}
-    (λx.x\, λy.w)[w:=(x\, y)] & \synteq λz.(x\, λy.w)[x:=z][w:=(x\, y)] \\
-                              & \synteq λz.(x[x:=z] (λy.w)[x:=z])[w:=(x\, y)] \\
-                              & \synteq λz.(z\, λy.w)[w:=(x y)] \\
-                              & \synteq λz.z[w:=(x\, y)] (λy.w)[w:=(x\, y)] \\
-                              & \synteq λz.z\, λv.w[w:=(x\, y)] \\
-                              & \synteq λz.z\, λv.(x\, y)
-  \end{align*}
-\end{exmp}
-
-\subsection{Teoría \( \bs{λKβ} \)}
-\label{sec:teorialambda}
-
-El objetivo principal de esta subsección es presentar una formalización del cálculo lambda descrito en \ref{sec:informal} desde el punto de vista de teorías formales. El nombre técnico de la teoría formal principal de este trabajo es \( \bs{λKβ} \), se pueden realizar modificaciones y extensiones a esta teoría y los siguientes conceptos permiten estudiar las implicaciones de estos cambios.
-
-Una \emph{teoría formal} \( \mathcal{T} \) es una tripleta \( (\mathcal{F},\mathcal{A},\mathcal{R}) \) donde
-
-\begin{itemize}
-\item \( \mathcal{F} \) es el conjunto de todas las \emph{fórmulas} \( X = Y \) con \( X \) y \( Y \) elementos de un lenguaje formal;
-\item \( \mathcal{A} \) es un conjunto de \emph{axiomas} y \( \mathcal{A} \subseteq \mathcal{F} \);
-\item \( \mathcal{R} \) es un conjunto de \emph{reglas}.
-\end{itemize}
-
-Una regla es una función \( φ \colon \mathcal{F}^{n} \to \mathcal{F} \) con \( n \geq 1 \). Una secuencia de fórmulas \( \langle A_{1},...,A_{n},B \rangle \) tal que
-
-\[ φ(A_{1},...,A_{n})=B \]
-
-es llamada una \emph{instancia} de \( φ \), donde las \emph{premisas} de la instancia son las fórmulas \( \langle A_{1},...,A_{n} \rangle \) y la \emph{conclusión} de la instancia es \( B \). Las instancias se denotan
-
-\[ \infer{B}{A_{1} & ... & A_{n}} \]
-
-\begin{rem}
-  En la literatura se pueden encuentrar diferentes maneras de trabajar con teorías formales, dependiendo del estilo de las teorías y de la manera en como se formaliza su definición, por ejemplo en \cite{Troelstra:ProofTheory} las reglas se definen como conjuntos de secuencias \( \langle A_{1},...,A_{n+1} \rangle \) con \( n \) premisas y una conclusión, en donde los axiomas se definen como las reglas en \( \mathcal{R} \) con cero premisas. La definición de teoría formal es del estilo Hilbert y está basada en \cite[pp.~69--70]{HindleySeldin:LambdaCalculusAndCombinators}.
-\end{rem}
-
-Si consideramos un conjunto \( Γ \subseteq \mathcal{F} \), una \emph{deducción} deuna fórmula \( B \) desde \( Γ \) es un árbol dirigido de fórmulas en donde los vértices de un extremo son elementos de \( \mathcal{A} \) o \( Γ \), los vértices intermedios son deducidos a partir de los vértices que inciden en ellos a partir de una regla y el vértice de el otro extremo siendo \( B \). Las fórmulas que no sean axiomas cuyo grado de entrada sea cero son llamadas \emph{suposiciones}. Si y solo si existe una deducción para una fórmula \( B \), se dice que \( B \) es demostrable en \( \mathcal{T} \) suponiendo \( Γ \), denotado
-
-\[ \mathcal{T},Γ \vdash B \]
-
-En caso que la deducción no tenga suposiciones, se dice que es una \emph{demostración} y que \( B \) es un \emph{teorema}. Cuando \( Γ = \emptyset \) se escribe
-
-\[ \mathcal{T} \vdash B \]
-
-A continuación se presenta la definición de la teoría \( \bs{λKβ} \), debido a que esta teoría será la que se estudia principalmente en este trabajo, se acorta el nombre \( \bs{λKβ} \) a \( \bs{λ} \).
-
-
-En el caso particular de la teoría \( \bs{λKβ} \) se considera que \( \mathcal{F} \) tiene elementos \( M = N \) donde \( M,N \in Λ \).
-
-
-\begin{defn}[Teoría \( \bs{λ} \)]
-  \label{defn:teorialambda}
-  El conjunto de fórmulas tiene como elementos ecuaciones de la forma:
-
-  \begin{align*}
-    M = N & & \forall M,N \in Λ
-  \end{align*}
-  
-  Los axiomas son:
-
-  \begin{subequations}
-    \begin{align}
-      \label{teorialambda:alpha} \tag{\( α \)}
-      λx.M & = λy.M[x:=y] & &  \forall y \not\in \FV(M) \\
-      \label{teorialambda:beta} \tag{\( β \)}
-      (λx.M)N & = M[x:=N] \\
-      \label{teorialambda:rho} \tag{\( ρ \)}
-      M & = M
-    \end{align}
-  \end{subequations}
-
-  Y las reglas:
-
-  \begin{equation}
-    \label{teorialambda:mu} \tag{\( μ \)}
-    \infer{Z\, M = Z\, N}{M = N}
-  \end{equation}
-  
-  \begin{equation}
-    \label{teorialambda:nu} \tag{\( ν \)}
-    \infer{M\, Z = N\, Z}{M = N}
-  \end{equation}
-  \begin{equation}
-    \label{teorialambda:xi} \tag{\( ξ \)}
-    \infer{λx.M = λx.N}{M = N}
-  \end{equation}
-  \begin{equation}
-    \label{teorialambda:tau} \tag{\( τ \)}
-    \infer{M = P}{M = N & N = P}
-  \end{equation}
-  \begin{equation}
-    \label{teorialambda:sigma} \tag{\( σ \)}
-    \infer{N = M}{M = N}
-  \end{equation}
-  
-\end{defn}
-
-Al inicio de esta sección, se menciona que el objeto de estudio de la teoría \( \bs{λ} \) es el conjunto de términos lambda módulo convertibilidad. La \emph{convertibilidad} es la noción básica de equivalencia de términos lambda y las ecuaciones de la teoría \( \bs{λ} \) formalizan esta noción.
-
-La relación binaria \( = \) en las ecuaciones de la teoría, es una relación de equivalencia y al igual que toda relación de equivalencia es \emph{reflexiva}, \emph{simétrica} y \emph{transitiva}, en \( = \) estas propiedades son descritas en las reglas \eqref{teorialambda:rho}, \eqref{teorialambda:sigma} y \eqref{teorialambda:tau} respectivamente. La \emph{clase de equivalencia} de un término lambda \( M \) con respecto a esta relación de equivalencia es el conjunto de todos los términos lambda \( N \) tal que \( M = N \), denotado:
-
-\[ [M]_{\bs{λ}} = \{ N \in Λ \mid M = N \} \]
-
-
-La frase ``módulo convertibilidad'' se refiere al conjunto de todas las clases de equivalencia de \( Λ \) considerando la relación de equivalencia de la teoría formal con la que se esté trabajando. Que este conjunto sea el objeto de estudio de la teoría \( \bs{λ} \) significa que cada elemento de \( Λ \) módulo convertibilidad (denotado \( Λ / =_{\bs{λ}} \)) es distinto y representa a una clase de términos lambda considerados en \( \bs{λ} \) como equivalentes.
-
-\begin{defn}[Demostrabilidad]
-  \label{defn:demostrabilidad}
-  La demostrabilidad en \( \bs{λ} \) de una ecuación \( M = N \) es denotada \( \bs{λ} \vdash M = N \) e implica que \( M = N \) es un teorema en \( \bs{λ} \). En caso que la ecuación sea demostrable se dice que \( M \) y \( N \) son términos \emph{convertibles}.
-\end{defn}
-
-\begin{exmp}
-  \label{exmp:demostrabilidad}
-  Consideramos los términos lambda \( M \synteq (λf.x((λy.y\, f) λz.z))w \) y \( N \synteq x\, w \). Se muestra que
-
-  \[ \bs{λ} \vdash M = N \]
-
-  formulando el árbol de deducción de la figura \ref{fig:demostrabilidad}.
-\end{exmp}
-
-\begin{rem}
-  Es posible formular mas de un árbol de deducción para un teorema en una teoría formal.
-\end{rem}
-
-\begin{figure}
-  \centering
-  \begin{tikzpicture}[
-    equat/.style={rectangle,draw},grow=up,edge from parent/.style={draw,latex-},
-    level 1/.style={sibling distance=20em, level distance=5em},
-    level 2/.style={sibling distance=40em},
-    level 3/.style={sibling distance=20em},
-    level 4/.style={sibling distance=10em}
-    ]
-    \node [equat] (foo1) {\( (λf.x((λy.y\, f) λz.z))w = x\, w \)}
-    child {
-      node [equat] (foo3) {\( (λf.x\, f)w = x\, w \)}
-    }
-    child {
-      node [equat] (foo5) {\( (λf.x((λy.y\, f) λz.z))w = (λf.x\, f)w \)}
-      child {
-        node [equat] (foo7) {\( λf.x((λy.y\, f) λz.z) = λf.x\, f \)}
-        child {
-          node [equat] (foo9) {\( x((λy.y\, f) λz.z) = x\, f \)}
-          child {
-            node [equat] (foo11) {\( (λy.y\, f)λz.z = f \)}
-            child {
-              node [equat] (foo13) {\( (λz.z)f = f \)}
-            }
-            child {
-              node [equat] (foo14) {\( (λy.y\, f)λz.z = (λz.z) f \)}
-            }
-            edge from parent [] node [right] {\( (μ) \)}
-          }
-          edge from parent [] node [right] {\( (ξ) \)}
-        }
-        edge from parent [] node [right] {\( (ν) \)}
-      }
-    };
-    \node [above=0em of foo13] (bar1) {\( (β) \)};
-    \node [above=0em of foo14] (bar2) {\( (β) \)};
-    \node [above=0em of foo11] (bar3) {\( (τ) \)};
-    \node [above=0em of foo1] (bar4) {\( (τ) \)};
-    \node [above=0em of foo3] (bar5) {\( (β) \)};
-  \end{tikzpicture}
-  \caption{Árbol de deducción para la ecuación del ejemplo \ref{exmp:demostrabilidad}}
-  \label{fig:demostrabilidad}
-\end{figure}
-
-\begin{defn}[Combinadores SKI]
-  \label{defn:ski}
-  Tres términos lambda de suma importancia son
-  \begin{align*}
-    \bs{I} & \synteq λx.x \\
-    \bs{K} & \synteq λx\, y.x \\
-    \bs{S} & \synteq λx\, y\, z.x\, z(y\, z)
-  \end{align*}
-\end{defn}
-
-\begin{cor}
-  \label{cor:ski}
-  Para todo término \( M,N,L \in Λ \)
-
-  \begin{align*}
-    \bs{I}\, M & =_{\bs{λ}} M \\
-    \bs{K}\, M\, N & =_{\bs{λ}} M \\
-    \bs{S}\, M\, N\, L & =_{\bs{λ}} M\, L (N\, L)
-  \end{align*}
-\end{cor}
-
-Estos tres combinadores generan en la teoría \( \bs{λ} \) al conjunto \( Λ^{0} \) con combinaciones de aplicaciones. Debido a que \( \bs{SKK} =_{\bs{λ}} \bs{I} \), sólo es necesario combinar con aplicaciones a \( \bs{K} \) y a \( \bs{S} \) para generar cualquier término cerrado.
-
-\begin{defn}[Bases]
-  \label{defn:bases}
-  \begin{enumerate}
-  \item Sea \( \mathcal{X} \subset Λ \). El conjunto de términos \emph{generado} por \( \mathcal{X} \), denotado \( \mathcal{X}^{+} \), es el conjunto mas pequeño tal que
-    \begin{enumerate}
-    \item \( \mathcal{X} \subseteq \mathcal{X}^{+} \),
-    \item \( M, N \in \mathcal{X}^{+} \implies (M N) \in \mathcal{X}^{+} \).
-    \end{enumerate}
-  \item Sea \( \mathcal{P} \subset Λ \). \( \mathcal{X} \subset Λ \) es una \emph{base} para \( \mathcal{P} \) si para toda \( M \in \mathcal{P} \) existe \( N \in \mathcal{X}^{+} \) tal que \( N = M \).
-  \item \( \mathcal{X} \) es llamada una \emph{base} si \( \mathcal{X} \) es una base para \( Λ^{0} \).
-  \end{enumerate}
-\end{defn}
-
-\begin{lem}
-  \label{lem:ski}
-  Sea \( λx.M \) una abstracción tal que \( \Sub(M) \) no contiene abstracciones
-
-  \begin{enumerate}
-  \item Si \( M = x \), entonces \( λx.M = \bs{I} \);
-  \item Si \( x \not\in \FV(M) \), entonces \( λx.M = (\bs{K} M) \);
-  \item Si \( M = P\, Q \), entonces \( λx.M = \bs{S}(λx.P)(λx.Q) \).
-  \end{enumerate}
-\end{lem}
-
-\begin{proof}
-  Ver \ref{defn:ski} y \ref{cor:ski}
-  \begin{enumerate}
-  \item
-    \begin{align*}
-      (\bs{I}\, N) &= N \\
-                   &= ((λx.x) N) \\
-                   &= ((λx.M) N)
-    \end{align*}
-  \item
-    \begin{align*}
-      ((\bs{K}\, M) N) &= (λx\, y.x)M\, N \\
-                       &= (λy.M)N \\
-                       &= ((λx.M)N)
-    \end{align*}
-  \item
-    \begin{align*}
-      \bs{S}(λx.P)(λx.Q) &= (λabc.(a\, c)(b\, c))(λx.P)(λx.Q) \\
-                         &= λc.((λx.P)c)((λx.Q)c) \\
-                         &= λc.P[x:=c]Q[x:=c] \\
-                         &= λc.(P\, Q)[x:=c] \\
-                         &= λx.P\, Q \\
-                         &= λx.M
-    \end{align*}
-  \end{enumerate}
-\end{proof}
-
-\begin{prop}
-  \label{prop:ski}
-  \( \{ \bs{S}, \bs{K}, \bs{I} \} \) es una base, es decir, para todo término \( M \in Λ^{0} \), existe un término \( M' \) compuesto de aplicaciones de \( \bs{S} \), \( \bs{K} \) e \( \bs{I} \) tal que \( M = M' \).
-\end{prop}
-
-La demostración de la proposición \ref{prop:ski} consiste en la construcción de un algoritmo para transformar \( M \) a \( M' \).
-
-\begin{proof}
-  \label{proof:ski}
-  Sea \( M \in Λ^{0} \), se construye un término \( M' \in \{ \bs{S},\bs{K},\bs{I} \}^{+} \) tal que \( M' = M \) enumerando los subtérminos en \( M \) que sean abstracciones de menor a mayor longitud.
-
-  Sea \( λx.N \) la abstracción con menor longitud en \( M \), según la estructura de \( N \) se aplican las siguientes transformaciones:
-
-  \begin{enumerate}
-  \item Si \( N = a \)
-    \begin{enumerate}
-    \item \label{item:ski:1a} Si \( a = x \) se transforma \( λx.N \) a \( \bs{I} \) en \( M \).
-    \item \label{item:ski:1b}Si \( a \not= x \) se transforma \( λx.N \) a \( (\bs{K}\, a) \) en \( M \).
-    \end{enumerate}
-  \item \( N = (P\, Q) \)
-    \begin{enumerate}
-    \item \label{item:ski:2a} Si \( x \not\in \FV(P) \) y \( x \not\in \FV(Q) \) se transforma \( λx.P\, Q \) a \( \bs{S} (\bs{K}\, P) (\bs{K}\, Q) \) en \( M \).
-    \item \label{item:ski:2b} Si \( x \not\in \FV(P) \) y \( x \in \FV(Q) \) se transforma \( λx.P\, Q \) a \( \bs{S} (\bs{K}\, P) (λx.Q) \) en \( M \).
-    \item \label{item:ski:2c} Si \( x \in \FV(P) \) y \( x \not\in \FV(Q) \) se transforma \( λx.P\, Q \) a \( \bs{S} (λx.P) (\bs{K}\, Q) \) en \( M \).
-    \item \label{item:ski:2d} Si \( x \in \FV(P) \) y \( x \in \FV(Q) \) se transforma \( λx.P\, Q \) a \( \bs{S} (λx.P) (λx.Q) \) en  \( M \).
-    \end{enumerate}
-  \end{enumerate}
-
-  En los casos \ref{item:ski:2a}, \ref{item:ski:2b}, \ref{item:ski:2c}, \ref{item:ski:2d} se forman abstracciones con longitud menor a \( λx.N \), por lo tanto serán las que se transformarán después. Ya que la longitud de estas abstracciones es estrictamente menor a \( λx.N \) y los casos base \ref{item:ski:1a} y \ref{item:ski:1b} de la transformación no introducen abstracciones, en una cantidad finita de pasos el término \( M \) transformado no tendrá abstracciones de la forma \( λx.N \).
-
-  Para un término \( M \) con sólo una abstracción, \( \mathit{a} \) aplicaciones y \( \mathit{v} \) variables ligadas (no enlazadas) una cota superior para la máxima cantidad de pasos se calcula considerando que para los términos de la forma \( λx.a \) se cumple el caso \ref{item:ski:1b} (el cual aumenta la cantidad de aplicaciones en 1) y que para los términos de la forma \( λx.P\, Q \) se cumple el caso \ref{item:ski:2d} (el cual aumenta la cantidad de aplicaciones en 2) ya que en estos casos se produce el término con mas aplicaciones, las cuales determinan la cantidad de veces que se repite el algoritmo por cada abstracción en \( M \). Para calcular la cota superior de la cantidad de aplicaciones \( a' \) que produce el algoritmo para un término con \( n \) abstracciones se plantea la siguiente relación de recurrencia:
-
-  \begin{align*}
-    \mathit{a}'_{0} &= \mathit{a} \\
-    \mathit{a}'_{n} &= 2 \times \mathit{a}'_{n-1} + \mathit{v}
-  \end{align*}
-
-  Esta recurrencia describe la función \( \mathit{a}' \colon \mathbb{N} \to \mathbb{N} \):
-
-  \[ \mathit{a}'(n) = 2^{n} \times \mathit{a} + (2^{n}-1) \times \mathit{v} \]
-
-  Para la cota superior de la cantidad de pasos realizados por el algoritmo para un término \( M \) con \( n \) abstracciones, se plantea la siguiente relación de recurrencia basada en \( \mathit{a}' \) y en el hecho de que la cantidad de variables ligadas y no enlazadas no aumenta en los pasos del algoritmo:
-
-  \begin{align*}
-    \mathit{p}_{0} &= 0 \\
-    \mathit{p}_{n} &= \mathit{p}_{n-1} + \mathit{a}'(n-1) + \mathit{v}
-  \end{align*}
-
-  Esta recurrencia describe la función \( \mathit{p} \colon \mathbb{N} \to \mathbb{N} \):
-
-  \begin{align*}
-    \mathit{p}(n) &= (\mathit{a} + \mathit{v}) \times \sum_{i=0}^{n-1} 2^{i} \\
-                  &= (\mathit{a} + \mathit{v}) \times (2^{n}-1)
-  \end{align*}
-  
-\end{proof}
-
-\subsubsection{Lemas y corolarios sobre términos lambda en \( \bs{λKβ} \)}
-\label{sec:lemas-y-corolarios}
-
-Resultados sobre términos lambda en la teoría \( \bs{λKβ} \).
-
-\subsection{Otras teorías}
-\label{sec:otras-teorias}
-
-\subsubsection{\( \bs{λIβ} \)}
-
-En el artículo \cite{Church:LambdaConversion}, Alonzo Church presenta una definición del cálculo lambda con un conjunto restringido de términos lambda. A la teoría que considera a este conjunto restringido de términos lambda (denotado \( Λ_{I} \)) y los axiomas y reglas de inferencia de la teoría \( \bs{λ} \) cambiando \( Λ \) por \( Λ_{I} \) se le conoce como teoría \( \bs{λIβ} \) (o el cálculo \( λI \)).
-
-\begin{defn}[Términos en \( Λ_{I} \)]
-  \label{defn:lambdaI}
-  \begin{align*}
-    x \in V & \implies x \in Λ_{I} \\
-    M \in Λ_{I},\ x \in \FV{M} & \implies λx.M \in Λ_{I} \\
-    M, N \in Λ_{I} & \implies M\, N \in Λ_{I}
-  \end{align*}
-\end{defn}
-
-La diferencia fundamental entre las teorías \( \bs{λKβ} \) y \( \bs{λIβ} \) es el término lambda \( \bs{K} \), ya que \( \bs{K} \in Λ \setminus Λ_{I} \) pero \( \bs{K} \not\in Λ_{I} \). Esto es debido a que el subtérmino \( λy.x \) en \( \bs{K} \) de la definición \ref{defn:ski} no puede existir en \( Λ_{I} \) debido a que \( y \not\in \FV(x) \).
-
-\subsubsection{Extensionalidad}
-\label{sec:extensionalidad}
-
-El concepto de igualdad de funciones usado en la mayoría de las ramas de la matemática es lo que se conoce como ``extensional'', esta propiedad de las relaciones de equivalencia hace referencia a las características externas de los objetos que compara, en el caso de las funciones, se incluye la suposición de que para funciones \( f \) y \( g \) con el mismo dominio
-
-\[ \forall x [ f(x)=g(x) ] \implies f=g \]
-
-Contraria a esta suposición, en la computación, el tema central son los procedimientos y procesos que describen los programas o algoritmos, cuyas igualdades ``intensional'', es decir, si dos programas computan la misma función matemática, no necesariamente se dice que son el mismo programa ya que uno pudiera ser mas eficiente que otro (la característica de eficiencia es interna a cada algorítmo).
-
-La teoría \( \bs{λ} \) también es intensional: existen dos términos lambda \( F \) y \( G \) tales que para tódo término \( X \)
-
-\[ \bs{λ} \vdash F\, X = G\, X \]
-
-Pero no \( \bs{λ} \vdash F=G \). Por ejemplo, \( F \synteq y \) y \( G \synteq λx.y\, x \)
-
-Cuando se plantea formalizar un cálculo lambda que sea extensional, surge la pregunta, ¿Qué es demostrable en el sistema extensional que no es demostrable en \( \bs{λ} \). A continuación se presentan tres diferentes agregados a la teoría \( \bs{λ} \) las cuales incluyen la propiedad de extensionalidad y que han sido propuestas en la literatura \cite{HindleySeldin:LambdaCalculusAndCombinators,Barendregt:Bible}. Las teorías extendidas son llamadas \( \bs{λζ} \), \( \bs{λ+ext} \) y \( \bs{λη} \) de acuerdo a la regla que se añade a la definición \ref{defn:teorialambda}.
-
-\begin{defn}[Reglas de extensionalidad]
-  \label{defn:extensionalidad}
-  Cada una de las siguientes reglas nos permite añadir a \( \bs{λ} \) la propiedad de extensionalidad.
-  \begin{description}
-  \item[Reglas de inferencia]
-    \begin{subequations}
-      \begin{align}
-        \label{extensionalidad:zeta} \tag{\( ζ \)}
-        \infer{M = N}{M\, x = N\, x} & & \text{si \( x \not\in \FV(M\, N) \)} \\
-        \label{extensionalidad:ext} \tag{ext}
-        \infer{M = N}{M\, P = N\, P} & & \forall P \in Λ
-      \end{align}
-    \end{subequations}
-  \item[Axiomas]
-    \begin{align}
-      \label{extensionalidad:eta} \tag{\( η \)}
-      λx.M\, x = M & & \text{si \( x \not\in \FV(M) \)}
-    \end{align}
-  \end{description}
-\end{defn}
-
-La regla \eqref{extensionalidad:zeta} dice, de manera informal, que si \( M \) y \( N \) tienen el mismo efecto sobre un objeto no especificado \( x \), entonces \( M = N \). La regla \eqref{extensionalidad:ext} tiene una infinidad de premisas, una por cada término lambda \( P \), por lo tanto, las deducciones en donde se involucre esta regla serán árboles infinitos.
-
-\subsubsection{Equivalencia de teorías}
-\label{sec:equivalenciateorias}
-
-Comparación entre teorías formales, énfasis en \( η \) contra \( ζ \) contra \( ext \).
-
-Ver \cite{HindleySeldin:LambdaCalculusAndCombinators}, \cite{Troelstra:ProofTheory}, \cite{Mendelson:Logic}.
-
-Sea \( \mathcal{T} \) una teoría formal, se considera extender \( \mathcal{T} \) añadiendo una nueva regla \( \mathcal{R} \). Es natural preguntarse primer si \( \mathcal{R} \) es derivable en \( \mathcal{T} \). Pero ¿qué significa exactamente que \( \mathcal{R} \) sea derivable?
-
-\begin{defn}[Regla]
-  \label{defn:regla}
-  Una regla \( \mathcal{R} \) de \( n \) premisas es un conjunto de secuencias \( \mathcal{S}_{0},...,\mathcal{S}_{n-1},\mathcal{S} \) de longitud \( n+1 \), donde \( \mathcal{S}_{i},\mathcal{S} \) son elementos de deducción. Un elemento de \( \mathcal{R} \) se dice ser una \emph{instancia} de \( \mathcal{R} \). Una instancia se denota
-
-  \[ \infer{\mathcal{S}}{\mathcal{S}_{0} & \mathcal{S}_{1} & ... & \mathcal{S}_{n-1}} \]
-
-  \( \mathcal{S} \) es la \emph{conclusión} y las \( \mathcal{S}_{i} \) son las \emph{premisas}. Un \emph{axioma} es una regla de cero premisas. Instancias de axiomas aparecen en árboles de deducción simplemente como vértices superiores o de manera equivalente como elementos de deducción con una línea sobre ellos:
-
-  \[ \infer{S}{} \]
-\end{defn}
-
-\begin{defn}[Reglas derivables y admisibles]
-  \label{defn:regla-derivable}
-  Sea \( \mathcal{R} \) una regla determinada por una función \( φ \colon \mathcal{F}^{n} \to \mathcal{F} \). Se dice que \( \mathcal{R} \) es \emph{derivable} en \( \mathcal{T} \) si y solo si, por cada instancia de \( \mathcal{R} \), su conclusión es deducible en \( \mathcal{T} \) a partir de sus premisas, es decir
-
-  \[ \mathcal{T},\ A_{1},...,A_{n} \vdash B \].
-
-  Se dice que \( \mathcal{R} \) es \emph{admisible} en \( \mathcal{T} \) si y solo si, añadir \( \mathcal{R} \) a \( \mathcal{T} \) como una nueva regla no va a incrementar la cantidad de teoremas de \( \mathcal{T} \).
-
-  Se dice que \( \mathcal{R} \) es \emph{correcta} en \( \mathcal{T} \) si y solo si, por cada instancia de \( \mathcal{R} \), si todas las premisas son demostrables en \( \mathcal{T} \), entonces también es demostrable la conclusión, es decir, si y solo si
-
-  \[ (\mathcal{T} \vdash A_{1}),...,(\mathcal{T} \vdash A_{n}) \implies (\mathcal{T} \vdash B) \]
-
-  Finalmente, una sola fórmula \( C \), como un nuevo axioma propuesto, se dice ser tanto \emph{derivable} como \emph{admisible} en \( \mathcal{T} \) si y solo si
-
-  \[ \mathcal{T} \vdash C \]
-\end{defn}
-
-\subsection{Teoría de reducción}
-\label{sec:teoriareduccion}
-
-1.14 y 2.9
-
-\subsubsection{Contracciones}
-\label{sec:contracciones}
-
-Transformaciones de términos con un paso.
-
-\begin{defn}[Contracciones Hindley y Seldin]
-  \label{defn:contraccion}
-  Dado un término lambda \( X \), una \emph{contracción} en \( X \) es una tripleta \( \langle X,R,Y \rangle \), denotada \( X \contract{R} Y \), donde \( R \) es una aparición de un \emph{redex} en \( X \) y \( Y \) es el resultado de contraer \( R \) en \( X \).
-\end{defn}
-
-\begin{exmp}
-  \begin{align*}
-    (λx.(λy.y\, x)z)v &\contract{(λx.(λy.y\, x)z)v} (λy.y\, v)z ,\\
-    (λx.(λy.y\, x)z)v &\contract{(λy.y\, x)z} (λx.z\, x)v.
-  \end{align*}
-\end{exmp}
-
-\subsubsection{Reducciones}
-\label{sec:reducciones}
-
-Reducciones basadas en contracciones, de Barendregt
-
-\begin{defn}[Relación compatible]
-  \label{defn:compatible}
-  Si dice que una relación binaria \( \bs{R} \) sobre \( Λ \) es:
-  \begin{enumerate}
-  \item Una \emph{relación compatible} cuando
-    \[ (M,M') \in \bs{R} \implies (Z\, M,Z\, M') \in \bs{R},\ (M\, Z,M'\, Z) \in \bs{R},\ (λx.M,λx.M') \in \bs{R} \]
-    para toda \( M, M', Z \in Λ \).
-  \item Una \emph{relación de congruencia} cuando \( \bs{R} \) es compatible, reflexiva, transitiva y simétrica.
-  \item Una \emph{relación de reducción} cuando \( \bs{R} \) es compatible, reflexiva y transitiva.
-  \end{enumerate}
-  \emph{compatible} cuando
-
-\end{defn}
-
-\begin{note}
-  Una relación \( \bs{R} \subseteq Λ^{2} \) es compatible cuando
-
-  \[ (M,M') \in \bs{R} \implies (C[M],C[M']) \in \bs{R} \]
-
-  para toda \( M, M' \in Λ \) y todo contexto \( C[\quad] \), con un hoyo.
-\end{note}
-
-\begin{defn}
-  \label{defn:nocion-reduccion}
-  Una \emph{noción de reducción} en \( Λ \) es una relación binaria \( \bs{R} \) en \( Λ \).
-\end{defn}
-
-Sean \( \bs{R}_{1} \) y \( \bs{R}_{2} \) nociones de reducción, la relación \( \bs{R}_{1} \cup \bs{R}_{2} \) se denota \( \bs{R}_{1}\bs{R}_{2} \).
-
-
-\begin{defn}[Reducción \( \bs{β} \)]
-  La regla \eqref{teorialambda:beta} en la teoría \( \bs{λ} \) se puede definir como la reducción:
-  
-  \[ \bs{β} = \{ ((λx.M)N,M[x:=N]) : M, N \in Λ \} \]
-\end{defn}
-
-\begin{defn}
-  Sea \( \bs{R} \) una noción de reducción en \( Λ \), \( \bs{R} \) introduce las relaciones binarias:
-
-  \begin{itemize}
-  \item R-reducción en un paso, denotada \( \contract{R} \) y definida de manera inductiva como:
-    \begin{align*}
-      \text{(1)} && (M,N) \in \bs{R} &\implies M \contract{R} N \\
-      \text{(2)} && M \contract{R} N &\implies Z\, M \contract{R} Z\, N \\
-      \text{(3)} && M \contract{R} N &\implies M\, Z \contract{R} N\, Z \\ 
-      \text{(4)} && M \contract{R} N &\implies λx.M \contract{R} λx.N
-    \end{align*}
-  \item R-reducción, denotada \( \reduce{R} \) y definida de manera inductiva como:
-    \begin{align*}
-      \text{(1)} && M \contract{R} N &\implies M \reduce{R} N \\
-      \text{(2)} && M \reduce{R} M \\
-      \text{(3)} && M \reduce{R} N,\ N \reduce{R} L &\implies M \reduce{R} L
-    \end{align*}
-  \item R-convertibilidad, denotada \( \convertible{R} \) y definida de manera inductiva como:
-    \begin{align*}
-      \text{(1)} && M \reduce{R} N &\implies M \convertible{R} N \\
-      \text{(2)} && M \convertible{R} N &\implies N \convertible{R} M \\
-      \text{(3)} && M \convertible{R} N,\ N \convertible{R} L &\implies M \convertible{R} L
-    \end{align*}
-  \end{itemize}
-\end{defn}
-
-\begin{lem}
-  Las relaciones \( \contract{R} \), \( \reduce{R} \) y \( \convertible{R} \) son compatibles. Por lo tanto \( \reduce{R} \) es una relación de reducción y \( \convertible{R} \) es una relación de congruencia.
-\end{lem}
-
-\begin{proof}
-  
-\end{proof}
-
-Usualmente una noción de reducción se introduce de la siguiente manera: ``Sea \( \bs{R} \) definida por las siguientes \emph{reglas de contracción} \ \( \bs{R} \colon M \contract{} N \text{ dado que } ... \)''.
-
-Esto significa que \( \bs{R} = \{ (M,N) : ... \} \), por ejemplo, \( \bs{β} \) pudo haber sido introducida por la siguiente regla de contracción
-
-\[ \bs{β} : (λx.M)N \contract{} M[x:=N] \]
-
-\begin{defn}
-  \begin{enumerate}
-  \item Un \( R \)-redex es un término \( M \) tal que \( (M,N) \in R \) para algún término \( N \). En este caso \( N \) es llamado un \( R \)-contractum de \( M \).
-  \item Un término \( M \) es llamado una forma normal de \( R \), denotado \( R-fn \), si \( M \) no contiene algún \( R \)-redex.
-  \item Un término \( N \) es una \( R-fn \) de \( M \) (o \( M \) tiene la \( R-fn \) \( N \)) si \( N \) es una \( R-fn \) y \( M \convertible{R} N \).
-  \end{enumerate}
-\end{defn}
-
-El proceso de pasar de un redex a su contractum es llamado \emph{contracción}. En lugar de escribir ``\( M \) es una \( R-fn \)'' usualmente se escribe ``\( M \) está en \( R-fn \)'', pensando en una máquina que ha llegado a su estado final.
-
-\begin{exmp}
-  \( (λx.x\, x)λy.y \) es un \( β \)-redex. Por lo tanto \( (λx.x\, x)(λy.y)z \) no está en \( β-fn \); sin embargo este término tiene la \( β-fn \) \( z \).
-\end{exmp}
-
-Plantear las ideas para pasar del concepto de contracción al de reducción y posteriormente al de convertibilidad.
-
-Gráficas de reducción.
-
-Teorema de Church-Rosser y toda la magia necesaria para abordarlo y la magia que valga la pena mencionar en la que CR es importante va aquí.
-
-Probablemente es buena idea separar la sección ``Noción informal del cálculo lambda'' y ``Formalización del cálculo lambda'' en dos capítulos diferentes. ¿Valdrá la pena abordar árboles de Böhm?
-
-\subsection{Árboles Böhm}
-\label{sec:arboles-bohm}
-
-Estructura con perspectiva conjuntivista, no se formaliza el modelo pero se describe.
 
 %%% Local Variables:
 %%% mode: latex

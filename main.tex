@@ -3,10 +3,17 @@
 %
 
 % Document class and language
-\documentclass[letterpaper,twoside,openright]{book}
+\documentclass[letterpaper,twoside,openright,12pt]{book}
+
+\usepackage{setspace}
+% \onehalfspacing
+\doublespacing
+
+\usepackage[lmargin=1.4 in, rmargin=.8 in, tmargin=1 in, bmargin=1 in]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel}
 \usepackage[T1]{fontenc}
+\usepackage{paralist}
 
 % Mathematics
 \usepackage[sumlimits]{amsmath}
@@ -90,11 +97,17 @@
 \tableofcontents
 
 \mainmatter
-\chapter{El cálculo lambda}
+\chapter{Noción informal del cálculo lambda}
+\label{ch:nocion-informal}
 \input{capitulo-1}
 
-\chapter{Codificación de objetos}
+\chapter{Formalización del cálculo lambda}
+\label{ch:formalizacion}
 \input{capitulo-2}
+
+\chapter{Codificación de objetos}
+\label{ch:codificacion}
+\input{capitulo-3}
 
 \appendix
 

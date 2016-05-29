@@ -6,19 +6,19 @@ El álgebra booleana es una rama del álgebra en donde las expresiones tienen as
 
 Los términos lambda no tienen asignados un valor de verdad y las operaciones que se plantearon en los primeros dos capítulos involucraron el concepto de falso y verdadero únicamente en el metalenguaje y asociando estos valores no a los términos lambda en sí, si no a propiedades de estos, por ejemplo, es falso que \( \| λx.x \| = 5 \) y es verdadero que \( (\bs{K}\, x) \reduce{β} (λx.y) \). Sin embargo es posible codificar los valores de verdad como elementos de \( Λ \) y construir abstracciones que emulen las propiedades de las operaciones booleanas bajo la \( β \)-reducción. De esta manera se pueden escribir términos que, de acuerdo con la codificación establecida, representen expresiones booleanas y términos lambda al mismo tiempo.
 
-En los lenguajes de programación usualmente se mezclan las expresiones booleanas con otras expresiones y objetos a partir de \emph{predicados}, éstos son funciones con algún dominio \( X \) y codominio \( \{ \mathrm{falso},\ \mathrm{verdadero} \} \). Por ejemplo, al escribir un programa en donde se necesite tomar una desición a partir de si un número \verb!n! es positivo o negativo se escribiría (en pseudocódigo):
+En los lenguajes de programación usualmente se mezclan las expresiones booleanas con otras expresiones y objetos a partir de \emph{predicados}, éstos son funciones con algún dominio \( X \) y codominio \( \{ \mathrm{falso},\ \mathrm{verdadero} \} \). Por ejemplo, al escribir un programa en donde se necesite tomar una desición a partir de si un número \( n \) es positivo o negativo se escribiría (en pseudocódigo):
 
-\begin{verbatim}
-Si esPositivo(n), entonces:
-    ...
-De lo contrario:
-    ...
-Fin
-\end{verbatim}
+\begin{algorithmic}
+  \IF{esPositivo(\( n \))}
+  \STATE \( ... \)
+  \ELSE
+  \STATE \( ... \)
+  \ENDIF
+\end{algorithmic}
 
-En este ejemplo \verb!esPositivo! es un predicado que es evaluado a falso si \verb!n! no es positivo y a verdadero si lo es.
+En este ejemplo <<esPositivo>> es un predicado que es evaluado a falso si \verb!n! no es positivo y a verdadero si lo es.
 
-La codificación de valores de verdad y operaciones booleanas es común incluso en lenguajes de programación populares, por ejemplo en C, el tipo \verb!bool! es codificado como un entero, en donde falso es 0 y verdadero cualquier otro entero, a su vez, los enteros son codificados usualmente como secuencias de 32 bits en complemento a dos. Por lo tanto, si \verb!esPositivo! fuera una función de C: \verb!esPositivo(8)! sería evaluado a 1 y \verb!esPositivo(-8)! sería evaluado a 0.
+La codificación de valores de verdad y operaciones booleanas es común incluso en lenguajes de programación populares, por ejemplo en C, el tipo \texttt{bool} es codificado como un entero, en donde falso es 0 y verdadero cualquier otro entero, a su vez, los enteros son codificados usualmente como secuencias de 32 bits en complemento a dos. Por lo tanto, si <<esPositivo>> fuera una función de C: <<esPositivo(8)>> sería evaluado a 1 y <<esPositivo(-8)>> sería evaluado a 0.
 
 Al igual que el cálculo lambda, otras teorías que fundamentan las ciencias de la computación también carecen de expresiones y operaciones booleanas. En el caso de la máquina de Turing los cambios de estado en la ejecución de un programa se determinan a partir de su función de transición y predicados simples de igualdad entre símbolos del alfabeto de cinta se realizan en un paso, sin embargo, predicados mas complejos requieren ser codificados con estados, transiciones y anotaciones en su cinta.
 
@@ -58,7 +58,7 @@ Teniendo los términos lambda que representan la desición de \( P \) ante una o
   \end{align*}
 \end{defn}
 
-Utilizar \( \bs{T} \) y \( \bs{F} \) en términos lambda es similar a imitar a \( P \) y determinar cuando \( O \) es verdadera o falsa. Esto es debido a que se pueden plantear predicados que sean conceptualmente ilógicos, por ejemplo, si \verb!esPositivo! se define de tal manera que sin importar en que valor sea evaluado siempre resulte en falso, los programas que se escriban no van a funcionar suponiendo que \verb!esPositivo! calcula lo que debe de calcular, sin embargo lo importante de codificar el álgebra booleana es poder manipular los valores de falso y verdadero, no representar un término \( P \) que determine verdades absolutas.
+Utilizar \( \bs{T} \) y \( \bs{F} \) en términos lambda es similar a imitar a \( P \) y determinar cuando \( O \) es verdadera o falsa. Esto es debido a que se pueden plantear predicados que sean conceptualmente ilógicos, por ejemplo, si <<esPositivo>> se define de tal manera que sin importar en que valor sea evaluado siempre resulte en falso, los programas que se escriban no van a funcionar suponiendo que <<esPositivo>> calcula lo que debe de calcular, sin embargo lo importante de codificar el álgebra booleana es poder manipular los valores de falso y verdadero, no representar un término \( P \) que determine verdades absolutas.
 
 \subsection{Expresiones booleanas}
 
@@ -326,7 +326,7 @@ Es decir, si \( P \in \{ \bs{F},\ \bs{T} \} \):
 
 \[ P\, M\, N \reduce{β} \begin{cases} M' & P \synteq \bs{T} \\ N' & P \synteq \bs{F} \end{cases} \]
 
-Esta aplicación de un valor de verdad a dos términos lambda cualquiera permite capturar el concepto de una expresión o sentencia condicional, usualmente llamada en los lenguajes de programación como sentencia \verb!if-then-else!.
+Esta aplicación de un valor de verdad a dos términos lambda cualquiera permite capturar el concepto de una expresión o sentencia condicional, usualmente llamada en los lenguajes de programación como sentencia \texttt{if-then-else}.
 
 \begin{defn}[Expresión condicional]
   \label{defn:condicional}
@@ -343,28 +343,32 @@ Esta aplicación de un valor de verdad a dos términos lambda cualquiera permite
 
   Un programa de la forma
 
-\begin{verbatim}
-Si P, entonces:
-    M
-De lo contrario:
-    N
-Fin
-\end{verbatim}
+  \begin{algorithmic}
+    \IF{\( P \)}
+    \STATE \( M \)
+    \ELSE
+    \STATE \( M \)
+    \ENDIF
+  \end{algorithmic}
 
   Puede ser traducido a \( (\bs{\prec}\, P\, M\, N) \)
 \end{defn}
 
 Consideremos la siguiente definición en pseudocódigo de la operación de negación:
 
-\begin{verbatim}
-Negacion (predicado) :=
-    Si predicado, entonces:
-        Regresa Falso
-    De lo contrario:
-        Regresa Verdadero
-    Fin
-Fin
-\end{verbatim}
+\begin{algorithm}
+  \caption{Negación de \( p \)}
+  \label{alg:negacion}
+  \begin{algorithmic}
+    \REQUIRE \( p \in \{ \mathrm{falso},\ \mathrm{verdadero} \} \)
+    \ENSURE \( \lnot p \)
+    \IF{\( p \)}
+    \RETURN falso
+    \ELSE
+    \RETURN verdadero
+    \ENDIF
+  \end{algorithmic}
+\end{algorithm}
 
 El pseudocódigo se traduce al cálculo lambda como
 
@@ -379,19 +383,23 @@ El cuerpo de la abstracción puede ser \( β \)-reducido para obtener el términ
 
 Para la operación de conjunción, se considera el siguiente pseudocódigo:
 
-\begin{verbatim}
-Conjuncion (predicado1, predicado2) :=
-    Si predicado1, entonces:
-        Si predicado2, entonces:
-            Regresa Verdadero
-        De lo contrario:
-            Regresa Falso
-        Fin
-    De lo contrario:
-        Regresa Falso
-    Fin
-Fin
-\end{verbatim}
+\begin{algorithm}
+  \caption{Conjunción de \( p_{1} \) y \( p_{2} \)}
+  \label{alg:conjuncion}
+  \begin{algorithmic}
+    \REQUIRE \( p_{1}, p_{2} \in \{ \mathrm{falso},\ \mathrm{verdadero} \} \)
+    \ENSURE \( p_{1} \land p_{2} \)
+    \IF{\( p_{1} \)}
+    \IF{\( p_{2} \)}
+    \RETURN verdadero
+    \ELSE
+    \RETURN false
+    \ENDIF
+    \ELSE
+    \RETURN falso
+    \ENDIF
+  \end{algorithmic}
+\end{algorithm}
 
 Traducido al cálculo lambda como
 
@@ -409,19 +417,23 @@ Al \( β \)-reducir el cuerpo de la abstracción se obtiene el término de la de
 
 De igual manera, considerando el siguiente pseudocódigo de la operación de disyunción:
 
-\begin{verbatim}
-Disyuncion (predicado1, predicado2) :=
-    Si predicado1, entonces:
-        Regresa Verdadero
-    De lo contrario:
-        Si predicado2, entonces:
-            Regresa Verdadero
-        De lo contrario:
-            Regresa Falso
-        Fin
-    Fin
-Fin
-\end{verbatim}
+\begin{algorithm}
+  \caption{Disyunción de \( p_{1} \) y \( p_{2} \)}
+  \label{alg:disyuncion}
+  \begin{algorithmic}
+    \REQUIRE \( p_{1}, p_{2} \in \{ \mathrm{falso},\ \mathrm{verdadero} \} \)
+    \ENSURE \( p_{1} \lor p_{2} \)
+    \IF{\( p_{1} \)}
+    \RETURN verdadero
+    \ELSE
+    \IF{\( p_{2} \)}
+    \RETURN verdadero
+    \ELSE
+    \RETURN falso
+    \ENDIF
+    \ENDIF
+  \end{algorithmic}
+\end{algorithm}
 
 Se traduce al cálculo lambda como
 
@@ -462,29 +474,29 @@ Utilizando esta técnica, se puede obtener el término lambda para una operació
 
   El procedimiento generalizado es
 
-\begin{verbatim}
-OperacionBooleana(x1, x2, x3, x4) :=
-    Binaria(predicado1, predicado2) :=
-        Si predicado1, entonces:
-            Si predicado2, entonces:
-                Regresa x4
-            De lo contrario:
-                Regresa x3
-            Fin
-        De lo contrario:
-            Si predicado2, entonces:
-                Regresa x2
-            De lo contrario:
-                Regresa x1
-            Fin
-        Fin
-    Fin
-    Regresa Binaria
-Fin
-\end{verbatim}
+  \begin{algorithm}
+    \caption{Operación booleana \( \odot \) dado \( x_{1} \), \( x_{2} \), \( x_{3} \), \( x_{3} \)}
+    \label{alg:bool-bin-gen}
+    \begin{algorithmic}
+      \REQUIRE \( p_{1}, p_{2} \in \{ \mathrm{falso},\ \mathrm{verdadero} \} \)
+      \ENSURE Valor \( x_{i} \) de la tabla de verdad
+      \IF{\( p_{1} \)}
+      \IF{\( p_{2} \)}
+      \RETURN \( x_{4} \)
+      \ELSE
+      \RETURN \( x_{3} \)
+      \ENDIF
+      \ELSE
+      \IF{\( p_{2} \)}
+      \RETURN \( x_{2} \)
+      \ELSE
+      \RETURN \( x_{1} \)
+      \ENDIF
+      \ENDIF
+    \end{algorithmic}
+  \end{algorithm}
 
   Y la traducción al cálculo lambda es
-
   \[ λx_{1}\, x_{2}\, x_{3}\, x_{4}.(λp_{1}\, p_{2}.(\bs{\prec}\, p_{1} (\bs{\prec}\, p_{2}\, x_{4}\, x_{3}) (\bs{\prec}\, p_{2}\, x_{2}\, x_{1}))) \]
   
 \end{defn}
@@ -492,7 +504,6 @@ Fin
 \begin{exmp}[Operaciones \emph{NAND} y \emph{NOR}]
   \label{ejmp:nand-nor}
   Estas operaciones booleanas binarias conforman los conjuntos unitarios \( \{ \mathrm{NAND} \} \) y \( \{ \mathrm{NOR} \} \) los cuales son conjuntos funcionalmene completos, es decir, únicamente con la operación NAND se puede emular cualquier operación booleana y únicamente con la operación NOR se puede emular cualquier operación booleana.
-
   
   La operación \emph{NAND} se denota \( P \uparrow Q \) y tiene la siguiente tabla de verdad
 
@@ -651,41 +662,41 @@ Sea \( \odot \) una operación trivalente binaria con la siguiente tabla de valo
 
 El procedimiento en pseudocódigo que la describe es:
 
-\begin{verbatim}
-OperacionTrivalente(x1, x2, x3, x4, x5, x6, x7, x8, x9) :=
-    Binaria(predicado1, predicado2) :=
-        Si predicado1 es verdadero, entonces:
-            Si predicado2 es verdadero, entonces:
-                Regresa x1
-            Si predicado2 es falso, entonces:
-                Regresa x2
-            Si predicado2 es desconocido, entonces:
-                Regresa x3
-            Fin
-        Si predicado1 es falso, entonces:
-            Si predicado2 es verdadero, entonces:
-                Regresa x4
-            Si predicado2 es falso, entonces:
-                Regresa x5
-            Si predicado2 es desconocido, entonces:
-                Regresa x6
-            Fin
-        Si predicado1 es desconocido, entonces:
-            Si predicado2 es verdadero, entonces:
-                Regresa x7
-            Si predicado2 es falso, entonces:
-                Regresa x8
-            Si predicado2 es desconocido, entonces:
-                Regresa x9
-            Fin
-        Fin
-    Fin
-    Regresa Binaria
-Fin
-\end{verbatim}
+\begin{algorithm}
+  \caption{Operación booleana \( \odot \) dado \( x_{1} \), \( x_{2} \), ... , \( x_{9} \)}
+  \label{alg:op-bin-gen-2}
+  \begin{algorithmic}
+    \REQUIRE \( p_{1}, p_{2} \in \{ \mathrm{verdadero},\ \mathrm{falso},\ \mathrm{desconocido} \} \)
+    \ENSURE Valor \( x_{i} \) de la tabla de verdad
+    \IF{\( p_{1} = \mathrm{verdadero} \)}
+    \IF{\( p_{2} = \mathrm{verdadero} \)}
+    \RETURN \( x_{1} \)
+    \ELSIF{\( p_{2} = \mathrm{falso} \)}
+    \RETURN \( x_{2} \)
+    \ELSIF{\( p_{2} = \mathrm{desconocido} \)}
+    \RETURN \( x_{3} \)
+    \ENDIF
+    \ELSIF{\( p_{1} = \mathrm{falso} \)}
+    \IF{\( p_{2} = \mathrm{verdadero} \)}
+    \RETURN \( x_{4} \)
+    \ELSIF{\( p_{2} = \mathrm{falso} \)}
+    \RETURN \( x_{5} \)
+    \ELSIF{\( p_{2} = \mathrm{desconocido} \)}
+    \RETURN \( x_{6} \)
+    \ENDIF
+    \ELSIF{\( p_{1} = \mathrm{desconocido} \)}
+    \IF{\( p_{2} = \mathrm{verdadero} \)}
+    \RETURN \( x_{7} \)
+    \ELSIF{\( p_{2} = \mathrm{falso} \)}
+    \RETURN \( x_{8} \)
+    \ELSIF{\( p_{2} = \mathrm{desconocido} \)}
+    \RETURN \( x_{9} \)
+    \ENDIF
+    \ENDIF
+  \end{algorithmic}
+\end{algorithm}
 
 Traducido al cálculo lambda como
-
 \[ λx_{1}\, x_{2}\, x_{3}\, x_{4}\, x_{5}\, x_{6}\, x_{7}\, x_{8}\, x_{9}.(λp_{1}\, p_{2}.(\bs{\prec_{3}}\, p_{1}\, R_{1}\, R_{2}\, R_{3})) \]
 
 Donde
@@ -994,6 +1005,18 @@ Esta sección es apropiada para comenzar a relacionar la teoría de autómatas, 
 Expandir el concepto de valores de verdad al de pares ordenados
 
 \subsubsection*{Constructor}
+
+\begin{algorithm}
+  \caption{Construír un par}
+  \begin{algorithmic}
+    \REQUIRE \( a \), \( b \)
+    \ENSURE \( (a,\ b) \)
+
+    \begin{algorithmic}
+      \REQUIRE \( x \in \{ \mathrm{falso},\ \mathrm{verdadero} \} \)
+    \end{algorithmic}
+  \end{algorithmic}
+\end{algorithm}
 
 \begin{verbatim}
 CreaPar (primero, segundo) =

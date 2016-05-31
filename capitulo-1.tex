@@ -139,6 +139,9 @@ En el cálculo lambda se pueden realizar algunas operaciones para transformar ex
 
 En la sección \ref{sec:expresiones} se describió de manera tangencial el acto de \emph{reducir} una aplicación basándonos en la noción de \emph{cambiar} una expresión por otra, en esta sección se describen operaciones basadas en esta misma noción.
 
+\subsection{Sustitución}
+\label{sec:op-sustitucion}
+
 La \emph{sustitución} es la operación que nos permite transformar una expresión cualquiera \( M \) cambiando las apariciones de un átomo \( x \) por alguna otra expresión \( M \), este procedimiento se denota
 
 \[ \subst{M}{x}{N} \]
@@ -179,6 +182,8 @@ el átomo \( x \) que aparece en el cuerpo de la expresión se dice ser una vari
 
 En el ejemplo \ref{exmp:sustitucion3} se pretende sustituir la variable libre \( y \) por una expresión \( x \), lo cual no debería presentar problemas, sin embargo, una sustitución tal cual de \( y \) por \( x \) \emph{introduciría} una referencia a la \( λ x \) de la expresión, la cuál no existía previamente. Con esto se identifica que la operación de sustitución \( \subst{M}{x}{N} \) no debe introducir o eliminar referencias a alguna \( λ \) en \( M \).
 
+\subsection{Cambio de variable ligada}
+\label{sec:op-cambio-var-ligada}
 
 Para resolver el problema presentado en el ejemplo \ref{exmp:sustitucion3} se debe considerar otra operación llamada \emph{cambio de variable ligada}. Se parte de la observación que en una expresión del cálculo lambda, las referencias entre \( λ x \) y las variables \( x \) son más importantes que el símbolo con el que se representa el átomo. En las expresiones simbólicas de funciones sucede lo mismo, al expresar \( f(x)=x^{2} \) y \( f(y)=y^{2} \) hacemos referencia a la misma regla de correspondencia y por lo tanto a la misma función (sin considerar el dominio y el codominio de \( f \)). En el cálculo lambda, cambiar el símbolo que representa el átomo \( x \) en la expresión \( (λx.y) \) por otro símbolo no utilizado como \( z \) nos permite realizar la sustitución sin problemas.
 
@@ -224,6 +229,9 @@ La definición de la operación de sustitución es recursiva y hace uso de la op
   \item \( (λz.\subst{\subst{M}{y}{z}}{x}{N}) \) cuando \( x \) es una variable libre en \( M \) y \( y \) es una variable libre en \( N \).
   \end{itemize}
 \end{itemize}
+
+\subsection{Reducción de aplicaciones}
+\label{sec:op-reduccion}
 
 La operación de \emph{reducción de aplicaciones} es el mecanismo mediante el cual se puede ``concretar'' una abstracción haciendo uso de otra expresión como valor de la variable enlazada. De la misma manera en como se efectúa la evaluación de funciones en la matemática clásica, el concretar una función consiste en sustituir todas las apariciones del argumento por el valor en el que la función es aplicada.
 

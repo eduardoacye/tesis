@@ -1,17 +1,36 @@
-La teoría del cálculo lambda se puede formalizar de diferentes perspectivas, en este trabajo se abordan dos: a partir de la \emph{reducibilidad y convertibilidad} de expresiones y a partir de \emph{sistemas formales}. La primera consiste en definir transformaciones de expresiones mediante procedimientos, mientras que la segunda define axiomas y reglas de inferencia.
+La noción de \emph{generalización} es de suma importancia en el estudio general de funciones, operaciones o transformaciones. Los predicados en la lógica de primer orden, las funciones en la matemática clásica, los algoritmos en la computación y las abstracciones en el cálculo lambda pueden ser considerados como implementaciones del concepto de generalización para los sistemas de los que forman parte y en algunos casos son la motivación original para el desarrollo de las teorías que los fundamentan.
 
-Independientemente de la perspectiva de la formalización, los conceptos son los mismos y las definiciones equivalentes. En ambos casos se formaliza la teoría \( \bs{λ} \), también llamado cálculo-\( λ K β \).
+El estudio de las propiedades generales de las funciones es una de las motivaciones originales del cálculo lambda, sin embargo, este cálculo se formuló de tal manera que es posible abstraer de su propósito original y ser tratado meramente como un sistema formal \cite{Church:LambdaConversion}.
 
-De acuerdo a Barendregt \cite[p.~22]{Barendregt:Bible}, el objeto de estudio principal de la teoría \( \bs{λ} \) es el conjunto de términos lambda módulo convertibilidad, estas nociones serán presentadas en las siguientes subsecciones.
+El presente capítulo tiene el objetivo de formalizar las ideas presentadas en el capítulo \ref{ch:nocion-informal}. La formalización del cálculo lambda se realiza desde dos perspectivas:
+
+\begin{enumerate}
+\item Construyendo una teoría formal, en donde un conjunto de axiomas y reglas de inferencia permiten plantear razonamientos lógicos para demostrar propiedades del cálculo lambda.
+\item Formulando nociones de reducción, de tal manera que mediante procedimientos de transformación de expresiones del cálculo lambda, se estudiar sus propiedades.
+\end{enumerate}
+
+Independientemente de la perspectiva de la formalización, los conceptos son similares, se describe la misma idea general del cálculo lambda y ambos trabajan con el lenguaje formal de sus expresiones.
+
+De acuerdo a Barendregt \cite[p.~22]{Barendregt:Bible}, el objeto de estudio del cálculo lambda es el conjunto de términos lambda módulo convertibilidad. Estos conceptos serán presentados a lo largo de este capítulo.
+
+El contenido de este capítulo está basado en los primeros cuatro capítulos del libro \emph{The Lambda Calculus, Its Syntax and Semantics} de H.P. Barendregt \cite{Barendregt:Bible} y los capítulos 1, 3, 6, 7 y 8 del libro \emph{Lambda Calculus and Combinators, an Introduction} de J.R. Hindley y J.P. Seldin \cite{HindleySeldin:LambdaCalculusAndCombinators} así como el artículo \emph{A Set of Postulates for the Foundation of Logic} y la monografía \emph{The Calculi of Lambda-Conversion} de Alonzo Church \cite{Church:FoundationsLogic,Church:LambdaConversion}.
 
 \section{Términos lambda}
 \label{sec:terminos-lambda}
 
 Esta subsección está basada principalmente en el capítulo 2 de \cite{Barendregt:Bible}.
 
-Los \emph{términos lambda} son las \emph{fórmulas bien formadas} del cálculo lambda, es decir, las expresiones válidas del sistema. El conjunto de todos los términos lambda es un lenguaje formal, denotado como \( Λ \).
+Los \emph{términos lambda} son la formalización de las expresiones descritas en la sección \ref{sec:expresiones}. El conjunto de todos los términos lambda es un lenguaje formal \( Λ \) en donde sus elementos son cadenas compuestas de símbolos de un alfabeto \cite{Hopcroft:Automata}.
 
-El lenguaje \( Λ \) se puede definir de diferentes maneras, a continuación se presenta una definición inductiva y posteriormente una construcción a partir de una gramática libre de contexto.
+El lenguaje \( Λ \) se puede definir de diferentes maneras, a continuación se presenta una definición inductiva y posteriormente una definición basada en una gramática libre de contexto.
+
+\begin{rem}[Notación]\
+  \begin{itemize}
+  \item El símbolo \( \implies \) denota una implicación lógica, \( P \implies Q \) se lee ``Si \( P \), entonces \( Q \)''.
+  \item El símbolo \( \, \longrightarrow\, \) denota una producción en una gramática, \( P \longrightarrow Q \) se lee ``\( P \) produce \( Q \)''.
+  \item El símbolo \( \, \Rightarrow\, \) denota un paso en la derivación de una cadena.
+  \end{itemize}
+\end{rem}
 
 \begin{defn}[Términos lambda]
   El conjunto \( Λ \) tiene elementos que son cadenas conformadas por símbolos en el alfabeto \( Σ=\{\mathtt{(},\ \mathtt{)},\ \mathtt{.},\ λ\} \cup V \), donde \( V \) es un conjunto infinito \( \{v_{0},\ v_{00},\ ... \} \) de variables. \( Λ \) es el conjunto más pequeño que satisface:
@@ -34,7 +53,7 @@ Una definición alternativa de \( Λ \) es haciendo uso de gramáticas libres de
 
 \begin{defn}[Términos lambda]
   El conjunto de términos lambda es el lenguaje generado por la gramática libre de contexto \( G \) con categorías sintácticas \( T \) (términos lambda), \( E \) (aplicaciones), \( F \) (abstracciones) y \( A \) (átomos); símbolos terminales \( \{\mathtt{(},\ \mathtt{)},\ \mathtt{.},\ λ,\ v,\ {}_{0}\} \); símbolo inicial \( T \) y con las siguientes reglas de producción:
-  \label{terminos-cfg}
+  \label{defn:terminos-cfg}
   \begin{subequations}
     \begin{align}
       \label{terminos-cfg:terminos} \tag{a}
@@ -49,19 +68,47 @@ Una definición alternativa de \( Λ \) es haciendo uso de gramáticas libres de
   \end{subequations}
 \end{defn}
 
+Dada una secuencia de símbolos \( x \), se pueden utilizar estas dos definiciones para verificar si \( x \) es un término lambda.
+
+\begin{exmp} Sea \( x = (λv_{0}.(v_{00} (λv_{00}.v_{000}))) \), \( x \in Λ \) ya que
+
+  \begin{description}
+  \item[Por definición inductiva]
+    \begin{align*}
+      v_{000} \in V &\implies v_{000} \in Λ; \\
+      v_{00} \in V,\ v_{000} \in Λ &\implies (λv_{00}.v_{000}) \in Λ,\ v_{00} \in Λ; \\
+      v_{00},\ (λv_{00}.v_{000}) \in Λ &\implies (v_{00} (λv_{00}.v_{000})) \in Λ; \\
+      v_{0} \in V,\ (v_{00} (λv_{00}.v_{000})) \in Λ &\implies (λv_{0}.(v_{00} (λv_{00}.v_{000}))).
+    \end{align*}
+  \item[Por gramática] Se mantienen los espacios en los lados derechos de las producciones de la gramática para ser consistentes, sin embargo, el espacio en blanco no es un símbolo terminal, por lo tanto pueden ser omitidos.
+    \begin{align*}
+      T &\Rightarrow F \Rightarrow (\ λ\ A\ .\ T\ ) \Rightarrow (\ λ\ v_{0}\ .\ T\ ) \Rightarrow (\ λ\ v_{0}\ .\ E\ ) \Rightarrow (\ λ\ v_{0}\ .\ (\ T\ T\ )\ ) \\
+        &\Rightarrow (\ λ\ v_{0}\ .\ (\ A\ T\ )\ ) \Rightarrow (\ λ\ v_{0}\ .\ (\ A_{0}\ T\ )\ ) \Rightarrow (\ λ\ v_{0}\ .\ (\ v_{00}\ T\ )\ ) \\
+        &\Rightarrow (\ λ\ v_{0}\ .\ (\ v_{00}\ F\ )\ ) \Rightarrow (\ λ\ v_{0}\ .\ (\ v_{00}\ (\ λ\ A\ .\ T\ )\ )\ ) \\
+        &\Rightarrow (\ λ\ v_{0}\ .\ (\ v_{00}\ (\ λ\ A_{0}\ .\ T\ )\ )\ ) \Rightarrow (\ λ\ v_{0}\ .\ (\ v_{00}\ (\ λ\ v_{00}\ .\ T\ )\ )\ ) \\
+        &\Rightarrow (\ λ\ v_{0}\ .\ (\ v_{00}\ (\ λ\ v_{00}\ .\ A\ )\ )\ ) \Rightarrow (\ λ\ v_{0}\ .\ (\ v_{00}\ (\ λ\ v_{00}\ .\ A_{0}\ )\ )\ ) \\
+        &\Rightarrow (\ λ\ v_{0}\ .\ (\ v_{00}\ (\ λ\ v_{00}\ .\ A_{00}\ )\ )\ ) \Rightarrow (\ λ\ v_{0}\ .\ (\ v_{00}\ (\ λ\ v_{00}\ .\ v_{000}\ )\ )\ ).
+    \end{align*}
+  \end{description}
+\end{exmp}
+
 Para facilitar la escritura y lectura de los términos lambda, en este trabajo se hacen las siguientes consideraciones sobre la notación:
 
-\begin{itemize}
-\item Cuando se hace referencia a cualquier término lambda se utilizan las letras mayúsculas \( M \), \( N \), \( P \), etc. Es importante establecer que si en un ejemplo, explicación, teorema o demostración se hace referencia a un término lambda con una letra mayúscula, cualquier otra aparición de esta letra hace referencia a este mismo término dentro de ese contexto.
-\item Cuando se hace referencia a cualquier átomo se utilizan las letras minúsculas \( x \), \( y \), \( z \), etc. Al igual que en el punto anterior, la aparición de una letra minúscula en un ejemplo, explicación, teorema o demostración hace referencia al mismo átomo.
-\item Los paréntesis son omitidos de acuerdo a las siguientes equivalencias sintácticas:
-  \begin{itemize}
-  \item \( ((M\, N) P) \synteq M\, N\, P\), en general, se considera la aplicación de términos lambda con asociación a la izquierda. Se tiene que tener cuidado con respetar esta regla, por ejemplo \( (M(N(O\, P))) \synteq M(N(O\, P)) \not\synteq M\, N\, O\, P \).
-  \item \( (λx.(M N)) \synteq λx.(M N) \), en general, se puede escribir una abstracción omitiendo los paréntesis externos. Es importante escribir de manera explícita los paréntesis en algunos casos, por ejemplo \( ((λx.(M\, N)) O) \synteq (λx.(M\, N)) O \not\synteq λx.(M\, N)O \) ya que el lado derecho de la equivalencia es sintácticamente equivalente a \( (λx.((M\, N)O)) \).
-  \item \( (λx.(λy.(λz.M))) \synteq (λx\, y\, z.M) \), en general, si el cuerpo de una abstracción es también una abstracción, se pueden agrupar las variables ligadas y enlazadas. Éste abuso de notación es consistente con la reducción de funciones de varias variables usada por Schönfinkel \cite{Schonfinkel:Varargs}.
-  \end{itemize}
-\item El símbolo \( \synteq \) denota la equivalencia sintáctica entre dos términos lambda.
-\end{itemize}
+\begin{enumerate}
+\item \label{enum:notacion:1} El símbolo \( \synteq \) denota la equivalencia sintáctica entre dos términos lambda, esta equivalencia contempla las consideraciones de este listado.
+\item \label{enum:notacion:2} Cuando se hace referencia a cualquier término lambda se utilizan las letras mayúsculas \( M \), \( N \), \( P \), etc. Es importante establecer que si en un ejemplo, explicación, teorema o demostración se hace referencia a un término lambda con una letra mayúscula, cualquier otra aparición de esta letra hace referencia a este mismo término dentro de ese contexto.
+\item \label{enum:notacion:3} Cuando se hace referencia a cualquier átomo se utilizan las letras minúsculas \( x \), \( y \), \( z \), etc. Al igual que en el punto anterior, la aparición de una letra minúscula en un ejemplo, explicación, teorema o demostración hace referencia al mismo átomo.
+\item \label{enum:notacion:4} Los paréntesis son omitidos de acuerdo a las siguientes equivalencias sintácticas:
+  \begin{enumerate}
+  \item \label{enum:notacion:4a} \( ((M\, N) P) \synteq M\, N\, P\), en general, se considera la aplicación de términos lambda con asociación a la izquierda. Se tiene que tener cuidado con respetar esta regla, por ejemplo \( (M(N(O\, P))) \synteq M(N(O\, P)) \not\synteq M\, N\, O\, P \).
+  \item \label{enum:notacion:4b} \( (λx.(M N)) \synteq λx.(M N) \), en general, se puede escribir una abstracción omitiendo los paréntesis externos. Es importante escribir de manera explícita los paréntesis en algunos casos, por ejemplo \( ((λx.(M\, N)) O) \synteq (λx.(M\, N)) O \not\synteq λx.(M\, N)O \) ya que el lado derecho de la equivalencia es sintácticamente equivalente a \( (λx.((M\, N)O)) \).
+  \item \label{enum:notacion:4c} \( (λx.(λy.(λz.M))) \synteq (λx\, y\, z.M) \), en general, si el cuerpo de una abstracción es también una abstracción, se pueden agrupar las variables ligadas y enlazadas. Éste abuso de notación es consistente con la reducción de funciones de varias variables usada por Schönfinkel \cite{Schonfinkel:Varargs}.
+  \end{enumerate}
+\item \label{enum:notacion:5} Para hacer referencia a una secuencia con una cantidad arbitraria de términos lambda se usa la notación \( \vec{x}=x_{1},...,x_{n} \) cuando es secuencia de átomos y \( \vec{M}=M_{1},...,M_{n} \) cuando es secuencia de términos lambda en general. Con esta notación se puede abreviar la consideración de \ref{enum:notacion:4a} como
+  \[ ((\, ...\, ((M_{1}\, M_{2}) M_{3})\, ...\, ) M_{n}) \synteq \vec{M} \]
+  y la consideración de \ref{enum:notacion:4c} como
+  \[ (λx_{1}.(λx_{2}.(λx_{3}.\, ...\, (λx_{n}.M)\, ...\, ))) \synteq (λ\vec{x}.M) \]
+\end{enumerate}
 
 A continuación se muestran ejemplos de términos lambda asociados a términos sintácticamente equivalentes pero escritos con abuso de notación:
 
@@ -77,11 +124,7 @@ A continuación se muestran ejemplos de términos lambda asociados a términos s
   \end{align*}
 \end{exmp}
 
-Para hacer referencia a una secuencia con una cantidad arbitraria de términos lambda se usa la notación \( \vec{x}=x_{1},...,x_{n} \) cuando es secuencia de átomos y \( \vec{M}=M_{1},...,M_{n} \) cuando es secuencia de términos lambda en general. Con esta notación se puede abreviar
-
-\[ λ\vec{x}.M \synteq λx_{1}\, x_{2}\, ...\, x_{n}.M \]
-
-\[ M \vec{N} \synteq M\, N_{1}\, N_{2}\, ...\, N_{n} \]
+\subsection{Longitud}
 
 En algunas demostraciones realizadas por inducción, se usa la expresión ``inducción sobre \( M \)'' para referirse a la inducción sobre la \emph{longitud} de \( M \).
 
@@ -95,9 +138,11 @@ En algunas demostraciones realizadas por inducción, se usa la expresión ``indu
   \end{align*}
 \end{defn}
 
-Por ejemplo, la longitud del término lambda \( x(λy.y\, u\, x) \) es \( 5 \).
+Por ejemplo, la longitud del término lambda \( (x(λy.y\, u\, x)) \) es \( 5 \).
 
-Una cuestión importante al momento de demostrar un teorema o definir un concepto por inducción sobre un término lambda es que usualmente la inducción matemática relaciona proposiciones con números naturales. Sin embargo es posible tener dos términos diferentes \( M \) y \( N \) tal que \( \|M\| = \|N\| \), por ejemplo \( λx.x \) y \( z\, z \) tienen longitud \( 2 \). La inducción sobre la longitud de un término lambda considera la estructura del término, de tal manera que para una proposición \( P \) sobre un término lambda \( M \), los casos base de la inducción son aquellos en donde la estructura no es compuesta (en átomos cuya longitud siempre es \( 1 \)) y la hipótesis de inducción considera que \( P \) se cumple para los subtérminos de \( M \) cuya longitud siempre es estrictamente menor que \( \|M\| \).
+Una cuestión importante al momento de demostrar un teorema o definir un concepto por inducción sobre un término lambda es que usualmente la inducción matemática relaciona proposiciones con números naturales. Sin embargo es posible tener dos términos diferentes \( M \) y \( N \) tal que \( \|M\| = \|N\| \), por ejemplo \( (λx.x) \) y \( (z\, z) \) tienen longitud \( 2 \). La inducción sobre la longitud de un término lambda considera la estructura del término, de tal manera que para una proposición \( P \) sobre un término lambda \( M \), los casos base de la inducción son aquellos en donde la estructura no es compuesta (en átomos cuya longitud siempre es \( 1 \)) y la hipótesis de inducción considera que \( P \) se cumple para los subtérminos de \( M \) cuya longitud siempre es estrictamente menor que \( \|M\| \).
+
+\subsection{Subtérminos}
 
 El concepto de aparición de un término lambda en otro se formaliza a partir del concepto de subtérmino:
 
@@ -124,13 +169,15 @@ Cuando \( λx.M \) es un subtérmino de \( P \), se dice que la aparición \( M 
   Sea \( M \synteq λx.x\, y (λz.y) \):
   \label{exmp:subterminos-apariciones}
   \begin{itemize}
-  \item el término \( x\, y \subset M \);
+  \item el término \( (x\, y) \subset M \);
   \item el átomo \( z \not\subset M \) pero si aparece en \( M \), debido a que \( z \) acompaña a \( λ \);
-  \item el término \( y(λz.y) \) a pesar de parecer ser un subtérmino de \( M \) no lo es, esto se puede corroborar escribiendo los términos sin el abuso de notación: \( y(λz.y) \synteq (y(λz.y)) \) y \( M \synteq λx.x y(λz.y) \synteq (λx.((x\, y)(λz.y))) \), en este caso, la clave está en observar la estructura de la aplicación \( x\, y(λz.y) \).
+  \item el término \( y(λz.y) \) a pesar de parecer ser un subtérmino de \( M \) no lo es, esto se puede corroborar escribiendo los términos sin el abuso de notación: \( y(λz.y) \synteq (y(λz.y)) \) y \( M \synteq λx.x y(λz.y) \synteq (λx.((x\, y)(λz.y))) \), en este caso, la clave está en observar la estructura de la aplicación \( (x\, y(λz.y)) \).
   \item Las apariciones de \( x \) y \( λz.y \) en \( M \) son disjuntas.
-  \item Los términos \( x \) y \( (x\, y) \) son subtérminos activos de \( M \), mientras que \( y \) y \( λz.y \) son subtérminos pasivos.
+  \item Los términos \( x \) y \( (x\, y) \) son subtérminos activos de \( M \), mientras que \( y \) y \( (λz.y) \) son subtérminos pasivos.
   \end{itemize}
 \end{exmp}
+
+\subsection{Clasificación de términos}
 
 Las variables de un término lambda se pueden clasificar de diferentes maneras de acuerdo a la posición que tienen en el término y a los subtérminos a los que se asocian.
 
@@ -138,13 +185,13 @@ Las variables de un término lambda se pueden clasificar de diferentes maneras d
   La aparición de un átomo \( x \) en un término \( P \) es llamada:
   \label{defn:clasifvar}
   \begin{itemize}
-  \item \emph{variable ligada} si es un subtérmino de \( M \) en una abstracción \( λx.M \) en \( P \);
-  \item \emph{variable enlazada} si y sólo si es la \( x \) que acompaña la \( λ \) de \( λx.M \) en \( P \);
+  \item \emph{variable ligada} si es un subtérmino de \( M \) en una abstracción \( (λx.M) \) en \( P \);
+  \item \emph{variable enlazada} si y sólo si es la \( x \) que acompaña la \( λ \) de \( (λx.M) \) en \( P \);
   \item \emph{variable libre} en otro caso.
   \end{itemize}
 \end{defn}
 
-Es importante aclarar la diferencia entre un átomo \( x \) como subtérmino de un término lambda \( M \) y una aparición de \( x \) en \( M \): la aparición hace referencia a la posición de \( x \) en \( M \). Por ejemplo, en el término lambda \( (λx.x) x \) la primera aparición del átomo \( x \) es una variable enlazada, la segunda aparición es una variable ligada y la tercera aparición es una variable libre.
+Es importante aclarar la diferencia entre un átomo \( x \) como subtérmino de un término lambda \( M \) y una aparición de \( x \) en \( M \): la aparición hace referencia a la posición de \( x \) en \( M \). Por ejemplo, en el término lambda \( ((λx.x) x) \) la primera aparición del átomo \( x \) es una variable enlazada, la segunda aparición es una variable ligada y la tercera aparición es una variable libre.
 
 \begin{exmp}
   Sea \( M \synteq x(λy.x\, y) \):
@@ -169,7 +216,7 @@ En la definición formal de algunos conceptos es conveniente hacer referencia a 
 \end{defn}
 
 \begin{exmp}
-  Consideremos los términos \( x(λx.x\, y\, z) \), \( λx\, y\, z.y \) y \( (λy.x)λx.y\).
+  Consideremos los términos \( (x(λx.x\, y\, z)) \), \( (λx\, y\, z.y) \) y \( ((λy.x)λx.y) \).
   \label{exmp:varlib}
   \begin{itemize}
   \item \( \FV(x(λx.x\, y\, z)) = \{x,\ y,\ z\} \);
@@ -205,9 +252,9 @@ Todos los términos lambda en \( Λ \setminus Λ^{0} \) tienen al menos una clau
 \begin{exmp} \label{exmp:clausura}
   Consideremos el términio lambda \( M \synteq λz.x\, y\, z \)
   \begin{itemize}
-  \item \( λx\, y.λz.x\, y\, z \) es una clausura de \( M \);
-  \item \( λy\, x\, z.x\, y\, z \) es una clausura de \( M \);
-  \item \( λz\, x\, y.λz.x\, y\, z \) no es una clausura de \( M \).
+  \item \( (λx\, y.λz.x\, y\, z) \) es una clausura de \( M \);
+  \item \( (λy\, x\, z.x\, y\, z) \) es una clausura de \( M \);
+  \item \( (λz\, x\, y.λz.x\, y\, z) \) no es una clausura de \( M \).
   \end{itemize}
 \end{exmp}
 
@@ -224,14 +271,16 @@ Al escribir términos lambda con repetición de aplicaciones suele ser convenien
 \end{align*}
 
 \begin{exmp}
-  El término lambda \( λf\, x.f(f(f(f\, x))) \) se puede escribir de manera compacta como
+  El término lambda \( (λf\, x.f(f(f(f\, x)))) \) se puede escribir de manera compacta como
   \[ λf\, x.f^{4}\, x \]
 \end{exmp}
 
 \begin{exmp}
-  El término lambda \( λf\, x.f\, x\, x\, x\, x \) se puede escribir de manera compacta como
+  El término lambda \( (λf\, x.f\, x\, x\, x\, x) \) se puede escribir de manera compacta como
   \[ λf\, x.f\, x^{\sim 4} \]
 \end{exmp}
+
+\subsection{Sustitución}
 
 \begin{defn}[Sustitución]
   \label{defn:sustitucion}
@@ -334,10 +383,13 @@ Si \( C[\quad] \) es un contexto y \( M \in Λ \), entonces \( C[M] \) denota el
   \end{align*}
 \end{exmp}
 
-\section{Teoría \( \bs{λKβ} \)}
-\label{sec:teorialambda}
+\section{Los cálculos de la conversión lambda}
+\label{sec:conversion-lambda}
 
 El objetivo principal de esta subsección es presentar una formalización del cálculo lambda descrito en el capítulo \ref{ch:nocion-informal} desde el punto de vista de teorías formales. El nombre técnico de la teoría formal principal de este trabajo es \( \bs{λKβ} \), se pueden realizar modificaciones y extensiones a esta teoría y los siguientes conceptos permiten estudiar las implicaciones de estos cambios.
+
+\subsection{Teorías formales}
+\label{sec:teorias-formales}
 
 Una \emph{teoría formal} \( \mathcal{T} \) es una tripleta \( (\mathcal{F},\mathcal{A},\mathcal{R}) \) donde
 
@@ -366,6 +418,49 @@ Si consideramos un conjunto \( Γ \subseteq \mathcal{F} \), una \emph{deducción
 En caso que la deducción no tenga suposiciones, se dice que es una \emph{demostración} y que \( B \) es un \emph{teorema}. Cuando \( Γ = \emptyset \) se escribe
 
 \[ \mathcal{T} \vdash B \]
+
+\subsubsection{Convertibilidad}
+\label{sec:teorias-convertibilidad}
+
+\paragraph{Pendiente} Aqui va redactada parte del contenido de la teoría \( λKβ \)
+
+\subsubsection{Equivalencia de teorías}
+\label{sec:equivalenciateorias}
+
+Ver \cite{HindleySeldin:LambdaCalculusAndCombinators}, \cite{Troelstra:ProofTheory}, \cite{Mendelson:Logic}.
+
+Sea \( \mathcal{T} \) una teoría formal, se considera extender \( \mathcal{T} \) añadiendo una nueva regla \( \mathcal{R} \). Es natural preguntarse primer si \( \mathcal{R} \) es derivable en \( \mathcal{T} \). Pero ¿qué significa exactamente que \( \mathcal{R} \) sea derivable?
+
+\begin{defn}[Regla]
+  \label{defn:regla}
+  Una regla \( \mathcal{R} \) de \( n \) premisas es un conjunto de secuencias \( \mathcal{S}_{0},...,\mathcal{S}_{n-1},\mathcal{S} \) de longitud \( n+1 \), donde \( \mathcal{S}_{i},\mathcal{S} \) son elementos de deducción. Un elemento de \( \mathcal{R} \) se dice ser una \emph{instancia} de \( \mathcal{R} \). Una instancia se denota
+
+  \[ \infer{\mathcal{S}}{\mathcal{S}_{0} & \mathcal{S}_{1} & ... & \mathcal{S}_{n-1}} \]
+
+  \( \mathcal{S} \) es la \emph{conclusión} y las \( \mathcal{S}_{i} \) son las \emph{premisas}. Un \emph{axioma} es una regla de cero premisas. Instancias de axiomas aparecen en árboles de deducción simplemente como vértices superiores o de manera equivalente como elementos de deducción con una línea sobre ellos:
+
+  \[ \infer{S}{} \]
+\end{defn}
+
+\begin{defn}[Reglas derivables y admisibles]
+  \label{defn:regla-derivable}
+  Sea \( \mathcal{R} \) una regla determinada por una función \( φ \colon \mathcal{F}^{n} \to \mathcal{F} \). Se dice que \( \mathcal{R} \) es \emph{derivable} en \( \mathcal{T} \) si y solo si, por cada instancia de \( \mathcal{R} \), su conclusión es deducible en \( \mathcal{T} \) a partir de sus premisas, es decir
+
+  \[ \mathcal{T},\ A_{1},...,A_{n} \vdash B \].
+
+  Se dice que \( \mathcal{R} \) es \emph{admisible} en \( \mathcal{T} \) si y solo si, añadir \( \mathcal{R} \) a \( \mathcal{T} \) como una nueva regla no va a incrementar la cantidad de teoremas de \( \mathcal{T} \).
+
+  Se dice que \( \mathcal{R} \) es \emph{correcta} en \( \mathcal{T} \) si y solo si, por cada instancia de \( \mathcal{R} \), si todas las premisas son demostrables en \( \mathcal{T} \), entonces también es demostrable la conclusión, es decir, si y solo si
+
+  \[ (\mathcal{T} \vdash A_{1}),...,(\mathcal{T} \vdash A_{n}) \implies (\mathcal{T} \vdash B) \]
+
+  Finalmente, una sola fórmula \( C \), como un nuevo axioma propuesto, se dice ser tanto \emph{derivable} como \emph{admisible} en \( \mathcal{T} \) si y solo si
+
+  \[ \mathcal{T} \vdash C \]
+\end{defn}
+
+\subsection{Teoría \( \bs{λKβ} \)}
+\label{sec:teorialambda}
 
 A continuación se presenta la definición de la teoría \( \bs{λKβ} \), debido a que esta teoría será la que se estudia principalmente en este trabajo, se acorta el nombre \( \bs{λKβ} \) a \( \bs{λ} \).
 
@@ -422,6 +517,7 @@ En el caso particular de la teoría \( \bs{λKβ} \) se considera que \( \mathca
 
 Al inicio de esta sección, se menciona que el objeto de estudio de la teoría \( \bs{λ} \) es el conjunto de términos lambda módulo convertibilidad. La \emph{convertibilidad} es la noción básica de equivalencia de términos lambda y las ecuaciones de la teoría \( \bs{λ} \) formalizan esta noción.
 
+\subsubsection{Redactar en teorías formales}
 La relación binaria \( = \) en las ecuaciones de la teoría, es una relación de equivalencia y al igual que toda relación de equivalencia es \emph{reflexiva}, \emph{simétrica} y \emph{transitiva}, en \( = \) estas propiedades son descritas en las reglas \eqref{teorialambda:rho}, \eqref{teorialambda:sigma} y \eqref{teorialambda:tau} respectivamente. La \emph{clase de equivalencia} de un término lambda \( M \) con respecto a esta relación de equivalencia es el conjunto de todos los términos lambda \( N \) tal que \( M = N \), denotado:
 
 \[ [M]_{\bs{λ}} = \{ N \in Λ \mid M = N \} \]
@@ -433,6 +529,8 @@ La frase ``módulo convertibilidad'' se refiere al conjunto de todas las clases 
   \label{defn:demostrabilidad}
   La demostrabilidad en \( \bs{λ} \) de una ecuación \( M = N \) es denotada \( \bs{λ} \vdash M = N \) e implica que \( M = N \) es un teorema en \( \bs{λ} \). En caso que la ecuación sea demostrable se dice que \( M \) y \( N \) son términos \emph{convertibles}.
 \end{defn}
+
+\subsubsection{Parte de teoría \( \bs{λKβ} \)}
 
 \begin{exmp}
   \label{exmp:demostrabilidad}
@@ -490,6 +588,9 @@ La frase ``módulo convertibilidad'' se refiere al conjunto de todas las clases 
   \caption{Árbol de deducción para la ecuación del ejemplo \ref{exmp:demostrabilidad}}
   \label{fig:demostrabilidad}
 \end{figure}
+
+\subsection{Combinadores \( \bs{SKI} \)}
+\label{sec:combinadores-ski}
 
 \begin{defn}[Combinadores SKI]
   \label{defn:ski}
@@ -627,10 +728,8 @@ La demostración de la proposición \ref{prop:ski} consiste en la construcción 
 
 Resultados sobre términos lambda en la teoría \( \bs{λKβ} \).
 
-\section{Otras teorías}
-\label{sec:otras-teorias}
-
-\subsection{\( \bs{λIβ} \)}
+\subsection{Teoría \( \bs{λIβ} \)}
+\label{sec:lambda-i-beta}
 
 En el artículo \cite{Church:LambdaConversion}, Alonzo Church presenta una definición del cálculo lambda con un conjunto restringido de términos lambda. A la teoría que considera a este conjunto restringido de términos lambda (denotado \( Λ_{I} \)) y los axiomas y reglas de inferencia de la teoría \( \bs{λ} \) cambiando \( Λ \) por \( Λ_{I} \) se le conoce como teoría \( \bs{λIβ} \) (o el cálculo \( λI \)).
 
@@ -685,42 +784,7 @@ Cuando se plantea formalizar un cálculo lambda que sea extensional, surge la pr
 
 La regla \eqref{extensionalidad:zeta} dice, de manera informal, que si \( M \) y \( N \) tienen el mismo efecto sobre un objeto no especificado \( x \), entonces \( M = N \). La regla \eqref{extensionalidad:ext} tiene una infinidad de premisas, una por cada término lambda \( P \), por lo tanto, las deducciones en donde se involucre esta regla serán árboles infinitos.
 
-\subsection{Equivalencia de teorías}
-\label{sec:equivalenciateorias}
-
-Comparación entre teorías formales, énfasis en \( η \) contra \( ζ \) contra \( ext \).
-
-Ver \cite{HindleySeldin:LambdaCalculusAndCombinators}, \cite{Troelstra:ProofTheory}, \cite{Mendelson:Logic}.
-
-Sea \( \mathcal{T} \) una teoría formal, se considera extender \( \mathcal{T} \) añadiendo una nueva regla \( \mathcal{R} \). Es natural preguntarse primer si \( \mathcal{R} \) es derivable en \( \mathcal{T} \). Pero ¿qué significa exactamente que \( \mathcal{R} \) sea derivable?
-
-\begin{defn}[Regla]
-  \label{defn:regla}
-  Una regla \( \mathcal{R} \) de \( n \) premisas es un conjunto de secuencias \( \mathcal{S}_{0},...,\mathcal{S}_{n-1},\mathcal{S} \) de longitud \( n+1 \), donde \( \mathcal{S}_{i},\mathcal{S} \) son elementos de deducción. Un elemento de \( \mathcal{R} \) se dice ser una \emph{instancia} de \( \mathcal{R} \). Una instancia se denota
-
-  \[ \infer{\mathcal{S}}{\mathcal{S}_{0} & \mathcal{S}_{1} & ... & \mathcal{S}_{n-1}} \]
-
-  \( \mathcal{S} \) es la \emph{conclusión} y las \( \mathcal{S}_{i} \) son las \emph{premisas}. Un \emph{axioma} es una regla de cero premisas. Instancias de axiomas aparecen en árboles de deducción simplemente como vértices superiores o de manera equivalente como elementos de deducción con una línea sobre ellos:
-
-  \[ \infer{S}{} \]
-\end{defn}
-
-\begin{defn}[Reglas derivables y admisibles]
-  \label{defn:regla-derivable}
-  Sea \( \mathcal{R} \) una regla determinada por una función \( φ \colon \mathcal{F}^{n} \to \mathcal{F} \). Se dice que \( \mathcal{R} \) es \emph{derivable} en \( \mathcal{T} \) si y solo si, por cada instancia de \( \mathcal{R} \), su conclusión es deducible en \( \mathcal{T} \) a partir de sus premisas, es decir
-
-  \[ \mathcal{T},\ A_{1},...,A_{n} \vdash B \].
-
-  Se dice que \( \mathcal{R} \) es \emph{admisible} en \( \mathcal{T} \) si y solo si, añadir \( \mathcal{R} \) a \( \mathcal{T} \) como una nueva regla no va a incrementar la cantidad de teoremas de \( \mathcal{T} \).
-
-  Se dice que \( \mathcal{R} \) es \emph{correcta} en \( \mathcal{T} \) si y solo si, por cada instancia de \( \mathcal{R} \), si todas las premisas son demostrables en \( \mathcal{T} \), entonces también es demostrable la conclusión, es decir, si y solo si
-
-  \[ (\mathcal{T} \vdash A_{1}),...,(\mathcal{T} \vdash A_{n}) \implies (\mathcal{T} \vdash B) \]
-
-  Finalmente, una sola fórmula \( C \), como un nuevo axioma propuesto, se dice ser tanto \emph{derivable} como \emph{admisible} en \( \mathcal{T} \) si y solo si
-
-  \[ \mathcal{T} \vdash C \]
-\end{defn}
+\paragraph{Pendiente} Comparación entre teorías formales, énfasis en \( η \) contra \( ζ \) contra \( ext \).
 
 \section{Teoría de reducción}
 \label{sec:teoriareduccion}

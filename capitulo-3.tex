@@ -27,6 +27,8 @@ Al igual que el cálculo lambda, otras teorías que fundamentan las ciencias de 
 
 En el álgebra booleana, los valores de las expresiones son falso y verdadero. El nombre de estos valores no es de relevancia y usualmente falso se representa como 0 y verdadero como 1. El aspecto importante de estos valores es que son distintos y si un valor \( x \) no es uno, entonces es el otro.
 
+\paragraph{Revisar} Me parece que suena confusa la analogía, el objetivo es plantear la idea de no codificar falso y verdadero como un valor en particular, si no como una desición.
+
 Podemos ignorar la representación concreta de estos valores y pensar en una situación hipotética: Una persona omnisciente y muda llamada \( P \) puede decirme si una oración que le digo es falsa o verdadera dándole una manzana y una pera; si me regresa la manzana significa que la oración es verdadera y si me regresa la pera significa que la oración es falsa. En este planteamiento irreal e hipotético, no fué necesario conocer la estructura de la verdad y la falsedad, solo fué necesario tener a alguien que tomara una desición (en este caso \( P \)) y proveer dos objetos que podemos distinguir entre sí (en este caso la manzana y la pera). Las desiciones de esta persona pueden ser los conceptos de falso y verdadero si nunca podemos conocer los valores booleanos.
 
 Detrás del concepto de falso y verdadero, está el concepto de \emph{desición}, la codificación que se desarrolla está basada en este concepto y aparece en \cite[p.~133]{Barendregt:Bible}.
@@ -738,6 +740,8 @@ El cálculo lambda se puede extender de tal manera que nos permita inferir verda
 
   En el estudio de teorías ilativas, la interpretación de \( \mathit{i}\bs{λ} \vdash M \) y \( \mathit{i}\bs{λ} \vdash M = N \) es ``La fórmula \( M \) es verdadera'' y ``La fórmula \( M = N \) es verdadera'' respectivamente.
 \end{defn}
+
+\paragraph{Revisar} La sección será muy extensa si desarrollo todos los pendientes planteados, sería conveniente no plantear la paradoja de Kleene-Rosser y considerar solo la de Curry, mostrar que cualquier término puede ser inferido, omitir la definibilidad de las constantes en términos de \( \bs{Q} \) y \( \bs{Ξ} \) y mencionar la compensación entre expresibilidad e inconsistencia, enlazando las ideas de computabilidad y teoría de tipos.
 
 \subsubsection{Teoría \( \mathit{i}\bs{λ}_{KR} \)}
 

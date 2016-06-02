@@ -6,7 +6,7 @@ El presente capítulo tiene el objetivo de formalizar las ideas presentadas en e
 
 \begin{enumerate}
 \item Construyendo una teoría formal, en donde un conjunto de axiomas y reglas de inferencia permiten plantear razonamientos lógicos para demostrar propiedades del cálculo lambda.
-\item Formulando nociones de reducción, de tal manera que mediante procedimientos de transformación de expresiones del cálculo lambda, se estudiar sus propiedades.
+\item Formulando nociones de reducción, de tal manera que mediante procedimientos de transformación de expresiones del cálculo lambda, se puedan estudiar sus propiedades.
 \end{enumerate}
 
 Independientemente de la perspectiva de la formalización, los conceptos son similares, se describe la misma idea general del cálculo lambda y ambos trabajan con el lenguaje formal de sus expresiones.
@@ -47,14 +47,26 @@ El lenguaje \( Λ \) se puede definir de diferentes maneras, a continuación se 
   \end{subequations}
 \end{defn}
 
-Cada una de estas tres reglas corresponde a las tres clases de términos lambda: la regla \eqref{terminos:atomos} define a todos los elementos de \( V \) como términos lambda, a estas variables se les llama \emph{átomos}; la regla \eqref{terminos:abstracciones} define a las cadenas de la forma \( (λx.M) \) (donde \( x \) es un átomo y \( M \) es un término lambda) como términos lambda, a estos términos se les llama \emph{abstracciones}; la regla \eqref{terminos:aplicaciones} define a las cadenas de la forma \( (M\, N) \) (donde \( M \) y \( N \) son términos lambda) como términos lambda, a estos términos se les llama \emph{aplicaciones}.
+Cada uno de estos tres incisos corresponde a las tres clases de términos lambda:
 
-Una definición alternativa de \( Λ \) es haciendo uso de gramáticas libres de contexto:
+\begin{description}
+\item[\eqref{terminos:atomos}] establece que todo elemento de \( V \) es un término lambda a los cuales se les llama \emph{átomos};
+\item[\eqref{terminos:abstracciones}] establece que las cadenas de la forma \( (λx.M) \) son términos lambda, donde \( x \) es un átomo y \( M \) es cualquier término lambda, a estos términos se les llama \emph{abstracciones};
+\item[\eqref{terminos:aplicaciones}] establece que las cadenas de la forma \( (M\, N) \) son términos lambda, donde \( M \) y \( N \) son términos lambda cualesquiera, a estos términos se les llama \emph{aplicaciones}.
+\end{description}
+
+En el estudio usual de lenguajes formales \cite{Hopcroft:Automata}, \( Λ \) pertenece a la clase de lenguajes libres de contexto y puede ser definido de la siguiente manera:
 
 \begin{defn}[Términos lambda]
-  El conjunto de términos lambda es el lenguaje generado por la gramática libre de contexto \( G \) con categorías sintácticas \( T \) (términos lambda), \( E \) (aplicaciones), \( F \) (abstracciones) y \( A \) (átomos); símbolos terminales \( \{\mathtt{(},\ \mathtt{)},\ \mathtt{.},\ λ,\ v,\ {}_{0}\} \); símbolo inicial \( T \) y con las siguientes reglas de producción:
   \label{defn:terminos-cfg}
-  \begin{subequations}
+  El conjunto de términos lambda es el lenguaje generado por la gramática libre de contexto \( G \) conformado por
+
+  \begin{description}
+  \item[categorías sintácticas] \( T \), \( E \), \( F \) y \( A \), las cuales denotan las reglas para derivar términos lambda, aplicaciones, abstracciones y átomos respectivamente;
+  \item[símbolos terminales] \( \{\mathtt{(},\ \mathtt{)},\ \mathtt{.},\ λ,\ v,\ {}_{0}\} \), los cuales son los símbolos que conforman a las cadenas en \( Λ \);
+  \item[símbolo inicial] \( T \), el cual es el símbolo del que se derivan todos los términos lambda;
+  \item[reglas de producción]
+    \begin{subequations}
     \begin{align}
       \label{terminos-cfg:terminos} \tag{a}
       T & \rightarrow E\ \mid\ F\ \mid\ A \\
@@ -66,11 +78,12 @@ Una definición alternativa de \( Λ \) es haciendo uso de gramáticas libres de
       E & \rightarrow \mathtt{(}\ T\ T\ \mathtt{)}
     \end{align}
   \end{subequations}
+  \end{description}
 \end{defn}
 
-Dada una secuencia de símbolos \( x \), se pueden utilizar estas dos definiciones para verificar si \( x \) es un término lambda.
+Dada una secuencia de símbolos \( M \), se pueden utilizar estas dos definiciones para verificar si \( M \) es o no un término lambda. En el caso de la definición inductiva, se debe presentar un razonamiento que pruebe que las partes de la cadena satisface la definición \ref{defn:terminos}. En el caso de la gramática libre de contexto \ref{defn:terminos-cfg} se debe presentar una derivación de la cadena a partir de la categoría sintáctica \( T \).
 
-\begin{exmp} Sea \( x = (λv_{0}.(v_{00} (λv_{00}.v_{000}))) \), \( x \in Λ \) ya que
+\begin{exmp} Sea \( M = (λv_{0}.(v_{00} (λv_{00}.v_{000}))) \), la cadena \( M \) es un término lambda ya que
 
   \begin{description}
   \item[Por definición inductiva]
@@ -92,7 +105,25 @@ Dada una secuencia de símbolos \( x \), se pueden utilizar estas dos definicion
   \end{description}
 \end{exmp}
 
-Para facilitar la escritura y lectura de los términos lambda, en este trabajo se hacen las siguientes consideraciones sobre la notación:
+\begin{exmp} Sea \( N = ((λv_{00}.v_{0}\, v_{00}) v_{0}) \), la cadena \( N \) no es un término lambda ya que
+
+  \begin{description}
+  \item[Por definición inductiva] Ya que \( Λ \) se definió como el \emph{conjunto más pequeño}, se demuestra que \( N \not\in Λ \) de la siguiente manera
+    \begin{align*}
+      (λv_{00}.v_{0}\, v_{00}), v_{0} \in Λ &\implies ((λv_{00}.v_{0}\, v_{00}) v_{0}) \in Λ; \\
+      v_{00} \in V,\ v_{0}\, v_{00} \in Λ &\implies (λv_{00}.v_{0}\, v_{00}) \in Λ; \\
+      v_{0}\, v_{00} \not\in Λ &\therefore ((λv_{00}.v_{0}\, v_{00}) v_{0}) \not\in Λ.
+    \end{align*}
+  \item[Por gramática] La gramática no es ambigua, realizando una derivación por la izquierda
+    \begin{align*}
+      T &\Rightarrow E \Rightarrow (\ T\ T\ ) \Rightarrow (\ F\ T\ ) \Rightarrow (\ (\ λ\ A\ .\ T\ )\ T\ ) \\
+        &\Rightarrow (\ (\ λ\ A_{0}\ .\ T\ )\ T\ ) \Rightarrow (\ (\ λ\ v_{00}\ .\ T\ )\ T\ ) \\
+        &\nRightarrow (\ (\ λ\ A\ .\ v_{0}\, v_{00}\ )\ T\ ).
+    \end{align*}
+  \end{description}
+\end{exmp}
+
+La sintaxis del cálculo lambda es uniforme, lo cual permite identificar su estructura con facilidad y evitar ambigüedades, sin embargo, suele ser tedioso escribir términos largos debido al extenso uso de paréntesis. Es por esto que en este trabajo se hacen las siguientes consideraciones sobre la notación:
 
 \begin{enumerate}
 \item \label{enum:notacion:1} El símbolo \( \synteq \) denota la equivalencia sintáctica entre dos términos lambda, esta equivalencia contempla las consideraciones de este listado.
@@ -101,16 +132,25 @@ Para facilitar la escritura y lectura de los términos lambda, en este trabajo s
 \item \label{enum:notacion:4} Los paréntesis son omitidos de acuerdo a las siguientes equivalencias sintácticas:
   \begin{enumerate}
   \item \label{enum:notacion:4a} \( ((M\, N) P) \synteq M\, N\, P\), en general, se considera la aplicación de términos lambda con asociación a la izquierda. Se tiene que tener cuidado con respetar esta regla, por ejemplo \( (M(N(O\, P))) \synteq M(N(O\, P)) \not\synteq M\, N\, O\, P \).
-  \item \label{enum:notacion:4b} \( (λx.(M N)) \synteq λx.(M N) \), en general, se puede escribir una abstracción omitiendo los paréntesis externos. Es importante escribir de manera explícita los paréntesis en algunos casos, por ejemplo \( ((λx.(M\, N)) O) \synteq (λx.(M\, N)) O \not\synteq λx.(M\, N)O \) ya que el lado derecho de la equivalencia es sintácticamente equivalente a \( (λx.((M\, N)O)) \).
+  \item \label{enum:notacion:4b} \( (λx.(M N)) \synteq λx.(M N) \), en general, se puede escribir una abstracción omitiendo los paréntesis externos. Es necesario escribir de manera explícita los paréntesis en algunos casos, por ejemplo \( ((λx.(M\, N)) O) \synteq (λx.(M\, N)) O \not\synteq λx.(M\, N)O \) ya que el lado derecho de la equivalencia es sintácticamente equivalente a \( (λx.((M\, N)O)) \).
   \item \label{enum:notacion:4c} \( (λx.(λy.(λz.M))) \synteq (λx\, y\, z.M) \), en general, si el cuerpo de una abstracción es también una abstracción, se pueden agrupar las variables ligadas y enlazadas. Éste abuso de notación es consistente con la reducción de funciones de varias variables usada por Schönfinkel \cite{Schonfinkel:Varargs}.
   \end{enumerate}
 \item \label{enum:notacion:5} Para hacer referencia a una secuencia con una cantidad arbitraria de términos lambda se usa la notación \( \vec{x}=x_{1},...,x_{n} \) cuando es secuencia de átomos y \( \vec{M}=M_{1},...,M_{n} \) cuando es secuencia de términos lambda en general. Con esta notación se puede abreviar la consideración de \ref{enum:notacion:4a} como
   \[ ((\, ...\, ((M_{1}\, M_{2}) M_{3})\, ...\, ) M_{n}) \synteq \vec{M} \]
   y la consideración de \ref{enum:notacion:4c} como
   \[ (λx_{1}.(λx_{2}.(λx_{3}.\, ...\, (λx_{n}.M)\, ...\, ))) \synteq (λ\vec{x}.M) \]
+\item Al escribir términos lambda con repetición de aplicaciones suele ser conveniente utilizar una notación más compacta. Cuando se aplica \( n \) veces un término \( F \) por la izquierda a otro término \( M \) se denota \( F^{n}\, M \). Cuando se aplica \( n \) veces un término \( M \) por la derecha a otro término \( F \) se denota \( F\, M^{\sim n}\). Por ejemplo, el término \( (λf\, x.f(f(f(f\, x)))) \) se puede denotar como \( (λf,\ x.f^{4}\, x) \) y el término \( (λf\, x.f\, x\, x\, x\, x) \) se puede denotar como \( (λf\, x.f\, x^{\sim 4}) \). La definición inductiva de esta notación es:
+\begin{align*}
+  F^{n+1}\, M & \synteq F (F^{n}\, M) \\
+  F^{0}\, M & \synteq M
+\end{align*}
+\begin{align*}
+  F\, M^{\sim n+1} & \synteq (F\, M^{\sim n}) M \\
+  F\, M^{\sim 0} & \synteq F
+\end{align*}
 \end{enumerate}
 
-A continuación se muestran ejemplos de términos lambda asociados a términos sintácticamente equivalentes pero escritos con abuso de notación:
+Inicialmente, estos abusos de notación pueden resultar confusos, sin embargo, al escribir términos lambda complejos resulta conveniente acortarlos. A continuación se muestran ejemplos de términos lambda asociados a términos sintácticamente equivalentes pero escritos con abuso de notación:
 
 \begin{exmp}
   \label{exmp:notacion}
@@ -124,12 +164,12 @@ A continuación se muestran ejemplos de términos lambda asociados a términos s
   \end{align*}
 \end{exmp}
 
-\subsection{Longitud}
+\subsection{Estructura}
 
-En algunas demostraciones realizadas por inducción, se usa la expresión ``inducción sobre \( M \)'' para referirse a la inducción sobre la \emph{longitud} de \( M \).
+Dado un término lambda \( M \) es deseable poder cuantificar algunas propiedades de acuerdo a su estructura, la medida mas común es la de \emph{longitud}. Esta propiedad resulta importante en los razonamientos inductivos, por ejemplo, al plantear una demostración se suele usar la expresión ``por inducción sobre \( M \)'' la cual técnicamente se refiere a una inducción sobre la longitud de \( M \).
 
 \begin{defn}[Longitud]
-  La longitud de un término lambda, denotado como \( \| M \| \), es la cantidad de apariciones de átomos en el término lambda, se determina a partir de la estructura del término lambda como:
+  La longitud de un término lambda \( M \), denotada como \( \| M \| \), es la cantidad de apariciones de átomos en \( M \), se determina a partir de la estructura del término lambda como:
   \label{defn:longitud}
   \begin{align*}
     \|x\| & = 1 \\
@@ -138,16 +178,27 @@ En algunas demostraciones realizadas por inducción, se usa la expresión ``indu
   \end{align*}
 \end{defn}
 
-Por ejemplo, la longitud del término lambda \( (x(λy.y\, u\, x)) \) es \( 5 \).
+Debido a que la definición considera la cantidad de átomos en \( M \) y la longitud de un átomo es \( 1 \), se infiere que para cualquier término lambda \( M \), su longitud será estrictamente mayor a cero. Una implicación de esta observación es que al ``desbaratar'' la longitud de un término lambda de acuerdo a su estructura, en el caso de que \( M \) sea una aplicación o una abstracción, la longitud de sus partes es estríctamente menor a su longitud.
 
-Una cuestión importante al momento de demostrar un teorema o definir un concepto por inducción sobre un término lambda es que usualmente la inducción matemática relaciona proposiciones con números naturales. Sin embargo es posible tener dos términos diferentes \( M \) y \( N \) tal que \( \|M\| = \|N\| \), por ejemplo \( (λx.x) \) y \( (z\, z) \) tienen longitud \( 2 \). La inducción sobre la longitud de un término lambda considera la estructura del término, de tal manera que para una proposición \( P \) sobre un término lambda \( M \), los casos base de la inducción son aquellos en donde la estructura no es compuesta (en átomos cuya longitud siempre es \( 1 \)) y la hipótesis de inducción considera que \( P \) se cumple para los subtérminos de \( M \) cuya longitud siempre es estrictamente menor que \( \|M\| \).
+\begin{exmp} A continuación se presenta el procedimiento para calcular la longitud del término \( M \synteq (x(λy.y\, u\, x)) \) siguiendo la definición \ref{defn:longitud}
+  \begin{align*}
+    \| M \| &= \| (x(λy.y\, u\, x)) \| = \| (x (λy.((y\, u) x))) \\
+            &= \| x \| + \| (λy.((y\, u) x)) \| = 1 + \| (λy.((y\, u) x)) \| \\
+            &= 1 + ( 1 + \| ((y\, u) x) \|  ) = 2 + \| ((y\, u) x) \| \\
+            &= 2 + \| (y\, u) \| + \| x \| = 2 + \| (y\, u) \| + 1 = 3 + \| (y\, u) \| \\
+            &= 3 + \| y \| + \| u \| = 3 + 1 + 1 \\
+            &= 5
+  \end{align*}
+\end{exmp}
 
-\subsection{Subtérminos}
+Una cuestión importante al momento de demostrar un teorema o definir un concepto por inducción sobre un término lambda es que usualmente la inducción matemática relaciona proposiciones con números naturales. Sin embargo es posible tener dos términos diferentes \( M \) y \( N \) tal que \( \|M\| = \|N\| \), por ejemplo \( (λx.x) \) y \( (z\, z) \) tienen longitud \( 2 \).
 
-El concepto de aparición de un término lambda en otro se formaliza a partir del concepto de subtérmino:
+La inducción sobre la longitud de un término lambda considera la estructura del término, de tal manera que para una proposición \( P \) sobre un término lambda \( M \), los casos base de la inducción son aquellos en donde la estructura no es compuesta (en átomos cuya longitud siempre es \( 1 \)) y la hipótesis de inducción considera que \( P \) se cumple para los subtérminos de \( M \) cuya longitud siempre es estrictamente menor que \( \|M\| \).
+
+En la definición de longitud se habla de la cantidad de \emph{apariciones} de átomos en \( M \), el concepto de aparición de \( M \) en \( N \) para cualesquiera \( M \) y \( N \) se formaliza a partir del concepto de \emph{subtérmino}.
 
 \begin{defn}[Subtérmino]
-  \( M \) es un subtérmino de \( N \), denotado \( M \subset N \) si \( M \in \Sub(N) \) es la colección de subtérminos de \( N \) definida de manera inductiva como
+  \( M \) es un subtérmino de \( N \), denotado \( M \subset N \) si \( M \in \Sub(N) \), donde \( \Sub(N) \) es la colección de subtérminos de \( N \) definida de manera inductiva como
   \label{defn:subtermino}
   \begin{align*}
     \Sub(x) & = \{ x \} \\
@@ -157,29 +208,37 @@ El concepto de aparición de un término lambda en otro se formaliza a partir de
 \end{defn}
 
 \begin{defn}[Aparición]
-  La aparición de \( M \) en \( N \) implica que \( M \subset N \) o que \( M \) es \emph{el} átomo del argumento de una abstracción en \( N \).
+  La aparición de \( M \) en \( N \) implica que \( M \subset N \) o que \( M \) es \emph{el} argumento de una abstracción en \( N \).
   \label{defn:aparicion}
 \end{defn}
 
-Un subtérmino \( N \) de \( M \) puede aparecer varias veces en \( M \), cuando dos subtérminos \( N_{1} \) y \( N_{2} \) de \( M \) no tienen apariciones de átomos en común, se dice que son \emph{disjuntas}. Cuando \( N \) es subtérmino de \( M \) se le llama \emph{activo} si aparece en una aplicación de la forma \( N\, Z \), de lo contrario, se le llama \emph{pasivo}.
+Usualmente se habla de la aparición de \( M \) en \( N \) para referirse a una subtérmino en particular en \( N \), sin embargo, un subtérmino pude \emph{aparecer} varias veces en un término. Algunas clasificaciones de subtérminos son:
 
-Cuando \( λx.M \) es un subtérmino de \( P \), se dice que la aparición \( M \) es el \emph{alcance} de la aparición del átomo \( x \) que acompaña a la \( λ \).
+\begin{itemize}
+\item Si \( M_{1} \) y \( M_{2} \) son subtérminos de \( N \) y no tienen átomos en común, se dice que son términos \emph{disjuntos} de \( N \), ya que si esta condición se cumple \( \Sub(M_{1}) \cap \Sub(M_{2}) = \emptyset \);
+\item Si \( M \subset N \) y \( (M\, Z) \subset N \) se dice que \( M \) es un término \emph{activo} en \( N \), de lo contrario, se le llama \emph{pasivo};
+\item Si \( M \subset N \) y \( (λx.M) \subset N \), se dice que la aparición \( M \) es el \emph{alcance} de la aparición del átomo \( x \) que acompaña a la \( λ \).
+\end{itemize}
 
 \begin{exmp}
   Sea \( M \synteq λx.x\, y (λz.y) \):
   \label{exmp:subterminos-apariciones}
   \begin{itemize}
   \item el término \( (x\, y) \subset M \);
-  \item el átomo \( z \not\subset M \) pero si aparece en \( M \), debido a que \( z \) acompaña a \( λ \);
+  \item el átomo \( z \not\subset M \) pero si aparece en \( M \), debido a que \( z \) acompaña a una \( λ \);
   \item el término \( y(λz.y) \) a pesar de parecer ser un subtérmino de \( M \) no lo es, esto se puede corroborar escribiendo los términos sin el abuso de notación: \( y(λz.y) \synteq (y(λz.y)) \) y \( M \synteq λx.x y(λz.y) \synteq (λx.((x\, y)(λz.y))) \), en este caso, la clave está en observar la estructura de la aplicación \( (x\, y(λz.y)) \).
   \item Las apariciones de \( x \) y \( λz.y \) en \( M \) son disjuntas.
   \item Los términos \( x \) y \( (x\, y) \) son subtérminos activos de \( M \), mientras que \( y \) y \( (λz.y) \) son subtérminos pasivos.
   \end{itemize}
 \end{exmp}
 
-\subsection{Clasificación de términos}
+Los conceptos de longitud y de subtérmino nos permiten razonar de manera clara sobre la estructura de los términos lambda y con la clasificación de los subtérminos se puede caracterizar el rol que juegan las partes de un término en la estructura general.
 
-Las variables de un término lambda se pueden clasificar de diferentes maneras de acuerdo a la posición que tienen en el término y a los subtérminos a los que se asocian.
+\subsection{Clasificación}
+
+A continuación se presentan algunos criterios para clasificar partes de los términos lambda y las propiedades que tienen los términos de acuerdo a su clasificación.
+
+Al considerar las apariciones de átomos en un término lambda, es conveniente diferenciar a los átomos sintácticamente iguales dependiendo de el papel que juegan en el término.
 
 \begin{defn}[Clasificación de variables]
   La aparición de un átomo \( x \) en un término \( P \) es llamada:
@@ -191,18 +250,21 @@ Las variables de un término lambda se pueden clasificar de diferentes maneras d
   \end{itemize}
 \end{defn}
 
-Es importante aclarar la diferencia entre un átomo \( x \) como subtérmino de un término lambda \( M \) y una aparición de \( x \) en \( M \): la aparición hace referencia a la posición de \( x \) en \( M \). Por ejemplo, en el término lambda \( ((λx.x) x) \) la primera aparición del átomo \( x \) es una variable enlazada, la segunda aparición es una variable ligada y la tercera aparición es una variable libre.
+La diferencia entre un átomo \( x \subset M \) y una aparición de \( x \) en \( M \) es que la aparición hace referencia a una variable en particular nombrada \( x \) en una parte específica de la estructura de \( M \). Por ejemplo, en el término lambda \( ((λx.x) x) \) la primera aparición del átomo \( x \) es una variable enlazada, la segunda aparición es una variable ligada y la tercera aparición es una variable libre.
+
+Cuando se abordó el concepto de reducción en la sección \ref{sec:op-reduccion} la distinción entre una variable libre y una ligada era importante ya que las variables libres no podían ser sustituídas en la reducción ya que el procedimiento relacionaba únicamente a las variables ligadas en el alcance de una abstracción activa.
 
 \begin{exmp}
   Sea \( M \synteq x(λy.x\, y) \):
   \label{exmp:clasifvar}
   \begin{itemize}
   \item El átomo \( x \) aparece como variable libre dos veces en \( M \);
-  \item El átomo \( y \) aparece como variable ligada en \( M \).
+  \item El átomo \( y \) aparece como variable ligada en \( M \);
+  \item El átomo \( y \) aparece como la variable enlazada de la abstracción.
   \end{itemize}
 \end{exmp}
 
-En la definición formal de algunos conceptos es conveniente hacer referencia a las variables libres de un término lambda:
+En la definición formal de algunos conceptos es conveniente hacer referencia a todas las variables libres de un término lambda:
 
 \begin{defn}[Variables libres]
   El conjunto de variables libres de un término lambda \( M \) se denota \( \FV(M) \) y se define de manera inductiva como:
@@ -241,7 +303,7 @@ De tal manera que:
 
 \[ Λ^{0}=Λ^{0}(\emptyset) \]
 
-Todos los términos lambda en \( Λ \setminus Λ^{0} \) tienen al menos una clausura en \( Λ^{0} \).
+Si consideramos un término \( M \) con variables libres, se puede encontrar otro término \( N \in Λ^{0} \) similar a \( M \), al cual se le llama clausura de \( M \).
 
 \begin{defn}[Clausura] \label{defn:clausura}
   La clausura de un término lambda \( M \) con \( \FV(M) \not= \emptyset \) es un término lambda
@@ -250,7 +312,7 @@ Todos los términos lambda en \( Λ \setminus Λ^{0} \) tienen al menos una clau
 \end{defn}
 
 \begin{exmp} \label{exmp:clausura}
-  Consideremos el términio lambda \( M \synteq λz.x\, y\, z \)
+  Sea \( M \synteq λz.x\, y\, z \)
   \begin{itemize}
   \item \( (λx\, y.λz.x\, y\, z) \) es una clausura de \( M \);
   \item \( (λy\, x\, z.x\, y\, z) \) es una clausura de \( M \);
@@ -258,29 +320,8 @@ Todos los términos lambda en \( Λ \setminus Λ^{0} \) tienen al menos una clau
   \end{itemize}
 \end{exmp}
 
-Al escribir términos lambda con repetición de aplicaciones suele ser conveniente utilizar una notación más compacta. Cuando se aplica \( n \) veces un término \( F \) por la izquierda a otro término \( M \) se denota \( F^{n}\, M \). Cuando se aplica \( n \) veces un término \( M \) por la derecha a otro término \( F \) se denota \( F\, M^{\sim n}\). La definición formal de esta notación es:
-
-\begin{align*}
-  F^{n+1}\, M & \synteq F (F^{n}\, M) \\
-  F^{0}\, M & \synteq M
-\end{align*}
-
-\begin{align*}
-  F\, M^{\sim n+1} & \synteq (F\, M^{\sim n}) M \\
-  F\, M^{\sim 0} & \synteq F
-\end{align*}
-
-\begin{exmp}
-  El término lambda \( (λf\, x.f(f(f(f\, x)))) \) se puede escribir de manera compacta como
-  \[ λf\, x.f^{4}\, x \]
-\end{exmp}
-
-\begin{exmp}
-  El término lambda \( (λf\, x.f\, x\, x\, x\, x) \) se puede escribir de manera compacta como
-  \[ λf\, x.f\, x^{\sim 4} \]
-\end{exmp}
-
-\subsection{Sustitución}
+\subsection{Sustitución de términos}
+\paragraph{Pendiente explicar el resto de la sección}
 
 \begin{defn}[Sustitución]
   \label{defn:sustitucion}

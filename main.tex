@@ -27,15 +27,30 @@
 
 \newcommand{\bs}{\boldsymbol}
 
-\theoremstyle{plain}%
+\makeatletter
+\newtheoremstyle{indented}
+  {3pt}% space before
+  {3pt}% space after
+  {\addtolength{\@totalleftmargin}{2em}
+   \addtolength{\linewidth}{-2em}
+   \parshape 1 2em \linewidth}% body font
+  {}% indent
+  {\bfseries}% header font
+  {.}% punctuation
+  {.5em}% after theorem header
+  {}% header specification (empty for default)
+\makeatother
+
+\theoremstyle{indented}
+%\theoremstyle{plain}%
 \newtheorem{thm}{Teorema}[section]
 \newtheorem{lem}[thm]{Lema}
 \newtheorem{prop}[thm]{Proposición}
 \newtheorem*{cor}{Corolario}
-\theoremstyle{definition}
+%\theoremstyle{definition}
 \newtheorem{defn}{Definición}[section]
 \newtheorem{exmp}{Ejemplo}[section]
-\theoremstyle{remark}
+%\theoremstyle{remark}
 \newtheorem*{rem}{Observación}
 \newtheorem*{note}{Nota}
 \newtheorem{case}{Caso}

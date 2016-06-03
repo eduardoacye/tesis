@@ -778,6 +778,180 @@ Constantes \( C = \{ \bs{F},\ \bs{Q},\ \bs{E},\ \bs{Ξ},\ \bs{Π},\ \bs{P} \} \)
 \section{Aritmética}
 \label{sec:aritmetica}
 
+\paragraph{Plan} La sección se dividirá en 4: numerales de Church, aritmética elemental, hiper-operaciones e iteración.
+
+Sobre la aritmética, axiomas de Peano y aritmética en lenguajes de programación y máquinas de Turing.
+
+\subsection{Numerales de Church}
+\label{sec:numerales}
+
+\paragraph{Relación conceptual}
+\begin{itemize}
+\item Valor binario \( \mapsto \) desición binaria
+\item Valor \( n \)-ario \( \mapsto \) desición \( n \)-aria
+\item Número natural \( \mapsto \) ¡¡¡contar!!!
+\end{itemize}
+
+\paragraph{Planteando propuestas}
+¿Cómo se puede representar el concepto de contar? Algo tiene que realizarse \( n \) veces y debe permitir \textbf{composición}.
+
+\[ λx.((\, ...\, (x\, x)\, ...\, x) x) \]
+
+Si \( x \) es lo que se realiza, sería hacer \( x \), \( n - 1\) veces, partiendo de que se aplica el término a una abstracción.
+
+\[ λx\, y.((\, ...\, (x\, y)\, ...\, y) y) \]
+
+Si \( x \) es una abstracción, deberá ``recordar'' que tantas veces ha sido aplicada a un mismo término.
+
+\[ λx\, y.(x(x(x\, ...\, (x y) \, ...\, ))) \]
+
+Este es el numeral de Church.
+
+\[ \bar{n} \synteq λf\, x.f^{n}\, x \]
+
+\paragraph{ejemplos}
+\begin{align*}
+  \bar{0} &\synteq λf\, x.f^{0}\, x \synteq λf\, x.x \\
+  \bar{1} &\synteq λf\, x.f^{1}\, x \synteq λf\, x.f\, x \\
+  \bar{2} &\synteq λf\, x.f^{2}\, x \synteq λf\, x.f (f\, x) \\
+  \bar{3} &\synteq λf\, x.f^{3}\, x \synteq λf\, x.f (f (f\, x))
+\end{align*}
+
+Notar que \( \bar{0} \convertible{α} \bs{F} \) de la definición del anterior capítulo.
+
+
+\paragraph{Reducción con numerales}
+¿Cómo se reducen los numerales?
+
+\[ \bar{n} = (λf\, x.\bar{n}\, f\, x) \]
+
+En este caso, se tiene acceso a las variables enlazadas del numeral, el ámbito de el término puede ser diferente a \( (\bar{n}\, f\, x) \).
+
+Cuando solo se enlaza la segunda variable es \( (\bar{n}\, f) = (λx.f^{n}\, x) \), cuando solo se enlaza la primer variable es \( (λf.\bar{n}\, f\, x) = (λf.f^{n}\, x) \). ¿Que se puede lograr cuando la constante es un termino cualequiera? Se tiene \( (λx.M^{n}\, x) \) y \( (λf.f^{n}\, N) \).
+
+Reducción de combinación de aplicaciones.
+
+\begin{align*}
+  \bar{0}\, \bar{n} = λx.x = \bs{I}
+\end{align*}
+
+\begin{align*}
+  \bar{1}\, \bar{0} &= λx.\bar{0}\, x = λx\, y.y = \bar{0} \\
+  \bar{1}\, \bar{1} &= λx.\bar{1}\, x = λx\, y.x\, y = \bar{1} \\
+  \bar{1}\, \bar{2} &= λx.\bar{2}\, x = λx\, y.x(x\, y) = \bar{2} \\
+  \bar{1}\, \bar{3} &= λx.\bar{3}\, x = λx\, y.x(x(x\, y)) = \bar{3}
+\end{align*}
+
+\begin{align*}
+  \bar{2}\, \bar{0} &= λx.\bar{0} (\bar{0}\, x) = λx.\bar{0}\, \bs{I} = λx.\bs{I} = λx\, y.y = \bar{0} \\
+  \bar{2}\, \bar{1} &= λx.\bar{1} (\bar{1}\, x) = λx.\bar{1} (λy.x\, y) = λx\, z.(λy.x\, y) z = λx\, z.x\, z = \bar{1} \\
+  \bar{2}\, \bar{2} &= λx.\bar{2} (\bar{2}\, x) = λx.(λf\, x.f(f x)) (λy.y(y\, x)) \\
+                    &= ...
+\end{align*}
+
+Se vuelve tedioso reducir las aplicaciones, ¿Cómo se pudiera simplificar?... ¡SPOILER! Hay una explosión combinatoria \( (\bar{m}\, \bar{n}) = \bar{n^{m}} \)
+
+\subsection{Operaciones elementales}
+\label{sec:aritmetica-elemental}
+
+\paragraph{Pregunta inicial} ¿Qué operación es más fundamental, la suma o el sucesor?
+
+\paragraph{Sucesor} \( \bs{1_{+}} \)
+\begin{enumerate}
+\item \( λn.λf\, x.f(n\, f\, x) \)
+\item \( λn.λf\, x.n\, f (f\, x) \)
+\end{enumerate}
+
+\paragraph{Suma} \( \bs{+} \)
+\begin{enumerate}
+\item \( λm\, n.λf\, x.n\, f (m\, f\, x) \) el sucesor es caso particular en esta suma
+\item \( λm\, n.n\,  \bs{1_{+}}\, m\)
+\end{enumerate}
+
+\paragraph{Multiplicación} \( \bs{\times} \)
+\begin{enumerate}
+\item \( λm\, n.λf\, x.n(m\, f) x \)
+\item \( λm\, n.n (\bs{+}\, m) \bar{0} \)
+\end{enumerate}
+
+\paragraph{Exponenciación} \( \bs{\wedge} \)
+\begin{enumerate}
+\item \( λm\, n.λf\, x.(n\, m)f\, x = λm\, n.n\, m \)
+\item \( λm\, n.n (\bs{\times}\, m) \bar{1} \)
+\end{enumerate}
+
+\paragraph{Predecesor} \( \bs{1_{-}} \)
+\[ (λn.(λx\, y.(((n (λg.(λw.(w (g\, x))))) (λu.y)) (λa.a)))) \]
+Presentar derivación del término
+
+\subsection{Iteración}
+\label{sec:iteracion}
+
+Si un procedimiento \( F \) se realiza \( n \) veces, se puede iterar el procedimiento utilizando la estructura de los numerales
+
+\[ (λf\, x.f^{n}\, x) F \reduce{} λx.F^{n}\, x \]
+
+El estado inicial del cómputo es un término al que se le aplicará esta abstracción.
+
+La codificación de un estado con \( n \) componentes se realiza utilizando la codificación de valores n-valentes de la sección de lógica, se pueden considerar como \( n \)-tuplas para \( n \) fijo a lo largo de la iteración.
+
+\begin{align*}
+  \bs{v_{1}} &\synteq λx_{1}\, ...\, x_{n}.x_{1} \\
+  \bs{v_{2}} &\synteq λx_{1}\, ...\, x_{n}.x_{2} \\
+             &\cdots \\
+  \bs{v_{n}} &\synteq λx_{1}\, ...\, x_{n}.x_{n}
+\end{align*}
+
+Un estado del cómputo es un término \( s \synteq λp.p\, s_{1}\, s_{2}\, ...\, s_{n} \) el cual espera ser aplicado a algún \( \bs{v_{i}} \), de tal manera que la componente \( s_{i} \) se obtiene al reducir \( (s\, v_{i}) \).
+
+El constructor de un estado es \( s^{*} \synteq λs_{1}\, s_{2}\, ...\, s_{n}.λp.p\, s_{1}\, s_{2}\, ...\, s_{n} \).
+
+Por ejemplo, codificar la operación factorial, primero se determina la forma del estado
+
+\[ (indice, acumulador) = s \synteq λp.p\, i\, a \]
+
+El índice de un estado se obtiene con el término \( \bs{i} \synteq (λi\, a.i) \), y el acumulador de un estado se obtiene con el término \( \bs{a} \synteq (λi\, a.a) \). Estos son equivalentes a los valores de verdad.
+
+El constructor del estado es \( s^{*} \synteq λi\, a.λp.p\, i\, a \).
+
+La operación factorial para un numeral \( n \) comienza en el estado \( s \synteq (s^{*}\, n\, 1) \) y en un paso computa el estado \( (s^{*}\, (\bs{1_{-}}\, n) (\bs{\times} (s\, \bs{i}) (s\, \bs{a}))) \) el cual decrementa el índice en 1 y aumenta el acumulador multiplicando el acumulador del estado anterior por el índice actual.
+
+La codificación quedaría
+
+\[ \bs{!} \synteq λn.n(λs.(s^{*} (\bs{1_{0}}\, (s\, \bs{i})) (\bs{\times} (s\, \bs{i}) (s\, \bs{a}))))(s^{*}\, n\, 1) \]
+
+No es necesario el combinador \( Y \) para hacer magia...
+
+El algoritmo equivalente al término del factorial presentado aqui es
+
+\begin{algorithm}
+  \caption{factorial}
+  \begin{algorithmic}
+    \REQUIRE \( n \in \mathbb{N} \)
+    \ENSURE \( n! \)
+    \STATE \( s \leftarrow (n,\ 1) \)
+    
+    \COMMENT{La siguiente iteración mantiene una invariante \( n! = a\times i! \) en el estado \( (i,\ a) \)}
+    \FOR{\( i = 1 \) \TO \( n \)}
+    \STATE \( s \leftarrow (s_{1}-1,\ s_{2} \times s_{1})  \)
+    \ENDFOR
+
+    \RETURN \( s_{2} \)
+  \end{algorithmic}
+\end{algorithm}
+
+\subsection{Hiperoperaciones}
+\label{sec:hiperoperaciones}
+
+\paragraph{Presentar segundos incisos en la lista de términos para las operaciones básicas}
+
+¿Se podrá abstraer el concepto de esta repetición de operaciones?
+
+Tetración, et al. Notación de Knuth, hiperoperaciones inversas ( resta, división, raíz/logaritmo )
+
+\paragraph{Aquí comienzan las notas anteriores}
+
+
 Así como se pueden representar los valores de verdad de falso y verdadero en el cálculo lambda, también podemos encontrar representaciones para los números naturales. En esta sección se aborda una representación llamada numerales de Church, también se presentan términos lambda para operar números naturales con esta representación.
 
 Para cada \( n \in \mathbb{N} \) el numeral de Church de \( n \) es un término lambda denotado como \( \bar{n} \) definido como:

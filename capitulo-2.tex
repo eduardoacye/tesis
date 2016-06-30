@@ -140,14 +140,20 @@ La sintaxis del cálculo lambda es uniforme, lo cual permite identificar su estr
   y la consideración de \ref{enum:notacion:4c} como
   \[ (λx_{1}.(λx_{2}.(λx_{3}.\, ...\, (λx_{n}.M)\, ...\, ))) \synteq (λ\vec{x}.M) \]
 \item Al escribir términos lambda con repetición de aplicaciones suele ser conveniente utilizar una notación más compacta. Cuando se aplica \( n \) veces un término \( F \) por la izquierda a otro término \( M \) se denota \( F^{n}\, M \). Cuando se aplica \( n \) veces un término \( M \) por la derecha a otro término \( F \) se denota \( F\, M^{\sim n}\). Por ejemplo, el término \( (λf\, x.f(f(f(f\, x)))) \) se puede denotar como \( (λf,\ x.f^{4}\, x) \) y el término \( (λf\, x.f\, x\, x\, x\, x) \) se puede denotar como \( (λf\, x.f\, x^{\sim 4}) \). La definición inductiva de esta notación es:
-\begin{align*}
-  F^{n+1}\, M & \synteq F (F^{n}\, M) \\
-  F^{0}\, M & \synteq M
-\end{align*}
-\begin{align*}
-  F\, M^{\sim n+1} & \synteq (F\, M^{\sim n}) M \\
-  F\, M^{\sim 0} & \synteq F
-\end{align*}
+  \begin{align}
+    \label{eq:abuso:F}
+    \begin{split}
+      F^{n+1}\, M & \synteq F (F^{n}\, M) \\
+      F^{0}\, M & \synteq M
+    \end{split}
+  \end{align}
+  \begin{align}
+    \label{eq:abuso:M}
+    \begin{split}
+      F\, M^{\sim n+1} & \synteq (F\, M^{\sim n}) M \\
+      F\, M^{\sim 0} & \synteq F
+    \end{split}
+  \end{align}
 \end{enumerate}
 
 Inicialmente, estos abusos de notación pueden resultar confusos, sin embargo, al escribir términos lambda complejos resulta conveniente acortarlos. A continuación se muestran ejemplos de términos lambda asociados a términos sintácticamente equivalentes pero escritos con abuso de notación:
@@ -763,6 +769,47 @@ La demostración de la proposición \ref{prop:ski} consiste en la construcción 
   \end{align*}
   
 \end{proof}
+
+\paragraph{Algoritmo para compilar \( Λ^{0} \bs{\mapsto} \{ \bs{S},\ \bs{K},\ \bs{I} \}^{+} \)}
+
+\begin{algorithm}
+  \caption{SKI}
+  \begin{algorithmic}
+    \REQUIRE \( M \in Λ^{0} \)
+    \ENSURE \( M' \in \{ \bs{S},\ \bs{K},\ \bs{I} \} \)
+    
+    \STATE \( M' \leftarrow M \)
+    \STATE \( \mathcal{L} \leftarrow \{ A \in \Sub(M') \mid A \synteq λx.N \} \)
+    
+    \WHILE{\( \mathcal{L} \not= \emptyset \)}
+    
+    \STATE \( A \leftarrow λx.N \in \mathcal{L} \mid \| λx.N \| \leq A', \forall A' \in \mathcal{L} \)
+    
+    \IF{\( A \synteq λx.a \)}
+    \IF{\( a \synteq x \)}
+    \STATE \( M'[A] \leftarrow \bs{I} \)
+    \ELSIF{\( a \not\synteq x \)}
+    \STATE \( M'[A] \leftarrow \bs{K}\, a \)
+    \ENDIF
+    \ELSIF{\( A \synteq λx.P\, Q \)}
+    \IF{\( x \not\in \FV(P) \land x \not\in \FV(Q) \)}
+    \STATE \( M'[A] \leftarrow \bs{S} (\bs{K}\, P) (\bs{K}\, Q) \)
+    \ELSIF{\( x \not\in \FV(P) \land x \in \FV(Q) \)}
+    \STATE \( M'[A] \leftarrow \bs{S} (\bs{K}\, P) (λx.Q) \)
+    \ELSIF{\( x \in \FV(P) \land x \not\in \FV(Q) \)}
+    \STATE \( M'[A] \leftarrow \bs{S} (λx.P) (\bs{K}\, Q) \)
+    \ELSIF{\( x \in FV(P) \land x \in \FV(Q) \)}
+    \STATE \( M'[A] \leftarrow \bs{S} (λx.P) (λx.Q) \)
+    \ENDIF
+    \STATE \( M'[A] \leftarrow \mathrm{SKI}(\ M'[A]\ ) \)
+    \ENDIF
+    
+    \STATE \( \mathcal{L} \leftarrow \mathcal{L} \setminus \{ A \} \)
+    
+    \ENDWHILE
+    \RETURN \( M' \)
+  \end{algorithmic}
+\end{algorithm}
 
 \subsection{Lemas y corolarios sobre términos lambda en \( \bs{λKβ} \)}
 \label{sec:lemas-y-corolarios}

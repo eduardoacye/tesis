@@ -3,11 +3,11 @@
 %
 
 % Document class and language
-\documentclass[letterpaper,twoside,openright,12pt]{book}
+\documentclass[letterpaper,twoside,openright,11pt]{book}
 
 \usepackage{setspace}
-% \onehalfspacing
-\doublespacing
+\onehalfspacing
+% \doublespacing
 
 \usepackage[lmargin=1.4 in, rmargin=.8 in, tmargin=1 in, bmargin=1 in]{geometry}
 \usepackage[utf8]{inputenc}
@@ -83,6 +83,17 @@
 \renewcommand{\algorithmiccomment}[1]{$\quad\vartriangleright$ #1}
 \renewcommand{\algorithmicto}{\textbf{hasta}}
 
+% Color
+\usepackage{xcolor}
+\makeatletter
+\def\mathcolor#1#{\@mathcolor{#1}}
+\def\@mathcolor#1#2#3{%
+  \protect\leavevmode
+  \begingroup
+    \color#1{#2}#3%
+  \endgroup
+}
+\makeatother
 
 % Pictures
 \usepackage{tikz}
@@ -115,12 +126,13 @@
 
 % λ-calculus commands
 \newcommand{\subst}[3]{#1 \left[ #2 \operatorname{:=} #3 \right]}
-\newcommand{\synteq}{\equiv}
-\newcommand{\contract}[1]{\operatorname{\rightarrow_{#1}}}
-\newcommand{\reduce}[1]{\operatorname{\twoheadrightarrow_{#1}}}
-\newcommand{\convertible}[1]{\operatorname{=_{#1}}}
+\newcommand{\synteq}{\ \equiv\ }
+\newcommand{\contract}[1]{\ \operatorname{\rightarrow_{#1}}\ }
+\newcommand{\reduce}[1]{\ \operatorname{\twoheadrightarrow_{#1}}\ }
+\newcommand{\convertible}[1]{\ \operatorname{=_{#1}}\ }
 \DeclareMathOperator{\Sub}{Sub}
 \DeclareMathOperator{\FV}{FV}
+\newcommand*\cn[1]{\overline{#1}}
 
 % Links in PDF
 \usepackage{hyperref}

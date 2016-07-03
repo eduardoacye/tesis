@@ -1005,9 +1005,9 @@ Para lograr este mismo efecto con la codificación de la aritmética, se deben h
 
 Los números naturales nacieron a la par de la necesidad humana de \emph{contar}. De manera similar a la analogía presentada al inicio de la sección \ref{sec:valores-de-verdad} se plantea la siguiente situación hipotética:
 
-Una persona omnisciente y muda llamada \( P \) puede decirme la cantidad de objetos en el mundo si le planteo una pregunta con una respuesta contable y le doy un martillo y un clavo; la cantidad de objetos va a corresponder a la cantidad de veces que \( P \) golpea el clavo con el martillo. En este planteamiento irreal e hipotético, no es necesario conocer la estructura del número, sólo es necesario tener a alguien que pueda contar y proveer dos objetos sabiendo que la persona va a realizar algo con el primero sobre el segundo (en este caso, golpear con el martillo al clavo). La cantidad de acciones que realiza esta persona pueden representar valores numéricos si nunca podemos conocer a los números naturales.
+Una persona omnisciente y muda llamada \( P \) puede decirme la cantidad de objetos en el mundo si le planteo una pregunta con una respuesta contable y le doy un martillo y un clavo; la cantidad de objetos va a corresponder a la cantidad de veces que \( P \) golpea el clavo con el martillo. En este planteamiento irreal e hipotético, no es necesario conocer la estructura del número, sólo es necesario tener a alguien que pueda contar y proveer dos objetos sabiendo que la persona va a realizar algo con el primero sobre el segundo (en este caso, golpear con el martillo al clavo). El procedimiento que realiza esta persona puede representar valores numéricos si nunca podemos conocer a los números naturales.
 
-Detrás del concepto de número natural, está el concepto de \emph{repetición}, los numerales de Church se basan en este concepto.
+Detrás del concepto de contar, está el concepto de \emph{repetición}, la estructura de los numerales de Church se puede interpretar como la analogía entre repetición y número.
 
 Sea \( P \) un término lambda el cual puede ser aplicado a una pregunta \( Q \), al \( β \)-reducir \( (P\, Q) \) se obtiene una repetición \( R \) la cual al ser aplicada a una acción \( A \) y un objeto \( O \) se \( β \)-reduce a realizar la acción \( A \) sobre \( O \) y repetir el procedimiento con el resultado hasta haber realizado cierta cantidad de acciones:
 
@@ -1025,7 +1025,7 @@ Teniendo una justificación conceptual e informal para considerar a los números
 
 Al inicio de esta sección se construyeron las codificaciones de las operaciones aritméticas en un orden peculiar. Primero la exponenciación, después la multiplicación y al final la adición. Esto es bastante raro debido a que la exponenciación suele ser considerada una operación más compleja que la multiplicación y a su vez esta más compleja que la adición, la estructura de las codificaciones parece aumentar en complejidad entre menos complejas son las operaciones que describen.
 
-La persepción de complejidad de operaciones aritméticas se remonta a la manera en cómo se enseña la aritmética en la educación básica. Después de aprender a contar, se aprende a sumar y después a multiplicar. A pesar de ser en un inicio un proceso de memorización, el acto de sumar y multiplicar números pequeños termina siendo un acto trivial, empleando algoritmos y heurísticas de estimación cuando los números son grandes. En el caso de la exponenciación, los computólogos suelen adquirir esta misma capacidad cuando se trata de operaciones de la forma \( 2^{n} \) debido a la repetida utilización de números en base 2. Sin embargo, esta persepción tiene también una justificación algorítmica.
+La percepción de complejidad de operaciones aritméticas se remonta a la manera en cómo se enseña la aritmética en la educación básica. Después de aprender a contar, se aprende a sumar y después a multiplicar. A pesar de ser en un inicio un proceso de memorización, el acto de sumar y multiplicar números pequeños termina siendo un acto trivial, empleando algoritmos y heurísticas de estimación cuando los números son grandes. En el caso de la exponenciación, los computólogos suelen adquirir esta misma capacidad cuando se trata de operaciones de la forma \( 2^{n} \) debido a la repetida utilización de números en base 2. Sin embargo, esta percepción tiene también una justificación algorítmica.
 
 La operación de multiplicación puede ser definida en función de la operación de adición. Sean \( m \) y \( n \) dos números naturales, la operación \( m \times n \) es equivalente a sumar \( m \) consigo mismo \( n \) veces.
 
@@ -1054,42 +1054,42 @@ La definición de la operación de sucesor consiste en ``añadir'' una variable 
 
 \[ \cn{n} \synteq λx\, y.\underbrace{x(x(\ ...\ (x\, y)))}_\text{\( n \) apariciones de \( x \)} \]
 
-solo se necesita obtener el cuerpo del numeral con la aplicación \( (\cn{n}\, x\, y) \) y aplicar \( x \) al resultado de la reducción. La codificación del operador \( \cn{+_{1}} \) es
+solo se necesita obtener el cuerpo del numeral con la aplicación \( (\cn{n}\, x\, y) \) y aplicar \( x \) al resultado de la reducción. La codificación del operador \( \cn{+}_{1} \) es
 
 \begin{equation}
   \label{eq:numeral:suc2}
-  \cn{+_{1}} \synteq λn.λx\, y.x(n\, x\, y)
+  \cn{+}_{1} \synteq λn.λx\, y.x(n\, x\, y)
 \end{equation}
 
-Para demostrar que esta definición es correcta, consideremos la reducción de la aplicación de \( \cn{+_{1}} \) en un numeral cualquiera \( \cn{n} \):
+Para demostrar que esta definición es correcta, consideremos la reducción de la aplicación de \( \cn{+}_{1} \) en un numeral cualquiera \( \cn{n} \):
 
 \begin{align}
   \label{eq:numeral:suc2dem}
-  \cn{+_{1}}\, \cn{n} \synteq &(λn.λx\, y.x(n\, x\, y)) \cn{n} &\text{Por \eqref{eq:numeral:suc2}} \\
+  \cn{+}_{1}\, \cn{n} \synteq &(λn.λx\, y.x(n\, x\, y)) \cn{n} &\text{Por \eqref{eq:numeral:suc2}} \\
                 \contract{β} &λx\, y.x(\cn{n}\, x\, y) \nonumber \\
                   \reduce{β} &λx\, y.x(x^{n}\, y) &\text{Por \eqref{eq:numeral:PQ}} \nonumber \\
                      \synteq &λx\, y.x^{n+1}\, y &\text{Por \eqref{eq:abuso:F}} \nonumber \\
                      \synteq &\cn{n+1} \nonumber
 \end{align}
 
-Ahora se debe plantear una manera de aplicar el concepto de repetición de sucesores para obtener la adición. La operación \( \cn{+} \) deberá tomar dos numerales \( \cn{m} \) y \( \cn{n} \) y repetir \( \cn{n} \) veces la operación de sucesor sobre \( \cn{m} \). Ya que la aplicación de \( \cn{+_{1}} \) a un numeral, resulta en un numeral basta con aplicar \( \cn{n} \) al operador \( \cn{+_{1}} \) y al numeral \( \cn{m} \). Por ejemplo
+Ahora se debe plantear una manera de aplicar el concepto de repetición de sucesores para obtener la adición. La operación \( \cn{+} \) deberá tomar dos numerales \( \cn{m} \) y \( \cn{n} \) y repetir \( \cn{n} \) veces la operación de sucesor sobre \( \cn{m} \). Ya que la aplicación de \( \cn{+}_{1} \) a un numeral, resulta en un numeral basta con aplicar \( \cn{n} \) al operador \( \cn{+}_{1} \) y al numeral \( \cn{m} \). Por ejemplo
 
 \begin{align*}
-  (\cn{3}\, \cn{+_{1}}\, \cn{4}) \reduce{β} &\cn{+_{1}} (\cn{+_{1}} (\cn{+_{1}}\, \cn{4})) &\text{Por \eqref{eq:numeral:PQ}} \\
-                                 \reduce{β} &\cn{+_{1}} (\cn{+_{1}}\, \cn{5}) &\text{Por \eqref{eq:numeral:suc2dem}} \\
-                                 \reduce{β} &\cn{+_{1}}\, \cn{6} &\text{Por \eqref{eq:numeral:suc2dem}} \\
+  (\cn{3}\, \cn{+}_{1}\, \cn{4}) \reduce{β} &\cn{+}_{1} (\cn{+}_{1} (\cn{+}_{1}\, \cn{4})) &\text{Por \eqref{eq:numeral:PQ}} \\
+                                 \reduce{β} &\cn{+}_{1} (\cn{+}_{1}\, \cn{5}) &\text{Por \eqref{eq:numeral:suc2dem}} \\
+                                 \reduce{β} &\cn{+}_{1}\, \cn{6} &\text{Por \eqref{eq:numeral:suc2dem}} \\
                                  \reduce{β} &\cn{7} &\text{Por \eqref{eq:numeral:suc2dem}}
 \end{align*}
 
-En general, para cualesquiera \( \cn{m} \) y \( \cn{n} \), la aplicación \( (\cn{n}\, \cn{+_{1}}\, \cn{m}) \) se reduce a:
+En general, para cualesquiera \( \cn{m} \) y \( \cn{n} \), la aplicación \( (\cn{n}\, \cn{+}_{1}\, \cn{m}) \) se reduce a:
 
 \begin{align}
   \label{eq:numeral:sum2dem}
-  \cn{n}\, \cn{+_{1}}\, \cn{m} \reduce{β} &\cn{+_{1}}^{n}\, \cn{m} &\text{Por \eqref{eq:numeral:PQ}} \\
-                                 \synteq &\cn{+_{1}}^{n-1} (\cn{+_{1}}\, \cn{m}) &\text{Por \eqref{eq:abuso:F}} \nonumber \\
-                              \reduce{β} &\cn{+_{1}}^{n-1}\, \cn{m+1} &\text{Por \eqref{eq:numeral:suc2dem}} \nonumber \\
+  \cn{n}\, \cn{+}_{1}\, \cn{m} \reduce{β} &\cn{+}_{1}^{n}\, \cn{m} &\text{Por \eqref{eq:numeral:PQ}} \\
+                                 \synteq &\cn{+}_{1}^{n-1} (\cn{+}_{1}\, \cn{m}) &\text{Por \eqref{eq:abuso:F}} \nonumber \\
+                              \reduce{β} &\cn{+}_{1}^{n-1}\, \cn{m+1} &\text{Por \eqref{eq:numeral:suc2dem}} \nonumber \\
                                       ...& \nonumber \\
-                              \reduce{β} &\cn{+_{1}}^{n-n}\, \cn{m+n} \nonumber \\
+                              \reduce{β} &\cn{+}_{1}^{n-n}\, \cn{m+n} \nonumber \\
                                  \synteq &\cn{m+n} &\text{Por \eqref{eq:abuso:F}} \nonumber
 \end{align}
 
@@ -1097,7 +1097,7 @@ La codificación del operador \( \cn{+} \) es
 
 \begin{equation}
   \label{eq:numeral:sum2}
-  \cn{+} \synteq λm\, n.n\, \cn{+_{1}}\, m
+  \cn{+} \synteq λm\, n.n\, \cn{+}_{1}\, m
 \end{equation}
 
 Para codificar la operación de multiplicación y exponenciación se puede seguir el mismo patrón: un numeral \( \cn{n} \) determina una cantidad de repeticiones, es aplicado a una operación unaria que será aplicada \( n \) veces a un término. Hay dos detalles importantes que considerar, primero, cómo convertir una codificación de una operación binaria a unaria y qué valor aplicar al final.
@@ -1112,7 +1112,7 @@ Esto es, se repite la aplicación de una abstracción que toma un numeral y comp
 
 Sin embargo hay una manera más conveniente de escribir esta abstracción. Si consideramos la definición \eqref{eq:numeral:sum2} y la aplicamos únicamente a un numeral, se reduce a
 
-\[ \cn{+}\, \cn{m} \synteq (λm\, n.n\, \cn{+_{1}}\, m)\cn{m} \contract{β} λn.n\, \cn{+_{1}}\, \cn{m} \]
+\[ \cn{+}\, \cn{m} \synteq (λm\, n.n\, \cn{+}_{1}\, m)\cn{m} \contract{β} λn.n\, \cn{+}_{1}\, \cn{m} \]
 
 El cual al ser aplicado a algun numeral \( \cn{n} \) será reducido a un término \( β \)-convertible a \( (\cn{+}\, \cn{m}\, \cn{n}) \). Por lo tanto, la aplicación \( (\cn{n} (\cn{+}\, \cn{m}) \cn{0}) \) computa la multiplicación de \( \cn{m} \) y \( \cn{n} \). Por ejemplo
 
@@ -1188,7 +1188,7 @@ En la tabla \ref{fig:numeral:cod2comp} se puede apreciar la diferencia estrucura
 
 \begin{figure}[h!]
   \begin{align*}
-    \cn{+} &&\synteq&& \mathcolor{gray}{λm\, n.}\mathcolor{red}{n} \cn{+_{1}} \mathcolor{blue}{m}  &&\synteq&& \mathcolor{gray}{(λm.(λn.}((n\, \mathcolor{magenta}{\cn{+_{1}}}) m)\mathcolor{gray}{))} \\
+    \cn{+} &&\synteq&& \mathcolor{gray}{λm\, n.}\mathcolor{red}{n} \cn{+}_{1} \mathcolor{blue}{m}  &&\synteq&& \mathcolor{gray}{(λm.(λn.}((n\, \mathcolor{magenta}{\cn{+}_{1}}) m)\mathcolor{gray}{))} \\
     \cn{\times} &&\synteq&& \mathcolor{gray}{λm\, n.}\mathcolor{red}{n} (\cn{+}\, m) \mathcolor{blue}{\cn{0}}  &&\synteq&& \mathcolor{gray}{(λm.(λn.}((n \mathcolor{magenta}{(\cn{+}\, m)})\cn{0})\mathcolor{gray}{))} \\
     \cn{\uparrow} &&\synteq&& \mathcolor{gray}{λm\, n.}\mathcolor{red}{n} (\cn{\times}\, m) \mathcolor{blue}{\cn{1}}  &&\synteq&& \mathcolor{gray}{(λm.(λn.}((n \mathcolor{magenta}{(\cn{\times}\, m)})\cn{1})\mathcolor{gray}{))}
   \end{align*}
@@ -1241,23 +1241,23 @@ La clave de utilizar esta representación modificada está en observar que es f�
                             \contract{β} &x^{n-1}\, y
 \end{align*}
 
-De tal manera que la definición del predecesor \( \cn{-_{1}} \) para la codificación de Church puede ser escrita
+De tal manera que la definición del predecesor \( \cn{-}_{1} \) para la codificación de Church puede ser escrita
 
-\[ \cn{-_{1}} \synteq λn.λx\, y.\mathcal{T}[n\mapsto n^{\prime}]\, x\, y\, \bs{I} \]
+\[ \cn{-}_{1} \synteq λn.λx\, y.\mathcal{T}[n\mapsto n^{\prime}]\, x\, y\, \bs{I} \]
 
 Donde \( \mathcal{T}[n\mapsto n^{\prime}] \) es una transformación que a partir de \( n \) obtiene el mísmo número pero con la codificación modificada. Con la cual es sencillo encontrar \( n-1 \).
 
-Para construír el término \( \mathcal{T}[n\mapsto n^{\prime}] \) se debe encontrar una manera de contar desde \( 0 \) hasta \( n \) en la codificación modificada. Esto se puede lograr utilizando la interpretación de los numerales de Church como operadores de repetición. Si se construye una codificación del sucesor \( \cn{+_{1}}^{\prime} \) para los numerales modificados, entonces \( \mathcal{T}[n\mapsto n^{\prime}] \) puede ser definida como \( n \) aplicaciones de \( \cn{+}^{\prime} \) con el caso base \( \cn{0}^{\prime} \), es decir
+Para construír el término \( \mathcal{T}[n\mapsto n^{\prime}] \) se debe encontrar una manera de contar desde \( 0 \) hasta \( n \) en la codificación modificada. Esto se puede lograr utilizando la interpretación de los numerales de Church como operadores de repetición. Si se construye una codificación del sucesor \( \cn{+}_{1}^{\prime} \) para los numerales modificados, entonces \( \mathcal{T}[n\mapsto n^{\prime}] \) puede ser definida como \( n \) aplicaciones de \( \cn{+}^{\prime} \) con el caso base \( \cn{0}^{\prime} \), es decir
 
-\[ \mathcal{T}[n\mapsto n^{\prime}] \synteq n\, \cn{+_{1}}^{\prime}\, \cn{0}^{\prime} \]
+\[ \mathcal{T}[n\mapsto n^{\prime}] \synteq n\, \cn{+}_{1}^{\prime}\, \cn{0}^{\prime} \]
 
-El problema de codificar el predecesor se reduce ahora a la construcción del sucesor de un número con la codificación modificada. Esta construcción resulta ser casi tan sencilla como la codificación de \( \cn{+_{1}} \). Primero se analiza cómo cambia la estructura de la codificación de \( \cn{n}^{\prime} \) a \( \cn{n+1}^{\prime} \):
+El problema de codificar el predecesor se reduce ahora a la construcción del sucesor de un número con la codificación modificada. Esta construcción resulta ser casi tan sencilla como la codificación de \( \cn{+}_{1} \). Primero se analiza cómo cambia la estructura de la codificación de \( \cn{n}^{\prime} \) a \( \cn{n+1}^{\prime} \):
 
 \begin{align*}
-  \cn{+_{1}}^{\prime}\, \cn{0}^{\prime} && \synteq && \cn{+_{1}}^{\prime} (λx\, y\, z.y) && \reduce{β} && λx\, y\, z.z\, y \\
-  \cn{+_{1}}^{\prime}\, \cn{1}^{\prime} && \synteq && \cn{+_{1}}^{\prime} (λx\, y\, z.z\, y) && \reduce{β} && λx\, y\, z.x(z\, y)\\
-  \cn{+_{1}}^{\prime}\, \cn{2}^{\prime} && \synteq && \cn{+_{1}}^{\prime} (λx\, y\, z.x(z\, y)) && \reduce{β} && λx\, y\, z.x(x(z\, y))\\
-  \cn{+_{1}}^{\prime}\, \cn{3}^{\prime} && \synteq && \cn{+_{1}}^{\prime} (λx\, y\, z.x(x(z\, y))) && \reduce{β} && λx\, y\, z.x(x(x(z\, y)))
+  \cn{+}_{1}^{\prime}\, \cn{0}^{\prime} && \synteq && \cn{+}_{1}^{\prime} (λx\, y\, z.y) && \reduce{β} && λx\, y\, z.z\, y \\
+  \cn{+}_{1}^{\prime}\, \cn{1}^{\prime} && \synteq && \cn{+}_{1}^{\prime} (λx\, y\, z.z\, y) && \reduce{β} && λx\, y\, z.x(z\, y)\\
+  \cn{+}_{1}^{\prime}\, \cn{2}^{\prime} && \synteq && \cn{+}_{1}^{\prime} (λx\, y\, z.x(z\, y)) && \reduce{β} && λx\, y\, z.x(x(z\, y))\\
+  \cn{+}_{1}^{\prime}\, \cn{3}^{\prime} && \synteq && \cn{+}_{1}^{\prime} (λx\, y\, z.x(x(z\, y))) && \reduce{β} && λx\, y\, z.x(x(x(z\, y)))
 \end{align*}
 
 Cuando se computa el sucesor de \( \cn{0}^{\prime} \), la única variable enlazada es \( y \) y el resultado es \( z\, y \), por lo tanto, la \( y \) será sustituída por \( (z\, y) \) en el sucesor. Cuando se computa el sucesor de \( \cn{1}^{\prime} \), se tienen variables enlazadas \( z \) y \( y \), si \( y \) es sustituído por \( (z\, y) \), la \( z \) deberá ser sustituída por \( x \) en el sucesor. Cuando se computa el sucesor de \( \cn{2}^{\prime} \), se tienen variables enlazadas \( x \), \( z \) y \( y \), si se suponen las sustituciones de los otros dos casos, la \( x \) deberá ser sustituída por \( x \) en el sucesor. Para corroborar que estas sustituciones son correctas, se considera la aplicación \( (\cn{3}^{\prime}\, x\, (z\, y)\, x) \):
@@ -1274,21 +1274,21 @@ Y en general, aplicar estos términos a un numeral modificado \( \cn{n}^{\prime}
                                 &\synteq x^{n}(z\, y)
 \end{align*}
 
-Término que corresponde al cuerpo del numeral \( \cn{4}^{\prime} \). Por lo tanto, la codificación de la operación \( \cn{+_{1}}^{\prime} \) es:
+Término que corresponde al cuerpo del numeral \( \cn{4}^{\prime} \). Por lo tanto, la codificación de la operación \( \cn{+}_{1}^{\prime} \) es:
 
-\[ \cn{+_{1}}^{\prime} \synteq λn^{\prime}.λx\, y\, z.n^{\prime}\, x (z\, y) x \]
+\[ \cn{+}_{1}^{\prime} \synteq λn^{\prime}.λx\, y\, z.n^{\prime}\, x (z\, y) x \]
 
 Con estas piezas, la codificación de la operación predecesor se define como
 
 \begin{equation}
   \label{eq:numeral:pred2}
-  \cn{-_{1}} \synteq λn.λx\, y.(n\, \cn{+_{1}}^{\prime}\, \cn{0}^{\prime})x\, y\, \bs{I}
+  \cn{-}_{1} \synteq λn.λx\, y.(n\, \cn{+}_{1}^{\prime}\, \cn{0}^{\prime})x\, y\, \bs{I}
 \end{equation}
 
-Para corroborar que la codificación computa el resultado deseado, consideremos los casos \( \cn{n} \synteq \cn{0} \) y \( \cn{n} \synteq \cn{k} \) en la reducción de la aplicación \( (\cn{-_{1}}\, \cn{n}) \):
+Para corroborar que la codificación computa el resultado deseado, consideremos los casos \( \cn{n} \synteq \cn{0} \) y \( \cn{n} \synteq \cn{k} \) en la reducción de la aplicación \( (\cn{-}_{1}\, \cn{n}) \):
 
 \begin{align*}
-  \cn{-_{1}}\, \cn{0} \contract{β} &λx\, y.(\cn{0}\, \cn{+_{1}}^{\prime}\, \cn{0}^{\prime})x\, y\, \bs{I} \\
+  \cn{-}_{1}\, \cn{0} \contract{β} &λx\, y.(\cn{0}\, \cn{+}_{1}^{\prime}\, \cn{0}^{\prime})x\, y\, \bs{I} \\
                         \reduce{β} &λx\, y.(\bs{I} \cn{0}^{\prime})x\, y\, \bs{I} \\
                       \contract{β} &λx\, y.\cn{0}^{\prime}\, x\, y\, \bs{I} \\
                            \synteq &λx\, y.(λx\, y\, z.y) x\, y\, \bs{I} \\
@@ -1297,8 +1297,8 @@ Para corroborar que la codificación computa el resultado deseado, consideremos 
 \end{align*}
 
 \begin{align*}
-  \cn{-_{1}}\, \cn{k} \contract{β} &λx\, y.(\cn{k}\, \cn{+_{1}}^{\prime}\, \cn{0}^{\prime})x\, y\, \bs{I} \\
-                        \reduce{β} &λx\, y.\cn{+_{1}}^{\prime k}\, \cn{0}^{\prime}\, x\, y\, \bs{I} \\
+  \cn{-}_{1}\, \cn{k} \contract{β} &λx\, y.(\cn{k}\, \cn{+}_{1}^{\prime}\, \cn{0}^{\prime})x\, y\, \bs{I} \\
+                        \reduce{β} &λx\, y.\cn{+}_{1}^{\prime k}\, \cn{0}^{\prime}\, x\, y\, \bs{I} \\
                         \reduce{β} &λx\, y.\cn{k}^{\prime}\, x\, y\, \bs{I} \\
                            \synteq &λx\, y.(λx\, y\, z.x^{k-1}(z\, y)) x\, y\, \bs{I} \\
                         \reduce{β} &λx\, y.x^{k-1}(\bs{I}\, y) \\
@@ -1306,288 +1306,558 @@ Para corroborar que la codificación computa el resultado deseado, consideremos 
                            \synteq &\cn{k-1}
 \end{align*}
 
+Teniendo la codificación del predecesor se puede plantear una codificación de la resta, después de todo, restar \( n \) de \( m \) es aplicar la función predecesor \( n \) veces a \( m \).
+
+\begin{equation}
+  \label{eq:numeral:sub2}
+  \cn{-} \synteq λm\, n.n\, \cn{-}_{1}\, m
+\end{equation}
+
+Para corroborar que esta definición es correcta, se reduce la aplicación \( (\cn{-}\, \cn{m}\, \cn{n}) \) la cuál deberá resultar en la codificación del número \( m-n \).
+
+\begin{align*}
+  \cn{-}\, \cn{m}\, \cn{n} &\synteq (λm\, n.n\, \cn{-}_{1}\, m)\cn{m}\, \cn{n} \\
+                           &\reduce{β} \cn{n}\, \cn{-}_{1}\, \cn{m} \\
+                           &\reduce{β} \cn{-}_{1}^{n}\, \cn{m} \\
+                           &\synteq \cn{-}_{1}^{n-1}\, (\cn{-}_{1}\, \cn{m}) \\
+                           &\reduce{β} \cn{-}_{1}^{n-1}\, \cn{m-1} \\
+                           &... \\
+                           &\reduce{β} \cn{-}_{1}^{n-n}\, \cn{m-n} \\
+                           &\synteq \cn{m-n}
+\end{align*}
+
+La idea de definir operaciones aritméticas complejas en función de otras más sencillas también puede ser aplicada a la definición de la división. Sin embargo, no podemos definir \( m/n \) como \( (\cn{n} (\cn{-}\, \cn{m}) \cn{0}) \) ya que el procedimiento de reducción consistiría en primero calcular \( m-0 = m \), después calcular \( m-m = 0 \), después calcular \( m-0=m \), y así sucesivamente hasta dejar de repetir el procedimiento. En pocas palabras, \( (\cn{n} (\cn{-}\, \cn{m}) \cn{0}) \) se reduce a \( \cn{m} \) cuando \( \cn{n} \) es impar y a \( \cn{0} \) cuando \( \cn{n} \) es par.
+
+La idea de definir la división como repetición de restas se puede interpretar considerando el siguiente ejemplo. El resultado de dividir a 12 en 3 es 4 porque 4 es la \emph{cantidad} de veces que hay que restarle al 12 el 3 hasta llegar al cero:
+
+\[ 12-3-3-3-3=12-4\times 3=12-12=0 \]
+
+Esto presenta un aumento de complejidad en la codificación de la operación, no solo se debe restar hasta llegar a \( \cn{0} \), también se debe mantener un conteo de la cantidad de veces que se ha restado.
+
+Para el caso de la función logaritmo, el problema es similar a la división. El resultado de calcular el logaritmo base 3 de 81 es 4 porque 4 es la cantidad de veces que hay que dividir al 81 en 3 hasta llegar al 1 (el caso trivial para la división):
+
+\[ (((81/3)/3)/3)/3 = 81/3^{4} = 81/81 = 1 \]
+
+Para el caso de la función raíz, el problema es aún más grande que con la división y el logaritmo. Ya que \( \sqrt[n]{m} \) es calculada como la base a la que debemos elevar por \( n \) para obtener \( m \). Poniendo el mismo ejemplo que con el logaritmo, la idea de la raíz es partir del \( 81 \) y el \( 4 \) y calcular el número al que se tiene que dividir \( 81 \), \( 4 \) veces, hasta llegar al \( 1 \). El problema con esto es que no se puede reducir el problema a uno más sencillo basándonos únicamente en contar y en la operación de división. Sin embargo, es posible utilizar métodos de aproximación y calcular \( \sqrt[4]{81} \) intentando divisiones entre 1 y fallar, luego entre 2 y fallar, luego entre 3 y encontrar que es la respuesta.
+
+En la siguiente subsección se construye la manera en la que se podrán plantear mecanismos más complejos de cómputo y lograr definir las operaciones de división, logaritmo y raíz.
+
 
 
 \subsection{Iteración}
 \label{sec:iteracion}
 
-Si un procedimiento \( F \) se realiza \( n \) veces, se puede iterar el procedimiento utilizando la estructura de los numerales
+La técnica de utilizar los números naturales como mecanismo de repetición es de mucha utilidad. En el diseño de algoritmos, la repetición es usualmente representada con mecanismos de \emph{iteración}, usualmente en cada paso de la iteración una o más variables en el contexto del algoritmo cambian, hasta obtener en una de ellas el resultado final.
 
-\[ (λf\, x.f^{n}\, x) F \reduce{} λx.F^{n}\, x \]
-
-El estado inicial del cómputo es un término al que se le aplicará esta abstracción.
-
-La codificación de un estado con \( n \) componentes se realiza utilizando la codificación de valores n-valentes de la sección de lógica, se pueden considerar como \( n \)-tuplas para \( n \) fijo a lo largo de la iteración.
-
-\begin{align*}
-  \bs{v_{1}} &\synteq λx_{1}\, ...\, x_{n}.x_{1} \\
-  \bs{v_{2}} &\synteq λx_{1}\, ...\, x_{n}.x_{2} \\
-             &\cdots \\
-  \bs{v_{n}} &\synteq λx_{1}\, ...\, x_{n}.x_{n}
-\end{align*}
-
-Un estado del cómputo es un término \( s \synteq λp.p\, s_{1}\, s_{2}\, ...\, s_{n} \) el cual espera ser aplicado a algún \( \bs{v_{i}} \), de tal manera que la componente \( s_{i} \) se obtiene al reducir \( (s\, v_{i}) \).
-
-El constructor de un estado es \( s^{*} \synteq λs_{1}\, s_{2}\, ...\, s_{n}.λp.p\, s_{1}\, s_{2}\, ...\, s_{n} \).
-
-Por ejemplo, codificar la operación factorial, primero se determina la forma del estado
-
-\[ (indice, acumulador) = s \synteq λp.p\, i\, a \]
-
-El índice de un estado se obtiene con el término \( \bs{i} \synteq (λi\, a.i) \), y el acumulador de un estado se obtiene con el término \( \bs{a} \synteq (λi\, a.a) \). Estos son equivalentes a los valores de verdad.
-
-El constructor del estado es \( s^{*} \synteq λi\, a.λp.p\, i\, a \).
-
-La operación factorial para un numeral \( n \) comienza en el estado \( s \synteq (s^{*}\, n\, 1) \) y en un paso computa el estado \( (s^{*}\, (\bs{1_{-}}\, n) (\bs{\times} (s\, \bs{i}) (s\, \bs{a}))) \) el cual decrementa el índice en 1 y aumenta el acumulador multiplicando el acumulador del estado anterior por el índice actual.
-
-La codificación quedaría
-
-\[ \bs{!} \synteq λn.n(λs.(s^{*} (\bs{1_{0}}\, (s\, \bs{i})) (\bs{\times} (s\, \bs{i}) (s\, \bs{a}))))(s^{*}\, n\, 1) \]
-
-No es necesario el combinador \( Y \) para hacer magia...
-
-El algoritmo equivalente al término del factorial presentado aqui es
+Por ejemplo, un algoritmo para computar el factorial de un número \( n \) puede ser expresado de manera iterativa como:
 
 \begin{algorithm}
-  \caption{factorial}
+  \caption{Factorial de \( n \)}
+  \label{alg:factorial}
   \begin{algorithmic}
     \REQUIRE \( n \in \mathbb{N} \)
     \ENSURE \( n! \)
-    \STATE \( s \leftarrow (n,\ 1) \)
-    
-    \COMMENT{La siguiente iteración mantiene una invariante \( n! = a\times i! \) en el estado \( (i,\ a) \)}
-    \FOR{\( i = 1 \) \TO \( n \)}
-    \STATE \( s \leftarrow (s_{1}-1,\ s_{2} \times s_{1})  \)
-    \ENDFOR
-
-    \RETURN \( s_{2} \)
+    \STATE \( r \leftarrow copia(n) \)
+    \STATE \( a \leftarrow 1 \)
+    \WHILE{\( r \not= 0 \)}
+    \STATE \( a \leftarrow a \times r \)
+    \STATE \( r \leftarrow r - 1 \)
+    \ENDWHILE
+    \RETURN \( a \)
   \end{algorithmic}
 \end{algorithm}
+
+El mecanismo utilizado en este algoritmo para iterar es el \emph{mientras}, éste se acompaña con una condición, si la condición se satisface, el cuerpo del \emph{mientras} es ejecutado, de lo contrario, se detiene la iteración y se prosigue con el resto de los pasos del algoritmo.
+
+Por fortuna, este tipo de algoritmos pueden ser codificados de manera sencilla en el cálculo lambda. En lugar de codificar el \emph{mientras}, se puede utilizar \( \cn{n} \) para repetir un procedimiento, después de todo, el algoritmo inicia con \( r = n \) y en cada iteración \( r \) disminuye en 1, por lo que se realizan \( n \) iteraciones. La variable \( a \) inicia en 1 y en cada iteración es multiplicada por \( r \), al terminar los pasos del algoritmo, el valor de \( a \) es el resultado \( n! \).
+
+La clave para codificar este algoritmo es determinar los valores que representan el cómputo. Las variables \( r \) y \( a \) describen el estado del cómputo en el caso trivial \( n = 0 \). Cuando \( n \not= 0 \), en cada iteración, toda la información del cómputo sigue estando en las variables \( r \) y \( a \), aún más, los valores de estas variables describen una propiedad interesante del algoritmo: Antes y después de cada iteración, se cumple que \( n! = a \times r! \).
+
+Ya que \( \cn{n} \) será el mecanismo de iteración, se deben determinar dos cosas: el término que será aplicado repetidas veces \( P \) y el término inicial \( B \), de tal manera que \( (\cn{n}\, P\, B) \) se \( β \)-reduzca al estado final del cómputo.
+
+El estado del cómputo consiste de la codificación de \( r \) y \( a \) como numerales de Church. Lo que debemos codificar para representar el algoritmo es una manera de crear un estado a partir de dos números y una manera de obtener el primer y el segundo valor de un estado, es decir, el \emph{constructor} y los \emph{selectores}. Ya que son únicamente dos valores, se pueden utilizar las codificaciones \( \bs{T} \) y \( \bs{F} \) para \emph{decidir} el valor del estado que se desea obtener.
+
+Sean \( \cn{r} \) y \( \cn{a} \) dos numerales, el término \( M \synteq λp.p\, \cn{r}\, \cn{a} \) puede representar al estado, de tal manera que \( (M\, \bs{T}) \reduce{β} \cn{r} \) y \( (M\, \bs{F}) \reduce{β} \cn{a} \).
+
+Para construír un estado, basta con codificar un término lambda que al ser aplicado a dos numerales, se reduzca a un término como \( M \). Se define el constructor \( S \) de un estado como
+
+\begin{equation}
+  \label{eq:iter:const1}
+  S \synteq λn_{1}\, n_{2}.λp.p\, n_{1}\, n_{2}
+\end{equation}
+
+Para seleccionar de un determinado valor a partir de un estado, se plantean abstracciones lambda que al ser aplicadas a un término como \( M \), se reduzcan al valor deseado. Se definen los selectores \( S_{r} \) y \( S_{a} \) de un estado como
+
+\begin{equation}
+  \label{eq:iter:selec1r}
+  S_{r} \synteq λs.s\, \bs{T}
+\end{equation}
+\begin{equation}
+  \label{eq:iter:selec1a}
+  S_{a} \synteq λs.s\, \bs{F}
+\end{equation}
+
+Con estas codificaciones, se facilita la escritura de los términos \( P \) y \( B \). El estado inicial del cómputo es \( r = n \) y \( a = 1 \), por lo que, conociéndo un numeral \( \cn{n} \), el término \( B \) se codifica como
+
+\begin{equation}
+  \label{eq:iter:base1}
+  B \synteq S\, \cn{n}\, \cn{1}
+\end{equation}
+
+El término \( P \) debe ser una abstracción que sea aplicada a un estado y sea reducida a un estado, ya que en el cálculo lambda no hay una noción de asignación, en cada repetición de la aplicación de \( P \) se crea un estado nuevo con sus valores en función del estado anterior. Si \( \cn{r} \) y \( \cn{a} \) son los valores del estado previo, el término \( P \) debe reducirse a un estado en donde el primer elemento sea \( (\cn{-_{1}}\, \cn{r}) \) y el segundo sea \( (\cn{\times}\, \cn{a}\, \cn{r}) \). Utilizando los selectores \( S_{r} \) y \( S_{a} \), el término \( P \) se codifica como
+
+\begin{equation}
+  \label{eq:iter:proc1}
+  P \synteq λs.S (\cn{-}_{1} (S_{r}\, s)) (\cn{\times} (S_{a}\, s) (S_{r}\, s))
+\end{equation}
+
+La codificación completa del algoritmo factorial, utilizando las definiciones \eqref{eq:iter:const1}, \eqref{eq:iter:selec1r} y \eqref{eq:iter:selec1a}, se define
+
+\begin{equation}
+  \label{eq:iter:fact1}
+  \cn{!} \synteq λn.n (λs.S (\cn{-}_{1} (S_{r}\, s)) (\cn{\times} (S_{a}\, s) (S_{r}\, s))) (S\, n\, \cn{1})
+\end{equation}
+
+Para poder integrar esta definición y componer expresiones algebraicas con las codificaciones de las operaciones elementales, la aplicación de \( \cn{!} \) a un numeral \( \cn{n} \) debe \( β \)-reducirse al numeral \( \cn{n!} \), sin embargo, al obtener la forma normal de \( (\cn{!}\, \cn{n}) \) el resultado es un estado equivalente a \( (S\, \cn{0}\, \cn{1}) \) si \( \cn{n} \convertible{β} \cn{0} \) o a \( (S\, \cn{1}\, \cn{n!}) \) en otro caso. Por lo tanto \( \cn{!} \) debe estar codificado de tal manera que después de computar el algoritmo, seleccione el segundo elemento del estado resultante.
+
+\begin{equation}
+  \label{eq:iter:fact2}
+  \cn{!} \synteq λn.S_{a} (n (λs.S (\cn{-}_{1} (S_{r}\, s)) (\cn{\times} (S_{a}\, s) (S_{r}\, s))) (S\, n\, \cn{1}))
+\end{equation}
+
+Lamentablemente, no siempre es posible expresar algoritmos en donde todo el estado del cómputo se resuma en dos valores. Sin embargo, utilizando una extensión similar a \ref{sec:boolean-extensiones} se puede generalizar la codificación de algoritmos cuyos estados tienen \( n \) componentes.
+
+Sean \( {}_{n}v_{1}, {}_{n}v_{2}, ..., {}_{n}v_{n} \), términos de la forma
+
+\[ {}_{n}v_{i} \synteq λx_{1}\, ...\, x_{n}.x_{i} \]
+
+El constructor \( {}_{n}S \) de un estado con \( n \) valores se define como
+
+\[ {}_{n}S \synteq λx_{1}\, ...\, x_{n}.λp.p\, x_{1}\, ...\, x_{n} \]
+
+El selector del \( i \)-ésimo valor de un estado, se define
+
+\[ {}_{n}S_{i} \synteq λs.s\, v_{i} \]
+
+La codificación de las operaciones aritméticas de división, logaritmo y raíz, serán basadas en algoritmos similares al del factorial. Para tener la habilidad de escribir algoritmos aritméticos, es necesario complementar los numerales de Church con predicados, por ejemplo, para determinar si un numeral es cero o si dos numerales son iguales.
+
+El primer predicado que se define es el que a partir de un numeral \( \cn{n} \), determina si es el \( \cn{0} \). Este predicado es muy utilizado ya que en muchos algoritmos, la condición de paro es cuando un valor numérico tiene el valor cero. A partir de la estructura de \( \cn{n} \synteq (λx\, y.x^{n}\, y) \) se puede encontrar una manera de aplicarle dos términos \( P \) y \( Q \) a \( \cn{n} \), tal que al reducirse resulte en \( \bs{T} \) si \( n=0 \) y a \( \bs{F} \) si \( n>0 \). El \( \cn{0} \) no tiene aplicaciones internas y símplemente es reducido al segundo término al que fue aplicado, por lo tanto \( (\cn{n}\, P\, \bs{T}) \) debe reducirse a \( \bs{T} \) cuando \( n=0 \). Cuando el numeral es mayor a cero, la primera aplicación de \( (P\, \bs{T}) \) debe reducirse a \( \bs{F} \) y las siguientes aplicaciones deben ser \( (P\, \bs{F}) \) y reducirse también a \( \bs{F} \). Un término que al ser aplicado a cualquier término es reducido a \( \bs{F} \) es \( (\bs{K}\, \bs{F}) \). Por lo tanto, la codificación de este predicado se define
+
+\begin{equation}
+  \label{eq:numeral:pred0}
+  \cn{0}_{?} \synteq λn.n (\bs{K}\, \bs{F}) \bs{T}
+\end{equation}
+
+Para corroborar que este predicado es correcto al ser aplicado a un numeral, se reducen las siguientes aplicaciones:
+
+\begin{align*}
+  \cn{0}_{?}\, \cn{0} \synteq &(λn.n (\bs{K}\, \bs{F}) \bs{T}) \cn{0} \\
+                \contract{β} &\cn{0}  (\bs{K}\, \bs{F}) \bs{T} \\
+                  \reduce{β} &(\bs{K}\, \bs{F})^{0} \bs{T} \\
+                     \synteq &\bs{T} \\
+  \cn{0}_{?}\, \cn{n} \synteq &(λn.n (\bs{K}\, \bs{F}) \bs{T}) \cn{n} \\
+                \contract{β} &\cn{n} (\bs{K}\, \bs{F}) \bs{T} \\
+                  \reduce{β} &(\bs{K}\, \bs{F})^{n} \bs{T} \\
+                     \synteq &(\bs{K}\, \bs{F})^{n-1} (\bs{K}\, \bs{F}\, \bs{T}) \\
+                  \reduce{β} &(\bs{K}\, \bs{F})^{n-1} \bs{F} \\
+                     \synteq &(\bs{K}\, \bs{F})^{n-2} (\bs{K}\, \bs{F}\, \bs{F}) \\
+                  \reduce{β} &(\bs{K}\, \bs{F})^{n-2} \bs{F} \\
+                          ...& \\
+                  \reduce{β} &(\bs{K}\, \bs{F})^{n-n} \bs{F} \\
+                     \synteq &\bs{F}
+\end{align*}
+
+El siguiente predicado que se define es el que a partir de dos numerales \( \cn{m} \) y \( \cn{n} \), determina si \( m \leq n \). La codificación de este predicado se basa en la observación de al restar \( \cn{n} \) de \( \cn{m} \) el resultado será \( \cn{0} \) si \( \cn{m} \) es menor o igual a \( \cn{n} \). Por lo tanto, la codificación de este predicado se define
+
+\begin{equation}
+  \label{eq:numeral:pred<=}
+  \cn{\leq}_{?} \synteq λm\, n.\cn{0}_{?} (\cn{-}\, m\, n)
+\end{equation}
+
+Ya que estos predicados son reducidos a valores booleanos cuando se aplican a numerales de Church, pueden ser combinados utilizando las operaciones del álgebra booleana. Otros predicados pueden codificarse haciéndo uso de propiedades numéricas.
+
+\begin{itemize}
+\item Si \( n \leq m \), entonces \( m \geq n \):
+  \begin{equation}
+    \label{eq:numeral:pred>=}
+    \cn{\geq}_{?} \synteq λm\, n.\cn{\leq}_{?}\, n\, m
+  \end{equation}
+\item Si \( m \leq n \) y \( m \geq n \), entonces \( m = n \):
+  \begin{equation}
+    \label{eq:numeral:pred=}
+    \cn{=}_{?} \synteq λm\, n.\bs{\land} (\cn{\leq}_{?}\, m\, n) (\cn{\geq}_{?}\, m\, n)
+  \end{equation}
+\item Si \( m \not\leq n \), entonces \( m > n \):
+  \begin{equation}
+    \label{eq:numeral:pred>}
+    \cn{>}_{?} \synteq λm\, n.\bs{\lnot} (\cn{\leq}_{?}\, m\, n)
+  \end{equation}
+\item Si \( m \not\geq n \), entonces \( m < n \):
+  \begin{equation}
+    \label{eq:numeral:pred<}
+    \cn{<}_{?} \synteq λm\, n.\bs{\lnot} (\cn{\geq}_{?}\, m\, n)
+  \end{equation}
+\end{itemize}
+
+A la vez, a partir de estos predicados se pueden definir otros términos muy utilizados en algoritmos aritméticos:
+
+\begin{itemize}
+\item Si \( m < n \), entonces \( min(m,n)=m \), de lo contrario \( min(m,n)=n \):
+  \begin{equation}
+    \label{eq:numeral:min}
+    \cn{min} \synteq λm\, n.\bs{\prec} (\cn{<}_{?}\, m\, n) m\, n
+  \end{equation}
+\item Si \( m > n \), entonces \( max(m,n)=m \), de lo contrario \( max(m,n)=n \):
+  \begin{equation}
+    \label{eq:numeral:max}
+    \cn{max} \synteq λm\, n.\bs{\prec} (\cn{>}_{?}\, m\, n) m\, n
+  \end{equation}
+\end{itemize}
+
+Para codificaciones de \( \cn{min} \) y \( \cn{max} \) que se reduzcan correctamente al ser aplicados a más de dos numerales, se puede utilizar una técnica como la mostrada en \ref{defn:op-bool-bin-lambda}.
+
+Con estos nuevos términos, es más amena la codificación de algoritmos, de hecho, la manera de codificarlos es casi tan sencillo como programar los algoritmos en lenguajes aptos para la programación funcional como \texttt{Lisp}, \texttt{ML} o \texttt{Haskell}.
+
+La estrategia general para la codificación de las operaciones faltantes se basa en la observación de que la sustracción es la función inversa de la adición, la división es la función inversa de la multiplicación y el logaritmo y la raíz son las inversas de la exponenciación. Sean \( m \), \( n \) y \( k \) tres números naturales
+
+\begin{align*}
+  m-n = x &\iff m = x+n \\
+  m/n = x &\iff m = x\times n\\
+  \log_{n}m = x &\iff m = n^{x} \\
+  \sqrt[n]m = x &\iff x^{n}
+\end{align*}
+
+Estas operaciones deben de ser tratadas con mucho cuidado ya que no son operaciones cerradas, es decir, existen números naturales \( m \) y \( n \) tal que, para alguna operación \( \odot \) de las cuatro mencionadas, \( m \odot n \) no es un número natural. Por ejemplo, con la sustracción se pueden calcular números negativos, con la división números racionales, con la raíz números reales y con el logaritmo no únicamente números reales, también el valor \( -\infty \). Por lo tanto, las codificaciones que se definen, serán versiones discretas, cerradas y por lo tanto inexactas de las que usualmente se utilizan.
+
+El algoritmo en el que se basan estas cuatro operaciones considera dos números \( m \) y \( n \); una operación inversa \( \odot \); una condición de trivialidad \( err \); y un valor de trivialidad \( t \). La idea del algoritmo es regresar \( t \) cuando \( err(m,n) \) es verdadero, de lo contrario iterar a partir de \( x = 0 \), calculando el resultado \( x \odot n \) hasta obtener un valor mayor o igual a \( m \), en donde \( x \) será el cálculo de la operación.
+
+\begin{algorithm}
+  \caption{Cálculo de \( m \odot^{-1} n \)}
+  \label{alg:inversas}
+  \begin{algorithmic}
+    \REQUIRE \( m,\ n,\ t \in \mathbb{N},\ \odot \colon \mathbb{N} \times \mathbb{N} \to \mathbb{N},\ err \colon \mathbb{N} \times \mathbb{N} \to \{ \mathrm{verdadero},\ \mathrm{falso} \} \)
+    \ENSURE \( m \odot^{-1} n \)
+    \IF{\( err(m,n) \)}
+    \RETURN \( t \)
+    \ELSE
+    \STATE \( x \leftarrow 0 \)
+    \STATE \( a \leftarrow x \odot n \)
+    \WHILE{\( a < m \)}
+    \STATE \( a \leftarrow x \odot n \)
+    \STATE \( x \leftarrow x + 1 \)
+    \ENDWHILE
+    \RETURN \( a \)
+    \ENDIF
+  \end{algorithmic}
+\end{algorithm}
+
+Para la sustracción la condición de trivialidad es \( m \leq n \) y el valor de trivialidad \( 0 \). Para la división la condición de trivialidad es \( m < n \) y el valor de trivialidad \( 1 \). Para el logaritmo la condición de trivialidad es \( m=0 \) y el valor de trivialidad \( 0 \). Para la raíz la condición de trivialidad es \( n=0 \) y el valor de trivialidad \( 1 \).
+
+Una limitación que tiene la iteración en base a los numerales es que se debe conocer la cantidad de veces que se repetirá un proceso, en el caso del algoritmo \ref{alg:inversas}, la condición de paro es verificada de manera dinámica, mientras cuando los cálculos se están realizando. Sin embargo, es posible establecer una cota superior a la cantidad de pasos en base a las propiedades de las operaciones establecidas.
+
+En el caso de la sustracción, \( m-n \) debe ser un número natural, y ya que la iteración sucede cuando \( m>n \), entonces \( x\leq m \). En el caso de la división, \( m/n \) debe ser un número natural, y ya que la iteración sucede cuando \( m\geq n \), entonces \( x\leq m \). En el caso del logaritmo, \( \log_{n}m \) debe ser un número natural, y ya que la iteración sucede cuando \( m\geq n \), entonces \( x\leq m \). En el caso de la raíz, ya que \( m \), \( n \) y \( x \) siempre serán naturales, y la iteración sucede cuando \( n \not= 0 \), entonces \( x\leq m \). Por lo tanto, se puede utilizar a \( m \) para determinar la cantidad de iteraciones, de tal manera que cuando la condición \( a < m \) se cumpla, siempre se reduzca al valor de \( a \). El algoritmo \ref{alg:inversas2} es una modificación de \ref{alg:inversas} para que su codificación sea más directa.
+
+\begin{algorithm}
+  \caption{Cálculo de \( m \odot^{-1} n \)}
+  \label{alg:inversas2}
+  \begin{algorithmic}
+    \REQUIRE \( m,\ n,\ t \in \mathbb{N},\ \odot \colon \mathbb{N} \times \mathbb{N} \to \mathbb{N},\ err \colon \mathbb{N} \times \mathbb{N} \to \{ \mathrm{verdadero},\ \mathrm{falso} \} \)
+    \ENSURE \( m \odot^{-1} n \)
+    \IF{\( err(m,n) \)}
+    \RETURN \( t \)
+    \ELSE
+    \STATE \( x \leftarrow 0 \)
+    \STATE \( a \leftarrow x \odot n \)
+    \FOR{iteraciones \TO \( m \)}
+    \IF{\( a < m \)}
+    \STATE \( a \leftarrow x \odot n \)
+    \STATE \( x \leftarrow x + 1 \)
+    \ELSE
+    \STATE \( a \leftarrow a \)
+    \ENDIF
+    \ENDFOR
+    \RETURN \( a \)
+    \ENDIF
+  \end{algorithmic}
+\end{algorithm}
+
+Para acortar la definición de la codificación del algoritmo de inversa, se definen algunos términos auxiliares:
+
+\begin{align*}
+  \bs{:} &\synteq {}_{2}S \\
+  \bs{A} &\synteq {}_{2}S_{1} \\
+  \bs{X} &\synteq {}_{2}S_{2}
+\end{align*}
+
+La codificación del algoritmo \ref{alg:inversas2} es
+
+% \begin{equation}
+%   \label{eq:numeral:inversas2}
+%   λ\odot\, e\, t.λm\, n.\bs{\prec} (e\, m\, n) t (\bs{X} (m (λs.\bs{\prec} (\cn{<}_{?}\, (\bs{A}\, s) m) (\bs{:} (\odot (\bs{X}\, s) n) (\cn{+}_{1} (\bs{X} s))) (\bs{:} (\bs{A}\, s) (\bs{X}\, s))) (\bs{:} (\odot\, \cn{0}\, n) \cn{0})))
+% \end{equation}
+
+\begin{align}
+  \label{eq:numeral:inversas}
+  \cn{\odot}^{-1} \synteq λ\odot\, e\, t.λm\, n.\bs{\prec} (e\, m\, n) \ \ \ \ \ \ \ \ \ &\\
+  t \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ &\nonumber \\
+  (\bs{X} (m (λs.\bs{\prec} &(\cn{<}_{?}\, (\bs{A}\, s) m)\nonumber \\
+  &(\bs{:} (\odot (\bs{X}\, s) n) (\cn{+}_{1} (\bs{X} s)))\nonumber \\
+  &(\bs{:} (\bs{A}\, s) (\bs{X}\, s)))\nonumber \\
+  (\bs{:} (\odot\, \cn{0}&\, n) \cn{0})))\nonumber
+\end{align}
+
+La definición es difícil de leer y comprender si se escribe en un solo renglón, por ello, se utilizaron varios renglones para escribir el término, la convención para escribirlo fué: los saltos de renglón se dan en cada término condicional para que la condición esté en el mismo renglón que \( \bs{\prec} \), el consecuente en el siguiente renglón horizontalmente alineado con la condición y la alternativa en el siguiente renglón horizontalmente alineado con el consecuente. También hay un salto de renglón en la aplicación de \( m \), de tal manera que los dos términos a los que es aplicado estén alineados horizontalmente.
+
+Utilizando el término \( \cn{\odot}^{-1} \) y las condiciones y valores de trivialidad mencionados anteriormente, se definen las codificaciones de las funciones inversas
+
+\begin{equation}
+  \label{eq:numeral:subs-inv}
+  \cn{-} \synteq \cn{\odot}^{-1}\, \cn{+}\, \cn{\leq}_{?}\, \cn{0}
+\end{equation}
+
+\begin{equation}
+  \label{eq:numeral:div-inv}
+  \cn{/} \synteq \cn{\odot}^{-1}\, \cn{\times}\, \cn{<}_{?}\, \cn{1}
+\end{equation}
+
+\begin{equation}
+  \label{eq:numeral:log-inv}
+  \cn{\log} \synteq \cn{\odot}^{-1}\, \cn{\uparrow} (λm\, n.\cn{0}_{?}\, m) \cn{0}
+\end{equation}
+
+\begin{equation}
+  \label{eq:numeral:root-inv}
+  \cn{\mathrm{root}} \synteq \cn{\odot}^{-1} (λx\, n.\cn{\uparrow}\, n\, x) (λm\, n.\cn{0}_{?}\, n) \cn{1}
+\end{equation}
+
+El algoritmo \ref{alg:inversas2} describe un método de aproximación bastante pobre e ineficiente, sin embargo, es posible codificar otras maneras de calcular estas operaciones utilizando las técnicas vistas hasta el momento, siempre y cuando se establezca una cota superior antes de realizar las iteraciones.
 
 \subsection{Hiperoperaciones}
 \label{sec:hiperoperaciones}
 
-\paragraph{Presentar segundos incisos en la lista de términos para las operaciones básicas}
+Las definiciones \eqref{eq:numeral:sum2}, \eqref{eq:numeral:mul2}, \eqref{eq:numeral:exp2} describen de manera clara y consisa la relación entre la adición, la multiplicación y la exponenciación. Conociendo una cantidad de repeticiones, una operación de agregación y el valor neutro de dicha agregación, fué posible definir una operación aritmética en función de otra operación más simple, hasta tener el caso base con la adición.
 
-¿Se podrá abstraer el concepto de esta repetición de operaciones?
+En el artículo \emph{Mathematics and Computer Science: Coping with Finiteness} \cite{Knuth:Arrow}, Donald E. Knuth introduce la notación de flecha para expresar números finitos gigantescos. La notación de flecha ya fué utilizada en el término de la exponenciación, ya que, de acuerdo a Knuth, \( x \mathbin{\uparrow} n = x^{n} \).
 
-Tetración, et al. Notación de Knuth, hiperoperaciones inversas ( resta, división, raíz/logaritmo )
-
-\paragraph{Aquí comienzan las notas anteriores}
-
-
-Así como se pueden representar los valores de verdad de falso y verdadero en el cálculo lambda, también podemos encontrar representaciones para los números naturales. En esta sección se aborda una representación llamada numerales de Church, también se presentan términos lambda para operar números naturales con esta representación.
-
-Para cada \( n \in \mathbb{N} \) el numeral de Church de \( n \) es un término lambda denotado como \( \cn{n} \) definido como:
-
-\[ \cn{n} \synteq λx\, y.x^{n}\, y \]
-
-En la siguiente tabla se puede apreciar mejor la estructura de los numerales de Church
-
-\begin{table}
-  \centering
-  \begin{tabular}{|c|c|}
-    \hline
-    \( n \) & \( \cn{n} \) \\ [0.5ex]
-    \hline\hline
-    0 & \( λx\, y.y \) \\
-    \hline
-    1 & \( λx\, y.x\, y \) \\
-    \hline
-    2 & \( λx\, y.x(x\, y) \) \\
-    \hline
-    3 & \( λx\, y.x(x(x\, y)) \) \\
-    \hline
-    ... & ... \\
-    \hline
-  \end{tabular}
-  \caption{Numerales de Church}
-  \label{tab:numerales}
-\end{table}
-
-Como se observa en la tabla, un numeral de Church es una abstracción descurrificada de dos argumentos la cual al ser evaluada es reducida a la \( n \)-ésima composición del primer argumento evaluada en el segundo argumento.
-
-Una manera de entender esta representación es pensar en los números naturales como un conteo de uno en uno; el 0 es no contar; el 1 es contar uno mas que el 0; el 2 es uno mas que el 1, así que el 2 es uno mas que el uno mas que el 0; el 3 es uno mas que el 2, así que el 3 es uno mas que el uno mas que el uno mas que el 0 y así sucesivamente. La idea de ``el uno mas'' es la del sucesor, si consideramos a \( x \) como una función sucesor y a \( y \) como el 0, podemos expresar \( x(x(x(y))) \) como \( \mathrm{sucesor}(\mathrm{sucesor}(\mathrm{sucesor}(0))) \), así que
+La definición de la notación de flecha es la siguiente:
 
 \begin{align*}
-\mathrm{sucesor}(\mathrm{sucesor}(\mathrm{sucesor}(0))) & = \mathrm{sucesor}(\mathrm{sucesor}(1)) \\
-                             & = \mathrm{sucesor}(2) \\
-                             & = 3
+  x \mathbin{\uparrow} n &= x^{n} \\
+  x \mathbin{\uparrow^{k}} n = x \underbrace{\uparrow ... \uparrow}_\text{\( k \) flechas} n &= \underbrace{(x \overbrace{\uparrow ... \uparrow}^\text{\( k-1 \) flechas} (x \overbrace{\uparrow ... \uparrow}^\text{\( k-1 \) flechas} (\cdots \overbrace{\uparrow ... \uparrow}^\text{\( k-1 \) flechas} x) \cdots))}_\text{\( n \) veces}
 \end{align*}
 
-Es interesante pensar en diferentes maneras de expresar las operaciones mas elementales de la aritmétima como términos lambda que operen sobre esta representación. A continuación se presenta una exploración de los términos lambda correspondientes a algunas operaciones elementales de la aritmética: suma, multiplicación, exponenciación y resta. La suma es una repetición de la operación sucesor, la multiplicación una repetición de suma, la exponenciación una repetición de multiplicaciones y la resta una repetición de la operación predecesor. Esto nos lleva a identificar las operaciones de sucesor y predecesor como los algoritmos base para el resto de las operaciones primitivas.
+Esta notación introduce una secuencia infinita de operaciones cuya definición es recursiva y consistente con las definiciones de la adición, multiplicación y exponenciación presentadas.
 
-El término \emph{sucesor} debe ser uno tal que al ser aplicado a un numeral \( \cn{n} \) se pueda \( β \)-reducir al numeral \( \cn{n+1} \). Considerando la definición de \( \cn{n} \synteq λx\, y.x^{n}\, y \), lo que buscamos es una manera de agregarle una \( x \) a la composición en el cuerpo de \( \cn{n} \) para obtener \( λx\, y.x^{n+1}\, y \). Se construye este término considerando primero que será aplicado a un numeral
+Sea \( \cn{\mathcal{H}(i)} \) el \( i \)-ésimo elemento de esta secuencia
 
-\[ \mathrm{sucesor} \synteq λ\cn{n}.? \] 
+\begin{align}
+  \label{eq:hyper}
+  \cn{\mathcal{H}(1)} \synteq \cn{\uparrow} &\synteq (λm\, n.n (\cn{\times}\, m) \cn{1}) \\
+  \cn{\mathcal{H}(i)} \synteq \cn{\uparrow}_{i} &\synteq (λm\, n.n (\cn{\mathcal{H}(i-1)}\, m) \cn{1}) \nonumber
+\end{align}
 
-Además el resultado de \( β \)-reducir esta aplicación deberá ser una función de dos argumentos (como lo son todos los numerales de Church):
+El valor neutro siempre es \( \cn{1} \) ya que, para todo \( k > 1 \)
 
-\[ \mathrm{sucesor} \synteq λ\cn{n}.λx\, y.? \]
+\[ x \mathbin{\uparrow^{k}} 1 = x \mathbin{\uparrow^{k-1}} 1 \]
 
-Tomando en cuenta que \( \cn{n}\, x\, y \synteq x^{n}\, y \) y que \( x\, x^{n} y \synteq x^{n+1}\, y \):
+El primer paso para codificar estas secuencia es generalizar la estructura del término \( \cn{\uparrow} \). Ya que en la definición \eqref{eq:hyper} lo único que cambia en la estructura es la operación previa, se puede colocar una variable enlazada \( f \) que denote la operación anterior. De esta manera, la codificación de un término que dada una codificación de \( \mathcal{H}(i) \) es reducido a \( \mathcal{H}(i+1) \) es
 
-\[ \mathrm{sucesor} \synteq λn\, x\, y.x(n\, x\, y) \]
+\[ λf.λm\, n.n(f\, m) \cn{1} \]
 
-A continuación se \( β \)-reduce la aplicación de \( \mathrm{sucesor} \) al numeral \( \cn{4} \synteq λx\, y.x(x(x(x\, y))) \):
+Así, se definen los términos \( \cn{\uparrow}_{i} \)
 
 \begin{align*}
-                & \mathrm{sucesor}\, \cn{4} \\
-\synteq         & (λn\, x\, y.x(n\, x\, y)) (λx\, y.x(x(x(x\, y)))) \\
-\convertible{α} & (λn\, x\, y.x(n\, x\, y)) (λf\, z.f(f(f(f\, z)))) \\
-\contract{β}    & (λx\, y.x(((λf\, z.f (f (f (f\, z)))) x) y)) \\
-\contract{β}    & (λx\, y.x((λz.x(x(x(x\, z)))) y)) \\
-\contract{β}    & (λx\, y.x(x(x(x(x\, y))))) \\
-\synteq         & \cn{5}
+  \cn{\uparrow}_{1} &\synteq (λf.λm\, n.n(f\, m) \cn{1}) \cn{\times} \reduce{β} λm\, n.n(\cn{\times}\, m) \cn{1} \\
+  \cn{\uparrow}_{2} &\synteq (λf.λm\, n.n(f\, m) \cn{1}) \cn{\uparrow}_{1} \reduce{β} λm\, n.n(\cn{\uparrow}_{1}\, m) \cn{1} \\
+  \cn{\uparrow}_{3} &\synteq (λf.λm\, n.n(f\, m) \cn{1}) \cn{\uparrow}_{2} \reduce{β} λm\, n.n(\cn{\uparrow}_{2}\, m) \cn{1} \\
+                    &...\\
+  \cn{\uparrow}_{i} &\synteq (λf.λm\, n.n(f\, m) \cn{1}) \cn{\uparrow}_{i-1} \reduce{β} λm\, n.n(\cn{\uparrow}_{i-1}\, m) \cn{1}
 \end{align*}
 
-La otra operación elemental en la aritmética es el \emph{predecesor}, el término que represente esta operación debe ser uno que cumpla con la siguiente definición:
+Este procedimiento es correcto, sin embargo, en caso que se requiera utilizar el término \( \cn{\uparrow}_{1000} \) se deberán de escribir manualmente las definiciones de \( \cn{\uparrow}_{999} \) hasta \( \cn{\uparrow}_{1} \) lo cuál es inconveniente y tedioso. Con las técnicas que se han desarrollado previamente, se puede construír un término que dado un numeral \( \cn{n} \), se \( β \)-reduzca al \( n \)-ésimo operador de la secuencia, es decir, codificar \( \cn{\mathcal{H}} \), tal que \( (\cn{\mathcal{H}}\, \cn{n}) \reduce{β} \cn{\mathcal{H}(n)} \).
+
+\begin{equation}
+  \label{eq:hyper-flow}
+  \cn{\mathcal{H}} \synteq λn.n (λf.λm\, n.n(f\, m) \cn{1}) \cn{\times}
+\end{equation}
+
+Para corroborar que la ecuación \eqref{eq:hyper-flow} es correcta, se computan las reducciones
 
 \begin{align*}
-\mathrm{predecesor}\, \cn{0} & \reduce{β} \cn{0} \\
-\mathrm{predecesor}\, \cn{n} & \reduce{β} \cn{n-1}
+  \cn{\mathcal{H}}\, \cn{1} &\synteq (λn.n (λf.λm\, n.n(f\, m) \cn{1}) \cn{\times}) \cn{1} \\
+                            &\contract{β} \cn{1} (λf.λm\, n.n(f\, m) \cn{1}) \cn{\times} \\
+                            &\reduce{β} (λf.λm\, n.n(f\, m) \cn{1}) \cn{\times} \\
+                            &\contract{β} λm\, n.n(\cn{\times}\, m) \cn{1} \\
+                            &\synteq \cn{\uparrow} \\
+                            &\synteq \cn{\uparrow}_{1}
 \end{align*}
-
-El término lambda del predecesor con la representación de numerales de Church es mucho mas compleja que la del sucesor. Se pudiera pensar que la misma idea utilizada en la derivación del sucesor aplicaría para la derivación del predecesor: si tenemos \( n \) aplicaciones de \( x \) a \( y \), al aplicar el término que buscamos a un numeral de Church se debe \( β \)-reducir a otro numeral con una aplicación de \( x \) menos, se utiliza \( y \) para añadir una \( x \) mas en el cuerpo del numeral. Sin embargo, la estructura de los numerales no nos permite quitar una \( x \) usando \( y \) facilmente ya que el numeral puede ser aplicado a dos términos, el que representa las \( x \) y el que representa a la \( y \); la variable que determina el valor del numeral es  \( x \) y la sustitución de \( x \) por otro término en esta representación se hace con \emph{cada} aparición de \( x \) en el cuerpo del numeral, por otro lado, al sustituír la \( y \) por otro término solo podemos hacer mas complejo el término o sustituírla por otra variable.
-
-Para derivar el término del predecesor vamos a presentar un término con una estructura similar a los numerales de Church:
-
-\[ λx\, y\, z.z\, x^{n}\, y \]
-
-La diferencia entre este término y un numeral de Church es que podemos modificar su estructura por enfrente, por atrás y en las composiciones intermedias. Si este término representara \( \cn{n+1} \) pudieramos obtener el cuerpo de \( \cn{n} \) de la siguiente manera:
 
 \begin{align*}
-             & (λx\, y\, z.z\, x^{n}\, y) x\, y (λa.a) \\
-\contract{β} & (((λy\, z.z\, x^{n}\, y) y) (λa.a)) \\
-\reduce{β}   & ((λz.z\, x^{n}\, y) (λa.a)) \\
-\contract{β} & (λa.a) x^{n}\, y \\
-\contract{β} & x^{n}\, y
+  \cn{\mathcal{H}}\, \cn{i} &\synteq (λn.n (λf.λm\, n.n(f\, m) \cn{1}) \cn{\times}) \cn{i} \\
+                            &\contract{β} \cn{i} (λf.λm\, n.n(f\, m) \cn{1}) \cn{\times} \\
+                            &\reduce{β} (λf.λm\, n.n(f\, m) \cn{1})^{i} \cn{\times} \\
+                            &\synteq (λf.λm\, n.n(f\, m) \cn{1})^{i-1} ((λf.λm\, n.n(f\, m) \cn{1}) \cn{\times}) \\
+                            &\contract{β} (λf.λm\, n.n(f\, m) \cn{1})^{i-1} (λm\, n.n(\cn{\times}\, m) \cn{1}) \\
+                            &\synteq (λf.λm\, n.n(f\, m) \cn{1})^{i-1} \cn{\uparrow}_{1} \\
+                            &... \\
+                            &\reduce{β} (λf.λm\, n.n(f\, m) \cn{1})^{i-i} \cn{\uparrow}_{i} \\
+                            &\synteq \cn{\uparrow}_{i}
 \end{align*}
 
-Es decir, mantenemos las \( x \) y la \( y \) y le aplicamos a \( x^{n} y \) el término lambda que representa a la función identidad. Esta manera conveniente de representar a los numerales resulta ser incompleta, ya que no se podrá obtener \( x^{n-1} y \) a partir del resultado (ya que la \( z \) no aparece en el término resultante). Sin embargo, si logramos tener un término que nos genera este término modificado pudiéramos realizar esta transformación dentro de la función predecesor sería mas fácil encontrar \( \cn{n-1} \).
-
-La estructura del sucesor sería:
-
-\[ λn\, x\, y.?\, (λa.a) \]
-
-Donde \( ? \) debe ser tal que al \( β \)-reducirse resulte en un término con la forma \( λz.z\, x^{n-1}\, y \). Es conveniente desmenuzar el problema de encontrar este término desconocido: primero sabemos que el numeral de Church \( \cn{n} \) puede ser aplicado a dos términos y el primer término al que sea aplicado se sustituirá en todas las apariciones de \( x \), como queremos que la \( β \)-reducción nos genere una función cuyo argumento sea la primer variable en la composición del numeral, tenemos que encontrar una manera de propagar un término de la forma \( λw.w\, x^{m}\, y \) de tal manera que al aplicarle otro término nos resulte \( λw.w\, x^{m+1}\, y \). De esta manera al aplicar este otro término una y otra vez, resulte \( λw.w\, x^{n-1}\, y \) con el cual podemos obtener el cuerpo del predecesor sustituyendo \( w \) por \( λa.a \).
-
-Este otro término que buscamos será el que sustituirá a la \( x \) en \( \cn{n} \) para que:
-
-\[ ?(λw.w\, x^{m}\, y) \reduce{β} λw.w\, x^{m+1}\, y \]
-
-Lo que sucede en cada aplicación de este estilo es que se compone una \( x \) en cada aplicación y se deja explícita una \( w \) que podrá ser sustituída como valor. El término que nos permite hacer esto tiene la siguiente forma:
-
-\[ λg\, w.w (g\, x) \]
-
-Al ser aplicado a un término \( λw.w\, x^{m}\, y \) la variable \( g \) será sustituída por este término y el resultado será \( λw.w((λr.r\, x^{m}\, y) x) \) (nótese el cambio de nombre de la variable ligada \( w \) en el argumento), lo cual se reduce a \( λw.w\, x^{m+1}\, y \) el cual mantiene su estructura original.
-
-El percance con esta aproximación a la solución es que el primer valor al que se le aplica el término \( λg\, w.w (g\, x) \) debe ser \( λw.w\, y \).
-
-Para visualizar una manera de resolver el problema, es conveniente expresar cómo se verían las aplicaciones de \( λg\, w.w (g\, x) \) para un numeral de Church en particular. Si consideramos la aplicación de \( \cn{4}\, (λg\, w.w(g\, x)) \):
-
-\begin{align*}
-             & \cn{4} (λg\, w.w(g\, x)) \\
-\synteq      & ( (λx\, y.x^{4}\, y) (λg.(λw.(w (g\, x)))) ) \\
-\synteq      & ( (λx\, y.x(x(x(x\, y)))) (λg.(λw.(w (g\, x)))) ) \\
-\contract{β} & (λy.(λg.(λw.(w (g\, x))))((λg.(λw.(w (g\, x))))((λg.(λw.(w (g\, x))))((λg.(λw.(w (g\, x)))) y))))
-\end{align*}
-
-Esto nos lleva al segundo paso para encontrar la función predecesor, en el desarrollo anterior notamos que la primer aplicación de \( λg\, w.w (g\, x) \) es en la variable \( y \) la cual está ligada por la \( λ \) del término. Sabemos que para obtener \( λw.w\, x^{3}\, y \) debemos \( β \)-reducir el término:
-
-\[ ((λg.(λw.(w (g\, x)))) ((λg.(λw.(w (g\, x)))) ((λg.(λw.(w (g\, x)))) (λw.w\, y)))) \]
-
-Con esto podemos encontrar el valor que tiene que tomar \( y \) en el numeral ya que:
-
-\[ ((λg.(λw.(w (g\, x)))) y) \reduce{β} λw.w\, y \]
-
-El término que buscamos es el que debe sustituír a la variable \( y \) en la reducción:
-
-\begin{align*}
-           & ((λg.(λw.(w (g\, x)))) ?) \\
-\reduce{β} & (λw.(w (?\, x)))
-\end{align*}
-
-El término \( ? \) debe ser una función que al ser aplicada a \( x \) se reduzca a \( y \). El término \( λu.y \) cumple con esta propiedad y será el que utilizaremos.
-
-Considerando los términos determinados en el procedimiento anterior, podemos decir cómo será la función predecesor. Primero se aplica \( (λg.(λw.(w (g\, x)))) \) a \( \cn{n} \), este término resultante se aplica a \( λu.y \), \( β \)-reducir esta aplicación nos resulta \( λw.w\, x^{n-1}\, y \) la cual puede ser aplicada a la función identidad \( λa.a \) para obtener \( x^{n-1}\, y \). Lo cual nos lleva al término completo de predecesor:
-
-\[ (λn.(λx\, y.(((n (λg.(λw.(w (g\, x))))) (λu.y)) (λa.a)))) \]
-
-Teniendo los términos lambda de sucesor y predecesor se puede abordar la derivación de operaciones mas complejas como la de adición, multiplicación, exponenciación y sustracción de numerales de Church siguiendo el mismo enfoque. En este trabajo no se abordan otras operaciones como la división debido al aumento de complejidad por no ser una operación interna, es decir, la división de dos naturales puede ser un racional y no se definió una representación de términos lambda para el conjunto de los racionales.
-
-Un término lambda para la adición de dos numerales \( \cn{m} \) y \( \cn{n} \) es
-
-\[ λm\, n.(λx\, y.n\, \mathrm{sucesor}\, m) \]
-
-y se obtuvo a partir de la observación de que realizar la suma \( m+n \) es equivalente a computar el \( n \)-ésimo sucesor de \( m \).
-
-Utilizando la estructura de \( \cn{n} \) podemos aplicar \( \cn{n}\, \mathrm{sucesor}\, \cn{m} \) para obtener la \( n \)-ésima composición de la función sucesor aplicada al numeral \( \cn{m} \):
-
-\begin{align*}
-             & \cn{n}\, \mathrm{sucesor}\, \cn{m} \\
-\synteq      & (( (λx\, y.x^{n}\, y) \mathrm{sucesor}) (λx\, y.x^{m}\, y)) \\
-\contract{β} & ( (λy.\mathrm{sucesor}^{n}\, y) (λx\, y.x^{m}\, y)) \\
-\contract{β} & \mathrm{sucesor}^{n}\, λx\, y.x^{m}\, y \\
-\reduce{β}   & λx\, y.x^{m+n}\, y \\
-\synteq      & \cn{m+n}
-\end{align*}
-
-Un término lambda para la multiplicación de dos numerales de Church es
-
-\[ λm\, n\, x\, y.n (m\, x) y \]
-
-el cual aborda la idea de componer \( m\, n \) consigo mismo \( n \) veces (lo cual equivaldría a sumar \( n \) veces \( m \).
-
-En el caso de la adición y la multiplicación, el orden en el que aplicamos el término a los numerales no es de importancia ya que son operaciones conmutativas, \( m+n = n+m \) y \( m \times n = n \times m \). Sin embargo en la sustracción y la exponenciación no se tiene esta propiedad, por lo que es importante el orden en el que se aplican los numerales a los términos, para ello consideraremos el orden como \( m-n \) y \( m^{n} \).
-
-Basándonos en el término de la adición podemos obtener un término de la sustracción el cual es
-
-\[ λm\, n\, x\, y.n\, \mathrm{predecesor}\, m \].
-
-Ya que en la adición se dejó explícito el acto de aumentar \( m \) veces en 1 a \( n \), cambiamos el término de \( \mathrm{sucesor} \) por el de \( \mathrm{predecesor} \) y ahora se decrementa \( m \) veces en 1 a \( n \).
-
-Un término lambda para la exponenciación es
-
-\[ λm\, n.n\, m \]
-
-es curioso tener una representación tan sencilla para una operación tan compleja como esta. A diferencia de los anteriores términos, al aplicarle a ésta exponenciación dos numerales, el numeral resultante tendrá las variables compuestas las variables que no se componen en las entradas, es decir, si \( \cn{m} \synteq λf\, g.f^{m}\, g \) y \( \cn{n} \synteq λx\, y.x^{n}\, y \), el resultado será \( \cn{m^{n}} \synteq λg\, y.g^{m^{n}}\, y \).
-
-Para corroborar que estas representaciones calculan de manera correcta la operación correspondiente para los numerales de Church se pueden realizar varias pruebas con diferentes numerales de entrada. En este trabajo no se desarrollarán ejemplos para estos términos.
-
-Los mecanismos que hemos utilizado para derivar las operaciones se basan en construír términos que vayan transformando entradas con una estructura determinada de tal manera que nos acerquemos poco a poco al cálculo de la operación deseada; esta labor llega a ser bastante tediosa y carece de interés algorítmico. A continuación se presenta una manera mas interesante y elegante de abordar el problema de representar operaciones aritméticas.
-
-Se introduce el término lambda que me permite generar hiperoperaciones aritméticas:
-
-\[ λf\, u\, m\, n.n (λw.f\, m\, w) u \]
-
-Abstracción de la noción de repetición sobre la estructura de un numeral, considerar propiedades de conmutatividad y asociatividad en operaciones. Abordar el problema del cómputo de operaciones inversas. Determinar un término que nos genere elementos de la secuencia de hiperoperaciones.
+Ejemplos de reducciones concretas no serán dados debido a la naturaleza de la secuencia, tan solo \( 5 \mathbin{\uparrow\uparrow} 3 \) tiene 2185 dígitos y \( 5 \mathbin{\uparrow\uparrow} 4 \) tiene \( 1335740483872137\times 10^{2169} \) dígitos.
 
 \section{Procesos recursivos}
 \label{sec:procesos-recursivos}
 
-Combinador Y, ordenes de evaluación, funciones recursivas.
+Las codificaciones abordadas hasta el momento operan sobre dos clases de objetos computacionales: los valores de verdad y los números naturales. Confome aumentó la complejidad de las operaciones que se deseaban codificar, se utilizó un mecanismo de iteración para expresar los algoritmos. Sin embargo, estos algoritmos debían de ser modificados y adaptados a una repetición basada en numerales.
 
-\[ \bs{Y} \synteq λf.(λx.f(x\, x))(λx.f(x\, x)) \]
+La iteración, en algunos casos, no es la manera más adecuada de expresar un proceso. Hay ciertos procesos que son recursivos por naturaleza, y a pesar de ser posible codificarlos como procedimientos iterativos, lo más natural es hacer uso de un procedimientos recursivo.
 
-{\center Derivación de \( \bs{Y} \)}
+Por ejemplo, un algoritmo para ``aplanar'' un árbol con números como hojas pudiéra expresarse
+
+\begin{algorithm}
+  \caption{Procedimiento \( aplana(t) \)}
+  \label{alg:flat}
+  \begin{algorithmic}
+    \REQUIRE \( t \in \{ T \mid T \text{ es un árbol binario con hojas } h\in \mathbb{N} \} \)
+    \ENSURE \( l \in \{ L \mid L \text{ es una secuencia con elementos } e\in \mathbb{N} \} \)
+    \IF{\( t \in \mathbb{N} \)}
+    \RETURN \( \langle t \rangle \)
+    \ELSE
+    \RETURN \( \langle aplana(t.izquierdo) \colon  aplana(t.derecho) \rangle \)
+    \ENDIF
+  \end{algorithmic}
+\end{algorithm}
+
+En \ref{alg:flat}, la notación \( \langle x \rangle \) denota una secuencia con el elemento \( x \), la notación \( \langle xs : ys \rangle \) denota la concatenación de las secuencias \( xs \) y \( ys \) y \( t.izquierdo/derecho \) denotan selectores de los vértices adyacentes a \( t \).
+
+En las técnicas de codificación que se han abordado, no se admiten definiciones recursivas. Para mostrar esta problemática, consideremos la definición recursiva de la función factorial:
+
+\[ n! =
+  \begin{cases}
+    1 &n=0;\\
+    n\times (n-1)! &n>0.
+  \end{cases}
+\]
+
+Todas las componentes de ésta definición están codificadas, ya sea como expresiones booleanas o como expresiones aritméticas. Una pseudo-definición de esta codificación es:
+
 \begin{align}
-  F &\synteq λn.\bs{\prec}\, (\bs{0^{?}}\, n) \cn{1} (\bs{\times}\, n (F (\bs{-}\, n\, \cn{1}))) \\
-  F' &\synteq λf\, n.\bs{\prec}\, (\bs{0^{?}}\, n) \cn{1} (\bs{\times}\, n (f (\bs{-}\, n\, \cn{1})))\\
-  F'' &\synteq λf'\, n.\bs{\prec}\, (\bs{0^{?}}\, n) \cn{1} (\bs{\times}\, n (f'\, f' (\bs{-}\, n\, \cn{1}))) \\
-  C &\synteq λf''.f''\, f'' \\
-  C\, F'' &\reduce{β} \text{ función factorial a partir de \( F'' \)} \\
-  F''' &\synteq (λf'''.f' (f'''\, f''')) \\
-  F'''\, F''' &\reduce{β} f'(F'''\, F''') \\
-  C^{*} &\synteq λf'.(λf'''.f' (f'''\, f'''))(λf'''.f' (f'''\, f''')) \\
-  C^{*}\, F' &\reduce{β} \text{ función factorial a partir de \( F' \)}
+  \label{eq:fact1}
+  \cn{!} \synteq λn.(\bs{\prec}\ &(\cn{0}_{?}\, n) \\
+                                 &\cn{1} \nonumber \\
+                                 &(\cn{\times}\, n (\cn{!} (\cn{-}_{1} n)))) \nonumber
 \end{align}
 
-\[ Y \synteq C^{*} \]
+El problema con esta definición es que antes de definir \( \cn{!} \), se hace referencia a ella en \( (\cn{!} (\cn{-}_{1} n)) \), por lo que no es posible establecer el valor del término factorial antes de terminar de escribir su definición.
 
-Presentar una breve introducción sobre los combinadores y hablar del combinador \( \bs{Y} \) y cómo nos permite expresar funciones recursivas en el cálculo lambda.
+Hay algunos trucos que se pueden implementar para simular que se tiene definida la codificación de factorial antes de definirla. Por ejemplo, si \( \cn{!} \) fuera una abstracción la cual espera ser aplicada a sí misma y a un número, pudiera definirse exactamente como \eqref{eq:fact1}, pero con una variable enlazada \( f \) que será sustituída por sí misma en una reducción.
 
-Como ejemplos prácticos de esta subsección sería adecuado desarrollar el término para el cálculo de factoriales o algúna otra función de una sola variable que transforme un numeral de Church en otro. También pudiera expandir la recursividad a términos multivariables currificados como la función Ackermann (abstracción a la generación de hiperoperaciones, ver \emph{The Book of Numbers} de Conway).
+\begin{align}
+  \label{eq:fact2}
+  \cn{!} \synteq λf\, n.(\bs{\prec}\ &(\cn{0}_{?}\, n) \\
+                                     &\cn{1} \nonumber \\
+                                     &(\cn{\times}\, n (f (\cn{-}_{1} n)))) \nonumber
+\end{align}
+
+El problema con \eqref{eq:fact2} es que si se reduce \( (\cn{!}\, \cn{!}\, \cn{n}) \) y \( n \not= 0 \), ocurre lo siguiente:
+
+\begin{align*}
+  \cn{!}\, \cn{!}\, \cn{n} &\reduce{β} (\cn{\times}\, \cn{n} (\cn{!} (\cn{-}_{1} \cn{n})))
+\end{align*}
+\[ (\ \cn{\times}\ \cn{n}\ (\ \cn{!}\ \underbrace{(\ \cn{-}_{1}\ \cn{n}\ )}_\text{Debe de ser \( \cn{!} \)}\ )\ ) \]
+
+Para escapar de este problema, se debe de aplicar \( (\cn{!}\, \cn{!} (\cn{-}_{1} \cn{n})) \) en el cuerpo de la definición. El factorial modificado es
+
+\begin{align}
+  \label{eq:fact3}
+  \cn{!} \synteq λf\, n.(\bs{\prec}\ &(\cn{0}_{?}\, n) \\
+                                     &\cn{1} \nonumber \\
+                                     &(\cn{\times}\, n (f\, f (\cn{-}_{1} n)))) \nonumber
+\end{align}
+
+Esta definición se escapa del problema de la definición recursiva, puede reducirse a la codificación de la función factorial aplicando
+
+\[ \cn{!}\, \cn{!} \reduce{β} λn.(\bs{\prec} (\cn{0}_{?}\, n) \cn{1} (\cn{\times}\, n (\cn{!}\, \cn{!} (\cn{-}_{1} n)))) \]
+
+En efecto, no se necesita el ``nombre'' \( \cn{!} \) para expresar la codificación del factorial, la reducción anterior es exactamente la misma a
+
+\begin{align*}
+  ((λf\, n.(\bs{\prec}\ &(\cn{0}_{?}\, n) \\
+                        &\cn{1} \\
+                        &(\cn{\times}\, n (f\, f (\cn{-}_{1} n))))) \\
+  (λf\, n.(\bs{\prec}\ &(\cn{0}_{?}\, n) \\
+                        &\cn{1} \\
+                        &(\cn{\times}\, n (f\, f (\cn{-}_{1} n)))))) \\ \reduce{β}& \\
+  &(λn.(\bs{\prec} (\cn{0}_{?}\, n) \cn{1} (\cn{\times}\, n ((λf\, n.(\bs{\prec} (\cn{0}_{?}\, n) \cn{1} (\cn{\times}\, n (f\, f (\cn{-}_{1} n))))) (λf\, n.(\bs{\prec} (\cn{0}_{?}\, n) \cn{1} (\cn{\times}\, n (f\, f (\cn{-}_{1} n))))) (\cn{-}_{1} n)))))
+\end{align*}
+
+A pesar de tener este problema resuelto, la solución no es buena. Esta técnica obliga a que en cada algoritmo recursivo que se codifique, cada aplicación recursiva se deba tener el primer argumento aplicado a sí mismo. Lo que se necesita para tener un buen mecanismo de recursividad es separar la auto-aplicación de una codificación recursiva de la definición misma. Lo ideal es poder codificar un algoritmo similar a la definición \eqref{eq:fact2} y mediante algún procedimiento genérico, hacer que se auto-aplique el procedimiento a si mismo.
+
+La ``factorización'' del mecanismo de recursión se puede lograr combinando la idea de la auto-aplicación de la ecuación \eqref{eq:fact3} y la idea de escribir los términos recursivos como en la ecuación \eqref{eq:fact2}.
+
+En \eqref{eq:fact2} se esperaba que \( \cn{!} \) sea aplicado a sí mismo, sin embargo en su definición solo aplica \( f \) a \( (\cn{-}_{1}\, n) \), por lo que es conveniente tratar de reducir la aplicación de \( \cn{!} \) a \( (\cn{!}\, \cn{!}) \), de tal manera que la reducción sea
+
+\begin{align*}
+  \cn{!} (\cn{!}\, \cn{!}) &\synteq (λf\, n.(\bs{\prec} (\cn{0}_{?}\, n) \cn{1} (\cn{\times}\, n (f (\cn{-}_{1} n))))) (\cn{!}\, \cn{!}) \\
+                           &\contract{β} λn.(\bs{\prec} (\cn{0}_{?}\, n) \cn{1} (\cn{\times}\, n (\cn{!}\, \cn{!} (\cn{-}_{1} n))))
+\end{align*}
+
+Esto hace que la codificación funcione en el primer paso recursivo. Sin embargo, \( (\cn{!}\, \cn{!} (\cn{-}_{1} n)) \) será reducido de tal manera que el siguiente paso recursivo no se aplique \( \cn{!} \) a si mismo.
+
+\begin{align*}
+  \cn{!}\, \cn{!} (\cn{-}_{1} n) &\synteq (λf\, n.(\bs{\prec} (\cn{0}_{?}\, n) \cn{1} (\cn{\times}\, n (f (\cn{-}_{1} n))))) \cn{!} (\cn{-}_{1} n) \\
+                                 &\contract{β} (λn.(\bs{\prec} (\cn{0}_{?}\, n) \cn{1} (\cn{\times}\, n (\cn{!} (\cn{-}_{1} n))))) (\cn{-}_{1} n)
+\end{align*}
+
+El término \( (\cn{!} (\cn{-}_{1} n)) \) debería de ser \( (\cn{!}\, \cn{!} (\cn{-}_{1} n)) \) de nuevo para que el siguiente paso recursivo funcione.
+
+En el ejemplo \ref{exmp:aplicacion2} se mostró un término que es útil para este tipo de situaciones:
+
+\[ ω \synteq (λx.x\, x) \]
+
+La propiedad interesante de \( ω \) es que \( (ω\, ω) \reduce{β} (ω\, ω) \), que es justo lo que deseamos en nuestro mecanismo recursivo, el combinador que se necesita es uno similar a \( ω \), llamado \( ω^{\prime} \) tal que \( (ω^{\prime}\, ω^{\prime}) \reduce{β} (\cn{!} (ω^{\prime}\, ω^{\prime})) \).
+
+Suponiendo que \( \cn{!} \) ya es una variable enlazada, el combinador \( ω^{\prime} \) debe ser una abstracción que espera ser aplicada a si misma, tiene la forma \( λω^{\prime}.M \). Ya que la reducción de \( ω^{\prime} \) aplicada a sí misma resulta en \( (\cn{!} (ω^{\prime}\, ω^{\prime})) \), \( M \) debe de ser la aplicación \( (\cn{!} N) \), para completar la regla de reducción \( N \synteq (ω^{\prime}\, ω^{\prime})\).
+
+\[ ω^{\prime} \synteq λω^{\prime}.\cn{!} (ω^{\prime}\, ω^{\prime}) \convertible{α} λx.\cn{!}(x\, x) \]
+
+Para completar la definición del mecanismo de recursividad se plantea un combinador que espere ser aplicado a un término como \( \cn{!} \) de \eqref{eq:fact2} e internamente aplique \( ω^{\prime} \) a sí misma. Este mecanismo es llamado combinador \( \bs{Y} \).
+
+\begin{equation}
+  \label{eq:recur:Y}
+  \bs{Y} \synteq λf.(λx.f(x\, x))(λx.f(x\, x))
+\end{equation}
+
+Este término cumple la propiedad de que para todo \( F \in Λ \)
+
+\[ \bs{Y}\, F \reduce{β} F(\bs{Y}\, F) \]
+
+Para corroborar que esta propiedad se cumple para todo término, se desarrolla la reducción
+
+\begin{align*}
+  \bs{Y}\, F &\synteq (λf.(λx.f(x\, x))(λx.f(x\, x))) F \\
+             &\contract{β} (λx.F(x\, x))(λx.F(x\, x)) \\
+             &\contract{β} F((λx.F(x\, x)) (λx.F(x\, x))) \\
+             &\convertible{β} F(\bs{Y}\, F)
+\end{align*}
+
+Al aplicar el combinador \( \bs{Y} \) a la definición \eqref{fact2} del factorial, se obtiene la reducción
+
+\begin{align*}
+  \bs{Y}\, \cn{!} &\reduce{β} \cn{!} (\bs{Y}\, \cn{!}) \\
+                  &\synteq (λf\, n.(\bs{\prec} (\cn{0}_{?}\, n) \cn{1} (\cn{\times}\, n (f (\cn{-}_{1} n))))) (\bs{Y}\, \cn{!}) \\
+                  &\contract{β} λn.(\bs{\prec} (\cn{0}_{?}\, n) \cn{1} (\cn{\times}\, n (\bs{Y}\, \cn{!} (\cn{-}_{1} n))))
+\end{align*}
+
+Al reducir la aplicación de este término en un numeral mayor a cero se obtiene
+
+\begin{align*}
+  (λn.(\bs{\prec} (\cn{0}_{?}\, n) \cn{1} (\cn{\times}\, n (\bs{Y}\, \cn{!} (\cn{-}_{1} n))))) \cn{n} &\reduce{β} (\cn{\times}\, \cn{n} (\bs{Y}\, \cn{!} (\cn{-}_{1} \cn{n})))
+\end{align*}
+
+Es entonces que \( (\bs{Y}\, \cn{!}) \) puede ser reducido nuevamente a \( (\cn{!} (\bs{Y}\, \cn{!})) \) para continuar al siguiente paso recursivo de la misma manera.
+
 
 \section{Pares ordenados}
 \label{sec:pares-ordenados}

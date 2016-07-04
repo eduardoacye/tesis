@@ -1,0 +1,137 @@
+El siguiente código es una implementación literal de los combinadores \( \bs{S} \), \( \bs{K} \) e \( \bs{I} \) descritos en \ref{defn:ski}; los valores de verdad y las operaciones booleanas descritas en \ref{sec:algebra-booleana}; los numerales de Church y las operaciones aritméticas descritas en \ref{sec:aritmetica}.
+
+El lenguaje de programación utilizado en esta implementación es \texttt{Scheme}.
+
+\begin{lstlisting}[language=scheme]
+;; 
+;; Combinadores SKI
+;;
+
+(define :I
+  ;; Combinador identidad @<\( \mathcolor{gray}{\bs{I}} \)>@
+  (lambda (:x) :x))
+
+(define :K
+  ;; Combinador constante @<\( \mathcolor{gray}{ \bs{K}  } \)>@
+  (lambda (:x) (lambda (:y) :x)))
+
+(define :S
+  ;; Combinador de sustitucion @<\( \mathcolor{gray}{ \bs{S}  } \)>@
+  (lambda (:x) (lambda (:y) (lambda (:z) ((:x :z) (:y :z))))))
+
+;; 
+;; Algebra booleana
+;;
+
+(define :T
+  ;; Combinador verdadero @<\( \mathcolor{gray}{ \bs{T}  } \)>@
+  :K)
+
+(define :F
+  ;; Combinador falso @<\( \mathcolor{gray}{ \bs{F}  } \)>@
+  (lambda (:x) (lambda (:y) :y)))
+
+(define (boolean->church b)
+  ;; procedimiento que toma un objeto booleano de scheme y regresa el
+  ;; combinador que codifica al valor
+  (if b :T :F))
+
+(define (church->boolean :p)
+  ;; Procedimiento que toma un combinador booleano y regresa el objeto
+  ;; booleano de scheme que representa al valor
+  ((:p #t) #f))
+
+(define :IF
+  ;; Combinador condicional @<\( \mathcolor{gray}{ \bs{\prec}  } \)>@
+  (lambda (:p) (lambda (:m) (lambda (:n) ((:p :m) :n)))))
+
+(define :NOT
+  ;; Combinador negacion @<\( \mathcolor{gray}{ \bs{\lnot}  } \)>@
+  (lambda (:p) (((:IF :p) :F) :T)))
+
+(define :OR
+  ;; Combinador disyuncion @<\( \mathcolor{gray}{ \bs{\lor}  } \)>@
+  (lambda (:p1) (lambda (:p2) (((:IF :p1) :T)(((:IF :p2) :T) :F)))))
+
+(define :AND
+  ;; Combinador conjuncion @<\( \mathcolor{gray}{ \bs{\land}  } \)>@
+  (lambda (:p1) (lambda (:p2) (((:IF :p1) (((:IF :p2) :T) :F) :F)))))
+
+;; 
+;; Aritmetica
+;; 
+(define :0
+  ;; Combinador cero @<\( \mathcolor{gray}{ \cn{0}  } \)>@
+  :F)
+
+(define :0?
+  ;; Combinador predicado @<\( \mathcolor{gray}{ \cn{0}?  } \)>@  para determinar si un termino lambda es el
+  ;; combinador cero
+  (lambda (:n) ((:n (:K :F)) :T)))
+
+(define :SUCC
+  ;; Combinador sucesor @<\( \mathcolor{gray}{ \cn{+}_{1}  } \)>@
+  (lambda (:n) (lambda (:x) (lambda (:y) (:x ((:n :x) :y))))))
+
+(define :1
+  ;; Combinador uno @<\( \mathcolor{gray}{ \cn{1}  } \)>@
+  (:SUCC :0))
+
+(define :2
+  ;; Combinador dos @<\( \mathcolor{gray}{ \cn{2}  } \)>@
+  (:SUCC :1))
+
+(define :3
+  ;; Combinador tres @<\( \mathcolor{gray}{ \cn{3}  } \)>@
+  (:SUCC :2))
+
+(define :4
+  ;; Combinador cuatro @<\( \mathcolor{gray}{ \cn{4}  } \)>@
+  (:SUCC :3))
+
+(define :+
+  ;; Combinador adicion @<\( \mathcolor{gray}{ \cn{+}  } \)>@
+  (lambda (:m) (lambda (:n) ((:n :SUCC) :m))))
+
+(define :*
+  ;; Combinador multiplicacion @<\( \mathcolor{gray}{ \cn{\times}  } \)>@
+  (lambda (:m) (lambda (:n) ((:n (:+ :m)) :0))))
+
+(define :^
+  ;; Combinador exponenciacion @<\( \mathcolor{gray}{ \cn{\uparrow}  } \)>@
+  (lambda (:m) (lambda (:n) ((:n (:* :m)) :1))))
+
+(define (number->church n)
+  ;; Procedimiento que toma un objeto numerico de scheme y regresa el
+  ;; combinador que codifica al valor
+  (if (zero? n)
+      :0
+      (:SUCC (number->church (- n 1)))))
+
+(define (church->number :n)
+  ;; Procedimiento que toma un combinador numerico y regresa el valor de
+  ;; scheme que representa el valor
+  ((:n (lambda (x) (+ 1 x))) 0))
+
+(define :0*
+  ;; Combinador cero modificado @<\( \mathcolor{gray}{ \cn{0}^{\prime}  } \)>@ (utilizado para computar el predecesor)
+  (lambda (:x) (lambda (:y) (lambda (:z) :y))))
+
+(define :SUCC*
+  ;; Combinador sucesor modificado @<\( \mathcolor{gray}{ \cn{+}_{1}^{\prime}  } \)>@  (utilizado para computar el predecesor)
+  (lambda (:n*) (lambda (:x) (lambda (:y) (lambda (:z) (((:n* :x) (:z :y)) :x))))))
+
+(define :PRED
+  ;; Combinador predecesor @<\( \mathcolor{gray}{ \cn{-}_{1}  } \)>@
+  (lambda (:n) (lambda (:x) (lambda (:y) (((((:n :SUCC*) :0*) :x) :y) :I)))))
+
+(define :-
+  ;; Combinador sustraccion @<\( \mathcolor{gray}{ \cn{-}  } \)>@
+  (lambda (:m) (lambda (:n) ((:n :PRED) :m))))
+
+\end{lstlisting}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

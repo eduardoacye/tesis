@@ -1243,13 +1243,13 @@ La clave de utilizar esta representación modificada está en observar que es f�
 
 De tal manera que la definición del predecesor \( \cn{-}_{1} \) para la codificación de Church puede ser escrita
 
-\[ \cn{-}_{1} \synteq λn.λx\, y.\mathcal{T}[n\mapsto n^{\prime}]\, x\, y\, \bs{I} \]
+\[ \cn{-}_{1} \synteq λn.λx\, y.\mc{T}[n\mapsto n^{\prime}]\, x\, y\, \bs{I} \]
 
-Donde \( \mathcal{T}[n\mapsto n^{\prime}] \) es una transformación que a partir de \( n \) obtiene el mísmo número pero con la codificación modificada. Con la cual es sencillo encontrar \( n-1 \).
+Donde \( \mc{T}[n\mapsto n^{\prime}] \) es una transformación que a partir de \( n \) obtiene el mísmo número pero con la codificación modificada. Con la cual es sencillo encontrar \( n-1 \).
 
-Para construír el término \( \mathcal{T}[n\mapsto n^{\prime}] \) se debe encontrar una manera de contar desde \( 0 \) hasta \( n \) en la codificación modificada. Esto se puede lograr utilizando la interpretación de los numerales de Church como operadores de repetición. Si se construye una codificación del sucesor \( \cn{+}_{1}^{\prime} \) para los numerales modificados, entonces \( \mathcal{T}[n\mapsto n^{\prime}] \) puede ser definida como \( n \) aplicaciones de \( \cn{+}^{\prime} \) con el caso base \( \cn{0}^{\prime} \), es decir
+Para construír el término \( \mc{T}[n\mapsto n^{\prime}] \) se debe encontrar una manera de contar desde \( 0 \) hasta \( n \) en la codificación modificada. Esto se puede lograr utilizando la interpretación de los numerales de Church como operadores de repetición. Si se construye una codificación del sucesor \( \cn{+}_{1}^{\prime} \) para los numerales modificados, entonces \( \mc{T}[n\mapsto n^{\prime}] \) puede ser definida como \( n \) aplicaciones de \( \cn{+}^{\prime} \) con el caso base \( \cn{0}^{\prime} \), es decir
 
-\[ \mathcal{T}[n\mapsto n^{\prime}] \synteq n\, \cn{+}_{1}^{\prime}\, \cn{0}^{\prime} \]
+\[ \mc{T}[n\mapsto n^{\prime}] \synteq n\, \cn{+}_{1}^{\prime}\, \cn{0}^{\prime} \]
 
 El problema de codificar el predecesor se reduce ahora a la construcción del sucesor de un número con la codificación modificada. Esta construcción resulta ser casi tan sencilla como la codificación de \( \cn{+}_{1} \). Primero se analiza cómo cambia la estructura de la codificación de \( \cn{n}^{\prime} \) a \( \cn{n+1}^{\prime} \):
 
@@ -1433,11 +1433,17 @@ Sean \( {}_{n}v_{1}, {}_{n}v_{2}, ..., {}_{n}v_{n} \), términos de la forma
 
 El constructor \( {}_{n}S \) de un estado con \( n \) valores se define como
 
-\[ {}_{n}S \synteq λx_{1}\, ...\, x_{n}.λp.p\, x_{1}\, ...\, x_{n} \]
+\begin{equation}
+  \label{eq:state-cons}
+  {}_{n}S \synteq λx_{1}\, ...\, x_{n}.λp.p\, x_{1}\, ...\, x_{n}
+\end{equation}
 
 El selector del \( i \)-ésimo valor de un estado, se define
 
-\[ {}_{n}S_{i} \synteq λs.s\, v_{i} \]
+\begin{equation}
+  \label{eq:state-selec}
+  {}_{n}S_{i} \synteq λs.s\, v_{i}
+\end{equation}
 
 La codificación de las operaciones aritméticas de división, logaritmo y raíz, serán basadas en algoritmos similares al del factorial. Para tener la habilidad de escribir algoritmos aritméticos, es necesario complementar los numerales de Church con predicados, por ejemplo, para determinar si un numeral es cero o si dos numerales son iguales.
 
@@ -1648,19 +1654,19 @@ La definición de la notación de flecha es la siguiente:
 
 Esta notación introduce una secuencia infinita de operaciones cuya definición es recursiva y consistente con las definiciones de la adición, multiplicación y exponenciación presentadas.
 
-Sea \( \cn{\mathcal{H}(i)} \) el \( i \)-ésimo elemento de esta secuencia
+Sea \( \cn{\mc{H}(i)} \) el \( i \)-ésimo elemento de esta secuencia
 
 \begin{align}
   \label{eq:hyper}
-  \cn{\mathcal{H}(1)} \synteq \cn{\uparrow} &\synteq (λm\, n.n (\cn{\times}\, m) \cn{1}) \\
-  \cn{\mathcal{H}(i)} \synteq \cn{\uparrow}_{i} &\synteq (λm\, n.n (\cn{\mathcal{H}(i-1)}\, m) \cn{1}) \nonumber
+  \cn{\mc{H}(1)} \synteq \cn{\uparrow} &\synteq (λm\, n.n (\cn{\times}\, m) \cn{1}) \\
+  \cn{\mc{H}(i)} \synteq \cn{\uparrow}_{i} &\synteq (λm\, n.n (\cn{\mc{H}(i-1)}\, m) \cn{1}) \nonumber
 \end{align}
 
 El valor neutro siempre es \( \cn{1} \) ya que, para todo \( k > 1 \)
 
 \[ x \mathbin{\uparrow^{k}} 1 = x \mathbin{\uparrow^{k-1}} 1 \]
 
-El primer paso para codificar estas secuencia es generalizar la estructura del término \( \cn{\uparrow} \). Ya que en la definición \eqref{eq:hyper} lo único que cambia en la estructura es la operación previa, se puede colocar una variable enlazada \( f \) que denote la operación anterior. De esta manera, la codificación de un término que dada una codificación de \( \mathcal{H}(i) \) es reducido a \( \mathcal{H}(i+1) \) es
+El primer paso para codificar estas secuencia es generalizar la estructura del término \( \cn{\uparrow} \). Ya que en la definición \eqref{eq:hyper} lo único que cambia en la estructura es la operación previa, se puede colocar una variable enlazada \( f \) que denote la operación anterior. De esta manera, la codificación de un término que dada una codificación de \( \mc{H}(i) \) es reducido a \( \mc{H}(i+1) \) es
 
 \[ λf.λm\, n.n(f\, m) \cn{1} \]
 
@@ -1674,17 +1680,17 @@ Así, se definen los términos \( \cn{\uparrow}_{i} \)
   \cn{\uparrow}_{i} &\synteq (λf.λm\, n.n(f\, m) \cn{1}) \cn{\uparrow}_{i-1} \reduce{β} λm\, n.n(\cn{\uparrow}_{i-1}\, m) \cn{1}
 \end{align*}
 
-Este procedimiento es correcto, sin embargo, en caso que se requiera utilizar el término \( \cn{\uparrow}_{1000} \) se deberán de escribir manualmente las definiciones de \( \cn{\uparrow}_{999} \) hasta \( \cn{\uparrow}_{1} \) lo cuál es inconveniente y tedioso. Con las técnicas que se han desarrollado previamente, se puede construír un término que dado un numeral \( \cn{n} \), se \( β \)-reduzca al \( n \)-ésimo operador de la secuencia, es decir, codificar \( \cn{\mathcal{H}} \), tal que \( (\cn{\mathcal{H}}\, \cn{n}) \reduce{β} \cn{\mathcal{H}(n)} \).
+Este procedimiento es correcto, sin embargo, en caso que se requiera utilizar el término \( \cn{\uparrow}_{1000} \) se deberán de escribir manualmente las definiciones de \( \cn{\uparrow}_{999} \) hasta \( \cn{\uparrow}_{1} \) lo cuál es inconveniente y tedioso. Con las técnicas que se han desarrollado previamente, se puede construír un término que dado un numeral \( \cn{n} \), se \( β \)-reduzca al \( n \)-ésimo operador de la secuencia, es decir, codificar \( \cn{\mc{H}} \), tal que \( (\cn{\mc{H}}\, \cn{n}) \reduce{β} \cn{\mc{H}(n)} \).
 
 \begin{equation}
   \label{eq:hyper-flow}
-  \cn{\mathcal{H}} \synteq λn.n (λf.λm\, n.n(f\, m) \cn{1}) \cn{\times}
+  \cn{\mc{H}} \synteq λn.n (λf.λm\, n.n(f\, m) \cn{1}) \cn{\times}
 \end{equation}
 
 Para corroborar que la ecuación \eqref{eq:hyper-flow} es correcta, se computan las reducciones
 
 \begin{align*}
-  \cn{\mathcal{H}}\, \cn{1} &\synteq (λn.n (λf.λm\, n.n(f\, m) \cn{1}) \cn{\times}) \cn{1} \\
+  \cn{\mc{H}}\, \cn{1} &\synteq (λn.n (λf.λm\, n.n(f\, m) \cn{1}) \cn{\times}) \cn{1} \\
                             &\contract{β} \cn{1} (λf.λm\, n.n(f\, m) \cn{1}) \cn{\times} \\
                             &\reduce{β} (λf.λm\, n.n(f\, m) \cn{1}) \cn{\times} \\
                             &\contract{β} λm\, n.n(\cn{\times}\, m) \cn{1} \\
@@ -1693,7 +1699,7 @@ Para corroborar que la ecuación \eqref{eq:hyper-flow} es correcta, se computan 
 \end{align*}
 
 \begin{align*}
-  \cn{\mathcal{H}}\, \cn{i} &\synteq (λn.n (λf.λm\, n.n(f\, m) \cn{1}) \cn{\times}) \cn{i} \\
+  \cn{\mc{H}}\, \cn{i} &\synteq (λn.n (λf.λm\, n.n(f\, m) \cn{1}) \cn{\times}) \cn{i} \\
                             &\contract{β} \cn{i} (λf.λm\, n.n(f\, m) \cn{1}) \cn{\times} \\
                             &\reduce{β} (λf.λm\, n.n(f\, m) \cn{1})^{i} \cn{\times} \\
                             &\synteq (λf.λm\, n.n(f\, m) \cn{1})^{i-1} ((λf.λm\, n.n(f\, m) \cn{1}) \cn{\times}) \\
@@ -1709,29 +1715,77 @@ Ejemplos de reducciones concretas no serán dados debido a la naturaleza de la s
 \section{Procesos recursivos}
 \label{sec:procesos-recursivos}
 
-Las codificaciones abordadas hasta el momento operan sobre dos clases de objetos computacionales: los valores de verdad y los números naturales. Confome aumentó la complejidad de las operaciones que se deseaban codificar, se utilizó un mecanismo de iteración para expresar los algoritmos. Sin embargo, estos algoritmos debían de ser modificados y adaptados a una repetición basada en numerales.
+Para complementar el mecanismo de iteración presentado en la sección \ref{sec:iteracion}, se plantea la manera de codificar algoritmos que describen procesos \emph{recursivos}.
 
-La iteración, en algunos casos, no es la manera más adecuada de expresar un proceso. Hay ciertos procesos que son recursivos por naturaleza, y a pesar de ser posible codificarlos como procedimientos iterativos, lo más natural es hacer uso de un procedimientos recursivo.
+La recursividad está detrás de una grán cantidad de definiciones, problemas y algoritmos en matemáticas y ciencias de la computación. La idea básica de la recursividad es plantear un concepto en términos de sí mismo \cite{knuth:Concrete}.
 
-Por ejemplo, un algoritmo para ``aplanar'' un árbol con números como hojas pudiéra expresarse
+Un ejemplo de definición recursiva es el de términos lambda. Una aplicación es un término y se compone de otros dos términos, mientras que una abstracción es un término y se compone de un átomo y otro término. Incluso la definición de los números naturales, los cuales nos permiten iterar, es recursiva, ya que \( (x^{n}\, y) \) es definido como un abuso de notación de \( (x(x^{n-1}\, y)) \).
+
+Hay problemas clásicos cuyas soluciones son también recursivas, por ejemplo, el rompecabezas de \emph{las torres de Hanoi} o el problema de \emph{Flavio Josefo} \cite{knuth:Concrete}. Sus soluciones consisten en suponer que el problema ya fue resuelto para una versión más simple y resolver la diferencia del problema simple al original. De esta manera, se reduce el problema hasta llegar a una versión muy simple, en donde la solución es ``trivial''.
+
+Los algoritmos con definiciones recursivas en algunos casos son más concisos que sus contrapartes iterativas. En particular cuando los algoritmos manipulan estructuras definidas de manera recursiva, su especificación suele seguir un patrón similar a la de las estructuras que manipula. Por ejemplo, los procedimientos para encontrar los subtérminos de un término lambda o calcular su longitud, por definición (\ref{defn:longitud},\ref{defn:subtermino}), son recursivos.
+
+El mecanismo de iteración presentado en este trabajo está más asociado al concepto de iteración en matemáticas que en computación. La estructura de los numerales de Church, capturan la idea de la aplicación de una \emph{función iterativa} cuyo dominio y rango son el mismo conjunto, de tal manera que estas funciones se pueden componer consigo mismas.
+
+En computación, el concepto de iteración es usualmente asociado a la manera en cómo se expresa un procedimiento; la distinción entre la iteración y otros mecanismos para codificar algoritmos se vuelve entonces en una cuestión lingüística, describiendo así la iteración con palabras como \emph{repetir mientras} o \emph{repetir para}. Al traducir un \emph{programa simbólico} a una secuencia de instrucciones que una máquina abstracta (como la máquina de Turing) o real (como las computadoras) pueda entender, la diferencia entre un procedimiento recursivo y uno iterativo se evapora \cite[p.~73]{Aho:Dragon} \cite{Steele:LambdaGOTO}.
+
+\subsection{Procedimientos v.s. procesos}
+\label{sec:procedimientos-procesos}
+
+La codificación \eqref{eq:iter:fact1} del algoritmo \ref{alg:factorial} cumple con la descripción mencionada de procedimiento recursivo. Se tiene un valor numérico que se desea calcular y para encontrarlo se emplea una abstracción que parte de un estado del cómputo con una solución parcial, esta abstracción sólo debe realizar dos operaciones aritméticas para encontrar otra solución parcial más cercana a la respuesta y delegar el trabajo de computar el resto a otra abstracción que realizará lo mismo.
+
+Un algoritmo que describe de manera más precisa la manera con como \eqref{eq:iter:fact1} se reduce es:
 
 \begin{algorithm}
-  \caption{Procedimiento \( aplana(t) \)}
-  \label{alg:flat}
+  \caption{Procedimiento \( \mathrm{factorial}(n,r,a) \)}
+  \label{alg:factorial2}
   \begin{algorithmic}
-    \REQUIRE \( t \in \{ T \mid T \text{ es un árbol binario con hojas } h\in \mathbb{N} \} \)
-    \ENSURE \( l \in \{ L \mid L \text{ es una secuencia con elementos } e\in \mathbb{N} \} \)
-    \IF{\( t \in \mathbb{N} \)}
-    \RETURN \( \langle t \rangle \)
+    \REQUIRE \( n,\ r,\ a\in \mathbb{N} \), inicialmente \( r=n \) y \( a=1 \)
+    \ENSURE \( n! = a\times r! \)
+    \IF{\( r=0 \)}
+    \RETURN \( a \)
     \ELSE
-    \RETURN \( \langle aplana(t.izquierdo) \colon  aplana(t.derecho) \rangle \)
+    \RETURN \( \mathrm{factorial}(n,r-1,a\times r) \)
     \ENDIF
   \end{algorithmic}
 \end{algorithm}
 
-En \ref{alg:flat}, la notación \( \langle x \rangle \) denota una secuencia con el elemento \( x \), la notación \( \langle xs : ys \rangle \) denota la concatenación de las secuencias \( xs \) y \( ys \) y \( t.izquierdo/derecho \) denotan selectores de los vértices adyacentes a \( t \).
+A pesar de poder escribir un procedimiento iterativo y otro recursivo para el cálculo del factorial, los dos algoritmos describen el mismo \emph{proceso computacional}. Estos procesos no son definidos a partir del lenguaje utilizado para describir el algoritmo, si no a partir de las acciones que se realizan para computar el resultado \cite{AbelsonSussman:Wizard}. Tanto \ref{alg:factorial} como \ref{alg:factorial2} como la codificación \eqref{eq:iter:fact1} describen el mismo proceso computacional.
 
-En las técnicas de codificación que se han abordado, no se admiten definiciones recursivas. Para mostrar esta problemática, consideremos la definición recursiva de la función factorial:
+Un tercer algoritmo para el cálculo del factorial es \ref{alg:factorial3}. A pesar de ser expresado como un procedimiento recursivo al igual que el algoritmo \ref{alg:factorial2}, no describe el mismo proceso computacional.
+
+\begin{algorithm}
+  \caption{Procedimiento \( \mathrm{factorial}(n) \)}
+  \label{alg:factorial3}
+  \begin{algorithmic}
+    \REQUIRE \( n\in \mathbb{N} \)
+    \ENSURE \( n! \)
+    \IF{\( n=0 \)}
+    \RETURN \( 1 \)
+    \ELSE
+    \RETURN \( n\times \mathrm{factorial}(n-1) \)
+    \ENDIF
+  \end{algorithmic}
+\end{algorithm}
+
+Los dos procesos mostrados comparten ciertas características:
+
+\begin{itemize}
+\item Realizan la misma cantidad de multiplicaciones y restas en cada paso iterativo/recursivo;
+\item Realizan una cantidad de operaciones proporcional al \( n \);
+\item En cada paso iterativo/recursivo, una solución parcial al problema es calculada.
+\end{itemize}
+
+La diferencia fundamental entre estos los dos procesos es que en los algoritmos \ref{alg:factorial}, \ref{alg:factorial2} y en la codificación \eqref{eq:iter:fact1}, en cada paso se conoce el estado completo del cómputo; mientras que en el algoritmo \ref{alg:factorial3}, al realizar el paso recursivo, se pierde la información de lo que ya se ha computado.
+
+Así como se distinguen los procedimientos recursivos de los iterativos por la manera en como son expresados. Los procesos también se pueden distinguir en recursivos e iterativos. En general, un proceso iterativo es aquel en donde el estado del cómputo puede ser capturado por una cantidad fija de valores, junto con una regla fija que describe como estos valores evolucionan a lo largo del cómputo. Por otro lado, los procesos recursivos suspenden el cálculo de las operaciones hasta tener todos los valores necesarios para computar el resultado \cite{AbelsonSussman:Wizard}.
+
+Desde un aspecto operativo, el proceso recursivo del factorial multiplica una vez que el subproblema ha sido resuelto, mientras que el proceso iterativo del factorial, multiplica conforme los subproblemas son resueltos.
+
+\subsection{Derivación de un mecanismo de recursividad}
+\label{sec:deriv-recursividad}
+
+Las técnicas para la codificación de algoritmos que se han tratado hasta este punto, sirven para aquellos que describen un proceso iterativo. En esta sección se aborda la manera en la que se pueden codificar algoritmos que describen procesos recursivos. Para desarrollar esta técnica, se considera como ejemplo la definición recursiva de la función factorial:
 
 \[ n! =
   \begin{cases}
@@ -1751,7 +1805,7 @@ Todas las componentes de ésta definición están codificadas, ya sea como expre
 
 El problema con esta definición es que antes de definir \( \cn{!} \), se hace referencia a ella en \( (\cn{!} (\cn{-}_{1} n)) \), por lo que no es posible establecer el valor del término factorial antes de terminar de escribir su definición.
 
-Hay algunos trucos que se pueden implementar para simular que se tiene definida la codificación de factorial antes de definirla. Por ejemplo, si \( \cn{!} \) fuera una abstracción la cual espera ser aplicada a sí misma y a un número, pudiera definirse exactamente como \eqref{eq:fact1}, pero con una variable enlazada \( f \) que será sustituída por sí misma en una reducción.
+Hay algunos trucos que se pueden implementar para simular que se tiene definida la codificación de factorial antes de definirla. Por ejemplo, si \( \cn{!} \) fuera una abstracción la cual espera ser aplicada a sí misma y a un número, pudiera definirse exactamente como \eqref{eq:fact1}, pero con una variable enlazada \( f \) que será sustituída por el término \( \cn{!} \) dentro de la definición.
 
 \begin{align}
   \label{eq:fact2}
@@ -1765,9 +1819,12 @@ El problema con \eqref{eq:fact2} es que si se reduce \( (\cn{!}\, \cn{!}\, \cn{n
 \begin{align*}
   \cn{!}\, \cn{!}\, \cn{n} &\reduce{β} (\cn{\times}\, \cn{n} (\cn{!} (\cn{-}_{1} \cn{n})))
 \end{align*}
-\[ (\ \cn{\times}\ \cn{n}\ (\ \cn{!}\ \underbrace{(\ \cn{-}_{1}\ \cn{n}\ )}_\text{Debe de ser \( \cn{!} \)}\ )\ ) \]
 
-Para escapar de este problema, se debe de aplicar \( (\cn{!}\, \cn{!} (\cn{-}_{1} \cn{n})) \) en el cuerpo de la definición. El factorial modificado es
+La multiplicación de \( \cn{n} \) debe realizarse con otro numeral, sin embargo, \( \cn{!} \) espera ser aplicado a \( \cn{!} \) y a \( (\cn{-}_{1}\, \cn{n}) \), sin embargo, en la reducción el término \( \cn{!} \) no es aplicado a sí mismo.
+
+\[ (\ \cn{\times}\ \cn{n}\ (\ \cn{!}\ \underbrace{[\quad]}_\text{Debe de ir \( \cn{!} \)}\ (\ \cn{-}_{1}\ \cn{n}\ ))\ ) \]
+
+Para escapar de este problema, se debe de aplicar \( (f\, f (\cn{-}_{1} \cn{n})) \) en el cuerpo de la definición. El factorial modificado es
 
 \begin{align}
   \label{eq:fact3}
@@ -1780,17 +1837,34 @@ Esta definición se escapa del problema de la definición recursiva, puede reduc
 
 \[ \cn{!}\, \cn{!} \reduce{β} λn.(\bs{\prec} (\cn{0}_{?}\, n) \cn{1} (\cn{\times}\, n (\cn{!}\, \cn{!} (\cn{-}_{1} n)))) \]
 
-En efecto, no se necesita el ``nombre'' \( \cn{!} \) para expresar la codificación del factorial, la reducción anterior es exactamente la misma a
+En efecto, no se necesita el nombrar la abstracción con un símbolo como \( \cn{!} \) para expresar la codificación del factorial. La reducción anterior es exactamente la misma a
 
 \begin{align*}
-  ((λf\, n.(\bs{\prec}\ &(\cn{0}_{?}\, n) \\
+  \begin{array}{r@{\mskip\thickmuskip}l}
+    ((λf\, n.(\bs{\prec}\ &(\cn{0}_{?}\, n) \\
                         &\cn{1} \\
                         &(\cn{\times}\, n (f\, f (\cn{-}_{1} n))))) \\
   (λf\, n.(\bs{\prec}\ &(\cn{0}_{?}\, n) \\
                         &\cn{1} \\
-                        &(\cn{\times}\, n (f\, f (\cn{-}_{1} n)))))) \\ \reduce{β}& \\
-  &(λn.(\bs{\prec} (\cn{0}_{?}\, n) \cn{1} (\cn{\times}\, n ((λf\, n.(\bs{\prec} (\cn{0}_{?}\, n) \cn{1} (\cn{\times}\, n (f\, f (\cn{-}_{1} n))))) (λf\, n.(\bs{\prec} (\cn{0}_{?}\, n) \cn{1} (\cn{\times}\, n (f\, f (\cn{-}_{1} n))))) (\cn{-}_{1} n)))))
+                        &(\cn{\times}\, n (f\, f (\cn{-}_{1} n))))))
+  \end{array}
+                          \quad \reduce{β} \quad
+                          \begin{array}{r@{\mskip\thickmuskip}l}
+                            (λn.(\bs{\prec} (\cn{0}_{?}\, n)\ \ \ \ \ \ \ \ \ \ \ \ \ &\\
+                                            \cn{1}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ &\\
+                                            (\cn{\times}\, n\ \ \ \ \ \ \ \ \ \ \ \ \ \ &\\
+                            ((λf\, n.(\bs{\prec} &(\cn{0}_{?}\, n)\\
+                                                 &\cn{1}\\
+                                                 &(\cn{\times}\, n (f\, f (\cn{-}_{1} n)))))\\
+                             (λf\, n.(\bs{\prec} &(\cn{0}_{?}\, n)\\
+                                                 &\cn{1}\\
+                                                 &(\cn{\times}\, n (f\, f (\cn{-}_{1} n)))))\\
+                             (\cn{-}_{1} n)))))&
+                          \end{array}
 \end{align*}
+
+\subsection{Combinador genérico de recursividad}
+\label{sec:combinador-recursividad}
 
 A pesar de tener este problema resuelto, la solución no es buena. Esta técnica obliga a que en cada algoritmo recursivo que se codifique, cada aplicación recursiva se deba tener el primer argumento aplicado a sí mismo. Lo que se necesita para tener un buen mecanismo de recursividad es separar la auto-aplicación de una codificación recursiva de la definición misma. Lo ideal es poder codificar un algoritmo similar a la definición \eqref{eq:fact2} y mediante algún procedimiento genérico, hacer que se auto-aplique el procedimiento a si mismo.
 
@@ -1814,11 +1888,11 @@ El término \( (\cn{!} (\cn{-}_{1} n)) \) debería de ser \( (\cn{!}\, \cn{!} (\
 
 En el ejemplo \ref{exmp:aplicacion2} se mostró un término que es útil para este tipo de situaciones:
 
-\[ ω \synteq (λx.x\, x) \]
+\[ ω \synteq λx.x\, x \]
 
 La propiedad interesante de \( ω \) es que \( (ω\, ω) \reduce{β} (ω\, ω) \), que es justo lo que deseamos en nuestro mecanismo recursivo, el combinador que se necesita es uno similar a \( ω \), llamado \( ω^{\prime} \) tal que \( (ω^{\prime}\, ω^{\prime}) \reduce{β} (\cn{!} (ω^{\prime}\, ω^{\prime})) \).
 
-Suponiendo que \( \cn{!} \) ya es una variable enlazada, el combinador \( ω^{\prime} \) debe ser una abstracción que espera ser aplicada a si misma, tiene la forma \( λω^{\prime}.M \). Ya que la reducción de \( ω^{\prime} \) aplicada a sí misma resulta en \( (\cn{!} (ω^{\prime}\, ω^{\prime})) \), \( M \) debe de ser la aplicación \( (\cn{!} N) \), para completar la regla de reducción \( N \synteq (ω^{\prime}\, ω^{\prime})\).
+Suponiendo que \( \cn{!} \) ya es una variable enlazada, el combinador \( ω^{\prime} \) debe ser una abstracción que espera ser aplicada a si misma, tiene la forma \( λω^{\prime}.M \). Ya que la reducción de \( ω^{\prime} \) aplicada a sí misma resulta en \( (\cn{!} (ω^{\prime}\, ω^{\prime})) \), \( M \) debe de ser la aplicación \( (\cn{!}\, N) \), para completar la regla de reducción \( N \synteq (ω^{\prime}\, ω^{\prime})\).
 
 \[ ω^{\prime} \synteq λω^{\prime}.\cn{!} (ω^{\prime}\, ω^{\prime}) \convertible{α} λx.\cn{!}(x\, x) \]
 
@@ -1829,23 +1903,10 @@ Para completar la definición del mecanismo de recursividad se plantea un combin
   \bs{Y} \synteq λf.(λx.f(x\, x))(λx.f(x\, x))
 \end{equation}
 
-Este término cumple la propiedad de que para todo \( F \in Λ \)
-
-\[ \bs{Y}\, F \reduce{β} F(\bs{Y}\, F) \]
-
-Para corroborar que esta propiedad se cumple para todo término, se desarrolla la reducción
+Al aplicar el combinador \( \bs{Y} \) a la definición \eqref{eq:fact2} del factorial, se obtiene que
 
 \begin{align*}
-  \bs{Y}\, F &\synteq (λf.(λx.f(x\, x))(λx.f(x\, x))) F \\
-             &\contract{β} (λx.F(x\, x))(λx.F(x\, x)) \\
-             &\contract{β} F((λx.F(x\, x)) (λx.F(x\, x))) \\
-             &\convertible{β} F(\bs{Y}\, F)
-\end{align*}
-
-Al aplicar el combinador \( \bs{Y} \) a la definición \eqref{fact2} del factorial, se obtiene la reducción
-
-\begin{align*}
-  \bs{Y}\, \cn{!} &\reduce{β} \cn{!} (\bs{Y}\, \cn{!}) \\
+  \bs{Y}\, \cn{!} &\convertible{β} \cn{!} (\bs{Y}\, \cn{!}) \\
                   &\synteq (λf\, n.(\bs{\prec} (\cn{0}_{?}\, n) \cn{1} (\cn{\times}\, n (f (\cn{-}_{1} n))))) (\bs{Y}\, \cn{!}) \\
                   &\contract{β} λn.(\bs{\prec} (\cn{0}_{?}\, n) \cn{1} (\cn{\times}\, n (\bs{Y}\, \cn{!} (\cn{-}_{1} n))))
 \end{align*}
@@ -1853,11 +1914,180 @@ Al aplicar el combinador \( \bs{Y} \) a la definición \eqref{fact2} del factori
 Al reducir la aplicación de este término en un numeral mayor a cero se obtiene
 
 \begin{align*}
-  (λn.(\bs{\prec} (\cn{0}_{?}\, n) \cn{1} (\cn{\times}\, n (\bs{Y}\, \cn{!} (\cn{-}_{1} n))))) \cn{n} &\reduce{β} (\cn{\times}\, \cn{n} (\bs{Y}\, \cn{!} (\cn{-}_{1} \cn{n})))
+  \begin{array}{r@{\mskip\thickmuskip}l}
+    (λn.(\bs{\prec} &(\cn{0}_{?}\, n)\\
+                    &\cn{1}\\
+                    &(\cn{\times}\, n (\bs{Y}\, \cn{!} (\cn{-}_{1} n)))))\,  \cn{n}
+  \end{array}
+  \quad \reduce{β} \quad
+  \begin{array}{r@{\mskip\thickmuskip}l}
+    (\cn{\times}\, \cn{n} (\bs{Y}\, \cn{!} (\cn{-}_{1} \cn{n})))
+  \end{array}
 \end{align*}
 
-Es entonces que \( (\bs{Y}\, \cn{!}) \) puede ser reducido nuevamente a \( (\cn{!} (\bs{Y}\, \cn{!})) \) para continuar al siguiente paso recursivo de la misma manera.
+Es entonces que \( (\bs{Y}\, \cn{!}) \) puede ser \( β \)-convertido nuevamente a \( (\cn{!} (\bs{Y}\, \cn{!})) \) para continuar al siguiente paso recursivo de la misma manera.
 
+\subsection{Combinadores de punto fijo}
+\label{sec:fixed-point}
+
+Un \emph{punto fijo} de un operador o función es un objeto el cuál no cambia cuando el operador le es aplicado. Por ejemplo, la función \( f(x)=x^{2} \) tiene dos puntos fijos 0 y 1, ya que \( 0^{2} = 0 \) y \( 1^{2} = 1 \). Hay operadores que no tienen punto fijo, por ejemplo el sucesor de un número, ya que \( n+1 \not= n \) para toda \( n \).
+
+El teorema de punto fijo \ref{thm:punto-fijo} es uno de los resultados básicos en el cálculo lambda.
+
+\begin{thm}[Teorema de punto fijo]
+  \label{thm:punto-fijo}
+  \( \forall F\, \exists X \colon  F\, X \convertible{β} X \)
+
+  \begin{proof}[Demostración]
+    Sea \( W\synteq λx.F(x\, x) \) y \( X \synteq W\, W \). Entonces
+    \[ X \synteq (λx.F(x\, x))W \contract{β} F(W\, W) \synteq F\, X \]
+  \end{proof}
+\end{thm}
+
+Esta demostración es algo peculiar ya que se inicia con \( X \) y se reduce este término a \( (F\, x) \), en lugar de partir hacer el proceso inverso. Sin embargo, la reducción presentada es válida de acuerdo a la definición de \( β \)-convertibilidad.
+
+El combinador \( \bs{Y} \) derivado en \ref{sec:combinador-recursividad} pertenece a una clase de combinadores interesantes llamados \emph{combinadores de punto fijo}. Estos combinadores tienen la propiedad de que al ser aplicados a cualquier término \( F \) ``encuentran'' un punto fijo para \( F \) \cite[p.~34]{HindleySeldin:LambdaCalculusAndCombinators}, es decir, si \( M \) es un combinador de punto fijo, entonces, para toda \( F \)
+
+\begin{equation}
+  \label{eq:fixed:prop}
+  F(M\, F) \convertible{β} M\, F
+\end{equation}
+
+A partir de la ecuación \eqref{eq:recur:Y}, se puede corroborar que \( \bs{Y} \) es un combinador de punto fijo de la siguiente manera
+
+\begin{align}
+  \label{eq:fixed:Ydem}
+  \bs{Y}\, F &\synteq (λf.(λx.f(x\, x))(λx.f(x\, x))) F \\
+             &\contract{β} (λx.F(x\, x))(λx.F(x\, x)) \nonumber \\
+             &\contract{β} F((λx.F(x\, x)) (λx.F(x\, x))) \nonumber \\
+             &\convertible{β} F(\bs{Y}\, F) \nonumber
+\end{align}
+
+Existen combinadores con una propiedad más fuerte que \eqref{eq:fixed:prop}. Alan Turing descubrió el combinador \( \bs{Θ} \) en 1937, su definicón es
+
+\begin{equation}
+  \label{eq:fixed:Turing}
+  \begin{array}{r@{\mskip\thickmuskip}l}
+    \bs{Θ} \synteq U\, U
+  \end{array}
+  \quad \text{donde} \quad
+  \begin{array}{r@{\mskip\thickmuskip}l}
+    U \synteq λu\, x.x(u\, u\, x)
+  \end{array}
+\end{equation}
+
+La propiedad interesante de \( \bs{Θ} \) es que puede computar puntos fijos únicamente con la \( β \)-reducción. Se corrobora esto de la siguiente manera
+
+\begin{align}
+  \label{eq:fixed:Udem}
+  \bs{Θ}\, F &\synteq U\, U\, F \\
+             &\contract{β} (λx.x(U\, U\, x)) F \nonumber \\
+             &\contract{β} F(U\, U\, F) \nonumber \\
+             &\synteq F(\bs{Θ}\, F) \nonumber
+\end{align}
+
+Esta propiedad no la tiene \( \bs{Y} \), para realizar el último paso del desarrollo \eqref{eq:fixed:Ydem}, se tuvo que hacer una reducción inversa.
+
+La utilidad de los combinadores de punto fijo va más allá que el de permitir la codificación de procesos recursivos. Estos combinadores son especialmente útiles para resolver el siguiente tipo de problema:
+
+Sea \( Z \) un término lambda, con variables libres \( f \) y \( \vec{x} \), encuentra el término \( F \) tal que
+
+\[ F\, \vec{M} \convertible{β} \subst{\subst{Z}{f}{F}}{\vec{x}}{\vec{M}} \]
+
+En este planteamiento \( F \) puede no aparecer en \( Z \) y la solución es el mismo término a que si apareciera. Una instancia de este problema puede ser una reformulación de la codificación recursiva del factorial:
+\begin{exmp}
+  Sea \( Z \synteq (\bs{\prec} (\cn{0}_{?} n) \cn{1} (\cn{\times}\, n (f (\cn{-}_{1}\, n)))) \), encuentra el término \( \cn{!} \) tal que
+
+  \[ \cn{!}\, \cn{n} \convertible{β} \subst{\subst{Z}{f}{\cn{!}}}{n}{\cn{n}} \]
+
+  \begin{proof}[Solución]
+    Por la regla \( (β) \) se tiene que
+    \[ \cn{!}\, \cn{n} \convertible{β} (λf\, n.\bs{\prec} (\cn{0}_{?} n) \cn{1} (\cn{\times}\, n (\cn{!} (\cn{-}_{1}\, n))))\, \cn{!}\, \cn{n} \]
+    Por la regla \( (ν) \) se tiene que
+    \[ \cn{!} \convertible{β} (λf\, n.\bs{\prec} (\cn{0}_{?} n) \cn{1} (\cn{\times}\, n (\cn{!} (\cn{-}_{1}\, n))))\, \cn{!} \]
+    Esta ecuación tiene la forma \( A \convertible{β} (B\, A) \), al considerar a \( A \) de la forma \( (\bs{Y}\, B) \), se cumple la propiedad de \eqref{eq:fixed:prop} y por lo tanto
+    \[ \cn{!} \synteq \bs{Y} (λf\, n.\bs{\prec} (\cn{0}_{?} n) \cn{1} (\cn{\times}\, n (f (\cn{-}_{1}\, n)))) \]
+  \end{proof}
+\end{exmp}
+En general, la solución para este tipo de problemas es
+\begin{equation}
+  \label{eq:fixed:prala}
+  F\synteq \bs{Y} (λf\, \vec{x}.Z)
+\end{equation}
+
+\section{Estructuras recursivas}
+\label{sec:estructuras-recursivas}
+
+Utilizando combinadores de punto fijo como \( \bs{Y} \) y \( \bs{Θ} \) y la solución general \eqref{eq:fixed:prala} se pueden codificar procedimientos recursivos como el algoritmo \ref{alg:factorial3} del factorial. Sin embargo, los procesos recursivos se tornan más interesantes cuando la información que manipulan es también recursiva. En esta sección se muestran técnicas para codificar estructuras recursivas en el cálculo lambda.
+
+Una variedad de lenguajes de programación, tienen un operador o función fundamental para la construcción de estructuras compuestas. Este operador usualmente es llamado \emph{cons}, el cual es una abreviación de la palabra ``construír en memoria''. Este operador toma dos objetos \( a \) y \( d \) y construye en memoria un objeto que contiene a ambos.
+
+Matemáticamente, el objeto resultante de aplicar el operador \emph{cons} es un par ordenado. La notación que se utiliza en este trabajo para escribir el par conformado por \( a \) y \( d \) es \( \langle a : d \rangle \).
+
+Un par ordenado no es más que un estado con dos elementos, para codificarse en el cálculo lambda, se deben plantear los mecanismos para construír pares y obtener sus elementos. A continuación se construyen las definiciones del constructor \( \mc{p} \) y los selectores \( \mc{a} \) y \( \mc{d} \) para el par ordenado (basadas en las ecuaciones \eqref{eq:state-cons} y \eqref{eq:state-selec}).
+
+\begin{equation}
+  \label{eq:cons1}
+  \mc{p} \synteq λa\, d.λq.q\, a\, d
+\end{equation}
+\begin{equation}
+  \label{eq:car1}
+  \mc{a} \synteq λc.c (λa\, d.a)
+\end{equation}
+\begin{equation}
+  \label{eq:cdr1}
+  \mc{d} \synteq λc.c (λa\, d.d)
+\end{equation}
+
+Estas tres ecuaciones cumplen con las reducciones
+\[ (\mc{a} (\mc{p}\, M\, N)) \reduce{β} M \]
+y
+\[ (\mc{d} (\mc{p}\, M\, N)) \reduce{β} N \]
+para cualesquiera términos lambda \( M \) y \( N \). Para corroborar esto, se desarrollan las reducciones:
+
+\begin{align}
+  \label{eq:car1-prop}
+  \mc{a} (\mc{p}\, M\, N) &\synteq (λc.c (λa\, d.a)) (\mc{p}\, M\, N) \\
+                          &\contract{β} (\mc{p}\, M\, N) (λa\, d.a) \nonumber \\
+                          &\synteq ((λa\, d.λq.q\, a\, d)\, M\, N) (λa\, d.a) \nonumber \\
+                          &\reduce{β} (λq.q\, M\, N) (λa\, d.a) \nonumber \\
+                          &\contract{β} (λa\, d.a)M\, N \nonumber \\
+                          &\reduce{β} M \nonumber
+\end{align}
+
+\begin{align}
+  \label{eq:cdr1-prop}
+  \mc{d} (\mc{p}\, M\, N) &\synteq (λc.c (λa\, d.d)) (\mc{p}\, M\, N) \\
+                          &\contract{β} (\mc{p}\, M\, N) (λa\, d.d) \nonumber \\
+                          &\synteq ((λa\, d.λq.q\, a\, d)\, M\, N) (λa\, d.d) \nonumber \\
+                          &\reduce{β} (λq.q\, M\, N) (λa\, d.d) \nonumber \\
+                          &\contract{β} (λa\, d.d)M\, N \nonumber \\
+                          &\reduce{β} N \nonumber
+\end{align}
+
+\subsection{Listas}
+\label{sec:estructura-listas}
+
+Listas a partir de céldas \emph{cons} y \( \bs{\emptyset} \)
+
+\[ \langle x_{1} \mid \langle x_{2} \mid ... \langle x_{n} \mid \bs{\emptyset} \rangle ... \rangle \rangle \]
+
+\subsection{Árboles}
+\label{sec:estructura-arboles}
+
+Árboles a partir de céldas \emph{cons} y \( \bs{\emptyset} \)
+
+\[ \langle \langle \bs{\emptyset} \mid \bs{\emptyset} \rangle \mid \langle \bs{\emptyset} \mid \bs{\emptyset} \rangle \rangle \]
+
+\subsection{Gráficas}
+\label{sec:estructura-graficas}
+
+Gráficas como listas de adyacencia, vértices identificados numericamente.
+
+\subsection{Términos lambda}
+\label{sec:estructura-lambda}
+
+Codificación de un término lambda en el cálculo lambda.
 
 \section{Pares ordenados}
 \label{sec:pares-ordenados}

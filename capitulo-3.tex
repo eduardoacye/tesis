@@ -2020,11 +2020,11 @@ En general, la solución para este tipo de problemas es
 
 Utilizando combinadores de punto fijo como \( \bs{Y} \) y \( \bs{Θ} \) y la solución general \eqref{eq:fixed:prala} se pueden codificar procedimientos recursivos como el algoritmo \ref{alg:factorial3} del factorial. Sin embargo, los procesos recursivos se tornan más interesantes cuando la información que manipulan es también recursiva. En esta sección se muestran técnicas para codificar estructuras recursivas en el cálculo lambda.
 
-Una variedad de lenguajes de programación, tienen un operador o función fundamental para la construcción de estructuras compuestas. Este operador usualmente es llamado \emph{cons}, el cual es una abreviación de la palabra ``construír en memoria''. Este operador toma dos objetos \( a \) y \( d \) y construye en memoria un objeto que contiene a ambos.
+Una variedad de lenguajes de programación, cuentan con un operador o función fundamental para la construcción de estructuras compuestas. Este operador usualmente es llamado \emph{cons}, el cual es una abreviación de la palabra ``construír en memoria''. Este operador toma dos objetos \( a \) y \( d \) y construye en memoria un objeto que contiene a ambos.
 
 Matemáticamente, el objeto resultante de aplicar el operador \emph{cons} es un par ordenado. La notación que se utiliza en este trabajo para escribir el par conformado por \( a \) y \( d \) es \( \langle a : d \rangle \).
 
-Un par ordenado no es más que un estado con dos elementos, para codificarse en el cálculo lambda, se deben plantear los mecanismos para construír pares y obtener sus elementos. A continuación se construyen las definiciones del constructor \( \mc{p} \) y los selectores \( \mc{a} \) y \( \mc{d} \) para el par ordenado (basadas en las ecuaciones \eqref{eq:state-cons} y \eqref{eq:state-selec}).
+Un par ordenado no es más que un estado con dos elementos, para codificarse en el cálculo lambda, se deben plantear los mecanismos para construír pares y obtener sus elementos. A continuación se construyen las definiciones del constructor \( \mc{p} \) y los selectores \( \mc{a} \) y \( \mc{d} \) para el par ordenado (basadas en las definiciones \eqref{eq:state-cons} y \eqref{eq:state-selec}).
 
 \begin{equation}
   \label{eq:cons1}
@@ -2041,7 +2041,6 @@ Un par ordenado no es más que un estado con dos elementos, para codificarse en 
 
 Estas tres ecuaciones cumplen con las reducciones
 \[ (\mc{a} (\mc{p}\, M\, N)) \reduce{β} M \]
-y
 \[ (\mc{d} (\mc{p}\, M\, N)) \reduce{β} N \]
 para cualesquiera términos lambda \( M \) y \( N \). Para corroborar esto, se desarrollan las reducciones:
 
@@ -2065,85 +2064,430 @@ para cualesquiera términos lambda \( M \) y \( N \). Para corroborar esto, se d
                           &\reduce{β} N \nonumber
 \end{align}
 
+En el resto de esta sección se abordan diferentes maneras en las que se puede emplear la estructura del par para construír estructuras más complejas.
+
 \subsection{Listas}
 \label{sec:estructura-listas}
 
-Listas a partir de céldas \emph{cons} y \( \bs{\emptyset} \)
+Las listas son secuencias de valores, en donde cada valor en la lista tiene una posición fija. La codificación de las listas en el cálculo lambda se asemeja a la lista enlazada comunmente estudiada en estructuras de datos. Si consideramos que el par ordenado contiene como primer elemento un numeral de Church y como segundo elemento otro par ordenado, se puede representar una lista de números, en donde el último par contiene como segundo elemento una codificación que represente el valor nulo \( \emptyset \).
 
-\[ \langle x_{1} \mid \langle x_{2} \mid ... \langle x_{n} \mid \bs{\emptyset} \rangle ... \rangle \rangle \]
+\[ \langle \cn{n}_{1} : \langle \cn{n}_{2} : \langle \cn{n}_{3} : \langle ... \langle \cn{n}_{k} : \emptyset \rangle ... \rangle \rangle \rangle \rangle \]
+
+Denotada de manera abreviada como
+
+\[ \langle \cn{n}_{1},\ \cn{n}_{2},\ \cn{n}_{3},\ ...\ ,\ \cn{n}_{k} \rangle \]
+
+La codificación de \( \emptyset \) debe elegirse con mucho cuidado. En los algoritmos que manipulan listas es crucial determinar cuando se ha llegado al final de la lista, por lo tanto se hace uso de un predicado para determinar si un determinado objeto es un par o es el valor nulo (de manera similar a la comparación de un número con el cero en los algoritmos aritméticos).
+
+Así como el predicado \( \cn{0}_{?} \) fue construído asumiendo que sería aplicado a un numeral, el término \( \emptyset \) se construye asumiendo que será aplicado a una lista de números. Formalmente una lista de numeros, o es un par cuyo primer elemento es un numeral de Church y cuyo segundo elemento es otra lista, o es el término nulo (lista con cero elementos).
+
+\begin{align}
+  \label{eq:lis-def1}
+  \mathcal{L} \longrightarrow \langle \cn{n} : \mathcal{L} \rangle \mid \emptyset
+\end{align}
+
+Por lo tanto, se espera que el predicado \( \emptyset_{?} \) sea aplicado a un término de la forma \( (λq.q\, \cn{n}\, \mc{L}) \) o al término \( \emptyset \), de tal manera que
+
+\begin{align*}
+  \emptyset_{?} (λq.q\, \cn{n}\, \mc{L}) &\reduce{β} \bs{F} \\
+  \emptyset_{?} \emptyset &\reduce{β} \bs{T}
+\end{align*}
+
+Una manera de convertir un término par a \( \bs{F} \) es reduciendo la aplicación \( (\bs{K}\, \bs{F} (λq.q\, \cn{n}\, \mc{L})) \), sin embargo, este resultado es el mismo para cualquier valor al que se aplique \( (\bs{K}\, \bs{F}) \) y el objetivo es poder discriminar entre un par y \( \emptyset \). Se puede considerar un término similar a \( (\bs{K}\, \bs{F}) \) pero que cancele los siguientes dos términos a los que sea aplicado:
+
+\[ (λx\, y.\bs{F})M\, N \reduce{β} \bs{F} \]
+
+De esta manera, aplicar un par a este término resulta en la reducción
+
+\begin{align*}
+  (λq.q\, \cn{n}\, \mc{L}) (λx\, y.\bs{F}) &\contract{β} (λx\, y.\bs{F}) \cn{n}\, \mc{L} \\
+                                           &\reduce{β} \bs{F}
+\end{align*}
+
+Por lo tanto, la codificación de \( \emptyset_{?} \) que es reducida a falso al ser aplicada a un par es
+
+\begin{equation}
+  \label{eq:lis-emptyp}
+  \emptyset_{?} \synteq (λl.l (λx\, y.\bs{F}))
+\end{equation}
+
+Con esta definición, la propiedad que debe cumplir la codificación de \( \emptyset \) es \( (\emptyset_{?}\, \emptyset) \reduce{β} \bs{T} \), lo cuál resulta ser el término \( (\bs{K}\, \bs{T}) \) ya que
+
+\begin{align*}
+  \emptyset_{?}\, (\bs{K}\, \bs{T}) &\synteq (λl.l (λx\, y.\bs{F})) (\bs{K}\, \bs{T}) \\
+                                    &\contract{β} \bs{K}\, \bs{T} (λx\, y.\bs{F}) \\
+                                    &\reduce{β} \bs{T}
+\end{align*}
+
+Por lo tanto
+
+\begin{equation}
+  \label{eq:lis-empty}
+  \emptyset \synteq \bs{K}\, \bs{T}
+\end{equation}
+
+\begin{rem}[Sobre predicados]
+  La aplicación de un predicado como \( \cn{0}_{?} \) o \( \emptyset_{?} \) a un término lambda \( M \) no necesariamente se \( β \)-reduce a una codificación de valor de verdad. Estos predicados son construídos para ser aplicados a numerales o listas respectivamente y el resultado de reducir otro tipo de términos no es de importancia para la codificación de algoritmos.
+\end{rem}
+
+Con estas codificaciones se pueden construír algoritmos que manipulen listas de números. Consideremos el algoritmo \ref{alg:lis-doubles} que dada una lista de números compute una lista con la misma cantidad de elementos pero con cada número de la lista original multiplicado por 2. En cada paso recursivo se verifica que la lista \( \mc{L} \) no sea el valor nulo, en cuyo caso, será un par cuyo primer elemento es \( n \) y segundo elemento es otra lista \( \mc{L}^{\prime} \); se construye otro par con el primer elemento multiplicado por 2 y con el segundo elemento el resultado de realizar este mismo proceso con \( \mc{L}^{\prime} \).
+
+\begin{algorithm}
+  \caption{Procedimiento recursivo \( \mathrm{dobles}(\mc{L}) \)}
+  \label{alg:lis-doubles}
+  \begin{algorithmic}
+    \REQUIRE \( \mc{L} \in \{ \langle n_{1},\ ...\ ,\ n_{k} \rangle \mid n\in \mathbb{N} \} \cup \emptyset \)
+    \ENSURE \( \langle 2\times n_{1},\ ...\ ,\ 2\times n_{k} \rangle \) ó \( \emptyset \)
+    \IF{\( \mc{L} = \emptyset \)}
+    \RETURN \( \emptyset \)
+    \ELSE
+    \STATE \( \langle n : \mc{L}^{\prime} \rangle \leftarrow \mc{L} \)
+    \RETURN \( \langle 2\times n : \mathrm{dobles}(\mc{L}^{\prime}) \rangle \)
+    \ENDIF
+  \end{algorithmic}
+\end{algorithm}
+
+El predicado \( \emptyset_{?} \) es utilizado con la condicional booleana \( \bs{\prec} \)  sobre la lista \( \mc{L} \). Cuando la lista sea la codificación de nulo, el resultado es nulo; de lo contrario, se asume que \( \mc{L} \) es un par y se construye el par correspondiente utilizando los términos \( \mc{p} \), \( \mc{a} \) y \( \mc{d} \). La codificación resultante es \eqref{eq:lis-doubles}.
+
+\begin{align}
+  \label{eq:lis-doubles}
+  \bs{Y} (λf\, \mc{L}.\bs{\prec} (\emptyset_{?}&\, \mc{L})\\
+  \emptyset\ \ \ & \nonumber \\
+  (\mc{p}\  &(\cn{\times}\, \cn{2}\, (\mc{a}\, \mc{L})) \nonumber \\
+                                               &(f\, (\mc{d}\, \mc{L})))) \nonumber
+\end{align}
+
+Teniendo esta codificación, es relativamente fácil generalizarla para que a cada número en la lista se le aplique algún término \( g \) dado, el cual puede ser reducido a otro número.
+
+\begin{align}
+  \label{eq:lis-map}
+  \bs{Y} (λf\, g\, \mc{L}.\bs{\prec} (\emptyset_{?}&\, \mc{L})\\
+  \emptyset\ \ \ & \nonumber \\
+  (\mc{p}\  &(g (\mc{a}\, \mc{L})) \nonumber \\
+                                                   &(f\, g (\mc{d}\, \mc{L})))) \nonumber
+\end{align}
+
+Aún más, se puede generalizar la estructura del resultado al abstraer el término final \( \emptyset \) y el constructor del par \( \mc{p} \) de la siguiente manera.
+
+\begin{align}
+  \label{eq:lis-fold}
+  \bs{Y} (λf\, \mc{p}\, \emptyset\, g\, \mc{L}.\bs{\prec} (\emptyset_{?}&\, \mc{L})\\
+  \emptyset\ \ \ & \nonumber \\
+  (\mc{p}\  &(g (\mc{a}\, \mc{L})) \nonumber \\
+                                                   &(f\, \mc{p}\, \emptyset\, g (\mc{d}\, \mc{L})))) \nonumber
+\end{align}
+
+Si \( \mc{F} \) es la abstracción \eqref{eq:lis-fold}, \( \mc{M} \) es la abstracción \eqref{eq:lis-map}, \( \mc{D} \) es la abstracción \eqref{eq:lis-doubles} y \( \mc{L} \) es el término lambda que codifica la lista \( \langle n_{1},\ ...\ ,\ n_{k} \rangle \), entonces
+
+\[ \mc{F}\, \mc{p}\, \mc{\emptyset} (\cn{\times}\, \cn{2}) \mc{L} \convertible{β} \mc{M} (\cn{\times}\, \cn{2}) \mc{L} \convertible{β} \mc{D}\, \mc{L} \]
+
+Consideremos ahora el algoritmo \ref{alg:lis-impares} que dada una lista de números compute una lista únicamente con los números de la lista original que son impares. La estructura de este algoritmo es similar al algoritmo \ref{alg:lis-doubles} pero la alternativa de la primer condicional verifica además si el primer elemento \( n \) de \( \mc{L} \) es impar, en cuyo caso \( n \) será elemento de un par resultante; de lo contrario \( n \) es ignorado y no se construye un par en este paso recursivo.
+
+\begin{algorithm}
+  \caption{Procedimiento recursivo \( \mathrm{impares}(\mc{L}) \)}
+  \label{alg:lis-impares}
+  \begin{algorithmic}
+    \REQUIRE \( \mc{L} \in \{ \langle n_{1},\ ...\ ,\ n_{k} \rangle \mid n\in \mathbb{N} \} \cup \emptyset \)
+    \ENSURE \( \langle n^{\prime}_{1},\ ...\ ,\ n^{\prime}_{k^{\prime}} \rangle \) ó \( \emptyset \mid n^{\prime}_{i} \in \mc{L},\ n^{\prime}_{i}\) impar
+    \IF{\( \mc{L} = \emptyset \)}
+    \RETURN \( \emptyset \)
+    \ELSE
+    \STATE \( \langle n : \mc{L}^{\prime} \rangle \leftarrow \mc{L} \)
+    \IF{\( n \) impar}
+    \RETURN \( \langle n : \mathrm{impares}(\mc{L}^{\prime}) \rangle \)
+    \ELSE
+    \RETURN \( \mathrm{impares}(\mc{L}^{\prime}) \)
+    \ENDIF
+    \ENDIF
+  \end{algorithmic}
+\end{algorithm}
+
+La codificación de este algoritmo es bastante directa también, sin embargo, se necesita codificar un predicado que determine si un numeral de Church es impar o no. Un algoritmo recursivo puede ser elegido para la codificación del predicado impar, sin embargo, es más fácil en este caso utilizar la estructura de los numerales para lograr el resultado deseado. Sea \( \cn{imp}_{?} \) la codificación del predicado impar, se deben de satisfacer las siguientes reducciones:
+
+\begin{align*}
+  \cn{imp}_{?} (λx\, y.y) &\reduce{β} \bs{F} \\
+  \cn{imp}_{?} (λx\, y.x\, y) &\reduce{β} \bs{T} \\
+  \cn{imp}_{?} (λx\, y.x(x\, y)) &\reduce{β} \bs{F} \\
+  \cn{imp}_{?} (λx\, y.x(x(x\, y))) &\reduce{β} \bs{T} \\
+                          &...
+\end{align*}
+
+Una manera sencilla de codificar este término es
+
+\[ \cn{imp}_{?} \synteq λn.n\, \bs{\lnot}\, \bs{F} \]
+
+De esta manera
+
+\begin{align*}
+  \cn{imp}_{?} (λx\, y.y) &\reduce{β} \bs{F} \\
+  \cn{imp}_{?} (λx\, y.x\, y) &\reduce{β} \bs{\lnot}\, \bs{F} \\
+  \cn{imp}_{?} (λx\, y.x(x\, y)) &\reduce{β} \bs{\lnot} (\bs{\lnot}\, \bs{F}) \\
+  \cn{imp}_{?} (λx\, y.x(x(x\, y))) &\reduce{β} \bs{\lnot}(\bs{\lnot} (\bs{\lnot}\, \bs{F})) \\
+                          &...
+\end{align*}
+
+Con este nuevo predicado, la codificación del algoritmo \ref{alg:lis-impares} es \eqref{eq:lis-impares}.
+
+\begin{align}
+  \label{eq:lis-impares}
+  \bs{Y}(λf\, \mc{L}.\bs{\prec} (\emptyset_{?}\, &\mc{L}) \\
+                                \emptyset\ \ \ & \nonumber \\
+                                (\bs{\prec}\ &(\cn{imp}_{?} (\mc{a}\, \mc{L})) \nonumber \\
+                                            &(\mc{p} (\mc{a}\, \mc{L}) (f (\mc{d}\, \mc{L}))) \nonumber \\
+                                            &(f (\mc{d} \mc{L})))) \nonumber
+\end{align}
+
+Esta abstracción también es posible generalizarla con pocas modificaciones para que, además de una lista considere un predicado \( g_{?} \) que sea reducido a una codificación booleana cuando sea aplicado a un numeral de Church. El término \eqref{eq:lis-filter} muestra este término más general.
+
+\begin{align}
+  \label{eq:lis-filter}
+  \bs{Y}(λf\, g_{?}\, \mc{L}.\bs{\prec} (\emptyset_{?}\, &\mc{L}) \\
+                                \emptyset\ \ \ & \nonumber \\
+                                (\bs{\prec}\ &(g_{?} (\mc{a}\, \mc{L})) \nonumber \\
+                                            &(\mc{p} (\mc{a}\, \mc{L}) (f\, g_{?} (\mc{d}\, \mc{L}))) \nonumber \\
+                                            &(f\, g_{?} (\mc{d} \mc{L})))) \nonumber
+\end{align}
+
+Si \( \mc{F} \) es la abstracción \eqref{eq:lis-filter}, \( \mc{I} \) es la abstracción \eqref{eq:lis-impares} y \( \mc{L} \) es el término lambda que codifica la lista \( \langle n_{1},\ ...\ ,\ n_{k} \rangle \), entonces
+
+\[ \mc{F}\, \cn{imp}_{?}\, \mc{L} \convertible{β} \mc{I}\, \mc{L} \]
+
+Algoritmos de procesamiento de listas más complejos pueden ser codificados ya sea utilizando \eqref{eq:lis-map}, \eqref{eq:lis-fold}, \eqref{eq:lis-filter} o términos con una estructura similar. Algo que es importante notar de las generalizaciones planteadas en los ejemplos es que la lista \( \mc{L} \) puede tener términos lambda que no sean numerales, al utilizar los algoritmos genéricos sólo se debe tener cuidado con que la forma de los términos en \( \mc{L} \) sea conocida para \( g \) y \( g_{?} \).
 
 \subsection{Árboles}
 \label{sec:estructura-arboles}
 
-Árboles a partir de céldas \emph{cons} y \( \bs{\emptyset} \)
+Los árboles son estructuras no-lineales jerárquicas compuestos de \emph{vértices} (también llamados \emph{nodos}) y \emph{aristas} que establecen una relación entre dos vértices.
 
-\[ \langle \langle \bs{\emptyset} \mid \bs{\emptyset} \rangle \mid \langle \bs{\emptyset} \mid \bs{\emptyset} \rangle \rangle \]
+Utilizando pares y listas es posible construír árboles. Consideremos el árbol mostrado en la figura \ref{fig:tree}.
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}
+    \node[circle,draw] (11) {};
+    \node (label11) [right= 0cm of 11] {\( v_{1,1} \)};
+    \node[circle,draw] (21) [below left= .75cm and 1cm of 11] {};
+    \node (label21) [left= 0cm of 21] {\( v_{2,1} \)};
+    \node[circle,draw] (22) [below of=11] {};
+    \node (label22) [right= 0cm of 22] {\( v_{2,2} \)};
+    \node[circle,draw] (23) [below right= .75cm and 1cm of 11] {};
+    \node (label23) [right= 0cm of 23] {\( v_{2,3} \)};
+    \node[circle,draw] (31) [below left=.5cm and .1cm of 21] {};
+    \node (label31) [left= 0cm of 31] {\( v_{3,1} \)};
+    \node[circle,draw] (32) [below right=.5cm and .1cm of 21] {};
+    \node (label32) [below= 0cm of 32] {\( v_{3,2} \)};
+    \node[circle,draw] (33) [below=.43cm of 22] {};
+    \node (label33) [right= 0cm of 33] {\( v_{3,3} \)};
+    \node[circle,draw] (41) [below=.43cm of 31] {};
+    \node (label11) [left= 0cm of 41] {\( v_{4,1} \)};
+    
+    \path[draw,thick]
+    (11) edge node {} (21)
+    (11) edge node {} (22)
+    (11) edge node {} (23);
+
+    \path[draw,thick]
+    (21) edge node {} (31)
+    (21) edge node {} (32);
+    
+    \path[draw,thick]
+    (22) edge node {} (33);
+
+    \path[draw,thick]
+    (31) edge node {} (41);
+  \end{tikzpicture}
+  \caption{Ejemplo de árbol}
+  \label{fig:tree}
+\end{figure}
+
+La definición usual de un árbol como el mostrado en la figura es como un conjunto de vértices y un conjunto de aristas. Sin embargo, una definición recursiva puede ser expresada como. Un árbol \( \mc{T} \) puede ser o un vértice \( v \) acompañado de una lista de árboles \( \mc{L}_{\mc{T}} \) o un valor nulo \( \emptyset \), es decir
+
+\[ \mc{T} \longrightarrow (v,\ \langle \mc{T}_{1},\ ...\ ,\ \mc{T}_{k} \rangle) \mid \emptyset \]
+
+Esta definición nos permite codificar árboles como el valor nulo o como un par cuyo primer elemento sea un vértice \( v \) y cuyo segundo elemento sea una lista de los vértices en los que \( v \) incide. El vértice puede ser representado por cualquier término lambda, en ocaciones es útil asociar un término a cada vértice del árbol para construír, por ejemplo, árboles de numerales.
+
+El árbol de la figura \ref{fig:tree} se representa de la siguiente manera:
+
+\begin{align*}
+  \langle v_{1,1} : \langle \langle v_{2,1} : \langle &\langle v_{3,1} : \langle \langle v_{4,1} : \emptyset \rangle \rangle \rangle \\
+                                                      &\langle v_{3,2} : \emptyset \rangle \rangle \rangle\\
+                           \langle v_{2,2} : \langle &\langle v_{3,3} : \emptyset \rangle \rangle \rangle \\
+                           \langle v_{2,3} : \emptyset& \rangle \rangle \rangle
+\end{align*}
+
+La agrupación entre un vértice y sus subárboles se puede realizar con la estructura par, de tal manera que
+
+\[ \mc{T} \synteq \langle v : \langle \mc{T}_{1},\ ...\ ,\ \mc{T}_{k} \rangle \rangle \convertible{β} \langle v,\ \mc{T}_{1},\ ...\ ,\ \mc{T}_{k} \rangle \]
+
+Por lo que el predicado \( \emptyset_{?} \) funciona para diferenciar árboles nulos de árboles con vértices y si \( \mc{T} \) es un árbol no nulo, entonces \( (\mc{a}\, \mc{T}) \) se reduce al vértice del árbol y \( (\mc{d}\, \mc{T}) \) se reduce a los subárboles del árbol.
+
+Esta similitud en la representación de árboles y listas corresponde con la codificación de listas como ``pares de pares'' y la codificación de árboles como ``listas de listas''. Para mostrar las posibilidades que estas relaciones nos permiten se considera el algoritmo \ref{alg:tree-count}, el cual calcula la cantidad de vértices en un árbol. El procedimiento \( \mathrm{suma} \) calcula la suma de los elementos de una lista de numeros y el procedimiento \( \mathrm{map} \) es el que es codificado por \eqref{eq:lis-map}.
+
+\begin{algorithm}
+  \caption{Procedimiento recursivo \( \mathrm{cuenta}(\mc{T}) \)}
+  \label{alg:tree-count}
+  \begin{algorithmic}
+    \REQUIRE \( \mc{T} \in \{ \langle v : \langle \mc{T}_{1},\ ...\ ,\ \mc{T}_{k} \rangle \rangle \} \cup \emptyset \)
+    \ENSURE \( n = \) cantidad de vértices en \( \mc{T} \)
+    \IF{\( \mc{T} = \emptyset \)}
+    \RETURN \( 0 \)
+    \ELSE
+    \STATE \( \langle v : \mc{L}_{\mc{T}} \rangle \leftarrow \mc{T} \)
+    \RETURN \( 1 + \mathrm{fold}(+,\ 0,\ \mathrm{cuenta},\ \mc{L}_{\mc{T}}) \)
+    \ENDIF
+  \end{algorithmic}
+\end{algorithm}
+
+La codificación del procedimiento \( \mathrm{fold} \) es el término \eqref{eq:lis-fold}. Por lo que el algoritmo \ref{alg:tree-count} se define en el cálculo lambda como
+
+\begin{align*}
+  \bs{Y}(λf\, \mc{T}.\bs{\prec} &(\emptyset_{?}\, \mc{T})\\
+                                &\cn{0}\\
+                                &(\cn{+}_{1} (\mc{F}\, \cn{+}\, f (\mc{d}\, \mc{T}))))
+\end{align*}
 
 \subsection{Gráficas}
 \label{sec:estructura-graficas}
 
-Gráficas como listas de adyacencia, vértices identificados numericamente.
+Las gráficas son una generalización de árboles en donde se admiten \emph{ciclos}, es decir, a partir de un vértice, se pudieran encontrar dos caminos de aristas para llegar a otro vértice. Consideremos la gráfica mostrada en la figura \ref{fig:graph}.
+
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}
+    \node[circle,draw] (1) {};
+    \node (label1) [above=0cm of 1] {\( v_{1} \)};
+    \node[circle,draw] (2) [below left of=1] {};
+    \node (label2) [left=0cm of 2] {\( v_{2} \)};
+    \node[circle,draw] (3) [below right of=1] {};
+    \node (label3) [below=0cm of 3] {\( v_{3} \)};
+    \node[circle,draw] (4) [right of=3] {};
+    \node (label4) [right=0cm of 4] {\( v_{4} \)};
+
+    \path[draw,thick]
+    (1) edge node {} (2)
+    (1) edge node {} (3)
+    (2) edge node {} (3)
+    (3) edge node {} (4);
+  \end{tikzpicture}
+  \caption{Ejemplo de gráfica}
+  \label{fig:graph}
+\end{figure}
+
+Una posible codificación para las gráficas es como \emph{lista de adyacencia}: Una gráfica \( \mc{G} \) es representada como una lista con un elemento por vértice; cada elemento de esta lista es un par \( \langle v : \mc{L}_{v} \rangle \) donde \( v \) es un término que representa al vértice y \( \mc{L}_{v} \) es una lista con un elemento por vértice en el que \( v \) incida; cada elemento de \( \mc{L}_{v} \) es un término que representa a un vértice.
+
+La gráfica de la figura \ref{fig:graph} se representa como lista de adyacencia de la siguiente manera:
+
+\begin{align*}
+  \langle &\langle v_{1} : \langle v_{2},\ v_{3} \rangle \rangle\\
+          &\langle v_{2} : \langle v_{1},\ v_{3} \rangle \rangle\\
+          &\langle v_{3} : \langle v_{1},\ v_{2},\ v_{4} \rangle \rangle\\
+          &\langle v_{4} : \langle v_{3} \rangle \rangle \rangle
+\end{align*}
+
+La única restricción que se debe incorporar a la codificación es que los vértices puedan ser distinguidos entre sí, esto se puede lograr por ejemplo, utilizando numerales de Church para representar vértices.
+
+Ya que las gráficas son codificadas utilizando términos lambda conocidos, los algoritmos que manipular gráficas pueden ser codificados de manera similar a los presentados en las secciones \ref{sec:estructura-arboles} y  \ref{sec:estructura-listas}.
 
 \subsection{Términos lambda}
 \label{sec:estructura-lambda}
 
-Codificación de un término lambda en el cálculo lambda.
+En esta sección se aborda el mecanismo mediante el cual es posible codificar términos lambda dentro del cálculo lambda y de esta manera, tener las herramientas para codificar algoritmos que manipulen términos lambda como la sustitución, la \( α \)-contracción, la \( β \)-contracción, encontrar los subtérminos de un término, etc.
 
-\section{Pares ordenados}
-\label{sec:pares-ordenados}
+El hecho de poder codificar términos lambda en el cálculo lambda no introduce problema algúno. Este técnica de representar un lenguaje en sí mismo es común, por ejemplo, en compiladores de \texttt{C} escritos en \texttt{C} o en intérpretes de \texttt{Lisp} escritos en \texttt{Lisp}.
 
-Construcción axiomática de pares ordenados, listas, \( n \)-tuplas, árboles y otras estructuras complejas.
+Partiendo de la definición \ref{defn:terminos} de término lambda, se modifica el conjunto \( V \) para que en lugar de ser \( \{v_{0},\ v_{00},\ ... \} \), sea \( \{ 0,\ 1,\ ... \} \), es decir, que los átomos sean numeros naturales; además en lugar de construír las abstracciones y aplicaciones a partir de símbolos, se construyen a partir de pares.
 
-Presentar la representación de pares ordenados para la construcción de estructuras mas complejas.
+\begin{defn}[Términos lambda]
+  El conjunto \( Λ^{\prime} \) tiene elementos que son pares y números naturales. \( Λ^{\prime} \) es el conjunto más pequeño que satisface:
+  \label{defn:cod-terminos}
+  \begin{subequations}
+    \begin{align}
+      \label{cod-terminos:atomos} \tag{a}
+      n \in \mathbb{N} & \implies n \in Λ^{\prime} \\
+      \label{cod-terminos:abstracciones} \tag{b}
+      M \in Λ^{\prime},\ n \in \mathbb{N} & \implies  \langle n : M \rangle \in Λ^{\prime} \\
+      \label{cod-terminos:aplicaciones} \tag{c}
+      M,\ N \in Λ^{\prime} & \implies \langle M : N \rangle \in Λ^{\prime}
+    \end{align}
+  \end{subequations}
+\end{defn}
 
-\[ \mathrm{Car}(\mathrm{Cons}(x,y)) = x \]
+El problema con esta definición de términos lambda es que no es posible distinguir al término \( (λx.x) \) de \( (x\, x) \). Además, la mayoría de los algoritmos que manipulan términos lambda es crucial poder diferenciar cuando un término \( M \) es un átomo, una abstracción o una aplicación. Para arreglar la definición \ref{defn:cod-terminos} se pueden utilizar números que etiqueten cada tipo de término, asignando el número 1 a los átomos, el 2 a las abstracciones y el 3 a las aplicaciones, se tiene una correspondencia uno a uno entre \( Λ \) y \( Λ^{\prime} \).
 
-\[ \mathrm{Cdr}(\mathrm{Cons}(x,y)) = y \]
+\begin{defn}[Términos lambda]
+  El conjunto \( Λ^{\prime} \) tiene elementos que son pares. \( Λ^{\prime} \) es el conjunto más pequeño que satisface:
+  \label{defn:cod-terminos2}
+  \begin{subequations}
+    \begin{align}
+      \label{cod-terminos:atomos} \tag{a}
+      n \in \mathbb{N} & \implies \langle 1 : n \rangle \in Λ^{\prime} \\
+      \label{cod-terminos:abstracciones} \tag{b}
+      M \in Λ^{\prime},\ n \in \mathbb{N} & \implies \langle 2 : \langle n : M \rangle \rangle \in Λ^{\prime} \\
+      \label{cod-terminos:aplicaciones} \tag{c}
+      M,\ N \in Λ^{\prime} & \implies \langle 3 : \langle M : N \rangle \rangle \in Λ^{\prime}
+    \end{align}
+  \end{subequations}
+\end{defn}
 
-Esta sección es apropiada para comenzar a relacionar la teoría de autómatas, lenguajes regulares y libres de contexto con sistemas medianamente complejos que se pueden incrustar en el cálculo lambda sin modificar el sistema. Un problema pudiece ser el no determinismo, pero pudiera solventar esto con el desarrollo de operaciones funcionales sobre listas (map, filter, fold, etc).
+Con esta definición, el término \( (λx.x) \) se puede representar como \( \langle 2 : \langle \langle 1 : n \rangle : \langle 1 : n \rangle \rangle \rangle \) y el término \( (x\, x) \) se puede representar como \( \langle 3 : \langle \langle 1 : n \rangle : \langle 1 : n \rangle \rangle \rangle \).
 
-\subsection*{Cambios en la metodología}
+Codificaciones adecuadas para los constructores y selectores de esta representación de términos lambdas se basan en las técnicas abordadas a lo largo de este capítulo.
 
-Expandir el concepto de valores de verdad al de pares ordenados
+Sea \( \mc{T} \) la codificación de un término lambda, los predicados \( \mathrm{atomo}_{?} \), \( \mathrm{abstraccion}_{?} \) y \( \mathrm{aplicacion}_{?} \) permiten determinar la clase de término que es \( \mc{T} \):
 
-\subsubsection*{Constructor}
+\begin{align}
+  \label{eq:cod-lambda-preds}
+  \mathrm{atomo}_{?} &\synteq λ\mc{T}.\cn{=}_{?}\, \cn{1} (\mc{a}\, \mc{T})\\
+  \mathrm{abstraccion}_{?} &\synteq λ\mc{T}.\cn{=}_{?}\, \cn{2} (\mc{a}\, \mc{T})\\
+  \mathrm{aplicacion}_{?} &\synteq λ\mc{T}.\cn{=}_{?}\, \cn{3} (\mc{a}\, \mc{T})
+\end{align}
 
-\begin{verbatim}
-CreaPar (primero, segundo) =
-    Elige (x) =
-        Si x, entonces:
-            primero
-        De lo contrario:
-            segundo
-    Elige
-\end{verbatim}
+Utilizando estos tres predicados y el término \( \bs{\prec} \) se puede codificar un término que funcione como una estructura de control similar a \( \bs{\prec} \) que a partir de un término codificado \( \mc{T} \) y cuatro términos \( M_{1} \), \( M_{2} \), \( M_{3} \) y \( M_{4} \) compute \( M_{1} \) si \( \mc{T} \) es un átomo, \( M_{2} \) si es una abstracción, \( M_{3} \) si es una aplicación y \( M_{4} \) en otro caso:
 
+\begin{equation}
+  \label{eq:cod-lambda-match}
+  \mathrm{ramifica} \synteq λ\mc{T}\, x\, y\, z\, e.\bs{\prec} (\mathrm{atomo}_{?}\, \mc{T}) x (\bs{\prec} (\mathrm{abstraccion}_{?}\, \mc{T}) y (\bs{\prec} (\mathrm{aplicacion}_{?}\, \mc{T}) z\, e))
+\end{equation}
+
+Los constructores para cada clase de término lambda siguen la definición \ref{defn:cod-terminos2}:
+
+\begin{align}
+  \label{eq:cod-lambda-cons}
+  \mathrm{atomo} &\synteq λn.\mc{p}\, \cn{1}\, n \\
+  \mathrm{abstraccion} &\synteq λn\, x.\mc{p}\, \cn{2} (\mc{p}\, n\, x) \\
+  \mathrm{aplicacion} &\synteq λx\, y.\mc{p}\, \cn{3} (\mc{p}\, x\, y)
+\end{align}
+
+Los constructores en \eqref{eq:cod-lambda-cons} deben satisfacer los predicados en \ref{eq:cod-lambda-preds}, se corrobora esto con los siguientes desarrollos.
 \begin{align*}
-  \otimes & \synteq λa\, d.λx.B\, x\, a\, d \\
-          & \contract{β} λa\, d.λx.x\, a\, d \\
-          & \synteq λa\, d\, x.x\, a\, d
+  \mathrm{atomo}_{?} (\mathrm{atomo}\, \cn{n}) &\synteq (λ\mc{T}.\cn{=}_{?}\, \cn{1} (\mc{a}\, \mc{T})) (\mathrm{atomo}\, \cn{n}) \\
+                                               &\contract{β} \cn{=}_{?}\, \cn{1} (\mc{a} (\mathrm{atomo}\, \cn{n})) \\
+                                               &\synteq \cn{=}_{?}\, \cn{1} (\mc{a} ((λn.\mc{p}\, \cn{1}\, n) \cn{n})) \\
+                                               &\contract{β} \cn{=}_{?}\, \cn{1} (\mc{a} (\mc{p}\, \cn{1}\, \cn{n})) \\
+                                               &\reduce{β} \cn{=}_{?}\, \cn{1}\, \cn{1} \\
+                                               &\reduce{β} \bs{T}
 \end{align*}
-
-\subsubsection*{Selectores}
-
-\begin{verbatim}
-Primero (Elige) =
-    Elige(T)
-\end{verbatim}
-
 \begin{align*}
-  \otimes_{1} & \synteq λx.x\, T
+  \mathrm{atomo}_{?} (\mathrm{aplicacion}\, M\, N) &\synteq (λ\mc{T}.\cn{=}_{?}\, \cn{1} (\mc{a}\, \mc{T})) (\mathrm{aplicacion}\, M\, N) \\
+                                               &\contract{β} \cn{=}_{?}\, \cn{1} (\mc{a} (\mathrm{aplicacion}\, M\, N)) \\
+                                               &\synteq \cn{=}_{?}\, \cn{1} (\mc{a} ((λx\, y.\mc{p}\, \cn{3} (\mc{p}\, x\, y)) M\, N)) \\
+                                               &\reduce{β} \cn{=}_{?}\, \cn{1} (\mc{a} (\mc{p}\, \cn{3} (\mc{p}\, M\, N))) \\
+                                               &\reduce{β} \cn{=}_{?}\, \cn{1}\, \cn{3} \\
+                                               &\reduce{β} \bs{F}
 \end{align*}
+Corroborar que las otras combinaciones de aplicaciones se reducen de manera correcta implica un desarrollo similar.
 
-\begin{verbatim}
-Segundo (Elige) =
-    Elige(F)
-\end{verbatim}
+Los selectores para cada clase de término lambda se codifican en función de la cantidad de elementos que conforman al término. Los átomos tienen un selector, las abstracciones dos y las aplicaciones dos. Debido a que las abstracciones comparten la misma estructura, sus selectores son los mismos.
 
-\begin{align*}
-  \otimes_{2} & \synteq λx.x\, F
-\end{align*}
+\begin{align}
+  \label{eq:cod-lambda-selec}
+  \mathrm{atomo}_{n} &\synteq λx.\mc{d}\, x \\
+  \mathrm{abstraccion}_{v} &\synteq λx.\mc{a} (\mc{d}\, x) \\
+  \mathrm{abstraccion}_{t} &\synteq λx.\mc{d} (\mc{d}\, x) \\
+  \mathrm{aplicacion}_{o} &\synteq λx.\mc{a} (\mc{d}\, x) \\
+  \mathrm{aplicacion}_{a} &\synteq λx.\mc{d} (\mc{d}\, x)
+\end{align}
 
+La técnica de etiquetar pares para poder determinar el ``tipo'' de estructura es muy utilizada en la implementación de lenguajes de programación con verificación dinámica de tipos. La flexibilidad de la técnica permite codificar todos los objetos que se han abordado en este trabajo como pares etiquetados, los valores de verdad pueden etiquetarse con el 4, los numerales de Church con el 5, los pares con el 6 y así sucesivamente. De esta manera la codificación de algoritmos en el cálculo lambda puede ser más robusta, evitando errores que puedan surgir al reducir los términos.
 
 %%% Local Variables:
 %%% mode: latex

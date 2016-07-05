@@ -130,7 +130,7 @@ A este tipo de expresiones se les llaman ``quines'' \cite[pp.~431--437]{Hofstadt
 
 En el inciso \eqref{eq:expresiones:f} se tiene una abstracción cuyo cuerpo es otra abstracción. El concepto interesante que ilustra esta expresión es el de representación de abstracciones de varias variables. Al reducir la aplicación de \( (λf.(λx.(f(f\, x)))) \) en una expresión cualquiera \( M \), se obtiene \( (λx.(M(M\, x))) \). Si posteriormente se reduce la aplicación de este resultado a una expresión cualquiera \( N \) se obtiene \( (M(M\, N)) \). El resultado final es similar al resultado que se obtendría al evaluar en \( M \) y \( N \) una función \( g(f,x) = f(f(x)) \), es decir, \( g(M,N) = M(M(N)) \).
 
-Una manera de codificar funciones de varias variables como abstracciones del cálculo lambda es codificar a \emph{tuplas} o \emph{secuencias} y poder hacer referencia a sus elementos de manera individual, sin embargo, representar secuencias es un procedimiento más complejo que se aborda en la sección \ref{sec:pares-ordenados}.
+Una manera de codificar funciones de varias variables como abstracciones del cálculo lambda es codificar a \emph{tuplas} o \emph{secuencias} y poder hacer referencia a sus elementos de manera individual, sin embargo, representar secuencias es un procedimiento más complejo que se aborda en la sección \ref{sec:estructura-listas}.
 
 \section{Operaciones}
 \label{sec:operaciones}

@@ -23,29 +23,29 @@
         - [ ] Teorema de Church-Rosser
       - [ ] Árboles Bohm
   - [ ] Codificación de objetos
-    - [ ] Álgebra booleana
-      - [ ] Valores de verdad
-      - [ ] Conectivos lógicos
-      - [ ] Lógica multivaluada
-    - [ ] Aritmética
-      - [ ] Numerales de Church
-      - [ ] Operaciones elementales
-      - [ ] Hiperoperadores
+    - [x] Álgebra booleana
+      - [x] Valores de verdad
+      - [x] Conectivos lógicos
+      - [x] Lógica multivaluada
+    - [x] Aritmética
+      - [x] Numerales de Church
+      - [x] Operaciones elementales
+      - [x] Hiperoperadores
       - [ ] Hiperoperadores inversos
-    - [ ] Procesos recursivos
-      - [ ] Combinador Y
+    - [x] Procesos recursivos
+      - [x] Combinador Y
       - [ ] Orden de evaluación
-      - [ ] Funciones recursivas
-    - [ ] Estructuras complejas
-      - [ ] Par ordenado
-      - [ ] Estructuras lineales
-      - [ ] Árboles
+      - [x] Funciones recursivas
+    - [x] Estructuras complejas
+      - [x] Par ordenado
+      - [x] Estructuras lineales
+      - [x] Árboles
   - [ ] Tipos en el cálculo lambda
     - [ ] Tipos simples
     - [ ] Representación de tipos de datos
     - [ ] Generalización de tipos
   - [ ] Lenguajes de programación
-    - [ ] Programación basada en el cálculo lambda
+    - [x] Programación basada en el cálculo lambda
     - [ ] Sistema de tipos Hindley-Milner
     - [ ] Máquina SECD
     - [ ] Semántica denotacional
@@ -56,12 +56,12 @@
     - [ ] Complejidad computacional
   - [ ] Conclusión
 - [ ] Apéndices
-  - [ ] Notación
-  - [ ] Lenguaje del cálculo lambda
-  - [ ] Intérprete
+  - [x] Notación
+  - [x] Lenguaje del cálculo lambda
+  - [x] Intérprete
   - [ ] Compilación a SECD
   - [ ] Inferencia de tipos
-- [ ] Formato
+- [x] Formato
   - [x] Clase de estilo
   - [x] Clase de bibliografía
-  - [ ] Comandos de estilo
+  - [x] Comandos de estilo

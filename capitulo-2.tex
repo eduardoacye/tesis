@@ -578,11 +578,11 @@ Consideremos la convertibilidad en \( \bs{λKβ} \) de los términos lambda
 
 Se demuestra que \( M=_{\bs{λKβ}}N \) construyendo un árbol de deducción como el de la figura \ref{fig:demostrabilidad}.
 
-\begin{figure}
+\begin{figure}[h!]
   \centering
   \begin{tikzpicture}[
     equat/.style={rectangle,draw},grow=up,edge from parent/.style={draw,latex-},
-    level 1/.style={sibling distance=20em, level distance=5em},
+    level 1/.style={sibling distance=15em, level distance=4em},
     level 2/.style={sibling distance=40em},
     level 3/.style={sibling distance=20em},
     level 4/.style={sibling distance=10em}
@@ -622,213 +622,24 @@ Se demuestra que \( M=_{\bs{λKβ}}N \) construyendo un árbol de deducción com
   \label{fig:demostrabilidad}
 \end{figure}
 
-\subsection{Combinadores \( \bs{SKI} \)}
-\label{sec:combinadores-ski}
+La teoría \( \bs{λ} \) puede ser modificada de muchas maneras, en este trabajo se considera una extensión no trivial a esta teoría con interpretaciones y consecuencias interesantes.
 
-\begin{defn}[Combinadores SKI]
-  \label{defn:ski}
-  Tres términos lambda de suma importancia son
-  \begin{align*}
-    \bs{I} & \synteq λx.x \\
-    \bs{K} & \synteq λx\, y.x \\
-    \bs{S} & \synteq λx\, y\, z.x\, z(y\, z)
-  \end{align*}
-\end{defn}
+El concepto de igualdad de funciones usado en la mayoría de las ramas de la matemática tiene una propiedad conocida como \emph{extensionalidad}, esta propiedad de las relaciones de equivalencia hace referencia a las características externas de los objetos que compara, en el caso de las funciones, esto implica que para funciones \( f \) y \( g \) con el mismo dominio
 
-\begin{cor}
-  \label{cor:ski}
-  Para todo término \( M,N,L \in Λ \)
+\[ \forall x\ f(x)=g(x) \implies f=g \]
 
-  \begin{align*}
-    \bs{I}\, M & =_{\bs{λ}} M \\
-    \bs{K}\, M\, N & =_{\bs{λ}} M \\
-    \bs{S}\, M\, N\, L & =_{\bs{λ}} M\, L (N\, L)
-  \end{align*}
-\end{cor}
+Contrario a esta propiedad de las funciones, en la computación, el tema central son los procedimientos y procesos que describen los programas o algoritmos, cuyas igualdades son \emph{intensionales}, es decir, si dos programas computan la misma función matemática, no necesariamente se dice que son el mismo programa ya que uno pudiera ser, por ejemplo, más eficiente que otro y la eficiencia es una característica interna de cada algorítmo, independiente de los resultados que computa.
 
-Estos tres combinadores generan en la teoría \( \bs{λ} \) al conjunto \( Λ^{0} \) con combinaciones de aplicaciones. Debido a que \( \bs{SKK} =_{\bs{λ}} \bs{I} \), sólo es necesario combinar con aplicaciones a \( \bs{K} \) y a \( \bs{S} \) para generar cualquier término cerrado.
+La teoría \( \bs{λ} \) también es intensional ya existen dos términos lambda \( F \) y \( G \) tales que para tódo término \( X \) la aplicación \( (F\, X) \) es convertible a \( (G\, X) \) pero \( F \not=_{\bs{λ}} G \).
 
-\begin{defn}[Bases]
-  \label{defn:bases}
-  \begin{enumerate}
-  \item Sea \( \mathcal{X} \subset Λ \). El conjunto de términos \emph{generado} por \( \mathcal{X} \), denotado \( \mathcal{X}^{+} \), es el conjunto mas pequeño tal que
-    \begin{enumerate}
-    \item \( \mathcal{X} \subseteq \mathcal{X}^{+} \),
-    \item \( M, N \in \mathcal{X}^{+} \implies (M N) \in \mathcal{X}^{+} \).
-    \end{enumerate}
-  \item Sea \( \mathcal{P} \subset Λ \). \( \mathcal{X} \subset Λ \) es una \emph{base} para \( \mathcal{P} \) si para toda \( M \in \mathcal{P} \) existe \( N \in \mathcal{X}^{+} \) tal que \( N = M \).
-  \item \( \mathcal{X} \) es llamada una \emph{base} si \( \mathcal{X} \) es una base para \( Λ^{0} \).
-  \end{enumerate}
-\end{defn}
+Consideremos por ejemplo, dos términos \( F \synteq y \) y \( G \synteq λx.y\, x \). Claramente \( F \not=_{\bs{λ}} G \), sin embargo al aplicar estos dos términos a un término cualquiera \( M \) se tiene que
+\begin{align*}
+  G\, X &=_{\bs{λ}} (λx.y\, x) X \\
+        &=_{\bs{λ}} y\, X \\
+        &=_{\bs{λ}} F\, X
+\end{align*}
 
-\begin{lem}
-  \label{lem:ski}
-  Sea \( λx.M \) una abstracción tal que \( \Sub(M) \) no contiene abstracciones
-
-  \begin{enumerate}
-  \item Si \( M = x \), entonces \( λx.M = \bs{I} \);
-  \item Si \( x \not\in \FV(M) \), entonces \( λx.M = (\bs{K} M) \);
-  \item Si \( M = P\, Q \), entonces \( λx.M = \bs{S}(λx.P)(λx.Q) \).
-  \end{enumerate}
-\end{lem}
-
-\begin{proof}
-  Ver \ref{defn:ski} y \ref{cor:ski}
-  \begin{enumerate}
-  \item
-    \begin{align*}
-      (\bs{I}\, N) &= N \\
-                   &= ((λx.x) N) \\
-                   &= ((λx.M) N)
-    \end{align*}
-  \item
-    \begin{align*}
-      ((\bs{K}\, M) N) &= (λx\, y.x)M\, N \\
-                       &= (λy.M)N \\
-                       &= ((λx.M)N)
-    \end{align*}
-  \item
-    \begin{align*}
-      \bs{S}(λx.P)(λx.Q) &= (λabc.(a\, c)(b\, c))(λx.P)(λx.Q) \\
-                         &= λc.((λx.P)c)((λx.Q)c) \\
-                         &= λc.P[x:=c]Q[x:=c] \\
-                         &= λc.(P\, Q)[x:=c] \\
-                         &= λx.P\, Q \\
-                         &= λx.M
-    \end{align*}
-  \end{enumerate}
-\end{proof}
-
-\begin{prop}
-  \label{prop:ski}
-  \( \{ \bs{S}, \bs{K}, \bs{I} \} \) es una base, es decir, para todo término \( M \in Λ^{0} \), existe un término \( M' \) compuesto de aplicaciones de \( \bs{S} \), \( \bs{K} \) e \( \bs{I} \) tal que \( M = M' \).
-\end{prop}
-
-La demostración de la proposición \ref{prop:ski} consiste en la construcción de un algoritmo para transformar \( M \) a \( M' \).
-
-\begin{proof}
-  \label{proof:ski}
-  Sea \( M \in Λ^{0} \), se construye un término \( M' \in \{ \bs{S},\bs{K},\bs{I} \}^{+} \) tal que \( M' = M \) enumerando los subtérminos en \( M \) que sean abstracciones de menor a mayor longitud.
-
-  Sea \( λx.N \) la abstracción con menor longitud en \( M \), según la estructura de \( N \) se aplican las siguientes transformaciones:
-
-  \begin{enumerate}
-  \item Si \( N = a \)
-    \begin{enumerate}
-    \item \label{item:ski:1a} Si \( a = x \) se transforma \( λx.N \) a \( \bs{I} \) en \( M \).
-    \item \label{item:ski:1b}Si \( a \not= x \) se transforma \( λx.N \) a \( (\bs{K}\, a) \) en \( M \).
-    \end{enumerate}
-  \item \( N = (P\, Q) \)
-    \begin{enumerate}
-    \item \label{item:ski:2a} Si \( x \not\in \FV(P) \) y \( x \not\in \FV(Q) \) se transforma \( λx.P\, Q \) a \( \bs{S} (\bs{K}\, P) (\bs{K}\, Q) \) en \( M \).
-    \item \label{item:ski:2b} Si \( x \not\in \FV(P) \) y \( x \in \FV(Q) \) se transforma \( λx.P\, Q \) a \( \bs{S} (\bs{K}\, P) (λx.Q) \) en \( M \).
-    \item \label{item:ski:2c} Si \( x \in \FV(P) \) y \( x \not\in \FV(Q) \) se transforma \( λx.P\, Q \) a \( \bs{S} (λx.P) (\bs{K}\, Q) \) en \( M \).
-    \item \label{item:ski:2d} Si \( x \in \FV(P) \) y \( x \in \FV(Q) \) se transforma \( λx.P\, Q \) a \( \bs{S} (λx.P) (λx.Q) \) en  \( M \).
-    \end{enumerate}
-  \end{enumerate}
-
-  En los casos \ref{item:ski:2a}, \ref{item:ski:2b}, \ref{item:ski:2c}, \ref{item:ski:2d} se forman abstracciones con longitud menor a \( λx.N \), por lo tanto serán las que se transformarán después. Ya que la longitud de estas abstracciones es estrictamente menor a \( λx.N \) y los casos base \ref{item:ski:1a} y \ref{item:ski:1b} de la transformación no introducen abstracciones, en una cantidad finita de pasos el término \( M \) transformado no tendrá abstracciones de la forma \( λx.N \).
-
-  Para un término \( M \) con sólo una abstracción, \( \mathit{a} \) aplicaciones y \( \mathit{v} \) variables ligadas (no enlazadas) una cota superior para la máxima cantidad de pasos se calcula considerando que para los términos de la forma \( λx.a \) se cumple el caso \ref{item:ski:1b} (el cual aumenta la cantidad de aplicaciones en 1) y que para los términos de la forma \( λx.P\, Q \) se cumple el caso \ref{item:ski:2d} (el cual aumenta la cantidad de aplicaciones en 2) ya que en estos casos se produce el término con mas aplicaciones, las cuales determinan la cantidad de veces que se repite el algoritmo por cada abstracción en \( M \). Para calcular la cota superior de la cantidad de aplicaciones \( a' \) que produce el algoritmo para un término con \( n \) abstracciones se plantea la siguiente relación de recurrencia:
-
-  \begin{align*}
-    \mathit{a}'_{0} &= \mathit{a} \\
-    \mathit{a}'_{n} &= 2 \times \mathit{a}'_{n-1} + \mathit{v}
-  \end{align*}
-
-  Esta recurrencia describe la función \( \mathit{a}' \colon \mathbb{N} \to \mathbb{N} \):
-
-  \[ \mathit{a}'(n) = 2^{n} \times \mathit{a} + (2^{n}-1) \times \mathit{v} \]
-
-  Para la cota superior de la cantidad de pasos realizados por el algoritmo para un término \( M \) con \( n \) abstracciones, se plantea la siguiente relación de recurrencia basada en \( \mathit{a}' \) y en el hecho de que la cantidad de variables ligadas y no enlazadas no aumenta en los pasos del algoritmo:
-
-  \begin{align*}
-    \mathit{p}_{0} &= 0 \\
-    \mathit{p}_{n} &= \mathit{p}_{n-1} + \mathit{a}'(n-1) + \mathit{v}
-  \end{align*}
-
-  Esta recurrencia describe la función \( \mathit{p} \colon \mathbb{N} \to \mathbb{N} \):
-
-  \begin{align*}
-    \mathit{p}(n) &= (\mathit{a} + \mathit{v}) \times \sum_{i=0}^{n-1} 2^{i} \\
-                  &= (\mathit{a} + \mathit{v}) \times (2^{n}-1)
-  \end{align*}
-  
-\end{proof}
-
-\paragraph{Algoritmo para compilar \( Λ^{0} \bs{\mapsto} \{ \bs{S},\ \bs{K},\ \bs{I} \}^{+} \)}
-
-\begin{algorithm}
-  \caption{SKI}
-  \begin{algorithmic}
-    \REQUIRE \( M \in Λ^{0} \)
-    \ENSURE \( M' \in \{ \bs{S},\ \bs{K},\ \bs{I} \} \)
-    
-    \STATE \( M' \leftarrow M \)
-    \STATE \( \mathcal{L} \leftarrow \{ A \in \Sub(M') \mid A \synteq λx.N \} \)
-    
-    \WHILE{\( \mathcal{L} \not= \emptyset \)}
-    
-    \STATE \( A \leftarrow λx.N \in \mathcal{L} \mid \| λx.N \| \leq A', \forall A' \in \mathcal{L} \)
-    
-    \IF{\( A \synteq λx.a \)}
-    \IF{\( a \synteq x \)}
-    \STATE \( M'[A] \leftarrow \bs{I} \)
-    \ELSIF{\( a \not\synteq x \)}
-    \STATE \( M'[A] \leftarrow \bs{K}\, a \)
-    \ENDIF
-    \ELSIF{\( A \synteq λx.P\, Q \)}
-    \IF{\( x \not\in \FV(P) \land x \not\in \FV(Q) \)}
-    \STATE \( M'[A] \leftarrow \bs{S} (\bs{K}\, P) (\bs{K}\, Q) \)
-    \ELSIF{\( x \not\in \FV(P) \land x \in \FV(Q) \)}
-    \STATE \( M'[A] \leftarrow \bs{S} (\bs{K}\, P) (λx.Q) \)
-    \ELSIF{\( x \in \FV(P) \land x \not\in \FV(Q) \)}
-    \STATE \( M'[A] \leftarrow \bs{S} (λx.P) (\bs{K}\, Q) \)
-    \ELSIF{\( x \in FV(P) \land x \in \FV(Q) \)}
-    \STATE \( M'[A] \leftarrow \bs{S} (λx.P) (λx.Q) \)
-    \ENDIF
-    \STATE \( M'[A] \leftarrow \mathrm{SKI}(\ M'[A]\ ) \)
-    \ENDIF
-    
-    \STATE \( \mathcal{L} \leftarrow \mathcal{L} \setminus \{ A \} \)
-    
-    \ENDWHILE
-    \RETURN \( M' \)
-  \end{algorithmic}
-\end{algorithm}
-
-\subsection{Teoría \( \bs{λIβ} \)}
-\label{sec:lambda-i-beta}
-
-En el artículo \cite{Church:LambdaConversion}, Alonzo Church presenta una definición del cálculo lambda con un conjunto restringido de términos lambda. A la teoría que considera a este conjunto restringido de términos lambda (denotado \( Λ_{I} \)) y los axiomas y reglas de inferencia de la teoría \( \bs{λ} \) cambiando \( Λ \) por \( Λ_{I} \) se le conoce como teoría \( \bs{λIβ} \) (o el cálculo \( λI \)).
-
-\begin{defn}[Términos en \( Λ_{I} \)]
-  \label{defn:lambdaI}
-  \begin{align*}
-    x \in V & \implies x \in Λ_{I} \\
-    M \in Λ_{I},\ x \in \FV{M} & \implies λx.M \in Λ_{I} \\
-    M, N \in Λ_{I} & \implies M\, N \in Λ_{I}
-  \end{align*}
-\end{defn}
-
-La diferencia fundamental entre las teorías \( \bs{λKβ} \) y \( \bs{λIβ} \) es el término lambda \( \bs{K} \), ya que \( \bs{K} \in Λ \setminus Λ_{I} \) pero \( \bs{K} \not\in Λ_{I} \). Esto es debido a que el subtérmino \( λy.x \) en \( \bs{K} \) de la definición \ref{defn:ski} no puede existir en \( Λ_{I} \) debido a que \( y \not\in \FV(x) \).
-
-\subsection{Extensionalidad}
-\label{sec:extensionalidad}
-
-El concepto de igualdad de funciones usado en la mayoría de las ramas de la matemática es lo que se conoce como ``extensional'', esta propiedad de las relaciones de equivalencia hace referencia a las características externas de los objetos que compara, en el caso de las funciones, se incluye la suposición de que para funciones \( f \) y \( g \) con el mismo dominio
-
-\[ \forall x [ f(x)=g(x) ] \implies f=g \]
-
-Contraria a esta suposición, en la computación, el tema central son los procedimientos y procesos que describen los programas o algoritmos, cuyas igualdades ``intensional'', es decir, si dos programas computan la misma función matemática, no necesariamente se dice que son el mismo programa ya que uno pudiera ser mas eficiente que otro (la característica de eficiencia es interna a cada algorítmo).
-
-La teoría \( \bs{λ} \) también es intensional: existen dos términos lambda \( F \) y \( G \) tales que para tódo término \( X \)
-
-\[ \bs{λ} \vdash F\, X = G\, X \]
-
-Pero no \( \bs{λ} \vdash F=G \). Por ejemplo, \( F \synteq y \) y \( G \synteq λx.y\, x \)
-
-Cuando se plantea formalizar un cálculo lambda que sea extensional, surge la pregunta, ¿Qué es demostrable en el sistema extensional que no es demostrable en \( \bs{λ} \). A continuación se presentan tres diferentes agregados a la teoría \( \bs{λ} \) las cuales incluyen la propiedad de extensionalidad y que han sido propuestas en la literatura \cite{HindleySeldin:LambdaCalculusAndCombinators,Barendregt:Bible}. Las teorías extendidas son llamadas \( \bs{λζ} \), \( \bs{λ+ext} \) y \( \bs{λη} \) de acuerdo a la regla que se añade a la definición \ref{defn:teorialambda}.
+Cuando se plantea formalizar un cálculo lambda que sea extensional, surge la pregunta, ¿Qué es demostrable en la teoría extensional que no es demostrable en \( \bs{λ} \). A continuación se presentan tres diferentes agregados a la teoría \( \bs{λ} \) las cuales incluyen la propiedad de extensionalidad y que han sido propuestas en la literatura \cite{HindleySeldin:LambdaCalculusAndCombinators,Barendregt:Bible}. Las teorías extendidas son llamadas \( \bs{λζ} \), \( \bs{λ+ext} \) y \( \bs{λη} \) de acuerdo a la regla que se añade a la definición \ref{defn:teorialambda}.
 
 \begin{defn}[Reglas de extensionalidad]
   \label{defn:extensionalidad}
@@ -851,14 +662,275 @@ Cuando se plantea formalizar un cálculo lambda que sea extensional, surge la pr
   \end{description}
 \end{defn}
 
-La regla \eqref{extensionalidad:zeta} dice, de manera informal, que si \( M \) y \( N \) tienen el mismo efecto sobre un objeto no especificado \( x \), entonces \( M = N \). La regla \eqref{extensionalidad:ext} tiene una infinidad de premisas, una por cada término lambda \( P \), por lo tanto, las deducciones en donde se involucre esta regla serán árboles infinitos.
+Hindley y Seldin en \cite[p.~77]{HindleySeldin:LambdaCalculusAndCombinators} presentan las reglas \eqref{extensionalidad:zeta} y \eqref{extensionalidad:ext} como equivalentes, explicadas de manera informal como ``Si \( M \) y \( N \) tienen el mismo efecto sobre un objeto, entonces \( M=N \)''. En este trabajo se consideran dos teorías modificadas a partir de \( \bs{λ} \):
 
-\paragraph{Pendiente} Comparación entre teorías formales, énfasis en \( η \) contra \( ζ \) contra \( ext \).
+\begin{itemize}
+\item La teoría \( \bs{λζ} \) es igual que \( \bs{λ} \) pero incluyendo también la regla \( ζ \);
+\item La teoría \( \bs{λη} \) es igual que \( \bs{λ} \) pero incluyendo también el axioma \( η \).
+\end{itemize}
+
+El ejemplo presentado para introducir la propiedad de extensionalidad es precisamente el axioma \( η \), en \cite[p.~32]{Barendregt:Bible} se presenta el siguiente teorema y demostración.
+
+\begin{thm} \label{thm:extencional-equivalentes}
+  Las teorías \( \bs{λζ} \) y \( \bs{λη} \) son equivalentes en reglas.
+
+  \begin{proof}[Demostración] Primero, se demuestra que la fórmula \( η \) es derivable en \( \bs{λζ} \):
+    \begin{enumerate}
+    \item Aplicando \( β \), se tiene que \( (λx.M\, x)x =_{\bs{λζ}} (M\, x) \) si \( x\not\in \FV(M) \);
+    \item Aplicando \( ζ \), se tiene que \( (λx.M\, x) =_{\bs{λζ}} M \).
+    \end{enumerate}
+    Después, se demuestra que la regla \( ζ \) es derivable en \( \bs{λη} \):
+    \begin{enumerate}
+    \item Se parte de la primicia \( (M\, x) =_{\bs{λη}} (N\, x) \) si \( x\not\in \FV(M) \);
+    \item Aplicando \( ξ \), se tiene que \( (λx.M\, x) =_{\bs{λη}} (λx.N\, x) \);
+    \item Aplicando \( η \), se tiene que \( M =_{\bs{λη}} N \).
+    \end{enumerate}
+  \end{proof}
+\end{thm}
+
+En \cite{HindleySeldin:LambdaCalculusAndCombinators,Barendregt:Bible} se le da un tratamiento más extenso a diferentes teorías formales del cálculo lambda y otros sistemas similares, incluyendo aquellas con la propiedad de extensionalidad.
+
+\subsection{Lógica combinatoria}
+\label{sec:logica-combinatoria}
+
+En esta sección se introduce una teoría similar en objetivos y contemporánea al cálculo lambda, llamada lógica combinatoria. Creada inicialmente por Moses Schönfinkel pero desarrollada extensamente por Haskell Curry en la década de 1930, la lógica combinatoria tiene tanto en común con el cálculo lambda, que comparten una grán cantidad de definiciones, teoremas y extensiones.
+
+En este trabajo no se desarrolla la lógica combinatoria, pero se presenta la teoría \( \bs{CLω} \) que formaliza este sistema para su comparación con \( \bs{λKβ} \).
+
+Los términos de la lógica combinatoria \( CL \) se definen de la siguiente manera
+
+\begin{defn}[Términos CL]\label{defn:terminos-cl}
+  Sea \( V \) el conjunto de variables \( \{v_{0},\ v_{00},\ v_{000},\ ...\} \) y \( C \) el conjunto de constantes atómicas \( \{ \bs{I},\ \bs{K},\ \bs{S} \} \). El conjunto de términos de la lógica combinatoria, denotado \( CL \) se define de manera inductiva de la siguiente manera:
+  \begin{subequations}
+    \begin{align}
+      \label{terminos-cl:atomos} \tag{a}
+      x \in V & \implies x \in CL \\
+      \label{terminos-cl:constantes} \tag{b}
+      x \in C & \implies x \in CL  \\
+      \label{terminos-cl:aplicaciones} \tag{c}
+      X,\ Y \in CL & \implies (X\, Y) \in CL
+    \end{align}
+  \end{subequations}
+\end{defn}
+
+Como se puede apreciar en la definición de \( CL \), los términos en la lógica combinatoria son parecidos a los términos en el cálculo lambda, sólo que en \( CL \) no hay abstracciones y en \( Λ \) no hay constantes atómicas.
+
+\begin{defn}[Teoría \( \bs{CLω} \)] \label{defn:teoria-cl}
+  El conjunto de fórmulas \( \mc{F} \) en \( \bs{CLω} \) tiene como elementos ecuaciones de la forma:
+  \begin{align*}
+    X=Y && \forall X,\ Y \in CL \text{ (de la definición \ref{defn:terminos-cl})}
+  \end{align*}
+
+  Los axiomas \( \mc{A} \) de \( \bs{CLω} \) son:
+  \begin{subequations}
+    \begin{align}
+      \label{teoriacl:I} \tag{\( \bs{I} \)}
+      \bs{I}\, X &= X \\
+      \label{teoriacl:K} \tag{\( \bs{K} \)}
+      \bs{K}\, X\, Y & = X \\
+      \label{teoriacl:S} \tag{\( \bs{S} \)}
+      \bs{S}\, X\, Y\, Z & = X\, Z(Y\, Z) \\
+      \label{teoriacl:ro} \tag{\( ρ \)}
+      X &= X
+    \end{align}
+  \end{subequations}
+  Las reglas \( \mc{R} \) de \( \bs{CLω} \) son:
+  \begin{equation}
+    \label{teoriacl:mu} \tag{\( μ \)}
+    \infer{Z\, X = Z\, X^{\prime}}{X = X^{\prime}}
+  \end{equation}
+  \begin{equation}
+    \label{teoriacl:nu} \tag{\( ν \)}
+    \infer{X\, Z = X^{\prime}\, Z}{X = X^{\prime}}
+  \end{equation}
+  \begin{equation}
+    \label{teoriacl:tau} \tag{\( τ \)}
+    \infer{X = Z}{X = Y & Y = Z}
+  \end{equation}
+  \begin{equation}
+    \label{teoriacl:sigma} \tag{\( σ \)}
+    \infer{Y = X}{X = Y}
+  \end{equation}
+\end{defn}
+  
+Existen equivalencias entre modificaciones de teorías del cálculo lambda y la lógica combinatoria \cite[pp.~92--106]{HindleySeldin:LambdaCalculusAndCombinators}, pero en este trabajo se muestra una introducción a las similitudes entre \( \bs{λ} \) y \( \bs{CLω} \), en particular, la correspondencia entre las clases de términos de \( \bs{CLω} \) que se pueden representar en \( \bs{λ} \) y viceversa.
+  
+Es sencillo representar las constantes atómicas de \( CL \) utilizando abstracciones del cálculo lambda. Los términos que representen a \( \bs{I} \), \( \bs{K} \) y \( \bs{S} \) en \( Λ \) deben satisfacer las reglas \eqref{teoriacl:I}, \eqref{teoriacl:K} y \eqref{teoriacl:S} de la definición \ref{defn:teoria-cl}.
+
+\begin{defn}[Constantes \( \bs{I} \), \( \bs{K} \) y \( \bs{S} \) en \( Λ \)]
+  \label{defn:ski}
+  \begin{align*}
+    \bs{I} & \synteq λx.x \\
+    \bs{K} & \synteq λx\, y.x \\
+    \bs{S} & \synteq λx\, y\, z.x\, z(y\, z)
+  \end{align*}
+\end{defn}
+
+Se corroboran estas definiciones considerando a \( M \), \( N \) y \( Z \)  en \( Λ \) utilizando el axioma \( (β) \) de \( \bs{λ} \).
+
+\begin{align*}
+  \bs{I}\, M &=_{\bs{λ}} (λx.x) M \\
+             &=_{\bs{λ}} M \\
+  \bs{K}\, M\, N &=_{\bs{λ}} (λx\, y.x)M\, N \\
+             &=_{\bs{λ}} (λy.M)N\\
+             &=_{\bs{λ}} M \\
+  \bs{S}\, M\, N\, Z &=_{\bs{λ}} (λx\, y\, z.x\, z(y\, z))M\, N\, Z \\
+             &=_{\bs{λ}} (λy\, z.M\, z(y\, z)) \\
+             &=_{\bs{λ}} (λz.M\, z(N\, z)) \\
+             &=_{\bs{λ}} M\, Z(N\, Z)
+\end{align*}
+
+Las variables en \( CL \) pueden representarse en \( Λ \) como átomos, las aplicaciones en \( CL \) como aplicaciones en \( Λ \) y el resto de los axiomas y reglas en \( \bs{CLω} \) tienen sus contrapartes en \( \bs{λ} \). Por lo tanto, todo término en \( CL \) puede ser representado con términos en \( Λ \) y toda deducción realizada en \( \bs{CLω} \) puede también realizarse en \( \bs{λ} \) considerando la definición \ref{defn:ski}.
+
+Por otra parte, la lógica combinatoria puede representar grán parte del cálculo lambda, pero no todo. En particular la regla \( (ξ) \) en \( \bs{λ} \) no es admisible en la teoría \( \bs{CLω} \) \cite[p.~92]{HindleySeldin:LambdaCalculusAndCombinators}.
+
+Con la teoría \( \bs{CLω} \) se puede generar al conjunto \( Λ^{0} \) con combinaciones de aplicaciones. Debido a que \( \bs{SKK} =_{\bs{λ}} \bs{I} \), sólo es necesario combinar con aplicaciones a \( \bs{K} \) y a \( \bs{S} \) para generar cualquier término cerrado.
+
+\begin{defn}[Bases]
+  \label{defn:bases}
+  El concepto de \emph{base} es de importancia para plantear formalmente la proposición anterior.
+  \begin{enumerate}
+  \item Sea \( \mathcal{X} \subset Λ \). El conjunto de términos \emph{generado} por \( \mathcal{X} \), denotado \( \mathcal{X}^{+} \), es el conjunto mas pequeño tal que
+    \begin{enumerate}
+    \item \( \mathcal{X} \subseteq \mathcal{X}^{+} \),
+    \item \( M, N \in \mathcal{X}^{+} \implies (M N) \in \mathcal{X}^{+} \).
+    \end{enumerate}
+  \item Sea \( \mathcal{P}, \mc{X} \subset Λ \). \( \mathcal{X} \) es una \emph{base} para \( \mathcal{P} \) si para toda \( M \in \mathcal{P} \) existe \( N \in \mathcal{X}^{+} \) tal que \( N = M \).
+  \item \( \mathcal{X} \) es llamada una \emph{base} si \( \mathcal{X} \) es una base para \( Λ^{0} \).
+  \end{enumerate}
+\end{defn}
+
+\begin{prop}
+  \label{prop:ski}
+  \( \{ \bs{S}, \bs{K}, \bs{I} \} \) es una base, es decir, para todo término \( M \in Λ^{0} \), existe un término \( M' \) compuesto de aplicaciones de \( \bs{S} \), \( \bs{K} \) e \( \bs{I} \) tal que \( M =_{\bs{λ}} M' \).
+\end{prop}
+
+La demostración de la proposición \ref{prop:ski} consiste en la construcción de un algoritmo para transformar \( M \) a \( M' \). El siguiente lema es utilizado en esa demostración:
+
+\begin{lem}
+  \label{lem:ski}
+  Sea \( λx.M \) una abstracción tal que \( \Sub(M) \) no contiene abstracciones
+
+  \begin{enumerate}
+  \item Si \( M =_{\bs{λ}} x \), entonces \( λx.M =_{\bs{λ}} \bs{I} \);
+  \item Si \( x \not\in \FV(M) \), entonces \( λx.M =_{\bs{λ}} (\bs{K} M) \);
+  \item Si \( M =_{\bs{λ}} P\, Q \), entonces \( λx.M =_{\bs{λ}} \bs{S}(λx.P)(λx.Q) \).
+  \end{enumerate}
+\end{lem}
+
+\begin{proof}
+  Utilizando la definición \ref{defn:ski}
+  \begin{align*}
+    \bs{I}\, N &=_{\bs{λ}} N && (1) \\
+                 &=_{\bs{λ}} (λx.x) N  \\
+                 &=_{\bs{λ}} (λx.M) N \\
+    \bs{K}\, M\, N &=_{\bs{λ}} (λx\, y.x)M\, N && (2) \\
+                     &=_{\bs{λ}} (λy.M)N \\
+                 &=_{\bs{λ}} (λx.M)N \\
+    \bs{S}(λx.P)(λx.Q) &=_{\bs{λ}} (λabc.(a\, c)(b\, c))(λx.P)(λx.Q) && (3)\\
+                         &=_{\bs{λ}} λc.((λx.P)c)((λx.Q)c) \\
+                         &=_{\bs{λ}} λc.P[x:=c]Q[x:=c] \\
+                         &=_{\bs{λ}} λc.(P\, Q)[x:=c] \\
+                         &=_{\bs{λ}} λx.P\, Q \\
+                         &=_{\bs{λ}} λx.M
+  \end{align*}
+\end{proof}
+
+\begin{proof}[Demostración de la proposición \ref{prop:ski}]
+  \label{proof:ski}
+  Sea \( M \in Λ^{0} \), se construye un término \( M' \in \{ \bs{S},\bs{K},\bs{I} \}^{+} \) tal que \( M' =_{\bs{λ}} M \) con el algoritmo \ref{alg:ski}.
+
+  \begin{algorithm}
+    \caption{SKI}
+    \label{alg:ski}
+    \begin{algorithmic}
+      \REQUIRE \( M \in Λ^{0} \)
+      \ENSURE \( M' \in \{ \bs{S},\ \bs{K},\ \bs{I} \} \)
+      
+      \STATE \( M' \leftarrow M \)
+      \STATE \( \mathcal{L} \leftarrow \{ A \in \Sub(M') \mid A \synteq λx.N \} \)
+      
+      \WHILE{\( \mathcal{L} \not= \emptyset \)}
+      
+      \STATE \( A \leftarrow λx.N \in \mathcal{L} \mid \| λx.N \| \leq A', \forall A' \in \mathcal{L} \)
+      
+      \IF{\( A \synteq λx.a \)}
+      \IF{\( a \synteq x \)}
+      \STATE \( M'[A] \leftarrow \bs{I} \)
+      \ELSIF{\( a \not\synteq x \)}
+      \STATE \( M'[A] \leftarrow \bs{K}\, a \)
+      \ENDIF
+      \ELSIF{\( A \synteq λx.P\, Q \)}
+      \IF{\( x \not\in \FV(P) \land x \not\in \FV(Q) \)}
+      \STATE \( M'[A] \leftarrow \bs{S} (\bs{K}\, P) (\bs{K}\, Q) \)
+      \ELSIF{\( x \not\in \FV(P) \land x \in \FV(Q) \)}
+      \STATE \( M'[A] \leftarrow \bs{S} (\bs{K}\, P) (λx.Q) \)
+      \ELSIF{\( x \in \FV(P) \land x \not\in \FV(Q) \)}
+      \STATE \( M'[A] \leftarrow \bs{S} (λx.P) (\bs{K}\, Q) \)
+      \ELSIF{\( x \in FV(P) \land x \in \FV(Q) \)}
+      \STATE \( M'[A] \leftarrow \bs{S} (λx.P) (λx.Q) \)
+      \ENDIF
+      \STATE \( M'[A] \leftarrow \mathrm{SKI}(\ M'[A]\ ) \)
+      \ENDIF
+      
+      \STATE \( \mathcal{L} \leftarrow \mathcal{L} \setminus \{ A \} \)
+      
+      \ENDWHILE
+      \RETURN \( M' \)
+    \end{algorithmic}
+  \end{algorithm}
+  
+  El algoritmo enumera los subtérminos en \( M \) que sean abstracciones de menor a mayor longitud. Sea \( λx.N \) la abstracción con menor longitud en \( M \), según la estructura de \( N \) se aplican las siguientes transformaciones:
+  \begin{enumerate}
+  \item Si \( N = a \)
+    \begin{enumerate}
+    \item \label{item:ski:1a} Si \( a = x \) se transforma \( λx.N \) a \( \bs{I} \) en \( M \).
+    \item \label{item:ski:1b}Si \( a \not= x \) se transforma \( λx.N \) a \( (\bs{K}\, a) \) en \( M \).
+    \end{enumerate}
+  \item \( N = (P\, Q) \)
+    \begin{enumerate}
+    \item \label{item:ski:2a} Si \( x \not\in \FV(P) \) y \( x \not\in \FV(Q) \) se transforma \( λx.P\, Q \) a \( \bs{S} (\bs{K}\, P) (\bs{K}\, Q) \) en \( M \).
+    \item \label{item:ski:2b} Si \( x \not\in \FV(P) \) y \( x \in \FV(Q) \) se transforma \( λx.P\, Q \) a \( \bs{S} (\bs{K}\, P) (λx.Q) \) en \( M \).
+    \item \label{item:ski:2c} Si \( x \in \FV(P) \) y \( x \not\in \FV(Q) \) se transforma \( λx.P\, Q \) a \( \bs{S} (λx.P) (\bs{K}\, Q) \) en \( M \).
+    \item \label{item:ski:2d} Si \( x \in \FV(P) \) y \( x \in \FV(Q) \) se transforma \( λx.P\, Q \) a \( \bs{S} (λx.P) (λx.Q) \) en  \( M \).
+    \end{enumerate}
+  \end{enumerate}
+  En los casos \ref{item:ski:2a}, \ref{item:ski:2b}, \ref{item:ski:2c}, \ref{item:ski:2d} se forman abstracciones con longitud menor a \( λx.N \), por lo tanto serán las que se transformarán después. Ya que la longitud de estas abstracciones es estrictamente menor a \( λx.N \) y los casos base \ref{item:ski:1a} y \ref{item:ski:1b} de la transformación no introducen abstracciones, en una cantidad finita de pasos el término \( M \) transformado no tendrá abstracciones de la forma \( λx.N \).
+
+  Si el término \( M \) tiene dos o más abstracciones con la misma longitud, el orden en el que se procesen por el algoritmo no cambia el resultado, esto es debido a que los términos que transforma son subtérminos de las abstracciones.
+
+  Para un término \( M \) con sólo una abstracción, \( \mathit{a} \) aplicaciones y \( \mathit{v} \) variables ligadas (no enlazadas) una cota superior para la máxima cantidad de pasos se calcula considerando que para los términos de la forma \( λx.a \) se cumple el caso \ref{item:ski:1b} (el cual aumenta la cantidad de aplicaciones en 1) y que para los términos de la forma \( λx.P\, Q \) se cumple el caso \ref{item:ski:2d} (el cual aumenta la cantidad de aplicaciones en 2) ya que en estos casos se produce el término con mas aplicaciones, las cuales determinan la cantidad de veces que se repite el algoritmo por cada abstracción en \( M \). Para calcular la cota superior de la cantidad de aplicaciones \( a' \) que produce el algoritmo para un término con \( n \) abstracciones se plantea la siguiente relación de recurrencia:
+  \begin{align*}
+    \mathit{a}'_{0} &= \mathit{a} \\
+    \mathit{a}'_{n} &= 2 \times \mathit{a}'_{n-1} + \mathit{v}
+  \end{align*}
+  Esta recurrencia describe la función \( \mathit{a}' \colon \mathbb{N} \to \mathbb{N} \):
+  \[ \mathit{a}'(n) = 2^{n} \times \mathit{a} + (2^{n}-1) \times \mathit{v} \]
+  Para la cota superior de la cantidad de pasos realizados por el algoritmo para un término \( M \) con \( n \) abstracciones, se plantea la siguiente relación de recurrencia basada en \( \mathit{a}' \) y en el hecho de que la cantidad de variables ligadas y no enlazadas no aumenta en los pasos del algoritmo:
+  \begin{align*}
+    \mathit{p}_{0} &= 0 \\
+    \mathit{p}_{n} &= \mathit{p}_{n-1} + \mathit{a}'(n-1) + \mathit{v}
+  \end{align*}
+  Esta recurrencia describe la función \( \mathit{p} \colon \mathbb{N} \to \mathbb{N} \):
+  \begin{align*}
+    \mathit{p}(n) &= (\mathit{a} + \mathit{v}) \times \sum_{i=0}^{n-1} 2^{i} \\
+                  &= (\mathit{a} + \mathit{v}) \times (2^{n}-1)
+  \end{align*}
+\end{proof}
+
+Con esta proposición demostrada, tenemos que cualquier término lambda cerrado puede ser traducido a términos en \( CL \) sin variables y estos dos términos son convertibles en la teoría \( \bs{λ} \).
 
 \section{Teoría de reducción}
 \label{sec:teoriareduccion}
 
-1.14 y 2.9
+\subsection{Nociones de reducción}
+\label{sec:nociones-reduccion}
+
+\subsection{Teorema de Church-Rosser}
+\label{sec:church-rosser}
+
+\subsection{Estrategias de reducción}
+\label{sec:estrategias-reduccion}
 
 \subsection{Contracciones}
 \label{sec:contracciones}
@@ -977,8 +1049,6 @@ Plantear las ideas para pasar del concepto de contracción al de reducción y po
 Gráficas de reducción.
 
 Teorema de Church-Rosser y toda la magia necesaria para abordarlo y la magia que valga la pena mencionar en la que CR es importante va aquí.
-
-Probablemente es buena idea separar la sección ``Noción informal del cálculo lambda'' y ``Formalización del cálculo lambda'' en dos capítulos diferentes. ¿Valdrá la pena abordar árboles de Böhm?
 
 
 %%% Local Variables:

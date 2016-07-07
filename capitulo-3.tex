@@ -27,8 +27,6 @@ Al igual que el cálculo lambda, otras teorías que fundamentan las ciencias de 
 
 En el álgebra booleana, los valores de las expresiones son falso y verdadero. El nombre de estos valores no es de relevancia y usualmente falso se representa como 0 y verdadero como 1. El aspecto importante de estos valores es que son distintos y si un valor \( x \) no es uno, entonces es el otro.
 
-\paragraph{Revisar} Me parece que suena confusa la analogía, el objetivo es plantear la idea de no codificar falso y verdadero como un valor en particular, si no como una desición.
-
 Podemos ignorar la representación concreta de estos valores y pensar en una situación hipotética: Una persona omnisciente y muda llamada \( P \) puede decirme si una oración que le digo es falsa o verdadera dándole una manzana y una pera; si me regresa la manzana significa que la oración es verdadera y si me regresa la pera significa que la oración es falsa. En este planteamiento irreal e hipotético, no fué necesario conocer la estructura de la verdad y la falsedad, solo fué necesario tener a alguien que tomara una desición (en este caso \( P \)) y proveer dos objetos que podemos distinguir entre sí (en este caso la manzana y la pera). Las desiciones de esta persona pueden ser los conceptos de falso y verdadero si nunca podemos conocer los valores booleanos.
 
 Detrás del concepto de falso y verdadero, está el concepto de \emph{desición}, la codificación que se desarrolla está basada en este concepto y aparece en \cite[p.~133]{Barendregt:Bible}.
@@ -285,25 +283,21 @@ Ya que  \( \bs{λ} \vdash (P\, Q\, \bs{F}) = (\bs{\land}\, P\, Q) \) y \( \bs{λ
   \[ \bs{\lor} \synteq λp\, q.p\, \bs{T}\, q \]
 
   y cumple las siguientes propiedades de \( β \)-reducción al ser aplicada a valores de verdad:
-
   \begin{align*}
     \bs{\lor}\, \bs{F}\, \bs{F} &\synteq (λp\, q.p\, \bs{T}\, q) \bs{F}\, \bs{F} \\
                                 &\reduce{β} \bs{F}\, \bs{T}\, \bs{F} \\
                                 &\reduce{β} \bs{F}
   \end{align*}
-
   \begin{align*}
     \bs{\lor}\, \bs{F}\, \bs{T} &\synteq (λp\, q.p\, \bs{T}\, q) \bs{F}\, \bs{T} \\
                                 &\reduce{β} \bs{F}\, \bs{T}\, \bs{T} \\
                                 &\reduce{β} \bs{T}
   \end{align*}
-
   \begin{align*}
     \bs{\lor}\, \bs{T}\, \bs{F} &\synteq (λp\, q.p\, \bs{T}\, q) \bs{T}\, \bs{F} \\
                                 &\reduce{β} \bs{T}\, \bs{T}\, \bs{F} \\
                                 &\reduce{β} \bs{T}
   \end{align*}
-
   \begin{align*}
     \bs{\lor}\, \bs{T}\, \bs{T} &\synteq (λp\, q.p\, \bs{T}\, q) \bs{T}\, \bs{T} \\
                                 &\reduce{β} \bs{T}\, \bs{T}\, \bs{T} \\
@@ -709,72 +703,6 @@ Donde
   R_{3} &\synteq (\bs{\prec_{3}}\, p_{2}\, x_{7}\, x_{8}\, x_{9})
 \end{align*}
 
-\subsection{Lógica en el cálculo lambda}
-\label{sec:logica-lambda}
-
-En esta sección se abordó la codificación de valores de verdad y operaciones como la conjunción, disyunción y negación. Usualmente en las ciencias de la computación y las matemáticas, estos objetos se abordan desde la perspectiva algebraica y desde la perspectiva lógica.
-
-En el cálculo lambda se distinguen las dos perspectivas por el lenguaje en el que se manejan los objetos, en el caso del álgebra booleana, los valores de verdad y las operaciones booleanas se codifican como términos lambda y pueden ser combinados con otros términos lambda que no forman parte del álgebra booleana. Por otra parte, la lógica proposicional estudia proposiciones, las cuales son enunciados matemáticos a los cuales se les puede atribuír el valor de falso o verdadero y que, a partir de conectivos lógicos como \( \lnot \), \( \land \) y \( \lor \), se infieren verdades sobre los enunciados.
-
-El cálculo lambda se puede extender de tal manera que nos permita inferir verdades sobre sus términos, en esta subsección se abordan los cálculos lambda aumentados con nociones \emph{ilativas}, denotados \( \mathit{i}\bs{λ} \). El tratamiento de esta extensión está basado en el apéndice B ``Lógica combinatoria ilativa'' de \cite[pp.~573--576]{Barendregt:Bible}.
-
-\begin{defn}[Términos \( \mathit{i}\bs{λ} \)]
-  \label{defn:ilativo-terminos}
-  Los términos de la teoría \( \mathit{i}\bs{λ} \), denotados \( \mathit{i}Λ \) se definen sobre el alfabeto de \( Λ \) extendido con un conjunto \( C \) de \emph{constantes lógicas}.
-
-  \begin{align*}
-    M \in Λ &\implies M \in \mathit{i}Λ \\
-    c \in C &\implies c \in \mathit{i}Λ \\
-    M, N \in \mathit{i}Λ &\implies (M\, N) \in \mathit{i}Λ
-  \end{align*}
-\end{defn}
-
-\begin{defn}[Fórmulas en \( \mathit{i}\bs{λ} \)]
-  \label{defn:ilativo-formulas}
-  Las fórmulas de la teoría \( \mathit{i}\bs{λ} \) se definen de la siguiente manera
-  
-  \begin{itemize}
-  \item Si \( M, N \in \mathit{i}Λ \), entonces \( M = N \) es una fórmula.
-  \item Si \( M \in \mathit{i}Λ \), entonces \( M \) es una fórmula.
-  \end{itemize}
-
-  En el estudio de teorías ilativas, la interpretación de \( \mathit{i}\bs{λ} \vdash M \) y \( \mathit{i}\bs{λ} \vdash M = N \) es ``La fórmula \( M \) es verdadera'' y ``La fórmula \( M = N \) es verdadera'' respectivamente.
-\end{defn}
-
-\paragraph{Revisar} La sección será muy extensa si desarrollo todos los pendientes planteados, sería conveniente no plantear la paradoja de Kleene-Rosser y considerar solo la de Curry, mostrar que cualquier término puede ser inferido, omitir la definibilidad de las constantes en términos de \( \bs{Q} \) y \( \bs{Ξ} \) y mencionar la compensación entre expresibilidad e inconsistencia, enlazando las ideas de computabilidad y teoría de tipos.
-
-\subsubsection{Teoría \( \mathit{i}\bs{λ}_{KR} \)}
-
-Constantes \( C = \{ \bs{N} \} \) con la interpretación \( \lnot\, M \) es \( (\bs{N}\, M) \)
-
-Paradoja de Kleene-Rosser
-
-\[ X \synteq λx.\bs{N} (x\, x) \]
-
-\[ X\, X = (λx.\bs{N} (x\, x)) X = \bs{N} (X\, X) \]
-
-Se puede derivar que una fórmula \( X\, X = \lnot (X\, X) \), es decir, en \( \mathit{i}\bs{λ}_{KR} \) se pueden derivar contradicciones.
-
-\subsubsection{Teoría \( \mathit{i}\bs{λ}_{0} \)}
-
-Constantes \( C = \{ \bs{F},\ \bs{Q},\ \bs{E},\ \bs{Ξ},\ \bs{Π},\ \bs{P} \} \) con las siguientes interpretaciones
-
-\begin{itemize}
-\item \( M \in N \) es \( N\, M \)
-\item \( M \implies N \) es \( \bs{P}\, M\, N \)
-\item \( M \subseteq N \) es \( \bs{Ξ}\, M\, N \)
-\item \( N^{M} \) es \( \bs{F}\, M\, N \)
-\item \( \forall x\ M \) es \( \bs{Ξ} (λx.M) \)
-\end{itemize}
-
-\subsubsection*{Pendientes}
-
-\begin{itemize}
-\item Definibilidad de \( \bs{E} \), \( \bs{F} \), \( \bs{P} \) y \( \bs{Π} \) a partir de \( \bs{Q} \), \( \bs{Ξ} \).
-\item Inconsistencia de \( \mathit{i}\bs{λ}_{0} \) por la paradoja de Curry ``Una teoría lambda ilativa es inconsistente si cada \( M \) puede ser derivada'' (la paradoja de Kleene-Rosser es una consecuencia de la paradoja de Curry).
-\item Mencionar la técnica utilizada por Church para ``escapar'' de la paradoja de Curry y presentar el ``tradeoff'' de tener un sistema suficientemente poderoso: Equivalencia \( \bs{λ} \) y máquina de Turing \emph{vs.} separar la noción ilativa de la abstracción.
-\end{itemize}
-
 \section{Aritmética}
 \label{sec:aritmetica}
 
@@ -1012,7 +940,6 @@ Detrás del concepto de contar, está el concepto de \emph{repetición}, la estr
 Sea \( P \) un término lambda el cual puede ser aplicado a una pregunta \( Q \), al \( β \)-reducir \( (P\, Q) \) se obtiene una repetición \( R \) la cual al ser aplicada a una acción \( A \) y un objeto \( O \) se \( β \)-reduce a realizar la acción \( A \) sobre \( O \) y repetir el procedimiento con el resultado hasta haber realizado cierta cantidad de acciones:
 
 \[ P\, Q \reduce{β} R, \]
-
 \[ R\, A\, O \reduce{β} \underbrace{A(A(\ ...\ (A(A\, O))\ ...\ ))}_\text{\( n \) veces} \]
 
 Para fines prácticos no es necesario conocer la estructura de \( P \) ni de \( Q \), lo importante es que \( A \) se realice cierta cantidad de veces sobre \( O \). Por lo tanto \( R \) es un término lambda de la forma
@@ -1028,41 +955,29 @@ Al inicio de esta sección se construyeron las codificaciones de las operaciones
 La percepción de complejidad de operaciones aritméticas se remonta a la manera en cómo se enseña la aritmética en la educación básica. Después de aprender a contar, se aprende a sumar y después a multiplicar. A pesar de ser en un inicio un proceso de memorización, el acto de sumar y multiplicar números pequeños termina siendo un acto trivial, empleando algoritmos y heurísticas de estimación cuando los números son grandes. En el caso de la exponenciación, los computólogos suelen adquirir esta misma capacidad cuando se trata de operaciones de la forma \( 2^{n} \) debido a la repetida utilización de números en base 2. Sin embargo, esta percepción tiene también una justificación algorítmica.
 
 La operación de multiplicación puede ser definida en función de la operación de adición. Sean \( m \) y \( n \) dos números naturales, la operación \( m \times n \) es equivalente a sumar \( m \) consigo mismo \( n \) veces.
-
 \begin{equation}
   \label{eq:numeral:muldef}
   m \times n = \underbrace{m + m + ... + m}_\text{\( n \) veces} = \sum_{i=1}^{n} m
 \end{equation}
-
 De manera análoga, la operación de exponenciación puede ser definida en función de la operación de multiplicación. Sean \( m \) y \( n \) dos números naturales, la operación \( m^{n} \) es equivalente a multiplicar \( m \) consigo mismo \( n \) veces.
-
-
 \begin{equation}
   \label{eq:numeral:expdef}
   m^{n} = \underbrace{m \times m \times ... \times m}_\text{\( n \) veces} = \prod_{i=1}^{n} m
 \end{equation}
-
 De esta manera, una operación compleja como la exponenciación se define en términos de una operación más fundamental como la multiplicación. Esta observación trae a colación la pregunta, ¿Cuál es la operación aritmética más fundamental?.
 
 La respuesta a esta pregunta no es fácil de encontrar, se pudiera pensar que la adición es la operación más fundamental, sin embargo, la adición puede ser definida en función de la operación unaria sucesor y esta a su vez es un caso particular de la adición. Sea \( +_{1} \) el operador unario sucesor
-
 \[ m + n = \underbrace{+_{1} +_{1} ... {} +_{1}}_\text{\( n \) veces} m = \underbrace{1 + 1 + ... + 1}_\text{\( n \) veces}+m \]
-
 En la segunda aproximación de las codificaciones, se considera que el operador de sucesor es más fundamental que la adición debido a que es fácil codificar la sucesión sin basarse en resultados previos.
 
 La definición de la operación de sucesor consiste en ``añadir'' una variable \( x \) a un número, ya que
-
 \[ \cn{n} \synteq λx\, y.\underbrace{x(x(\ ...\ (x\, y)))}_\text{\( n \) apariciones de \( x \)} \]
-
 solo se necesita obtener el cuerpo del numeral con la aplicación \( (\cn{n}\, x\, y) \) y aplicar \( x \) al resultado de la reducción. La codificación del operador \( \cn{+}_{1} \) es
-
 \begin{equation}
   \label{eq:numeral:suc2}
   \cn{+}_{1} \synteq λn.λx\, y.x(n\, x\, y)
 \end{equation}
-
 Para demostrar que esta definición es correcta, consideremos la reducción de la aplicación de \( \cn{+}_{1} \) en un numeral cualquiera \( \cn{n} \):
-
 \begin{align}
   \label{eq:numeral:suc2dem}
   \cn{+}_{1}\, \cn{n} \synteq &(λn.λx\, y.x(n\, x\, y)) \cn{n} &\text{Por \eqref{eq:numeral:suc2}} \\
@@ -1071,18 +986,14 @@ Para demostrar que esta definición es correcta, consideremos la reducción de l
                      \synteq &λx\, y.x^{n+1}\, y &\text{Por \eqref{eq:abuso:F}} \nonumber \\
                      \synteq &\cn{n+1} \nonumber
 \end{align}
-
 Ahora se debe plantear una manera de aplicar el concepto de repetición de sucesores para obtener la adición. La operación \( \cn{+} \) deberá tomar dos numerales \( \cn{m} \) y \( \cn{n} \) y repetir \( \cn{n} \) veces la operación de sucesor sobre \( \cn{m} \). Ya que la aplicación de \( \cn{+}_{1} \) a un numeral, resulta en un numeral basta con aplicar \( \cn{n} \) al operador \( \cn{+}_{1} \) y al numeral \( \cn{m} \). Por ejemplo
-
 \begin{align*}
   (\cn{3}\, \cn{+}_{1}\, \cn{4}) \reduce{β} &\cn{+}_{1} (\cn{+}_{1} (\cn{+}_{1}\, \cn{4})) &\text{Por \eqref{eq:numeral:PQ}} \\
                                  \reduce{β} &\cn{+}_{1} (\cn{+}_{1}\, \cn{5}) &\text{Por \eqref{eq:numeral:suc2dem}} \\
                                  \reduce{β} &\cn{+}_{1}\, \cn{6} &\text{Por \eqref{eq:numeral:suc2dem}} \\
                                  \reduce{β} &\cn{7} &\text{Por \eqref{eq:numeral:suc2dem}}
 \end{align*}
-
 En general, para cualesquiera \( \cn{m} \) y \( \cn{n} \), la aplicación \( (\cn{n}\, \cn{+}_{1}\, \cn{m}) \) se reduce a:
-
 \begin{align}
   \label{eq:numeral:sum2dem}
   \cn{n}\, \cn{+}_{1}\, \cn{m} \reduce{β} &\cn{+}_{1}^{n}\, \cn{m} &\text{Por \eqref{eq:numeral:PQ}} \\
@@ -1092,14 +1003,11 @@ En general, para cualesquiera \( \cn{m} \) y \( \cn{n} \), la aplicación \( (\c
                               \reduce{β} &\cn{+}_{1}^{n-n}\, \cn{m+n} \nonumber \\
                                  \synteq &\cn{m+n} &\text{Por \eqref{eq:abuso:F}} \nonumber
 \end{align}
-
 La codificación del operador \( \cn{+} \) es
-
 \begin{equation}
   \label{eq:numeral:sum2}
   \cn{+} \synteq λm\, n.n\, \cn{+}_{1}\, m
 \end{equation}
-
 Para codificar la operación de multiplicación y exponenciación se puede seguir el mismo patrón: un numeral \( \cn{n} \) determina una cantidad de repeticiones, es aplicado a una operación unaria que será aplicada \( n \) veces a un término. Hay dos detalles importantes que considerar, primero, cómo convertir una codificación de una operación binaria a unaria y qué valor aplicar al final.
 
 En el caso de la codificación de la multiplicación se debe convertir a \( \cn{+} \) en una operación unaria, por la definición de multiplicación \eqref{eq:numeral:muldef} se tiene que

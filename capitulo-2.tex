@@ -923,132 +923,185 @@ Con esta proposición demostrada, tenemos que cualquier término lambda cerrado 
 \section{Teoría de reducción}
 \label{sec:teoriareduccion}
 
+El concepto de reducción fue introducido en la sección \ref{sec:op-reduccion} como el análogo de la evaluación de funciones para el cálculo lambda. Sin embargo, la formalización del cálculo lambda como una teoría de reducción va más allá de complementar la analogía de este sistema con las funciones de la matemática clásica.
+
+Cuando se estudia el cálculo lambda desde una perspectiva computacional, la convertibilidad de términos lambda vista como la demostrabilidad de una fórmula en una teoría formal presenta cierta asimetría
+\[ (λx.x\, x)y =_{\bs{λ}} (y\, y) \]
+puede ser interpretada como ``\( (y\, y) \) es el resultado de computar \( (λx.x\, x)y \)'', pero no viceversa. Esto es debido a que toda la información necesaria para obtener \( (y\, y) \) se encuentra en \( (λx.x\, x)y \)  mientras que en el otro sentido, \( (y\, y) \) no nos dice como obtener un resultado. Conociendo las reglas de transformación de términos \( (λx.x\, x)y \) nos provee, de cierta manera, un algoritmo y una entrada.
+
+En este capítulo se desarrolla el complemento computacional al estudio del cálculo lambda de la sección \ref{sec:conversion-lambda}. Primero se aborda la reducción en general, independiente de la regla \( (β) \) como fué presentada en la introducción a este trabajo. Después se aborda el teorema de Church-Rosser, el cuál nos permitirá estudiar aspectos de la convertibilidad de términos. Finalmente se presentarán algunas estrategias de reducción.
+
+Esta sección se basa principalmente en el capítulo 3, 11 y 13 de \cite{Barendregt:Bible}.
+
 \subsection{Nociones de reducción}
 \label{sec:nociones-reduccion}
 
-\subsection{Teorema de Church-Rosser}
-\label{sec:church-rosser}
+El concepto de reducción que se ha considerado hasta el momento corresponde a la \( β \)-reducción, sin embargo, nociones de reducción pueden ser definidas de manera general.
 
-\subsection{Estrategias de reducción}
-\label{sec:estrategias-reduccion}
+Las reducciones sobre \( Λ \) se formalizan como relaciones binarias \( \bs{R} \) representadas como conjuntos de tuplas \( (M,\ M^{\prime}) \) donde \( M,\ M^{\prime} \in Λ \). Las propiedades que cumplan las tuplas de una relación nos permiten caracterizar las relaciones de varias maneras.
 
-\subsection{Contracciones}
-\label{sec:contracciones}
+Consideremos las reglas de inferencia en la definición \ref{defn:teorialambda} de la teoría \( \bs{λ} \). Asignarle una de estas reglas a una relación nos permite analizar el tipo de transformaciones que se pueden realizar en un término para obtener otro.
 
-Transformaciones de términos con un paso.
+Cuando se le asignan a una relación \( \bs{R} \) sobre \( Λ \) las reglas \( (μ) \), \( (ν) \) y \( (ξ) \) de la teoría \( \bs{λ} \) se dice que \( \bs{R} \) es \emph{compatible}. Formalmente, una relación es compatible cuando
+\begin{align*}
+  (M,\ M^{\prime}) \in \bs{R} &\implies (Z\, M,\ Z\, M^{\prime}) \in \bs{R} \\
+  (M,\ M^{\prime}) \in \bs{R} &\implies (M\, Z,\ M^{\prime}\, Z) \in \bs{R} \\
+  (M,\ M^{\prime}) \in \bs{R} &\implies (λx.M,\ λx.M^{\prime}) \in \bs{R}
+\end{align*}
+para toda \( M,\ M^{\prime},\ Z \in Λ \). La compatibilidad de una regla nos permite asegurar que las transformaciones de una regla se pueden realizar sobre subtérminos de un término.
 
-\begin{defn}[Contracciones Hindley y Seldin]
-  \label{defn:contraccion}
-  Dado un término lambda \( X \), una \emph{contracción} en \( X \) es una tripleta \( \langle X,R,Y \rangle \), denotada \( X \contract{R} Y \), donde \( R \) es una aparición de un \emph{redex} en \( X \) y \( Y \) es el resultado de contraer \( R \) en \( X \).
-\end{defn}
+Una \emph{relación de reducción} sobre \( Λ \) es aquella que es compatible, reflexiva y transitiva. Esto complementa las propiedades de compatibilidad con las reglas \( (ρ) \) y \( (τ) \) de la teoría \( \bs{λ} \), es decir
+\begin{align*}
+  (M,\ M) &\in \bs{R} \\
+  (M,\ M^{\prime}) \in \bs{R},\ (M^{\prime},\ Z) &\implies (M\, Z) \in \bs{R}
+\end{align*}
+para toda \( M,\ M^{\prime},\ Z \in Λ \). Una relación de reducción establece transformaciones de más de un paso y también la capacidad de no transformar un término.
 
-\begin{exmp}
-  \begin{align*}
-    (λx.(λy.y\, x)z)v &\contract{(λx.(λy.y\, x)z)v} (λy.y\, v)z ,\\
-    (λx.(λy.y\, x)z)v &\contract{(λy.y\, x)z} (λx.z\, x)v.
-  \end{align*}
-\end{exmp}
+Finalmente, si a una relación de reducción sobre \( Λ \) se le añade la regla \( (σ) \) de la teoría \( \bs{λ} \), se dice que es una \emph{relación de igualdad} o \emph{congruencia}, debido a que además de ser compatible, es simétrica, reflexiva y transitiva. Formalmente una relacion \( \bs{R} \) sobre \( Λ \) es de congruencia cuando es una relación de reducción y además
+\begin{align*}
+  (M,\ M^{\prime}) \in \bs{R} &\implies (M^{\prime},\ M) \in \bs{R}
+\end{align*}
+para toda \( M,\ M^{\prime}\in Λ \). Una relación de igualdad establece que las transformaciones se pueden realizar de forma inversa.
 
-\subsection{Reducciones}
-\label{sec:reducciones}
+Para definir reducciones en el cálculo lambda se define primero una \emph{noción de reducción}, esta es simplemente una relación binaria sobre \( Λ \), por ejemplo, la noción de reducción \( \bs{β} \) se define como
+\begin{equation}
+  \label{eq:reduccion-nocion-beta}
+  \bs{β} = \{ ((λx.M)N\ ,\ \subst{M}{x}{N}) \mid M,\ N \in Λ \}
+\end{equation}
 
-Reducciones basadas en contracciones, de Barendregt
+A partir de una noción de reducción nos podemos referir a sus \emph{clausuras}. Sea \( \bs{R} \) una noción de reducción sobre \( Λ \), entonces
 
-\begin{defn}[Relación compatible]
-  \label{defn:compatible}
-  Si dice que una relación binaria \( \bs{R} \) sobre \( Λ \) es:
-  \begin{enumerate}
-  \item Una \emph{relación compatible} cuando
-    \[ (M,M') \in \bs{R} \implies (Z\, M,Z\, M') \in \bs{R},\ (M\, Z,M'\, Z) \in \bs{R},\ (λx.M,λx.M') \in \bs{R} \]
-    para toda \( M, M', Z \in Λ \).
-  \item Una \emph{relación de congruencia} cuando \( \bs{R} \) es compatible, reflexiva, transitiva y simétrica.
-  \item Una \emph{relación de reducción} cuando \( \bs{R} \) es compatible, reflexiva y transitiva.
-  \end{enumerate}
-  \emph{compatible} cuando
+\begin{itemize}
+\item La clausura reflexiva de \( \bs{R} \) es la relación más pequeña que extiende a \( \bs{R} \) para que sea reflexiva;
+\item La clausura transitiva de \( \bs{R} \) es la relación más pequeña que extiende a \( \bs{R} \) para que sea transitiva y
+\item La clausura compatible de \( \bs{R} \) es la relación más pequeña que extiende a \( \bs{R} \) para que sea compatible.
+\end{itemize}
 
-\end{defn}
-
-\begin{note}
-  Una relación \( \bs{R} \subseteq Λ^{2} \) es compatible cuando
-
-  \[ (M,M') \in \bs{R} \implies (C[M],C[M']) \in \bs{R} \]
-
-  para toda \( M, M' \in Λ \) y todo contexto \( C[\quad] \), con un hoyo.
-\end{note}
+Al considerar las nociones de reducción como reglas de transformación de términos lambda, es natural referirse a las transformaciones realizadas en un paso, en cero o más pasos y en ambas direcciones.
 
 \begin{defn}
-  \label{defn:nocion-reduccion}
-  Una \emph{noción de reducción} en \( Λ \) es una relación binaria \( \bs{R} \) en \( Λ \).
-\end{defn}
-
-Sean \( \bs{R}_{1} \) y \( \bs{R}_{2} \) nociones de reducción, la relación \( \bs{R}_{1} \cup \bs{R}_{2} \) se denota \( \bs{R}_{1}\bs{R}_{2} \).
-
-
-\begin{defn}[Reducción \( \bs{β} \)]
-  La regla \eqref{teorialambda:beta} en la teoría \( \bs{λ} \) se puede definir como la reducción:
-  
-  \[ \bs{β} = \{ ((λx.M)N,M[x:=N]) : M, N \in Λ \} \]
-\end{defn}
-
-\begin{defn}
-  Sea \( \bs{R} \) una noción de reducción en \( Λ \), \( \bs{R} \) introduce las relaciones binarias:
-
+  Sea \( \bs{R} \) una noción de reducción sobre \( Λ \). \( \bs{R} \) introduce las siguientes relaciones binarias
   \begin{itemize}
-  \item R-reducción en un paso, denotada \( \contract{R} \) y definida de manera inductiva como:
+  \item \( R \)-contracción, denotada \( \contract{R} \), es la clausura compatible de \( \bs{R} \):
     \begin{align*}
-      \text{(1)} && (M,N) \in \bs{R} &\implies M \contract{R} N \\
-      \text{(2)} && M \contract{R} N &\implies Z\, M \contract{R} Z\, N \\
-      \text{(3)} && M \contract{R} N &\implies M\, Z \contract{R} N\, Z \\ 
-      \text{(4)} && M \contract{R} N &\implies λx.M \contract{R} λx.N
+      (M,N)\in \bs{R} &\implies M \contract{R} N\\
+      M \contract{R} N &\implies Z\, M \contract{R} Z\, N\\
+      M \contract{R} N &\implies M\, Z \contract{R} N\, Z\\
+      M \contract{R} N &\implies λx.M \contract{R} λx.N
     \end{align*}
-  \item R-reducción, denotada \( \reduce{R} \) y definida de manera inductiva como:
+  \item \( R \)-reducción, denotada \( \reduce{R} \), es la clausura reflexiva y transitiva de \( \contract{R} \):
     \begin{align*}
-      \text{(1)} && M \contract{R} N &\implies M \reduce{R} N \\
-      \text{(2)} && M \reduce{R} M \\
-      \text{(3)} && M \reduce{R} N,\ N \reduce{R} L &\implies M \reduce{R} L
+      M \contract{R} N &\implies M \reduce{R} N \\
+      M &\reduce{R} M \\
+      M \reduce{R} N,\ N \reduce{R} L &\implies M \reduce{R} L
     \end{align*}
-  \item R-convertibilidad, denotada \( \convertible{R} \) y definida de manera inductiva como:
+  \item \( R \)-convertibilidad, denotada \( \convertible{R} \), es la relación de equivalencia generada por \( \reduce{R} \):
     \begin{align*}
-      \text{(1)} && M \reduce{R} N &\implies M \convertible{R} N \\
-      \text{(2)} && M \convertible{R} N &\implies N \convertible{R} M \\
-      \text{(3)} && M \convertible{R} N,\ N \convertible{R} L &\implies M \convertible{R} L
+      M \reduce{R} N &\implies M \convertible{R} N \\
+      M \convertible{R} N &\implies N \convertible{R} M \\
+      M \convertible{R} N,\ N \convertible{R} L &\implies M \convertible{R} L
     \end{align*}
   \end{itemize}
 \end{defn}
 
-\begin{lem}
-  Las relaciones \( \contract{R} \), \( \reduce{R} \) y \( \convertible{R} \) son compatibles. Por lo tanto \( \reduce{R} \) es una relación de reducción y \( \convertible{R} \) es una relación de congruencia.
-\end{lem}
+\begin{rem}[Notación]
+  Las nociones de reducción serán denotadas con letras en negritas, por ejemplo \( \bs{β} \) y sus relaciones derivadas omitirán esta convención, por ejemplo \( \contract{β} \), \( \reduce{β} \), \( \convertible{β} \).
+\end{rem}
 
-\begin{proof}
-  
-\end{proof}
-
-Usualmente una noción de reducción se introduce de la siguiente manera: ``Sea \( \bs{R} \) definida por las siguientes \emph{reglas de contracción} \ \( \bs{R} \colon M \contract{} N \text{ dado que } ... \)''.
-
-Esto significa que \( \bs{R} = \{ (M,N) : ... \} \), por ejemplo, \( \bs{β} \) pudo haber sido introducida por la siguiente regla de contracción
-
-\[ \bs{β} : (λx.M)N \contract{} M[x:=N] \]
-
-\begin{defn}
-  \begin{enumerate}
-  \item Un \( R \)-redex es un término \( M \) tal que \( (M,N) \in R \) para algún término \( N \). En este caso \( N \) es llamado un \( R \)-contractum de \( M \).
-  \item Un término \( M \) es llamado una forma normal de \( R \), denotado \( R-fn \), si \( M \) no contiene algún \( R \)-redex.
-  \item Un término \( N \) es una \( R-fn \) de \( M \) (o \( M \) tiene la \( R-fn \) \( N \)) si \( N \) es una \( R-fn \) y \( M \convertible{R} N \).
-  \end{enumerate}
-\end{defn}
-
-El proceso de pasar de un redex a su contractum es llamado \emph{contracción}. En lugar de escribir ``\( M \) es una \( R-fn \)'' usualmente se escribe ``\( M \) está en \( R-fn \)'', pensando en una máquina que ha llegado a su estado final.
-
-\begin{exmp}
-  \( (λx.x\, x)λy.y \) es un \( β \)-redex. Por lo tanto \( (λx.x\, x)(λy.y)z \) no está en \( β-fn \); sin embargo este término tiene la \( β-fn \) \( z \).
+\begin{exmp} \label{exmp:reduccion-nocion-beta}
+  Considerando la noción de reducción \( \bs{β} \) 
+  \begin{align*}
+    (λx.x\, x)(λy.y)z &\contract{β} (λy.y)(λy.y)z\\
+                      &\contract{β} (λy.y)z \\
+                      &\contract{β} z \\
+    (λx.x\, x)(λy.y)z &\reduce{β} z \\
+    z &\convertible{β} (λx.x\, x)(λy.y)z
+  \end{align*}
 \end{exmp}
 
-Plantear las ideas para pasar del concepto de contracción al de reducción y posteriormente al de convertibilidad.
+Una manera alternativa de definir nociones de reducción en el cálculo lambda es establecer la transformación denotada como una contracción, por ejemplo, la noción de reducción \( \bs{α} \) es
 
-Gráficas de reducción.
+\[ \bs{α}\ :\ (λx.M) \contract{} λy.\subst{M}{x}{y} \text{ dado que \( y\not\in \FV(M) \)} \]
 
-Teorema de Church-Rosser y toda la magia necesaria para abordarlo y la magia que valga la pena mencionar en la que CR es importante va aquí.
+Ya que las nociones de reducción son conjuntos es posible tomar la unión de dos nociones de reducción para formar otra. Por ejemplo, la noción de reducción \( \bs{β} \) no considera cambios de variables ligadas entre términos, sin embargo, la noción de reducción \( \bs{αβ} = \bs{β}\cup\bs{α} \) si. De hecho, \( \convertible{\bs{αβ}} \) tiene las mismas propiedades que la convertibilidad \( =_{\bs{λ}} \) de la teoría formal \( \bs{λ} \).
+
+Ya que las nociones de reducción son estudiadas como cómputos sobre un término, las siguientes definiciones nos permiten identificar las partes de un término lambda que pueden o no ser transformadas por una noción de reducción \( \bs{R} \):
+
+\begin{defn}[Clasificación de términos]
+  Dada una noción \( \bs{R} \), los términos lambda pueden ser clasificados con respecto a esta regla de la siguiente manera:
+  \begin{itemize}
+  \item Un \( R \)-redex es un término \( M \) tal que \( (M,N)\in \bs{R} \) para algún término \( N \);
+  \item Si \( (M,N)\in \bs{R} \), a \( N \) se le llama \( R \)-contractum de \( M \);
+  \item Un término \( M \) es llamado una \( R \)-forma normal si \( M \) no contiene algún subtérmino que sea \( R \)-redex;
+  \item Se dice que \( M \) tiene la \( R \)-forma normal \( N \) si \( M \convertible{R} N \).
+  \end{itemize}
+\end{defn}
+
+La idea de que un término que sea una \( R \)-forma normal puede ser vista desde una perspectiva computacional como si una máquina realizara reducciones sobre un término \( M \) hasta llegar a un punto en donde no hay más posibles transformaciones que realizar, es entonces cuando el término resultante es el estado final de la máquina. Es por ello que en la literatura es común encontrar que se refieren a un término como ``\( M \) está en \( R \)-forma normal'' en lugar de ``\( M \) es una \( R \)-forma normal''.
+
+\begin{exmp} \label{exmp:clasificacion-nocion-beta}
+  Considerando las reducciones del ejemplo \ref{exmp:reduccion-nocion-beta}
+  \begin{itemize}
+  \item \( (λx.x\, x)(λy.y) \) es un \( β \)-redex;
+  \item \( (λy.y)z \) no está en \( β \)-forma normal;
+  \item Estos términos tienen la \( β \)-forma normal \( z \).
+  \end{itemize}
+\end{exmp}
+
+Así como se definieron las nociones de reducción \( \bs{α} \) y \( \bs{β} \), se puede definir una noción de reducción para el axioma de extensionalidad de la teoría \( \bs{λη} \):
+
+\[ \bs{η}\ :\ λx.M\, x \contract{} M \text{ dado que \( x\not\in \FV(M) \)} \]
+
+Estudiar las transformaciones en \( \bs{α}\cup\bs{β}\cup\bs{η} \) es equivalente a estudiar la demostrabilidad en la teoría \( \bs{λη} \).
+
+Las nociones de reducción pueden visualizarse y estudiarse como pseudográficas dirigidas. Sea \( \bs{R} \) una noción de reducción, la \( R \)-gráfica  de un término \( M \), denotada \( G_{R}(M) \) es la pseudográfica con el conjunto de vértices \( \{ N\in Λ \mid M \reduce{R} N \} \) y conjunto de aristas \( \contract{R} \).
+
+\begin{exmp}[\( β \)-Gráficas] Los siguientes son ejemplos de gráficas de reducción con la noción \( \bs{β} \):
+  \begin{enumerate}
+  \item \( G_{β}(\bs{I}\, x) \)
+    
+    \includegraphics{rgraphs-1.mps}
+  \item \( G_{β}(\bs{I}(\bs{I}\, x)) \)
+
+    \includegraphics{rgraphs-2.mps}
+  \item \( G_{β}((λx.x\, x)(λx.x\, x)) \)
+
+    \includegraphics{rgraphs-3.mps}
+  \item \( G_{β}(\bs{W}\, \bs{W}\, \bs{W}) \) con \( \bs{W} \synteq λx\, y.x\, y\, y \)
+
+    \includegraphics{rgraphs-4.mps}
+  \item \( G_{β}(M\, M) \) con \( M \synteq λx.(λy.y\, y)x \)
+
+    \includegraphics{rgraphs-5.mps}
+  \item \( G_{β}((λx.x\, x\, x)(λx.x\, x\, x)) \)
+
+    \includegraphics{rgraphs-6.mps}
+  \end{enumerate}
+\end{exmp}
+
+Sea \( M \) un término lambda, se puede categorizar su \( R \)-reducción a partir de \( G_{R}(M) \) con las siguientes definiciones
+\begin{enumerate}
+\item \( M \) \( R \)-normaliza fuertemente, denotado \( R\!-\!SN(M) \), si no hay una \( R \)-reducción infinita a partir de \( M \);
+\item \( M \) es \( R \)-infinita, denotado \( R\!-\!\infty(M) \), si no \( R\!-SN\!(M) \);
+\item \( R \) normaliza fuertemente, denotado \( SN \), si para toda \( M \), \( R\!-\!SN(M) \).
+\end{enumerate}
+
+Sea \( G_{β}(M) \) una \( β \)-gráfica de un término \( M \), es posible que \( M \) tenga una \( β \)-forma normal pero que \( G_{β}(M) \) sea infinita. Por ejemplo, si consideramos el término
+\[ M \synteq (λx.\bs{I})((λx.x\, x\, x)(λx.x\, x\, x)) \]
+el cual tiene \( β \)-forma normal \( \bs{I} \), al dibujar su \( β \)-gráfica se obtiene
+\begin{center}
+  \includegraphics{rgraphs-7.mps}
+\end{center}
+
+\subsection{Teorema de Church-Rosser}
+\label{sec:church-rosser}
+
+Página 14 Seldin y Página 67 Barendregt
+
+\subsection{Estrategias de reducción}
+\label{sec:estrategias-reduccion}
+
+Página 324 y comentarios de B. Pirce
 
 
 %%% Local Variables:

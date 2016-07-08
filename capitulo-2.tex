@@ -327,7 +327,8 @@ Si consideramos un término \( M \) con variables libres, se puede encontrar otr
 \end{exmp}
 
 \subsection{Sustitución de términos}
-\paragraph{Pendiente explicar el resto de la sección}
+
+En la sección \ref{sec:op-sustitucion} se dió una descripción informal pero precisa de la sustitución en el cálculo lambda. A continuación se presenta la definición utilizando los conceptos introducidos en este capítulo.
 
 \begin{defn}[Sustitución]
   \label{defn:sustitucion}
@@ -390,6 +391,27 @@ Si consideramos un término \( M \) con variables libres, se puede encontrar otr
 \end{exmp}
 
 En el último caso es importante observar que las apariciones ligadas de \( x \) no se sustituyen.
+
+Las siguientes equivalencias de sustituciones múltiples son importantes para resaltar la relevancia de los detalles de la definición \ref{defn:sustitucion}.
+
+\begin{itemize}
+\item \( \subst{\subst{M}{x}{y}}{y}{P} \)
+  
+  Esta operación es equivalente a \( \subst{M}{x}{P} \) siempre y cuando \( y\not\in \FV(M) \), de otro modo, \( M \) tiene variables sustituíbles \( y \) que no serán sustituídas con \( \subst{M}{x}{P} \).
+\item \( \subst{\subst{M}{x}{y}}{y}{x} \)
+
+  Esta operación es equivalente a \( M \) siempre y cuando \( y\not\in \FV(M) \), el argumento es el mismo que el punto anterior.
+\item \( \subst{\subst{M}{y}{Q}}{x}{P} \)
+
+  Esta operación debe analizarse por casos ya que \( P \) y \( Q \) pudieran o no contener apariciones  de \( x \) y \( y \):
+  \begin{itemize}
+  \item Es equivalente a \( \subst{\subst{M}{x}{P}}{y}{Q} \) cuando \( y\not\in \FV(P) \) y \( x\not\in \FV(Q) \) ya que ni la primer operación no introduce variables libres \( x \) no afecta el resultado de la segunda operación y ya que la segunda operación no introduce variables libres \( y \) no afecta invertir el orden de las operaciones.
+  \item Cuando la segunda operación no introduce variables libres \( y \) pero la primera operación si introduce variables libres \( x \) es equivalente a \( \subst{\subst{M}{x}{P}}{y}{\subst{Q}{x}{P}} \), es decir, se sustituyen las variables libres \( x \) de \( Q \) por las que se sustituirían con la operación original y se procede como en el punto anterior.
+  \end{itemize}
+\item \( \subst{\subst{M}{x}{Q}}{x}{P} \)
+
+  Esta operación es equivalente a \( \subst{M}{x}{\subst{Q}{x}{P}} \), debido a que la sustitución de \( x \) por \( P \) tiene efecto únicamente cuando \( Q \) introduce variables \( x \) libres, por lo tanto, cambiar las \( x \) libres de \( Q \) por \( P \) antes de hacer la primera operación produce el resultado correcto.
+\end{itemize}
 
 \begin{lem}
   Si \( (y\, x) \not\in \FV(L) \) y \( x \not\synteq y \), entonces
@@ -929,7 +951,7 @@ Cuando se estudia el cálculo lambda desde una perspectiva computacional, la con
 \[ (λx.x\, x)y =_{\bs{λ}} (y\, y) \]
 puede ser interpretada como ``\( (y\, y) \) es el resultado de computar \( (λx.x\, x)y \)'', pero no viceversa. Esto es debido a que toda la información necesaria para obtener \( (y\, y) \) se encuentra en \( (λx.x\, x)y \)  mientras que en el otro sentido, \( (y\, y) \) no nos dice como obtener un resultado. Conociendo las reglas de transformación de términos \( (λx.x\, x)y \) nos provee, de cierta manera, un algoritmo y una entrada.
 
-En este capítulo se desarrolla el complemento computacional al estudio del cálculo lambda de la sección \ref{sec:conversion-lambda}. Primero se aborda la reducción en general, independiente de la regla \( (β) \) como fué presentada en la introducción a este trabajo. Después se aborda el teorema de Church-Rosser, el cuál nos permitirá estudiar aspectos de la convertibilidad de términos. Finalmente se presentarán algunas estrategias de reducción.
+En este capítulo se desarrolla el complemento computacional al estudio del cálculo lambda de la sección \ref{sec:conversion-lambda}. Primero se aborda la reducción en general, independiente de la regla \( (β) \) como fué presentada en la introducción a este trabajo. Después se aborda la propiedad de confluencia, la cuál contempla ciertas características deseables de los sistemas de reducción. Finalmente se presentarán algunas estrategias para la reducción de términos lambda.
 
 Esta sección se basa principalmente en el capítulo 3, 11 y 13 de \cite{Barendregt:Bible}.
 
@@ -973,7 +995,7 @@ A partir de una noción de reducción nos podemos referir a sus \emph{clausuras}
 
 \begin{itemize}
 \item La clausura reflexiva de \( \bs{R} \) es la relación más pequeña que extiende a \( \bs{R} \) para que sea reflexiva;
-\item La clausura transitiva de \( \bs{R} \) es la relación más pequeña que extiende a \( \bs{R} \) para que sea transitiva y
+\item La clausura transitiva de \( \bs{R} \) es la relación más pequeña que extiende a \( \bs{R} \) para que sea transitiva;
 \item La clausura compatible de \( \bs{R} \) es la relación más pequeña que extiende a \( \bs{R} \) para que sea compatible.
 \end{itemize}
 
@@ -1023,17 +1045,47 @@ Una manera alternativa de definir nociones de reducción en el cálculo lambda e
 
 \[ \bs{α}\ :\ (λx.M) \contract{} λy.\subst{M}{x}{y} \text{ dado que \( y\not\in \FV(M) \)} \]
 
-Ya que las nociones de reducción son conjuntos es posible tomar la unión de dos nociones de reducción para formar otra. Por ejemplo, la noción de reducción \( \bs{β} \) no considera cambios de variables ligadas entre términos, sin embargo, la noción de reducción \( \bs{αβ} = \bs{β}\cup\bs{α} \) si. De hecho, \( \convertible{\bs{αβ}} \) tiene las mismas propiedades que la convertibilidad \( =_{\bs{λ}} \) de la teoría formal \( \bs{λ} \).
+Ya que las nociones de reducción son conjuntos es posible tomar la unión de dos nociones de reducción para formar otra. Por ejemplo, la noción de reducción \( \bs{β} \) no considera cambios de variables ligadas entre términos, sin embargo, la noción de reducción \( \bs{αβ} = \bs{β}\cup\bs{α} \) si. De hecho, \( \convertible{\bs{αβ}} \) tiene las mismas propiedades que la convertibilidad \( =_{\bs{λ}} \) de la teoría formal \( \bs{λ} \).También se puede definir una noción de reducción para el axioma de extensionalidad de la teoría \( \bs{λη} \) y estudiar las transformaciones en \( \bs{α}\cup\bs{β}\cup\bs{η} \) es equivalente a estudiar la demostrabilidad en la teoría \( \bs{λη} \):
+
+\[ \bs{η}\ :\ λx.M\, x \contract{} M \text{ dado que \( x\not\in \FV(M) \)} \]
+
+\begin{prop}[Equivalencia \( \bs{αβ} \) y \( \bs{λ} \) ]
+  Para todo \( M,\ N \in Λ \)
+  \[ M \convertible{αβ} N \iff \bs{λ} \vdash M=N \]
+
+  \begin{proof} Se demuestran las implicaciones por separado
+    \begin{itemize}
+    \item[\( (\ \Longleftarrow\ ) \)] Ya que \( \bs{λ} \vdash M=N \), existe un árbol de deducción que a partir de los axiomas y reglas de \( \bs{λ} \) hasta la fórmula \( M=N \). Las fórmulas del árbol se etiquetan con \( (α) \), \( (β) \), \( (ρ) \), \( (μ) \), \( (ν) \), \( (ξ) \), \( (τ) \) y \( (σ) \) de acuerdo al axioma o regla aplicada a la fórmula. En cada paso de la deducción se aplica la noción o clausura correspondiente de \( \bs{αβ} \) para pasar al siguiente paso:
+      \begin{itemize}
+      \item La noción \( \bs{α} \) para el axioma \( (α) \);
+      \item La noción \( \bs{β} \) para el axioma \( (β) \);
+      \item La clausura compatible de \( \bs{αβ} \) para las reglas \( (μ) \), \( (ν) \) y \( (ξ) \);
+      \item La clausura transitiva y reflexiva de \( \bs{αβ} \) para el axioma \( (ρ) \) y la regla \( (τ) \);
+      \item La relación \( =_{αβ} \) para la regla \( (σ) \).
+      \end{itemize}
+    \item[\( (\implies) \)] Por las definiciones de las relaciones que genera \( \bs{αβ} \)
+      \begin{itemize}
+      \item \( M \contract{αβ} N \implies \bs{λ} \vdash M=N \);
+      \item \( M \reduce{αβ} N \implies \bs{λ} \vdash M=N \);
+      \item \( M \convertible{αβ} N \implies \bs{λ} \vdash M=N \).
+      \end{itemize}
+    \end{itemize}
+  \end{proof}
+\end{prop}
+
+\begin{rem}[Sobre notación]
+Dada esta equivalencia, se abrevia la noción \( \bs{αβ} \) simplemente como \( \bs{β} \) ya que las propiedades interesantes de \( \bs{αβ} \) son las de la \( β \)-reducción.
+\end{rem}
 
 Ya que las nociones de reducción son estudiadas como cómputos sobre un término, las siguientes definiciones nos permiten identificar las partes de un término lambda que pueden o no ser transformadas por una noción de reducción \( \bs{R} \):
 
 \begin{defn}[Clasificación de términos]
-  Dada una noción \( \bs{R} \), los términos lambda pueden ser clasificados con respecto a esta regla de la siguiente manera:
+  Dada una noción \( \bs{R} \), los términos lambda pueden ser clasificados con respecto a esta noción de la siguiente manera:
   \begin{itemize}
   \item Un \( R \)-redex es un término \( M \) tal que \( (M,N)\in \bs{R} \) para algún término \( N \);
   \item Si \( (M,N)\in \bs{R} \), a \( N \) se le llama \( R \)-contractum de \( M \);
   \item Un término \( M \) es llamado una \( R \)-forma normal si \( M \) no contiene algún subtérmino que sea \( R \)-redex;
-  \item Se dice que \( M \) tiene la \( R \)-forma normal \( N \) si \( M \convertible{R} N \).
+  \item Se dice que \( M \) tiene la \( R \)-forma normal \( N \) si \( M \convertible{R} N \) y \( N \) es una \( R \)-forma normal.
   \end{itemize}
 \end{defn}
 
@@ -1047,12 +1099,6 @@ La idea de que un término que sea una \( R \)-forma normal puede ser vista desd
   \item Estos términos tienen la \( β \)-forma normal \( z \).
   \end{itemize}
 \end{exmp}
-
-Así como se definieron las nociones de reducción \( \bs{α} \) y \( \bs{β} \), se puede definir una noción de reducción para el axioma de extensionalidad de la teoría \( \bs{λη} \):
-
-\[ \bs{η}\ :\ λx.M\, x \contract{} M \text{ dado que \( x\not\in \FV(M) \)} \]
-
-Estudiar las transformaciones en \( \bs{α}\cup\bs{β}\cup\bs{η} \) es equivalente a estudiar la demostrabilidad en la teoría \( \bs{λη} \).
 
 Las nociones de reducción pueden visualizarse y estudiarse como pseudográficas dirigidas. Sea \( \bs{R} \) una noción de reducción, la \( R \)-gráfica  de un término \( M \), denotada \( G_{R}(M) \) es la pseudográfica con el conjunto de vértices \( \{ N\in Λ \mid M \reduce{R} N \} \) y conjunto de aristas \( \contract{R} \).
 
@@ -1079,30 +1125,282 @@ Las nociones de reducción pueden visualizarse y estudiarse como pseudográficas
   \end{enumerate}
 \end{exmp}
 
-Sea \( M \) un término lambda, se puede categorizar su \( R \)-reducción a partir de \( G_{R}(M) \) con las siguientes definiciones
+Un \( R \)-camino de reducción es una secuencia finita o infinita de \( R \)-contracciones
+
+\[ M_{0} \xcontract{R}{Δ_{0}} M_{1} \xcontract{R}{Δ_{1}} M_{2} \contract{R} ... \]
+
+Donde \( Δ_{i} \) es el \( R \)-redex de \( M_{i} \) que es contraído en cada paso de las \( R \)-contracciones. Sea \( M \) un término lambda, se puede categorizar su \( R \)-reducción a partir de \( G_{R}(M) \) y sus caminos con las siguientes definiciones
 \begin{enumerate}
-\item \( M \) \( R \)-normaliza fuertemente, denotado \( R\!-\!SN(M) \), si no hay una \( R \)-reducción infinita a partir de \( M \);
-\item \( M \) es \( R \)-infinita, denotado \( R\!-\!\infty(M) \), si no \( R\!-SN\!(M) \);
-\item \( R \) normaliza fuertemente, denotado \( SN \), si para toda \( M \), \( R\!-\!SN(M) \).
+\item \( M \) \( R \)-normaliza fuertemente si no hay un \( R \)-camino de reducción infinito a partir de \( M \);
+\item \( M \) es \( R \)-infinito si \( M \) no \( R \)-normaliza fuertemente;
+\item \( R \) normaliza fuertemente, si para toda \( M \), \( M \) \( R \)-normaliza fuertemente.
 \end{enumerate}
 
-Sea \( G_{β}(M) \) una \( β \)-gráfica de un término \( M \), es posible que \( M \) tenga una \( β \)-forma normal pero que \( G_{β}(M) \) sea infinita. Por ejemplo, si consideramos el término
-\[ M \synteq (λx.\bs{I})((λx.x\, x\, x)(λx.x\, x\, x)) \]
-el cual tiene \( β \)-forma normal \( \bs{I} \), al dibujar su \( β \)-gráfica se obtiene
+\begin{exmp}
+  Sea \( G_{β}(M) \) una \( β \)-gráfica de un término \( M \):
+
+  Es posible que \( M \) tenga una \( β \)-forma normal pero que \( G_{β}(M) \) sea infinita. Si consideramos el término
+  \[ M \synteq (λx.\bs{I})((λx.x\, x\, x)(λx.x\, x\, x)) \]
+  el cual tiene \( β \)-forma normal \( \bs{I} \), al dibujar su \( β \)-gráfica se obtiene
+  \begin{center}
+    \includegraphics{rgraphs-7.mps}
+  \end{center}
+
+  Si \( G_{β}(M) \) es finita y \( M \) tiene una \( β \)-forma normal, es posible que \( M \) no \( β \)-normalice fuertemente. Si consideramos el término
+  \[ M \synteq (λx.\bs{I})((λx.x\, x)(λx.x\, x)) \]
+  su \( β \)-forma normal es \( \bs{I} \) y su \( β \)-gráfica es
+  \begin{center}
+    \includegraphics{rgraphs-8.mps}
+  \end{center}
+  Sin embargo, tiene el \( β \)-camino de reducción infinito
+  \[ (λx.\bs{I})((λx.x\, x)(λx.x\, x)) \xcontract{β}{(λx.x\, x)(λx.x\, x)} (λx.\bs{I})((λx.x\, x)(λx.x\, x)) \xcontract{β}{(λx.x\, x)(λx.x\, x)} ... \]
+\end{exmp}
+
+\subsection{Confluencia}
+\label{sec:confluencia}
+
+En la sección anterior se presenta una formalización del cálculo lambda como un sistema de reducción, a partir de la noción \( \bs{β} \) sobre los términos lambda se puede estudiar el comportamiento de los términos bajo transformaciones ya sea en un paso, cero o muchos pasos y admitiendo transformaciones inversas. En general un sistema de reducción es una relación binaria sobre algún conjunto de objetos.
+
+Consideremos por ejemplo un sistema de reducción para expresiones aritméticas con números naturales y operaciones \( + \) y \( \times \). Las transformaciones que realiza este sistema de reducción son muy similares a las que realiza una calculadora simplificada, por ejemplo:
+\begin{align*}
+  (5\times 3)+(9\times 2) &\contract{} 15+(9\times 2) \\
+                          &\contract{} 15+18 \\
+                          &\contract{} 33
+\end{align*}
+Estas reducciones pudieron haberse realizado de una manera diferente, por ejemplo, de derecha a izquierda:
+\begin{align*}
+  (5\times 3)+(9\times 2) &\contract{} (5\times 3)+18 \\
+                          &\contract{} 15+18 \\
+                          &\contract{} 33
+\end{align*}
+El resultado en ambos casos es el mismo y es natural pensar que, mientras se respeten las reglas de precedencia, las expresiones aritméticas podrán ser reducidas en cualquier orden y el resultado final será siempre el mismo.
+
+Sin embargo, esta característica no es una propiedad general de todos los sistemas de reducción. Consideremos un sistema con las siguientes reducciones:
+\begin{align*}
+  f(0) &\contract{} f(1) \\
+  f(1) &\contract{} f(0) \\
+  f(g(x)) &\contract{} g(x) \\
+  g(x) &\contract{} x
+\end{align*}
+Al reducir \( f(g(0)) \) se tienen dos caminos
+\begin{align*}
+  f(g(0)) &\contract{} g(0) & f(g(0)) &\contract{} f(0) \\
+          &\contract{} 0    &         &\contract{} f(1) \\
+  & & &\contract{} ...
+\end{align*}
+Por un lado se obtiene el resultado final \( 0 \) el cual no puede ser reducido por ninguna regla, por otro lado se llega al término \( f(1) \) el cual entra en un ciclo de reducciones del que no puede salir:
+\[ f(1) \contract{} f(0) \contract{} f(1) \contract{} ... \]
+
+Al estudiar los sistemas de reducción desde un punto de vista computacional, independientemente de su utilidad, el segundo ejemplo puede nunca llegar a una forma normal (no tener un resultado final) y además el orden en el que se apliquen las reducciones es importante para determinar el resultado. En el caso del primer ejemplo, ya que la suma y la multiplicación son conmutativas y el orden de sus operandos no altera el resultado, por lo tanto el primer ejemplo no tendrá estas características indeseables.
+
+La propiedad de los sistemas de reducción que se refiere a estas características es la \emph{confluencia}. A continuación se aborda su definición considerando relaciones sobre términos lambda.
+
+\begin{defn}[Propiedad de diamante]
+  Sea \( \rightarrowtail \) una relacion binaria sobre \( Λ \). Se dice que \( \rightarrowtail \) satisface la \emph{propiedad de diamante}, si para toda \( M \), \( M_{1} \) y \( M_{2} \)
+  \[ M \rightarrowtail M_{1} \text{ y } M \rightarrowtail M_{2} \implies \text{ existe } M_{3} \text{ tal que } M_{1} \rightarrowtail M_{3} \text{ y } M_{2} \rightarrowtail M_{3} \]
+
+  Gráficamente, esta propiedad se visualiza
+  \begin{center}
+    \includegraphics{diagrams-1.mps}
+  \end{center}
+\end{defn}
+
+\begin{defn}[Confluencia global]
+  Una noción de reducción \( \bs{R} \) se dice ser \emph{Church-Rosser}, abreviado CR, si \( \reduce{R} \) tiene la propiedad de diamante. Cuando una relación de reducción es CR, se dice que tiene la propiedad de \emph{confluencia global}.
+\end{defn}
+
+El siguiente teorema y corolario relacionan algunos conceptos abordados en la anterior sección con la propiedad de confluencia.
+
+\begin{thm}
+  Sea \( \bs{R} \) una noción CR. Entonces
+  \[ M \convertible{R} N \implies \text{ existe } Z \text{ tal que } M \reduce{R} Z \text{ y } N \reduce{R} Z \]
+  \begin{proof}
+    Por inducción de la definición de \( \convertible{R} \):
+    \begin{itemize}
+    \item Si \( M \convertible{R} N \) es una consecuencia directa de que \( M \reduce{R} N \), entonces \( Z \synteq N \).
+    \item Si \( M \convertible{R} N \) es una consecuencia directa de que \( N \convertible{R} M \), \( Z \) puede ser encontrada por la hipótesis de inducción.
+    \item Si \( M \convertible{R} N \) es una consecuencia directa de que \( M \convertible{R} L \) y \( L \convertible{R} N \), \( Z \) puede ser encontrada usando la hipótesis de inducción y la suposición de que \( \reduce{R} \) es CR, gráficamente
+      \begin{center}
+        \includegraphics{diagrams-2.mps}
+      \end{center}
+    \end{itemize}
+  \end{proof}
+\end{thm}
+
+\begin{cor}
+  Sea \( \bs{R} \) una noción CR. Entonces
+  \begin{enumerate}
+  \item Si \( N \) es una \( R \)-forma normal de \( M \), entonces \( M \reduce{R} N \).
+  \item Un término \( M \) puede tener a lo más una \( R \)-forma normal.
+  \end{enumerate}
+  \begin{proof}
+    \begin{enumerate}
+    \item Sea \( M \convertible{R} N \) y \( N \) un término en \( R \)-forma normal. Para algúna \( Z \) se tiene que \( M \reduce{R} Z \) y \( N \reduce{R} Z \), pero ya que \( N \) está en forma normal \( Z \synteq N \). Por lo tanto \( M \reduce{R} N \).
+    \item Supongamos que \( N_{1} \) y \( N_{2} \) son dos \( R \)-formas normales de \( M \). Ya que \( M \reduce{N_{1}} \) y \( M \reduce{N_{2}} \), por la propiedad de confluencia, \( N_{1} \reduce{R} Z \) y \( N_{2} \reduce{R} Z \), pero ya que \( N_{1} \) y \( N_{2} \) no tienen subtérminos \( R \)-redex, \( N_{1} \synteq N_{2} \synteq Z \).
+    \end{enumerate}
+  \end{proof}
+\end{cor}
+
+Ya que la sustitución es una operación fundamental para definir las nociones de reducción en el cálculo lambda, la siguiente definición establece una característica de las relaciones que se comportan bien bajo la sustitución.
+
+\begin{defn}
+  Una noción de reducción \( \bs{R} \) es \emph{sustitutiva} si para todo término lambda \( M \), \( N \) y \( L \) y toda variable \( x \)
+  \[ (M,N)\in \bs{R} \implies (\subst{M}{x}{L},\subst{N}{x}{L})\in \bs{R} \]
+\end{defn}
+
+Es importante observar que si una noción \( \bs{R} \) es sustitutiva, entonces las relaciones generadas \( \contract{R} \), \( \reduce{R} \) y \( \convertible{R} \) también lo son.
+
+Consideremos la noción \( \bs{β} \), considerando dos términos \( M \) y \( N \) tal que \( (M,N)\in \bs{β} \), se muestra que \( \bs{β} \) es sustitutiva ya que
+\begin{align*}
+  M &\synteq (λy.P)Q \\
+  N &\synteq \subst{P}{y}{Q} \\
+  \subst{M}{x}{L} &\synteq (λy.\subst{P}{x}{L})\subst{Q}{x}{L} \\
+  \subst{N}{x}{L} &\synteq \subst{\subst{P}{y}{Q}}{x}{L} \\
+    &\synteq \subst{\subst{P}{x}{L}}{y}{\subst{Q}{x}{L}}
+\end{align*}
+
+La propiedad de diamante está detrás de la definición de las relaciones Church-Rosser, otra propiedad similar que es importante considerar al estudiar nociones de reducción en el cálculo lambda es la propiedad débil de diamante.
+
+\begin{defn}[Propiedad débil de diamante]
+  Una relación binaria \( \rightarrowtail \) satisface la propiedad \emph{débil} de diamante si para todo término \( M \), \( M_{1} \) y \( M_{2} \)
+  \[ M \rightarrowtail M_{1} \text{ y } M \rightarrowtail M_{2} \implies \text{ existe } M_{3} \text{ tal que } M_{1} \underset{=}{\overset{*}{\rightarrowtail}} M_{3} \text{ y } M_{2} \underset{=}{\overset{*}{\rightarrowtail}} M_{3} \]
+  donde \( \underset{=}{\overset{*}{\rightarrowtail}} \) es la clausura transitiva y reflexiva de \( \rightarrowtail \).
+\end{defn}
+
+\begin{defn}[Confluencia local]
+  Una noción de reducción \( \bs{R} \) se dice ser Church-Rosser débil, abreviado WCR, si \( \contract{R} \) satisface la propiedad débil de diamante. Cuando una noción de reducción es WCR se dice que tiene la propiedad de \emph{confluencia local}.
+\end{defn}
+
+Se pudiera pensar que una noción \( \bs{R} \) que sea Church-Rosser débil debe ser Church-Rosser, ya que la relación \( \contract{R} \) tiene como clausura transitiva y reflexiva a \( \reduce{R} \) y todo lo que se puede reducir con \( \contract{R} \) se puede reducir con \( \reduce{R} \), sin embargo, esto no siempre se cumple.
+
+Existen algunas nociones de reducción que son WCR pero no CR, consideremos la siguiente gráfica de reducción para una noción \( \bs{R} \) a partir de un término \( M \):
+
 \begin{center}
-  \includegraphics{rgraphs-7.mps}
+  \includegraphics{rgraphs-9}
 \end{center}
 
-\subsection{Teorema de Church-Rosser}
-\label{sec:church-rosser}
+En este ejemplo se puede apreciar que la noción \( \bs{R} \) es WCR ya que \( M \contract{R} M_{1} \) y \( M \contract{R} N \) y que también \( M_{1} \reduce{R} M_{1} \) y \( N \reduce{R} M_{1} \), de manera similar comenzando desde \( M_{1} \), \( N \) y \( N_{1} \). Sin embargo, la noción no es CR ya que \( M \reduce{R} M_{1} \) y \( M \reduce{R} N_{1} \), pero no existe un término \( Z \) en donde \( M_{1} \reduce{R} Z \) y \( N_{1} \reduce{R} Z \).
 
-Página 14 Seldin y Página 67 Barendregt
+Alonzo Church y Barkley Rosser en un artículo publicado en 1936 \cite{ChurchRosser:Confluence} demostraron que la noción de reducción \( \bs{β} \) es Church-Rosser y que por lo tanto, si un término lambda podía ser reducido a dos términos diferentes, estos podían ser reducidos a un término en común \cite[p.~14]{HindleySeldin:LambdaCalculusAndCombinators}. Este resultado es de grán importancia para poder considerar al cálculo lambda como un sistema que fundamente la computación.
+
+A diferencia del cálculo lambda, los lenguajes de programación suelen asignar un orden particular a la manera en la que sus expresiones son reducidas. Consideremos el fragmento de pseudocódigo \ref{alg:reduc-problema}.
+
+\begin{algorithm}
+  \caption{Potencial ciclo infinito}
+  \label{alg:reduc-problema}
+  \begin{algorithmic}
+    \STATE \( x \leftarrow 4 \)
+    \IF{\( x \not= 4 \)}
+    \LOOP
+    \STATE \( ... \)
+    \ENDLOOP
+    \ELSE
+    \RETURN x
+    \ENDIF
+  \end{algorithmic}
+\end{algorithm}
+
+Si en la expresión condicional se reduce primero su consecuente el programa nunca terminará de ejecutarse, sin embargo, si se reduce de manera usual, es decir, primero el predicado \( x \not= 4 \) y dependiendo de su resultado se reducir o el consecuente o la alternativa, este programa terminará.
+
+Estos problemas ocurren ya que, aunque el programa tenga una forma normal, automatizar el proceso de reducción puede causar que nunca se encuentre. En la siguiente sección se estudian diferentes estrategias para reducir términos en el cálculo lambda.
 
 \subsection{Estrategias de reducción}
 \label{sec:estrategias-reduccion}
 
-Página 324 y comentarios de B. Pirce
+Cuando un término lambda tiene varios redex puede ser reducido de diferentes maneras. Por la propiedad de Church-Rosser no se obtendrán resultados esencialmente diferentes, sin embargo se pueden plantear estrategias de reducción para reducir un término de manera sistemática. Las estrategias de reducción son útiles, por ejemplo, para demostrar que un término no tiene forma normal \cite[p.~324]{Barendregt:Bible}.
 
+\begin{defn}[Estrategia de reducción]
+  Una estrategia de \( R \)-reducción es una función \( F \colon Λ \to Λ \) tal que para toda \( M \)
+  \[ M \reduce{R} F(M) \]
+
+  Una estrategia de \( R \)-contracción es una estrategia de \( R \)-reducción, tal que para toda \( M \) que no esté en \( R \)-forma normal
+  \[ M \contract{R} F(M) \]
+\end{defn}
+
+En este trabajo consideraremos tres estrategias de reducción para el cálculo lambda muy utilizadas en la especificación de lenguajes de programación \cite{Pierce:TypesAndPLangs}:
+
+\begin{itemize}
+\item Estrategia de \emph{orden normal};
+\item Estrategia de \emph{llamada por nombre};
+\item Estrategia de \emph{llamada por valor}.
+\end{itemize}
+
+Para referirse a un redex en particular, es usual referirse a los redex más al exterior, esto se refiere a los redex que no son subtérminos de otro redex excepto ellos mísmos. Por ejemplo, el término
+\[ (λx.(λy.y\, y)x)z \]
+tiene los siguientes redex
+\begin{align*}
+  \underline{(λx.(λy.\bs{I}\, y)x)z} \\
+  (λx.\underline{(λy.\bs{I}\, y)x})z \\
+  (λx.(λy.\underline{\bs{I}\, y})x)z
+\end{align*}
+El primer redex es el que está más al exterior y el último redex es el que está más al interior. También es usual referirse a redex a la derecha o a la izquierda, por ejemplo, el término
+\[ ((((\bs{I}\, x)(\bs{I}\, y))(\bs{I}\, z))(\bs{I}\, w)) \]
+tiene los redex
+\begin{align*}
+  (((\underline{(\bs{I}\, x)}(\bs{I}\, y))(\bs{I}\, z))(\bs{I}\, w)) \\
+  ((((\bs{I}\, x)\underline{(\bs{I}\, y)})(\bs{I}\, z))(\bs{I}\, w)) \\
+  ((((\bs{I}\, x)(\bs{I}\, y))\underline{(\bs{I}\, z)})(\bs{I}\, w)) \\
+  ((((\bs{I}\, x)(\bs{I}\, y))(\bs{I}\, z))\underline{(\bs{I}\, w)})
+\end{align*}
+El redex más a la izquierda es \( (\bs{I}\, x) \) y el más a la derecha es \( (\bs{I}\, w) \).
+
+\subsubsection{Orden normal}
+
+Esta estrategia establece que el redex que esté más a la izquierda y más al exterior es el que se reduce. Utilizar esta estrategia garantiza que si un término \( M \) tiene una forma normal \( N \), entonces \( F(M) = N \).
+
+Considerando el término lambda \( M \synteq \bs{I}(\bs{I}(λz.\bs{I}\, z)) \), su reducción bajo esta estrategia es
+
+\begin{align*}
+  \underline{\bs{I}(\bs{I}(λz.\bs{I}\, z))} &\contract{β} \bs{I}(λz.\bs{I}\, z) \\
+  \underline{\bs{I}(λz.\bs{I}\, z)} &\contract{β} λz.\bs{I}\, z \\
+  λz.\underline{\bs{I}\, z} &\contract{β} λz.z
+\end{align*}
+
+Una desventaja de utilizar esta estrategia es que los términos obtenidos al reducir pueden ser muy largos de escribir. Consideremos el término
+\[ (λx.x\, x\, x)((λy.\bs{I}\, \bs{I}\, \bs{I}\, \bs{I}\, y)z) \]
+Utilizando esta estrategia, en el primer paso se obtiene el término
+\[ ((λy.\bs{I}\, \bs{I}\, \bs{I}\, \bs{I}\, y)z)((λy.\bs{I}\, \bs{I}\, \bs{I}\, \bs{I}\, y)z)((λy.\bs{I}\, \bs{I}\, \bs{I}\, \bs{I}\, y)z) \]
+Por lo tanto, las reducciones realizadas sobre \( ((λy.\bs{I}\, \bs{I}\, \bs{I}\, \bs{I}\, y)z) \) se repetirán dos veces para obtener el término final.
+
+\subsubsection{Llamada por nombre}
+
+Esta estrategia es similar a la de orden normal, sin embargo, no se reducen apariciones de redex dentro de abstracciones.
+
+Variantes de esta estrategia han sido utilizados en algunos lenguajes de programación populares como \texttt{Algol-60} y \texttt{Haskell}.
+
+Considerando el término lambda \( M \synteq \bs{I}(\bs{I}(λz.\bs{I}\, z)) \), su reducción bajo esta estrategia es
+
+\begin{align*}
+  \underline{\bs{I}(\bs{I}(λz.\bs{I}\, z))} &\contract{β} \bs{I}(λz.\bs{I}\, z) \\
+  \underline{\bs{I}(λz.\bs{I}\, z)} &\contract{β} λz.\bs{I}\, z
+\end{align*}
+
+Con la estrategia llamada por nombre, algunos términos que no son formas normales no serán reducidos, por ejemplo el término
+\[ (λy.(λx.x\, x)(λx.x\, x)) \]
+No es reducido siguiendo esta estrategia. De cierta manera, una abstracción \( (λx.M) \) ``suspende'' la reducción de \( M \) hasta que sea aplicada a algún término que no esté dentro de otra abstracción. Por este motivo, hay términos con forma normal que no pueden ser encontrados con llamada por nombre.
+
+\subsubsection{Llamada por valor}
+
+Esta estrategia solo reduce los redex más al exterior del término lambda y un redex es reducido únicamente cuando los redex a su derecha estén en forma normal.
+
+Variantes de esta estrategia han sido utilizadas en algunos lenguajes de programación populares como \texttt{C} y \texttt{Java}. Si consideramos que un redex es una llamada a función, esta estrategia establece que antes de reducir la función, se reducen todos sus argumentos, de derecha a izquierda, de tal manera que al ``entrar'' al cuerpo de la función, todos los valores son conocidos.
+
+Considerando el término lambda \( M \synteq \bs{I}(\bs{I}(λz.\bs{I}\, z)) \), su reducción bajo esta estrategia es
+
+\begin{align*}
+  \bs{I}(\underline{\bs{I}(λz.\bs{I}\, z)}) &\contract{β} \bs{I}(λz.\bs{I}\, z) \\
+  \underline{\bs{I}(λz.\bs{I}\, z)} &\contract{β} λx.\bs{I}\, z
+\end{align*}
+
+Con esta estrategia se pueden obtener términos bastante cortos, considerando el término
+\[ (λx.x\, x\, x)((λy.\bs{I}\, \bs{I}\, \bs{I}\, \bs{I}\, y)z) \]
+Primero se reduce \( (λy.\bs{I}\, \bs{I}\, \bs{I}\, \bs{I}\, y)z \) a \( z \) y posteriormente se reduce \( (λx.x\, x\, x)z \), por lo que en este ejemplo no se presenta la duplicación de reducciones como en el caso de orden normal.
+
+Una grán desventaja de esta estrategia es que hay términos con formas normales a las que no se puede reducir. Consideremos el término
+\[ (λx.y)((λx.x\, x)(λx.x\, x)) \]
+Es fácil notar que este término tiene forma normal \( y \), sin embargo, siguiendo la estrategia de llamada por nombre, el término \( (λx.x\, x)(λx.x\, x) \) será reducido hasta llegar a su forma normal, pero este redex no tiene forma normal y por consiguiente nunca se obtendrá el resultado.
+
+Esta desventaja es resuelta por los lenguajes de programación basados en llamada por nombre forzando el orden de evaluación de ciertas expresiones.
 
 %%% Local Variables:
 %%% mode: latex

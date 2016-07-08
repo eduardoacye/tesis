@@ -3,7 +3,7 @@
 %
 
 % Document class and language
-\documentclass[letterpaper,twoside,openright,10pt]{book}
+\documentclass[letterpaper,twoside,openright,11pt]{book}
 
 \usepackage{setspace}
 \onehalfspacing
@@ -127,7 +127,7 @@
 \renewcommand{\algorithmicendfor}{\algorithmicend\ \algorithmicfor} 
 \renewcommand{\algorithmicwhile}{\textbf{mientras}} 
 \renewcommand{\algorithmicendwhile}{\algorithmicend\ \algorithmicwhile} 
-\renewcommand{\algorithmicloop}{\textbf{lazo}} 
+\renewcommand{\algorithmicloop}{\textbf{repetir}} 
 \renewcommand{\algorithmicendloop}{\algorithmicend\ \algorithmicloop} 
 \renewcommand{\algorithmicrepeat}{\textbf{repetir}} 
 \renewcommand{\algorithmicuntil}{\textbf{hasta}} 
@@ -163,6 +163,8 @@
 \newunicodechar{Λ}{\Lambda}
 \newunicodechar{α}{\alpha}
 \newunicodechar{β}{\beta}
+\newunicodechar{δ}{\delta}
+\newunicodechar{Δ}{\Delta}
 \newunicodechar{Γ}{\Gamma}
 \newunicodechar{ω}{\omega}
 \newunicodechar{Ω}{\Omega}
@@ -187,7 +189,9 @@
 \newcommand{\subst}[3]{#1 \left[ #2 \operatorname{:=} #3 \right]}
 \newcommand{\synteq}{\ \equiv\ }
 \newcommand{\contract}[1]{\ \operatorname{\rightarrow_{#1}}\ }
+\newcommand{\xcontract}[2]{\ \operatorname{\overset{#2}{\rightarrow_{#1}}}}
 \newcommand{\reduce}[1]{\ \operatorname{\twoheadrightarrow_{#1}}\ }
+\newcommand{\xreduce}[2]{\ \operatorname{\overset{#2}{\twoheadrightarrow_{#1}}}}
 \newcommand{\convertible}[1]{\ \operatorname{=_{#1}}\ }
 \DeclareMathOperator{\Sub}{Sub}
 \DeclareMathOperator{\FV}{FV}

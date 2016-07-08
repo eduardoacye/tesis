@@ -27,7 +27,7 @@ beginfig(3)
   draw (0,0);
 
   pickup pencircle scaled .5;
-  drawarrow (0,0){dir(-30)}..{up}(30,0)..{dir(-150)}cycle;
+  drawarrow (0,0)..(10,10)..(20,0)..(10,-10)..(0,0);
 endfig;
 
 beginfig(4)
@@ -56,7 +56,7 @@ beginfig(5)
   pickup pencircle scaled .5;
   drawarrow (0+3,0)--(40-3,0);
   drawarrow (0+3,0-3)--(40-3,0-3);
-  drawarrow (40,0){dir(-90)}..{up}(50,0)..{dir(-90)}cycle;
+  drawarrow (40,0)..(40,-7)..(47,-7)..(47,0)..(40,0);
   drawarrow (40,40-3)--(40,0+3);
   drawarrow (0+3,40)--(40-3,40);
   drawarrow (0+3,40+3)--(40-3,40+3);
@@ -112,6 +112,28 @@ beginfig(7)
   drawarrow (140,0)--(0,-50);
 
   label(btex ... etex, (170,0));
+endfig;
+
+beginfig(8)
+  pickup pencircle scaled 3;
+  draw (0,0);
+  draw (0,-30);
+
+  pickup pencircle scaled .5;
+  drawarrow (0,0-3)--(0,-30+3);
+  drawarrow (0,0)..(-10,10)..(0,20)..(10,10)..(0,0);
+endfig;
+
+beginfig(9)
+  label(btex $M$ etex, (-20,0));
+  label(btex $N$ etex, (20,0));
+  label(btex $M_{1}$ etex, (-80,0));
+  label(btex $N_{1}$ etex, (80,0));
+  
+  drawarrow (-20-8,0)--(-80+8,0);
+  drawarrow (20+8,0)--(80-8,0);
+  drawarrow (-20,0-5)..(0,-20)..(20,0-5);
+  drawarrow (20,0+5)..(0,20)..(-20,0+5);
 endfig;
 
 end;

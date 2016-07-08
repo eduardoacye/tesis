@@ -1,8 +1,8 @@
 %!PS-Adobe-3.0 EPSF-3.0
-%%BoundingBox: -2 -8 31 8 
-%%HiResBoundingBox: -1.5 -7.5406 30.25 7.5406 
+%%BoundingBox: -2 -11 21 11 
+%%HiResBoundingBox: -1.5 -10.25 20.25 10.25 
 %%Creator: MetaPost 1.999
-%%CreationDate: 2016.07.07:0007
+%%CreationDate: 2016.07.07:1533
 %%Pages: 1
 %%DocumentResources: procset mpost-minimal
 %%DocumentSuppliedResources: procset mpost-minimal
@@ -25,11 +25,13 @@
 newpath 0 0 moveto 0 0 rlineto stroke
  0 0.5 dtransform truncate idtransform setlinewidth pop
 newpath 0 0 moveto
-14.21014 -8.20421 30 -11.1281 30 0 curveto
-30 11.1281 14.21014 8.20421 0 0 curveto closepath stroke
-newpath 2.51949 3.10693 moveto
-1.66093 2.10542 0.81879 1.06706 0 0 curveto
-1.3335 0.17555 2.66322 0.31425 3.97847 0.41531 curveto
+0 5.52284 4.47716 10 10 10 curveto
+15.52284 10 20 5.52284 20 0 curveto
+20 -5.52284 15.52284 -10 10 -10 curveto
+4.47716 -10 0 -5.52284 0 0 curveto stroke
+newpath 2.23683 -3.31622 moveto
+1.30193 -2.40065 0.53242 -1.28534 0 0 curveto
+-0.53242 -1.28534 -0.77696 -2.61809 -0.76332 -3.9266 curveto
  closepath
 gsave fill grestore stroke
 showpage

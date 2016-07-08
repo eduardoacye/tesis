@@ -2,65 +2,25 @@
 
 ## Pendientes
 
-- [ ] Capítulos
-  - [ ] Introducción
-  - [ ] El cálculo lambda
-    - [x] Noción informal del cálculo lambda
-      - [x] Expresiones
-      - [x] Operaciones
-      - [x] Equivalencias
-    - [ ] Formalización del cálculo lambda
-      - [x] Términos lambda
-      - [ ] Teoría \lambda K \beta
-      - [ ] Otras teorías
-        - [ ] \lambda I \beta
-        - [ ] Extensionalidad
-        - [ ] Equivalencia de teorías
-      - [ ] Teoría de reducción
-        - [ ] Contracciones
-        - [ ] Reducciones
-        - [ ] Convertibilidad
-        - [ ] Teorema de Church-Rosser
-      - [ ] Árboles Bohm
-  - [ ] Codificación de objetos
+- [ ] Introducción
+- [x] Cuerpo de la tesis
+  - [x] Noción informal del cálculo lambda
+    - [x] Expresiones
+    - [x] Operaciones
+    - [x] Equivalencias
+  - [x] Formalización del cálculo lambda
+    - [x] Términos lambda
+    - [x] Los cálculos de la conversión lambda
+    - [x] Teoría de reducción
+  - [x] Codificación de objetos
     - [x] Álgebra booleana
-      - [x] Valores de verdad
-      - [x] Conectivos lógicos
-      - [x] Lógica multivaluada
     - [x] Aritmética
-      - [x] Numerales de Church
-      - [x] Operaciones elementales
-      - [x] Hiperoperadores
-      - [ ] Hiperoperadores inversos
     - [x] Procesos recursivos
-      - [x] Combinador Y
-      - [ ] Orden de evaluación
-      - [x] Funciones recursivas
-    - [x] Estructuras complejas
-      - [x] Par ordenado
-      - [x] Estructuras lineales
-      - [x] Árboles
-  - [ ] Tipos en el cálculo lambda
-    - [ ] Tipos simples
-    - [ ] Representación de tipos de datos
-    - [ ] Generalización de tipos
-  - [ ] Lenguajes de programación
-    - [x] Programación basada en el cálculo lambda
-    - [ ] Sistema de tipos Hindley-Milner
-    - [ ] Máquina SECD
-    - [ ] Semántica denotacional
-  - [ ] Teoría de la computación
-    - [ ] Tesis de Church-Turing
-    - [ ] Isomorfismo de Curry-Howard
-    - [ ] Entscheidungsproblem
-    - [ ] Complejidad computacional
-  - [ ] Conclusión
-- [ ] Apéndices
-  - [x] Notación
-  - [x] Lenguaje del cálculo lambda
-  - [x] Intérprete
-  - [ ] Compilación a SECD
-  - [ ] Inferencia de tipos
+    - [x] Estructuras recursivas
+- [ ] Conclusión
+- [x] Apéndices
+  - [x] Programación de codificaciones
+  - [x] Intérprete del cálculo lambda
 - [x] Formato
   - [x] Clase de estilo
   - [x] Clase de bibliografía

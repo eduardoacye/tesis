@@ -3,7 +3,7 @@
 %
 
 % Document class and language
-\documentclass[letterpaper,twoside,openright,11pt]{book}
+\documentclass[letterpaper,twoside,openright,10pt]{book}
 
 \usepackage{setspace}
 \onehalfspacing
@@ -218,6 +218,11 @@
 \tableofcontents
 
 \mainmatter
+\chapter*{Introducción}
+\addcontentsline{toc}{chapter}{Introducción}
+\label{ch:introduccion}
+\input{introduccion}
+
 \chapter{Noción informal del cálculo lambda}
 \label{ch:nocion-informal}
 \input{capitulo-1}
@@ -229,6 +234,11 @@
 \chapter{Codificación de objetos}
 \label{ch:codificacion}
 \input{capitulo-3}
+
+\chapter*{Conclusión}
+\addcontentsline{toc}{chapter}{Conclusión}
+\label{ch:conclusion}
+\input{conclusion}
 
 \appendix
 

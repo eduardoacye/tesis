@@ -1,0 +1,72 @@
+\documentclass[12pt,letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[T1]{fontenc}
+
+\usepackage{microtype}
+\usepackage{kpfonts}
+\usepackage{tocenter}
+\ToCenter{30pc}{50.5pc}
+
+\usepackage{newunicodechar}
+\newunicodechar{λ}{\lambda}
+
+\newcommand{\RomanNumeral}[1]{\uppercase\expandafter{\romannumeral #1\relax}}
+\newcommand{\namesigdate}[2][6cm]{%
+  \begin{tabular}{@{}p{#1}@{}}
+    #2 \\[2\normalbaselineskip] \hrule \\[0pt]
+    {\small \textit{Firma}} \\[2\normalbaselineskip] \hrule \\[0pt]
+    {\small \textit{Fecha}}
+  \end{tabular}
+}
+
+\newcommand{\titulo}{Proyecto de tesis}
+\newcommand{\tesis}{El cálculo \( λ \) y los fundamentos de la computación}
+\newcommand{\estudiante}{Eduardo Acuña Yeomans}
+\newcommand{\director}{Martín Eduardo Frías Armenta}
+
+\begin{document}
+
+\thispagestyle{empty}
+
+\begin{center}
+  \Huge{\textbf{\titulo}}\\
+  \vspace*{10pt}
+  \small{\emph{Licenciatura en Ciencias de la Computación}}\\
+  \small{\emph{Departamento de Matemáticas}}
+  \vspace*{25pt}
+\end{center}
+
+\paragraph{\RomanNumeral{1}. Título tentativo de tesis.} `` \tesis ''
+
+\paragraph{\RomanNumeral{2}. Nombre del estudiante que la realiza.} \estudiante
+
+\paragraph{\RomanNumeral{3}. Nombre del director de tesis.} \director
+
+\paragraph{\RomanNumeral{4}. Resumen del trabajo que se pretende realizar.}
+
+\paragraph{\RomanNumeral{5}.\RomanNumeral{1}. Objetivo general.}
+
+\paragraph{\RomanNumeral{5}.\RomanNumeral{2}. Objetivos particulares.}
+
+\paragraph{\RomanNumeral{5}.\RomanNumeral{3}. Metas.}
+
+\paragraph{\RomanNumeral{5}.\RomanNumeral{4}. Alcances.}
+
+\paragraph{\RomanNumeral{6}. Cronograma de actividades.}
+
+\paragraph{\RomanNumeral{7}. Firma del estudiante y del director de tesis.}\
+
+\vspace*{50pt}
+
+\noindent \namesigdate{\estudiante} \hfill \namesigdate{\director}
+
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

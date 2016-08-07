@@ -1,0 +1,547 @@
+% -*- mode: latex; mmm-noweb-code-mode: racket-mode; coding: utf-8 -*-
+
+% lambda.nw --- 
+
+% Copyright (C) 2016 Eduardo Acuña Yeomans <eduardo.acye@gmail.com>
+
+% Author: Eduardo Acuña Yeomans <eduardo.acye@gmail.com>
+
+% This program is free software; you can redistribute it and/or
+% modify it under the terms of the GNU General Public License
+% as published by the Free Software Foundation; either version 3
+% of the License, or (at your option) any later version.
+
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+
+% You should have received a copy of the GNU General Public License
+% along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+\documentclass[letterpaper,twoside,openright,10pt]{book}
+
+\usepackage{setspace}
+\onehalfspacing
+
+\usepackage[lmargin=1.4 in, rmargin=.8 in, tmargin=1 in, bmargin=1 in]{geometry}
+\usepackage[utf8]{inputenc}
+% \usepackage[spanish]{babel}
+\usepackage[T1]{fontenc}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows,shadows}
+
+\usepackage[sumlimits]{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage[full]{textcomp}
+\usepackage[osf]{newpxtext}
+\usepackage{cabin}
+\usepackage[varqu,varl]{inconsolata}
+\usepackage[bigdelims,vvarbb]{newpxmath}
+\usepackage[cal=boondoxo]{mathalfa} % mathcal
+\usepackage{proof}
+
+\newcommand{\bs}{\boldsymbol}
+\newcommand{\mc}{\mathcal}
+
+\usepackage{xcolor}
+\usepackage{enumerate}
+
+\usepackage{newunicodechar}
+\newunicodechar{λ}{\lambda}
+\newunicodechar{Λ}{\Lambda}
+\newunicodechar{α}{\alpha}
+\newunicodechar{β}{\beta}
+\newunicodechar{δ}{\delta}
+\newunicodechar{Δ}{\Delta}
+\newunicodechar{Γ}{\Gamma}
+\newunicodechar{ω}{\omega}
+\newunicodechar{Ω}{\Omega}
+\newunicodechar{ρ}{\rho}
+\newunicodechar{σ}{\sigma}
+\newunicodechar{Σ}{\Sigma}
+\newunicodechar{τ}{\tau}
+\newunicodechar{ν}{\nu}
+\newunicodechar{μ}{\mu}
+\newunicodechar{ξ}{\xi}
+\newunicodechar{Ξ}{\Xi}
+\newunicodechar{ζ}{\zeta}
+\newunicodechar{η}{\eta}
+\newunicodechar{φ}{\phi}
+\newunicodechar{Φ}{\Phi}
+\newunicodechar{π}{\pi}
+\newunicodechar{Π}{\Pi}
+\newunicodechar{θ}{\theta}
+\newunicodechar{Θ}{\Theta}
+
+\newcommand{\subst}[3]{#1 \left[ #2 \operatorname{:=} #3 \right]}
+\newcommand{\synteq}{\ \equiv\ }
+\newcommand{\contract}[1]{\ \operatorname{\rightarrow_{#1}}\ }
+\newcommand{\xcontract}[2]{\ \operatorname{\overset{#2}{\rightarrow_{#1}}}}
+\newcommand{\reduce}[1]{\ \operatorname{\twoheadrightarrow_{#1}}\ }
+\newcommand{\xreduce}[2]{\ \operatorname{\overset{#2}{\twoheadrightarrow_{#1}}}}
+\newcommand{\convertible}[1]{\ \operatorname{=_{#1}}\ }
+\DeclareMathOperator{\Sub}{Sub}
+\DeclareMathOperator{\FV}{FV}
+\newcommand*\cn[1]{\widehat{#1}}
+
+\usepackage{noweb}
+%\pagestyle{empty}
+\noweboptions{smallcode,spanish,breakcode,longchunks,longxref,webnumbering}
+
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  pdftitle={El cálculo lambda y los fundamentos de la computación},
+  pdfauthor={Eduardo Acuña Yeomans}
+  bookmarks=true,
+}
+
+\date{}
+
+\begin{document}
+
+\begin{center}
+  \vspace*{10pt}
+  {\Huge\textbf{\textsc{Lambda}}}\\
+  \vspace*{5pt}
+  {\large Un programa para la exploración del cálculo \( λ \) puro}
+  \vspace*{10pt}
+\end{center}
+
+@ \paragraph{Introducción}
+
+El programa [[lambda]]\footnote{Nombrado así en ausencia de originalidad.} tiene la finalidad de proveer una entorno computacional ameno para estudiar el contenido de este trabajo de manera interactiva. La presente implementación está escrita en el lenguaje de programación [[Racket]]\footnote{Para más información, visitar el sitio oficial ~\url{http://racket-lang.org/}.} y consta de un intérprete de expresiones del cálculo \( λ \) el cuál puede ser utilizado de tres maneras diferentes:
+
+\begin{enumerate}
+\item A través de un ciclo de lectura, evaluación y escritura (conocido como \emph{REPL}) por consola;
+\item Por medio de un editor estructural gráfico;
+\item Como una biblioteca para facilitar la programación de algoritmos que involucren términos del cálculo \( λ \).
+\end{enumerate}
+
+El corazón del intérprete es un \emph{evaluador}, una función que transforma expresiones de un lenguaje a valores, los cuales a su vez pueden ser expresiones de este lenguaje. El lenguaje con el que trabaja este procedimiento es una extensión a \( Λ \) que incluye ``metainstrucciones'' las cuáles permiten manipular términos \( λ \) de manera arbitraria, por ejemplo calcular la longitud de un término \( M \) involucraría invocar una metainstrucción similar a la definición de \( \| M \| \) . Las expresiones de este lenguaje son almacenadas en memoria como un árbol de sintaxis. Para construír estos árboles se utilizan dos métodos: usando un \emph{lector} (o parser) que transforma cadenas de caracteres a árboles o utilizando el \emph{editor estructural} que permite únicamente editar expresiones válidas del lenguaje.
+
+@ \section*{Estructuras del lenguaje}
+
+@ \paragraph{Árbol de sintaxis}
+
+Un árbol de sintaxis para el lenguaje de [[lambda]] consiste de vértices que pueden ser \emph{variables}, \emph{aplicaciones}, \emph{abstracciones} o \emph{metainstrucciones}. Estos tipos de vértices son implementados haciendo uso del macro [[struct]] el cuál a partir de un identificador de la estructura y los identificadores de sus componentes produce un constructor, un predicado y selectores para cada componente.
+
+La estructura que representa a las variables de un árbol es llamada [[variable]] y se compone de una cadena de caracteres llamada [[nombre]].
+
+<<estructuras del lenguaje>>=
+(struct variable (nombre) #:transparent)
+@ %def variable
+@
+
+La estructura que representa a las abstracciones de un árbol es llamada [[abstracción]], se compone de una variable llamada [[argumento]] y de otro vértice del árbol llamado [[cuerpo]], este último puede ser de cualquiera de los cuatro tipos de vértices mencionados.
+
+
+<<estructuras del lenguaje>>=
+(struct abstracción (argumento cuerpo) #:transparent)
+@ %def abstracción
+@
+
+La estructura que representa a las aplicaciones de un árbol es llamada [[aplicación]], se compone de un vértice llamado [[operador]] y de otro vértice llamado [[operando]].
+
+
+<<estructuras del lenguaje>>=
+(struct aplicación (operador operando) #:transparent)
+@ %def aplicación
+@
+
+Se define el predicado [[término?]] para determinar si un objeto dado es un término \( λ \), es decir, si es una estructura [[variable]], [[abstracción]] o [[aplicación]]. Su definición es
+
+<<predicados del lenguaje>>=
+(define (término? x)
+  (or (variable? x)
+      (abstracción? x)
+      (aplicación? x)))
+@ %def término?
+
+La estructura que representa a las metainstrucciones de un árbol es llamada [[metainstrucción]], se compone de una cadena de caracteres llamada [[nombre]] y de una lista de vértices llamada [[argumentos]].
+
+<<estructuras del lenguaje>>=
+(struct metainstrucción (nombre argumentos) #:transparent)
+@ %def metainstrucción
+@
+
+De manera análoga a la identificación de términos \( λ \) mediante el procedimiento [[término?]] se define el predicado [[expresión]] el cuál permite distinguir estructuras que sean expresiones de este lenguaje.
+
+<<predicados del lenguaje>>=
+(define (expresión? x)
+  (or (término? x)
+      (metainstrucción? x)))
+@ %def expresión?
+@
+
+Utilizando los constructores [[variable]], [[abstracción]] y [[aplicación]], un término \( λ \) como
+\[ (λx.(x\, x)) (λx.(x\, x)) \]
+puede ser representado en memoria como
+
+
+<<construcción de un término>>=
+(aplicación (abstracción (variable "x") (aplicación (variable "x") (variable "x")))
+            (abstracción (variable "x") (aplicación (variable "x") (variable "x"))))
+@ 
+
+el cuál corresponde a un árbol de sintaxis visualizado graficamente como
+
+\begin{center}
+  \begin{tikzpicture}[
+    aplicacion/.style={circle, draw, fill=white, text centered, anchor=north, text=black},
+    abstraccion/.style={rectangle, draw, fill=white, text centered, anchor=north, text=black},
+    variables/.style={draw=none, text centered, anchor=north, text=black},
+    level distance=0.5cm, growth parent anchor=south, sibling distance=3cm,
+    line width=0.4mm,
+    ]
+    \node (app1) [aplicacion] {} [-]
+    child{
+      node (abs1) [abstraccion] {\( λ\ x \)}
+      child{[sibling distance=2cm]
+        node (app2) [aplicacion] {}
+        child{
+          node (var1) [variables] {\( x \)}
+        }
+        child{
+          node (var2) [variables] {\( x \)}
+        }
+      }
+    }
+    child{
+      node (abs2) [abstraccion] {\( λ\ x \)}
+      child{[sibling distance=2cm]
+        node (app3) [aplicacion] {}
+        child{
+          node (var3) [variables] {\( x \)}
+        }
+        child{
+          node (var4) [variables] {\( x \)}
+        }
+      }
+    };
+  \end{tikzpicture}
+\end{center}
+
+\paragraph{Módulo de estructuras del lenguaje} Las estructuras y procedimientos del árbol de sintaxis son agrupados en un módulo de [[Racket]] el cuál podrá ser accesado desde otros módulos. Para ``exportar'' los identificadores definidos se utiliza el macro [[provide]].
+
+
+<<provee las definiciones del árbol>>=
+(provide variable variable? variable-nombre
+         abstracción abstracción? abstracción-argumento abstracción-cuerpo
+         aplicación aplicación? aplicación-operador aplicación-operando
+         metainstrucción metainstrucción? metainstrucción-nombre metainstrucción-argumentos
+         término? expresión?)
+@ 
+
+El archivo [[estructuras.rkt]] contiene este módulo y tiene la siguiente forma:
+
+<<estructuras.rkt>>=
+;;; -*- mode: racket; coding: utf-8 -*-
+;;; Copyright (C) 2016 Eduardo Acuña Yeomans <eduardo.acye@gmail.com>
+;;; Procura no editar este archivo, mejor modifica lambda.nw
+
+#lang racket/base
+
+;;; Identificadores exportados
+<<provee las definiciones del árbol>>
+
+;;; Estructuras del árbol de sintaxis
+<<estructuras del lenguaje>>
+
+;;; Predicados especiales
+<<predicados del lenguaje>>
+@
+
+@ \section*{Lectura de expresiones}
+
+\paragraph{Representación textual} El lenguaje de [[lambda]] es descrito conceptualmente por las estructuras de los árboles de sintaxis. Sin embargo es tedioso definir expresiones del lenguaje escribiendo manualmente los constructores de las expresiones. Trabajando en un contexto meramente textual como en el código de un lenguaje de programación es conveniente tener una manera de transformar una cadena de caracteres como \( \mathrm{"(λx.(x x))(λx.(x x))"} \) (o mejor aún, con abuso de notación \( \mathrm{"(λx.x x) λx.x x"} \) ) a un árbol de sintaxis de este término. Este es el trabajo del lector.
+
+La representación textual del lenguaje contempla la escritura de términos descrita en la definición formal de \( Λ \) y los abusos de notación contemplados en el trabajo. Adicionalmente se reprsentan las metainstrucciones de tal manera que
+
+<<pseudocódigo de una metainstrucción>>=
+(metainstrucción nombre (list argumento-0 argumento-1 ... argumento-n))
+@
+
+tiene como representación textual
+
+[["nombre[argumento-0, argumento-1, ... , argumento-n]"]]
+
+\paragraph{Parser} El lector de expresiones de este lenguaje es un \emph{parser} descendente recursivo que a partir de un puerto de entrada de [[Racket]] construye un árbol de sintaxis.
+
+El procedimiento [[leer]] es el punto de entrada del parser, recibe opcionalmente un puerto llamado [[p]] que por defecto es [[(current-input-port)]].
+
+<<lector de expresiones>>=
+(define (leer [p (current-input-port)])
+  (let ([e (parsear-expresión p)])
+    (cond
+     [(and (char? e) (char=? #\; e))
+      (leer p)]
+     [(not (char? e))
+      e]
+     [else
+      (error 'leer "Se esperaba una expresión completa pero se leyó `~a'" e)])))
+
+@ %def leer
+@
+
+El procedimiento [[parsear-expresión]] se encarga de regresar una expresión [[e]], en caso que la estructura sintáctica analizada no haya sido una expresión válida se regresa un caracter que indica el inicio de lo que no se pudo leer. En esta implementación del lector el caracter punto y coma delimita expresiones, por lo tanto, obtener como resultado [[#\;]] provoca que se analice la siguiente expresión del puerto.
+
+La implementación de [[parsear-expresión]] considera un puerto de entrada [[p]] de donde se consumen caracteres, un caracter [[c]] que es el primer caracter del puerto y un acumulador de expresiones [[a]] que representa el árbol leído. A partir de [[c]] se puede determinar el tipo de expresión que se está leyendo.
+
+
+<<lector de expresiones>>=
+(define (parsear-expresión [p (current-input-port)]
+                           [c (peek-char p)]
+                           [a null])
+  (cond
+   [(eof-object? c)
+    <<lectura de fin de archivo>>]
+   [(delimitador-final? c)
+    <<lectura de delimitador final>>]
+   [(char-whitespace? c)
+    <<lectura de espacio en blanco>>]
+   [(char=? #\( c)
+    <<lectura de paréntesis abierto>>]
+   [(or (char=? (integer->char 955) c)
+        (char=? #\\ c))
+    <<lectura de lambda>>]
+   [else
+    <<lectura de variable o metainstrucción>>]))
+
+@ %def parsear-expresión
+@
+
+El análisis de casos tiene tres cláusulas ``triviales'': cuando no hay más que leer del puerto, cuando se lee un delimitador final y cuando se lee un espacio en blanco. Cuando el siguiente objeto del puerto de entrada es el ``fin de archivo'', el lector debe regresar este objeto si el acumulador [[a]] es núlo, de lo contrario se regresa la expresión acumulada.
+
+<<lectura de fin de archivo>>=
+(if (null? a) c a)
+@
+
+El siguiente caso es la lectura de un delimitador final, el procedimiento [[delimitador-final?]] se encarga de determinar si un caracter termina una expresión.
+
+<<procedimientos auxiliares de lectura>>=
+(define (delimitador-final? c)
+  (or (eof-object? c)
+      (char=? #\] c)
+      (char=? #\) c)
+      (char=? #\. c)
+      (char=? #\, c)
+      (char=? #\; c)))
+
+@ %def delimitador-final?
+@
+
+Cuando un objeto leído de un puerto de entrada satisface este predicado, el lector consume y regresa el delimitador si el acumulador [[a]] es núlo, de lo contrario regresa la expresión acumulada.
+
+<<lectura de delimitador final>>=
+(if (null? a) (read-char p) a)
+@ 
+
+El caracter delimitador no es consumido en caso de que [[a]] no sea núlo ya que usualmente los delimitadores finales tienen asociado un delimitador inicial con el que deben concordar, por ejemplo, el predicado [[delimitador-inicial?]] se define\footnote{Se realiza una comparación con [[(integer->char 955)]] ya que 955 es el valor numérico del caracter \( λ \) en Unicode.} como
+
+<<procedimientos auxiliares de lectura>>=
+(define (delimitador-inicial? c)
+  (or (char=? #\( c)
+      (char=? #\[ c)
+      (char=? (integer->char 955) c)
+      (char=? #\\ c)))
+
+@ %def delimitador-inicial?
+@
+
+En el lenguaje, el delimitador [[#\(]] debe estar asociado al delimitador [[#\)]] y de igual manera con [[#\[]] y [[#\]]]. Esta verificación se realiza en otra parte del código, pero se debe preservar la información del delimitador leído.
+
+Técnicamente, los caracteres delimitadores del lenguaje son los que satisfacen los predicados [[delimitador-inicial?]], [[delimitador-final?]] y [[char-whitespace?]], sin embargo es conveniente definirlos por separado ya que son tratados de manera diferente en la lectura de una expresión. Para determinar si algún caracter es delimitador (sin importar el tipo de delimitador que sea) se utiliza el predicado [[delimitador?]].
+
+<<procedimientos auxiliares de lectura>>=
+(define (delimitador? c)
+  (or (delimitador-final? c)
+      (delimitador-inicial? c)
+      (char-whitespace? c)))
+
+@ %def delimitador?
+@
+
+El tercer y último caso ``trivial'' en la lectura es el de espacios en blanco. Al encontrarse un caracter de este tipo se consume del puerto y se llama de manera recursiva [[parsear-expresión]] de tal manera que el caracter es ignorado y se preserva el valor de la expresión acumulada [[a]].
+
+<<lectura de espacio en blanco>>=
+(read-char p)
+(parsear-expresión p (peek-char p) a)
+@
+
+El resto de los casos son significativamente más complejos que los primeros tres. Primero se aborda el leer un paréntesis abierto, esto puede ocurrir cuando se desea agrupar una aplicación o una abstracción. El procedimiento [[parsear-paréntesis]] se encarga de leer una expresión después de un paréntesis abierto y verificar que dicha expresión termina con un paréntesis cerrado.
+
+<<lectura de paréntesis abierto>>=
+(read-char p)
+(let ([e (parsear-paréntesis p)])
+  (parsear-expresión p (peek-char p) (aplicación/identidad a e)))
+@ 
+
+Primero se consume el caracter [[#\(]] del puerto de entrada, después se llama el procedimiento [[parsear-paréntesis]] el cuál regresará la expresión [[e]] delimitada por [[#\(]] y [[#\)]]. El procedimiento [[parsear-expresión]] es llamado de manera recursiva ya que es posible que esta expresión entre paréntesis sea parte de una aplicación escrita con abuso de notación, por ejemplo [[(M N)P]]. El resultado es acumulado con el procedimiento [[aplicación/identidad]], este contempla la posibilidad que la expresión leída sea parte de una expresión de la forma [[M(N P)]] y se define como
+
+<<procedimientos auxiliares de lectura>>=
+(define (aplicación/identidad a e)
+  (if (null? a) e (aplicación a e)))
+
+@ %def aplicación/identidad
+@
+
+Cuando el acumulador [[a]] es núlo, el nuevo acumulador es la expresión [[e]], de lo contrario, el nuevo acumulador es la aplicación de [[a]] con [[e]].
+
+El procedimiento [[parsear-paréntesis]] lee una expresión [[e]], verifica que el resultado es una aplicación o una abstracción y verifica que el caracter después la representación textual de [[e]] es un paréntesis cerrado.
+
+<<procedimientos auxiliares de lectura>>=
+(define (parsear-paréntesis [p (current-input-port)]
+                            [c (peek-char p)])
+  (let ([e (parsear-expresión p c)])
+    (unless (or (abstracción? e) (aplicación? e))
+      (error 'parsear-paréntesis "Se esperaba una abstracción o una aplicación pero se leyó ~a" e))
+    (let ([c (read-char p)])
+      (unless (char=? #\) c)
+        (error 'parsear-paréntesis "Se esperaba `)' pero se leyó `~a'" c))
+      e)))
+
+@ %def parsear-paréntesis
+@
+
+El siguiente caso es leer un caracter que representa a \( λ \), en esta implementación estos caracteres son [[#\\]] y el resultado de [[(integer->char 955)]] que es el caracter Unicode de la letra lambda minúscula. De manera similar a la lectura de paréntesis abierto, se consume del puerto el caracter leído, se obtiene la abstracción con el procedimiento [[parsear-abstracción]] y se manejan los abusos de notación de la aplicación.
+
+<<lectura de lambda>>=
+(read-char p)
+(let ([e (parsear-abstracción p)])
+  (parsear-expresión p (peek-char p) (aplicación/identidad a e)))
+@ 
+
+La implementación del procedimiento [[parsear-abstracción]] es un poco más compleja a la de [[parsear-paréntesis]], la representación textual de las abstracciones con el abuso de notación es de la forma [["\ x-1 x-2 ... x-n . M"]], ya que el procedimiento inicia después de consumir el caracter de \( λ \), primero se deben identificar todas las variables antes del punto y regresar una abstracción ``descurrificada''.
+
+<<procedimientos auxiliares de lectura>>=
+(define (parsear-abstracción [p (current-input-port)]
+                             [c (peek-char p)])
+  (let itera ([c c]
+              [a null])
+    (cond [(or (eof-object? c)
+               (and (delimitador? c) (not (char-whitespace? c)) (not (char=? #\. c))))
+           (error 'parsear-abstracción "Se esperaba una variable pero se leyó `~a'" c)]
+          [(char-whitespace? c)
+           (read-char p)
+           (itera (peek-char p) a)]
+          [(char=? #\. c)
+           (read-char p)
+           (if (null? a)
+               (error 'parsear-abstracción "Se esperaba una variable pero se leyó `~a'" c)
+               (let ([e (parsear-expresión p)])
+                 (if (expresión? e)
+                     (foldr abstracción e (reverse a))
+                     (error 'parsear-abstracción "Se esperaba una expresión pero se leyó ~a" e))))]
+          [else
+           (let ([v (variable (parsear-constituyente p))])
+             (itera (peek-char p) (cons v a)))])))
+
+@ %def parsear-abstracción
+@
+
+El procedimiento [[parsear-constituyente]] se utiliza para consumir del puerto de entrada una cadena de caracteres constituida por no-delimitadores.
+
+<<procedimientos auxiliares de lectura>>=
+(define (parsear-constituyente [p (current-input-port)]
+                               [c (peek-char p)])
+  (let itera ([a null]
+              [c c])
+    (if (delimitador? c)
+        (if (null? a)
+            (error 'parsear-constituyente "Se esperaba un identificador pero se leyó `~a'" c)
+            (list->string (reverse a)))
+        (itera (cons (read-char p) a)
+               (peek-char p)))))
+
+@ %def parsear-constituyente
+@
+
+La última cláusula del análisis de casos se encarga de leer variables o metainstrucciones, esto es debido a que ambas inician con la lectura de caracteres constituyentes. Para obtener la variable o la expresión se lee una cadena de caracteres constituyentes del puerto de entrada, si el delimitador de esta cadena es [[#\[]] entonces la expresión debe ser una metainstrucción, de lo contrario debe ser una variable.
+
+<<obtener variable o metainstrucción>>=
+(let* ([x (parsear-constituyente p c)]
+       [c (peek-char p)])
+  (cond [(and (char? c) (char=? #\[ c))
+         (read-char p)
+         (metainstrucción x (parsear-corchetes p))]
+        [else
+         (variable x)]))
+@ 
+
+Al igual que en el caso del paréntesis abierto y que la \( λ \), se debe acumular este valor utilizando [[aplicación/identidad]].
+
+<<lectura de variable o metainstrucción>>=
+((lambda (e)
+   (parsear-expresión p (peek-char p) (aplicación/identidad a e)))
+ <<obtener variable o metainstrucción>>)
+@ 
+
+En el caso que la expresión termine con el corchete abierto, se utiliza el procedimiento [[parsear-corchetes]] para obtener una lista de expresiones separadas por coma y delimitadas por [[#\]]].
+
+<<procedimientos auxiliares de lectura>>=
+(define (parsear-corchetes [p (current-input-port)]
+                           [c (peek-char p)])
+  (let itera ([a null]
+              [e (parsear-expresión p c)])
+       (cond [(eof-object? e)
+              (error 'parsear-corchetes "Se esperaba leer `]' o `,' pero se leyó ~a" e)]
+             [(char? e)
+              (case e
+                [(#\]) (reverse a)]
+                [(#\,) (itera a (parsear-expresión p))]
+                [else
+                 (error 'parsear-corchetes "Se esperaba leer `]' o `,' pero se leyó ~a" e)])]
+             [else
+              (itera (cons e a) (parsear-expresión p))])))
+
+@ %def parsear-corchetes
+@
+
+@ \paragraph{Módulo de lector} El módulo del lector utiliza el módulo de [[estructuras.rkt]] y provee el procedimiento [[leer]], evitando que los usuarios del parser malutilicen los procedimientos auxiliares. El archivo [[lector.rkt]] contiene este módulo y tiene la siguiente forma:
+
+<<lector.rkt>>=
+;;; -*- mode: racket; coding: utf-8 -*-
+;;; Copyright (C) 2016 Eduardo Acuña Yeomans <eduardo.acye@gmail.com>
+;;; Procura no editar este archivo, mejor modifica lambda.nw
+
+#lang racket/base
+
+;;; Importar estructuras del árbol de sintaxis
+(require "estructuras.rkt")
+
+;;; Exportar punto de entrada del parser
+(provide leer)
+
+;;; Procedimientos principales
+<<lector de expresiones>>
+
+;;; Procedimientos auxiliares
+<<procedimientos auxiliares de lectura>>
+@ 
+
+@ \paragraph{Pruebas del lector} El archivo de pruebas [[lector-pruebas.rkt]] es utilizado para verificar si la funcionalidad del lector es la esperada. Se omite su definición en este documento pero es distribuído con el código del trabajo.
+
+@ \section*{Escritura de expresiones}
+
+\paragraph{Pendiente}
+
+@ \section*{Evaluador de expresiones}
+
+\paragraph{Pendiente}
+
+@ \section*{Ciclo de Lectura Evaluación y Escritura}
+
+\paragraph{Pendiente}
+
+@ \section*{Editor estructural}
+
+\paragraph{Pendiente}
+
+@ \section*{¿Cómo hackear la \( \bs{λ} \)?}
+
+
+\end{document}

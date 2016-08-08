@@ -156,9 +156,15 @@ Se define el predicado [[término?]] para determinar si un objeto dado es un té
 
 <<predicados del lenguaje>>=
 (define (término? x)
-  (or (variable? x)
-      (abstracción? x)
-      (aplicación? x)))
+  (cond
+   [(variable? x) #t]
+   [(abstracción? x)
+    (and (variable? (abstracción-argumento x))
+         (término? (abstracción-cuerpo x)))]
+   [(aplicación? x)
+    (and (término? (aplicación-operador x))
+         (término? (aplicación-operando x)))]
+   [else #f]))
 @ %def término?
 
 La estructura que representa a las metainstrucciones de un árbol es llamada [[metainstrucción]], se compone de una cadena de caracteres llamada [[nombre]] y de una lista de vértices llamada [[argumentos]].
@@ -514,7 +520,8 @@ En el caso que la expresión termine con el corchete abierto, se utiliza el proc
 (require "estructuras.rkt")
 
 ;;; Exportar punto de entrada del parser
-(provide leer)
+(provide leer
+         delimitador?)
 
 ;;; Procedimientos principales
 <<lector de expresiones>>

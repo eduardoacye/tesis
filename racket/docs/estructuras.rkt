@@ -19,9 +19,15 @@
 
 ;;; Predicados especiales
 (define (término? x)
-  (or (variable? x)
-      (abstracción? x)
-      (aplicación? x)))
+  (cond
+   [(variable? x) #t]
+   [(abstracción? x)
+    (and (variable? (abstracción-argumento x))
+         (término? (abstracción-cuerpo x)))]
+   [(aplicación? x)
+    (and (término? (aplicación-operador x))
+         (término? (aplicación-operando x)))]
+   [else #f]))
 (define (expresión? x)
   (or (término? x)
       (metainstrucción? x)))

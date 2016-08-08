@@ -156,9 +156,15 @@ Se define el predicado {\tt{}\protect\nwindexuse{término?}{término?}{NWlam9-pr
 
 \nwenddocs{}\nwbegincode{10}\sublabel{NWlam9-preN-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-preN-1}}}\moddef{predicados del lenguaje~{\nwtagstyle{}\subpageref{NWlam9-preN-1}}}\endmoddef
 (define (término? x)
-  (or (variable? x)
-      (abstracción? x)
-      (aplicación? x)))
+  (cond
+   [(variable? x) #t]
+   [(abstracción? x)
+    (and (variable? (abstracción-argumento x))
+         (término? (abstracción-cuerpo x)))]
+   [(aplicación? x)
+    (and (término? (aplicación-operador x))
+         (término? (aplicación-operando x)))]
+   [else #f]))
 \nwindexdefn{término?}{término?}{NWlam9-preN-1}\eatline
 \nwidentdefs{\\{{término?}{término?}}}\nwidentuses{\\{{abstracción}{abstracción}}\\{{aplicación}{aplicación}}\\{{variable}{variable}}}\nwindexuse{abstracción}{abstracción}{NWlam9-preN-1}\nwindexuse{aplicación}{aplicación}{NWlam9-preN-1}\nwindexuse{variable}{variable}{NWlam9-preN-1}\nwalsodefined{\\{NWlam9-preN-2}}\nwused{\\{NWlam9-estF-1}}\nwendcode{}\nwbegindocs{11}\nwdocspar
 La estructura que representa a las metainstrucciones de un árbol es llamada {\tt{}\protect\nwindexuse{metainstrucción}{metainstrucción}{NWlam9-estO-4}metainstrucción}, se compone de una cadena de caracteres llamada {\tt{}nombre} y de una lista de vértices llamada {\tt{}argumentos}.
@@ -514,14 +520,15 @@ En el caso que la expresión termine con el corchete abierto, se utiliza el proc
 (require "estructuras.rkt")
 
 ;;; Exportar punto de entrada del parser
-(provide leer)
+(provide leer
+         delimitador?)
 
 ;;; Procedimientos principales
 \LA{}lector de expresiones~{\nwtagstyle{}\subpageref{NWlam9-lecL-1}}\RA{}
 
 ;;; Procedimientos auxiliares
 \LA{}procedimientos auxiliares de lectura~{\nwtagstyle{}\subpageref{NWlam9-proa-1}}\RA{}
-\nwidentuses{\\{{leer}{leer}}}\nwindexuse{leer}{leer}{NWlam9-lecA-1}\nwnotused{lector.rkt}\nwendcode{}\nwbegindocs{61}\nwdocspar
+\nwidentuses{\\{{delimitador?}{delimitador?}}\\{{leer}{leer}}}\nwindexuse{delimitador?}{delimitador?}{NWlam9-lecA-1}\nwindexuse{leer}{leer}{NWlam9-lecA-1}\nwnotused{lector.rkt}\nwendcode{}\nwbegindocs{61}\nwdocspar
 
 \nwenddocs{}\nwbegindocs{62}\paragraph{Pruebas del lector} El archivo de pruebas {\tt{}lector-pruebas.rkt} es utilizado para verificar si la funcionalidad del lector es la esperada. Se omite su definición en este documento pero es distribuído con el código del trabajo.
 

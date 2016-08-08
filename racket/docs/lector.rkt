@@ -8,7 +8,8 @@
 (require "estructuras.rkt")
 
 ;;; Exportar punto de entrada del parser
-(provide leer)
+(provide leer
+         delimitador?)
 
 ;;; Procedimientos principales
 (define (leer [p (current-input-port)])

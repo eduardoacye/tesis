@@ -2,9 +2,9 @@
  "lambda"
  (lambda ()
    (TeX-add-to-alist 'LaTeX-provided-class-options
-                     '(("book" "letterpaper" "twoside" "openright" "10pt")))
+                     '(("book" "letterpaper" "twoside" "openright" "11pt")))
    (TeX-add-to-alist 'LaTeX-provided-package-options
-                     '(("geometry" "lmargin=1.4in" "rmargin=.8in" "tmargin=1in" "bmargin=1in") ("inputenc" "utf8") ("babel" "spanish") ("fontenc" "T1") ("amsmath" "sumlimits") ("textcomp" "full") ("newpxtext" "osf") ("inconsolata" "varqu" "varl") ("newpxmath" "bigdelims" "vvarbb") ("mathalfa" "cal=boondoxo")))
+                     '(("geometry" "lmargin=1.4in" "rmargin=.8in" "tmargin=1in" "bmargin=1in") ("inputenc" "utf8") ("fontenc" "T1") ("amsmath" "sumlimits") ("textcomp" "full") ("newpxtext" "osf") ("inconsolata" "varqu" "varl") ("newpxmath" "bigdelims" "vvarbb") ("mathalfa" "cal=boondoxo")))
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperref")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperimage")
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperbaseurl")
@@ -15,11 +15,10 @@
    (TeX-run-style-hooks
     "latex2e"
     "book"
-    "bk10"
+    "bk11"
     "setspace"
     "geometry"
     "inputenc"
-    "babel"
     "fontenc"
     "tikz"
     "amsmath"

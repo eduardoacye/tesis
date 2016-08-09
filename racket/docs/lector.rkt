@@ -4,12 +4,12 @@
 
 #lang racket/base
 
-;;; Importar estructuras del árbol de sintaxis
-(require "estructuras.rkt")
+(require srfi/1
+         "estructuras.rkt")
 
 ;;; Exportar punto de entrada del parser
 (provide leer
-         delimitador?)
+         delimitador? nombre?)
 
 ;;; Procedimientos principales
 (define (leer [p (current-input-port)])
@@ -36,6 +36,10 @@
    [(char=? #\( c)
     (read-char p)
     (let ([e (parsear-paréntesis p)])
+      (parsear-expresión p (peek-char p) (aplicación/identidad a e)))]
+   [(char=? #\[ c)
+    (read-char p)
+    (let ([e (parsear-hueco p)])
       (parsear-expresión p (peek-char p) (aplicación/identidad a e)))]
    [(or (char=? (integer->char 955) c)
         (char=? #\\ c))
@@ -81,11 +85,25 @@
                             [c (peek-char p)])
   (let ([e (parsear-expresión p c)])
     (unless (or (abstracción? e) (aplicación? e))
-      (error 'parsear-paréntesis "Se esperaba una abstracción o una aplicación pero se leyó ~a" e))
+      (error 'parsear-paréntesis
+             "Se esperaba una abstracción o una aplicación pero se leyó ~a" e))
     (let ([c (read-char p)])
       (unless (char=? #\) c)
-        (error 'parsear-paréntesis "Se esperaba `)' pero se leyó `~a'" c))
+        (error 'parsear-paréntesis
+               "Se esperaba `)' pero se leyó `~a'" c))
       e)))
+
+(define (parsear-hueco [p (current-input-port)]
+                       [c (peek-char p)])
+  (cond [(char-whitespace? c)
+         (read-char p)
+         (parsear-hueco p (peek-char p))]
+        [(char=? #\] c)
+         (read-char p)
+         (hueco)]
+        [else
+         (error 'parsear-hueco
+                "Se esperaba `]' pero se leyó `~a'" c)]))
 
 (define (parsear-abstracción [p (current-input-port)]
                              [c (peek-char p)])
@@ -93,18 +111,21 @@
               [a null])
     (cond [(or (eof-object? c)
                (and (delimitador? c) (not (char-whitespace? c)) (not (char=? #\. c))))
-           (error 'parsear-abstracción "Se esperaba una variable pero se leyó `~a'" c)]
+           (error 'parsear-abstracción
+                  "Se esperaba una variable pero se leyó `~a'" c)]
           [(char-whitespace? c)
            (read-char p)
            (itera (peek-char p) a)]
           [(char=? #\. c)
            (read-char p)
            (if (null? a)
-               (error 'parsear-abstracción "Se esperaba una variable pero se leyó `~a'" c)
+               (error 'parsear-abstracción
+                      "Se esperaba una variable pero se leyó `~a'" c)
                (let ([e (parsear-expresión p)])
                  (if (expresión? e)
                      (foldr abstracción e (reverse a))
-                     (error 'parsear-abstracción "Se esperaba una expresión pero se leyó ~a" e))))]
+                     (error 'parsear-abstracción
+                            "Se esperaba una expresión pero se leyó ~a" e))))]
           [else
            (let ([v (variable (parsear-constituyente p))])
              (itera (peek-char p) (cons v a)))])))
@@ -115,23 +136,31 @@
               [c c])
     (if (delimitador? c)
         (if (null? a)
-            (error 'parsear-constituyente "Se esperaba un identificador pero se leyó `~a'" c)
+            (error 'parsear-constituyente
+                   "Se esperaba un identificador pero se leyó `~a'" c)
             (list->string (reverse a)))
         (itera (cons (read-char p) a)
                (peek-char p)))))
+
+(define (nombre? x)
+  (and (string? x)
+       (not (string=? x ""))
+       (not (any delimitador? (string->list x)))))
 
 (define (parsear-corchetes [p (current-input-port)]
                            [c (peek-char p)])
   (let itera ([a null]
               [e (parsear-expresión p c)])
        (cond [(eof-object? e)
-              (error 'parsear-corchetes "Se esperaba leer `]' o `,' pero se leyó ~a" e)]
+              (error 'parsear-corchetes
+                     "Se esperaba leer `]' o `,' pero se leyó ~a" e)]
              [(char? e)
               (case e
                 [(#\]) (reverse a)]
                 [(#\,) (itera a (parsear-expresión p))]
                 [else
-                 (error 'parsear-corchetes "Se esperaba leer `]' o `,' pero se leyó ~a" e)])]
+                 (error 'parsear-corchetes
+                        "Se esperaba leer `]' o `,' pero se leyó ~a" e)])]
              [else
               (itera (cons e a) (parsear-expresión p))])))
 

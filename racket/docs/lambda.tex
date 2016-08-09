@@ -19,7 +19,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-\documentclass[letterpaper,twoside,openright,10pt]{book}
+\documentclass[letterpaper,twoside,openright,11pt]{book}
 
 \usepackage{setspace}
 \onehalfspacing
@@ -121,26 +121,28 @@ El programa {\tt{}lambda}\footnote{Nombrado así en ausencia de originalidad.} t
 \item Como una biblioteca para facilitar la programación de algoritmos que involucren términos del cálculo \( λ \).
 \end{enumerate}
 
-El corazón del intérprete es un \emph{evaluador}, una función que transforma expresiones de un lenguaje a valores, los cuales a su vez pueden ser expresiones de este lenguaje. El lenguaje con el que trabaja este procedimiento es una extensión a \( Λ \) que incluye ``metainstrucciones'' las cuáles permiten manipular términos \( λ \) de manera arbitraria, por ejemplo calcular la longitud de un término \( M \) involucraría invocar una metainstrucción similar a la definición de \( \| M \| \) . Las expresiones de este lenguaje son almacenadas en memoria como un árbol de sintaxis. Para construír estos árboles se utilizan dos métodos: usando un \emph{lector} (o parser) que transforma cadenas de caracteres a árboles o utilizando el \emph{editor estructural} que permite únicamente editar expresiones válidas del lenguaje.
+El corazón del intérprete es un \emph{evaluador}, una función que transforma expresiones de un lenguaje a valores, los cuales a su vez pueden ser expresiones de este lenguaje. El lenguaje con el que trabaja este procedimiento es una extensión a \( Λ \) que incluye ``huecos'' y ``metainstrucciones'', estas últimas permiten manipular términos \( λ \) de manera arbitraria, por ejemplo calcular la longitud de un término \( M \) involucraría invocar una metainstrucción similar a la definición de \( \| M \| \) . Las expresiones de este lenguaje son almacenadas en memoria como un árbol de sintaxis. Para construír estos árboles se utilizan dos métodos: usando un \emph{lector} (o parser) que transforma cadenas de caracteres a árboles o utilizando el \emph{editor estructural} que permite únicamente editar expresiones válidas del lenguaje.
 
 \nwenddocs{}\nwbegindocs{2}\section*{Estructuras del lenguaje}
 
 \nwenddocs{}\nwbegindocs{3}\paragraph{Árbol de sintaxis}
 
-Un árbol de sintaxis para el lenguaje de {\tt{}lambda} consiste de vértices que pueden ser \emph{variables}, \emph{aplicaciones}, \emph{abstracciones} o \emph{metainstrucciones}. Estos tipos de vértices son implementados haciendo uso del macro {\tt{}struct} el cuál a partir de un identificador de la estructura y los identificadores de sus componentes produce un constructor, un predicado y selectores para cada componente.
+Un árbol de sintaxis para el lenguaje de {\tt{}lambda} consiste de vértices que pueden ser \emph{variables}, \emph{aplicaciones}, \emph{abstracciones}, \emph{huecos} o \emph{metainstrucciones}. Estos tipos de vértices son implementados haciendo uso del macro {\tt{}struct} el cuál a partir de un identificador de la estructura y los identificadores de sus componentes produce un constructor, un predicado y selectores para cada componente.
 
 La estructura que representa a las variables de un árbol es llamada {\tt{}\protect\nwindexuse{variable}{variable}{NWlam9-estO-1}variable} y se compone de una cadena de caracteres llamada {\tt{}nombre}.
 
 \nwenddocs{}\nwbegincode{4}\sublabel{NWlam9-estO-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-estO-1}}}\moddef{estructuras del lenguaje~{\nwtagstyle{}\subpageref{NWlam9-estO-1}}}\endmoddef
 (struct variable (nombre) #:transparent)
+
 \nwindexdefn{variable}{variable}{NWlam9-estO-1}\eatline
-\nwidentdefs{\\{{variable}{variable}}}\nwalsodefined{\\{NWlam9-estO-2}\\{NWlam9-estO-3}\\{NWlam9-estO-4}}\nwused{\\{NWlam9-estF-1}}\nwendcode{}\nwbegindocs{5}\nwdocspar
+\nwidentdefs{\\{{variable}{variable}}}\nwalsodefined{\\{NWlam9-estO-2}\\{NWlam9-estO-3}\\{NWlam9-estO-4}\\{NWlam9-estO-5}}\nwused{\\{NWlam9-estF-1}}\nwendcode{}\nwbegindocs{5}\nwdocspar
 
 La estructura que representa a las abstracciones de un árbol es llamada {\tt{}\protect\nwindexuse{abstracción}{abstracción}{NWlam9-estO-2}abstracción}, se compone de una variable llamada {\tt{}argumento} y de otro vértice del árbol llamado {\tt{}cuerpo}, este último puede ser de cualquiera de los cuatro tipos de vértices mencionados.
 
 
 \nwenddocs{}\nwbegincode{6}\sublabel{NWlam9-estO-2}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-estO-2}}}\moddef{estructuras del lenguaje~{\nwtagstyle{}\subpageref{NWlam9-estO-1}}}\plusendmoddef
 (struct abstracción (argumento cuerpo) #:transparent)
+
 \nwindexdefn{abstracción}{abstracción}{NWlam9-estO-2}\eatline
 \nwidentdefs{\\{{abstracción}{abstracción}}}\nwendcode{}\nwbegindocs{7}\nwdocspar
 
@@ -149,49 +151,69 @@ La estructura que representa a las aplicaciones de un árbol es llamada {\tt{}\p
 
 \nwenddocs{}\nwbegincode{8}\sublabel{NWlam9-estO-3}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-estO-3}}}\moddef{estructuras del lenguaje~{\nwtagstyle{}\subpageref{NWlam9-estO-1}}}\plusendmoddef
 (struct aplicación (operador operando) #:transparent)
+
 \nwindexdefn{aplicación}{aplicación}{NWlam9-estO-3}\eatline
 \nwidentdefs{\\{{aplicación}{aplicación}}}\nwendcode{}\nwbegindocs{9}\nwdocspar
 
-Se define el predicado {\tt{}\protect\nwindexuse{término?}{término?}{NWlam9-preN-1}término?} para determinar si un objeto dado es un término \( λ \), es decir, si es una estructura {\tt{}\protect\nwindexuse{variable}{variable}{NWlam9-estO-1}variable}, {\tt{}\protect\nwindexuse{abstracción}{abstracción}{NWlam9-estO-2}abstracción} o {\tt{}\protect\nwindexuse{aplicación}{aplicación}{NWlam9-estO-3}aplicación}. Su definición es
+Se define el predicado {\tt{}\protect\nwindexuse{término?}{término?}{NWlam9-preN-1}término?} para determinar si un objeto dado es un término \( λ \), es decir, si es una estructura {\tt{}\protect\nwindexuse{variable}{variable}{NWlam9-estO-1}variable}, {\tt{}\protect\nwindexuse{abstracción}{abstracción}{NWlam9-estO-2}abstracción} o {\tt{}\protect\nwindexuse{aplicación}{aplicación}{NWlam9-estO-3}aplicación}. Se debe verificar que los campos de cada subtérmino corresponden a un término \( λ \) adecuado, por ejemplo, las abstracciones deben tener como argumento una variable y como cuerpo un término.
 
 \nwenddocs{}\nwbegincode{10}\sublabel{NWlam9-preN-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-preN-1}}}\moddef{predicados del lenguaje~{\nwtagstyle{}\subpageref{NWlam9-preN-1}}}\endmoddef
 (define (término? x)
   (cond
-   [(variable? x) #t]
-   [(abstracción? x)
-    (and (variable? (abstracción-argumento x))
-         (término? (abstracción-cuerpo x)))]
-   [(aplicación? x)
-    (and (término? (aplicación-operador x))
-         (término? (aplicación-operando x)))]
-   [else #f]))
+   [(variable? x)    (string? (variable-nombre x))]
+   [(abstracción? x) (and (variable? (abstracción-argumento x))
+                          (término? (abstracción-cuerpo x)))]
+   [(aplicación? x)  (and (término? (aplicación-operador x))
+                          (término? (aplicación-operando x)))]
+   [else             #f]))
+
 \nwindexdefn{término?}{término?}{NWlam9-preN-1}\eatline
 \nwidentdefs{\\{{término?}{término?}}}\nwidentuses{\\{{abstracción}{abstracción}}\\{{aplicación}{aplicación}}\\{{variable}{variable}}}\nwindexuse{abstracción}{abstracción}{NWlam9-preN-1}\nwindexuse{aplicación}{aplicación}{NWlam9-preN-1}\nwindexuse{variable}{variable}{NWlam9-preN-1}\nwalsodefined{\\{NWlam9-preN-2}}\nwused{\\{NWlam9-estF-1}}\nwendcode{}\nwbegindocs{11}\nwdocspar
 La estructura que representa a las metainstrucciones de un árbol es llamada {\tt{}\protect\nwindexuse{metainstrucción}{metainstrucción}{NWlam9-estO-4}metainstrucción}, se compone de una cadena de caracteres llamada {\tt{}nombre} y de una lista de vértices llamada {\tt{}argumentos}.
 
 \nwenddocs{}\nwbegincode{12}\sublabel{NWlam9-estO-4}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-estO-4}}}\moddef{estructuras del lenguaje~{\nwtagstyle{}\subpageref{NWlam9-estO-1}}}\plusendmoddef
 (struct metainstrucción (nombre argumentos) #:transparent)
+
 \nwindexdefn{metainstrucción}{metainstrucción}{NWlam9-estO-4}\eatline
 \nwidentdefs{\\{{metainstrucción}{metainstrucción}}}\nwendcode{}\nwbegindocs{13}\nwdocspar
 
-De manera análoga a la identificación de términos \( λ \) mediante el procedimiento {\tt{}\protect\nwindexuse{término?}{término?}{NWlam9-preN-1}término?} se define el predicado {\tt{}expresión} el cuál permite distinguir estructuras que sean expresiones de este lenguaje.
+Para representar un vértice sin un término asignado se utiliza la estructura {\tt{}\protect\nwindexuse{hueco}{hueco}{NWlam9-estO-5}hueco}, esta funciona como una especie de comodín o valor nulo.
 
-\nwenddocs{}\nwbegincode{14}\sublabel{NWlam9-preN-2}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-preN-2}}}\moddef{predicados del lenguaje~{\nwtagstyle{}\subpageref{NWlam9-preN-1}}}\plusendmoddef
+
+\nwenddocs{}\nwbegincode{14}\sublabel{NWlam9-estO-5}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-estO-5}}}\moddef{estructuras del lenguaje~{\nwtagstyle{}\subpageref{NWlam9-estO-1}}}\plusendmoddef
+(struct hueco () #:transparent)
+
+\nwindexdefn{hueco}{hueco}{NWlam9-estO-5}\eatline
+\nwidentdefs{\\{{hueco}{hueco}}}\nwendcode{}\nwbegindocs{15}\nwdocspar
+
+
+De manera análoga a la identificación de términos \( λ \) mediante el procedimiento {\tt{}\protect\nwindexuse{término?}{término?}{NWlam9-preN-1}término?} se define el predicado {\tt{}\protect\nwindexuse{expresión?}{expresión?}{NWlam9-preN-2}expresión?} el cuál permite distinguir estructuras que sean expresiones de este lenguaje, incluyendo a los términos \( λ \).
+
+\nwenddocs{}\nwbegincode{16}\sublabel{NWlam9-preN-2}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-preN-2}}}\moddef{predicados del lenguaje~{\nwtagstyle{}\subpageref{NWlam9-preN-1}}}\plusendmoddef
 (define (expresión? x)
-  (or (término? x)
-      (metainstrucción? x)))
+  (cond
+   [(variable? x)        (string? (variable-nombre x))]
+   [(abstracción? x)     (and (variable? (abstracción-argumento x))
+                              (expresión? (abstracción-cuerpo x)))]
+   [(aplicación? x)      (and (expresión? (aplicación-operador x))
+                              (expresión? (aplicación-operando x)))]
+   [(metainstrucción? x) (and (string? (metainstrucción-nombre x))
+                              (every expresión? (metainstrucción-argumentos x)))]
+   [(hueco? x)           #t]
+   [else                 #f]))
+
 \nwindexdefn{expresión?}{expresión?}{NWlam9-preN-2}\eatline
-\nwidentdefs{\\{{expresión?}{expresión?}}}\nwidentuses{\\{{metainstrucción}{metainstrucción}}\\{{término?}{término?}}}\nwindexuse{metainstrucción}{metainstrucción}{NWlam9-preN-2}\nwindexuse{término?}{término?}{NWlam9-preN-2}\nwendcode{}\nwbegindocs{15}\nwdocspar
+\nwidentdefs{\\{{expresión?}{expresión?}}}\nwidentuses{\\{{abstracción}{abstracción}}\\{{aplicación}{aplicación}}\\{{hueco}{hueco}}\\{{metainstrucción}{metainstrucción}}\\{{variable}{variable}}}\nwindexuse{abstracción}{abstracción}{NWlam9-preN-2}\nwindexuse{aplicación}{aplicación}{NWlam9-preN-2}\nwindexuse{hueco}{hueco}{NWlam9-preN-2}\nwindexuse{metainstrucción}{metainstrucción}{NWlam9-preN-2}\nwindexuse{variable}{variable}{NWlam9-preN-2}\nwendcode{}\nwbegindocs{17}\nwdocspar
 
 Utilizando los constructores {\tt{}\protect\nwindexuse{variable}{variable}{NWlam9-estO-1}variable}, {\tt{}\protect\nwindexuse{abstracción}{abstracción}{NWlam9-estO-2}abstracción} y {\tt{}\protect\nwindexuse{aplicación}{aplicación}{NWlam9-estO-3}aplicación}, un término \( λ \) como
 \[ (λx.(x\, x)) (λx.(x\, x)) \]
 puede ser representado en memoria como
 
 
-\nwenddocs{}\nwbegincode{16}\sublabel{NWlam9-conS-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-conS-1}}}\moddef{construcción de un término~{\nwtagstyle{}\subpageref{NWlam9-conS-1}}}\endmoddef
+\nwenddocs{}\nwbegincode{18}\sublabel{NWlam9-conS-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-conS-1}}}\moddef{construcción de un término~{\nwtagstyle{}\subpageref{NWlam9-conS-1}}}\endmoddef
 (aplicación (abstracción (variable "x") (aplicación (variable "x") (variable "x")))
             (abstracción (variable "x") (aplicación (variable "x") (variable "x"))))
-\nwidentuses{\\{{abstracción}{abstracción}}\\{{aplicación}{aplicación}}\\{{variable}{variable}}}\nwindexuse{abstracción}{abstracción}{NWlam9-conS-1}\nwindexuse{aplicación}{aplicación}{NWlam9-conS-1}\nwindexuse{variable}{variable}{NWlam9-conS-1}\nwnotused{construcción\ de\ un\ término}\nwendcode{}\nwbegindocs{17}\nwdocspar
+\nwidentuses{\\{{abstracción}{abstracción}}\\{{aplicación}{aplicación}}\\{{variable}{variable}}}\nwindexuse{abstracción}{abstracción}{NWlam9-conS-1}\nwindexuse{aplicación}{aplicación}{NWlam9-conS-1}\nwindexuse{variable}{variable}{NWlam9-conS-1}\nwnotused{construcción\ de\ un\ término}\nwendcode{}\nwbegindocs{19}\nwdocspar
 
 el cuál corresponde a un árbol de sintaxis visualizado graficamente como
 
@@ -234,24 +256,26 @@ el cuál corresponde a un árbol de sintaxis visualizado graficamente como
 \paragraph{Módulo de estructuras del lenguaje} Las estructuras y procedimientos del árbol de sintaxis son agrupados en un módulo de {\tt{}Racket} el cuál podrá ser accesado desde otros módulos. Para ``exportar'' los identificadores definidos se utiliza el macro {\tt{}provide}.
 
 
-\nwenddocs{}\nwbegincode{18}\sublabel{NWlam9-proY-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-proY-1}}}\moddef{provee las definiciones del árbol~{\nwtagstyle{}\subpageref{NWlam9-proY-1}}}\endmoddef
+\nwenddocs{}\nwbegincode{20}\sublabel{NWlam9-proY-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-proY-1}}}\moddef{provee las definiciones del árbol~{\nwtagstyle{}\subpageref{NWlam9-proY-1}}}\endmoddef
 (provide variable variable? variable-nombre
          abstracción abstracción? abstracción-argumento abstracción-cuerpo
          aplicación aplicación? aplicación-operador aplicación-operando
          metainstrucción metainstrucción? metainstrucción-nombre metainstrucción-argumentos
+         hueco hueco?
          término? expresión?)
-\nwidentuses{\\{{abstracción}{abstracción}}\\{{aplicación}{aplicación}}\\{{expresión?}{expresión?}}\\{{metainstrucción}{metainstrucción}}\\{{término?}{término?}}\\{{variable}{variable}}}\nwindexuse{abstracción}{abstracción}{NWlam9-proY-1}\nwindexuse{aplicación}{aplicación}{NWlam9-proY-1}\nwindexuse{expresión?}{expresión?}{NWlam9-proY-1}\nwindexuse{metainstrucción}{metainstrucción}{NWlam9-proY-1}\nwindexuse{término?}{término?}{NWlam9-proY-1}\nwindexuse{variable}{variable}{NWlam9-proY-1}\nwused{\\{NWlam9-estF-1}}\nwendcode{}\nwbegindocs{19}\nwdocspar
+\nwidentuses{\\{{abstracción}{abstracción}}\\{{aplicación}{aplicación}}\\{{expresión?}{expresión?}}\\{{hueco}{hueco}}\\{{metainstrucción}{metainstrucción}}\\{{término?}{término?}}\\{{variable}{variable}}}\nwindexuse{abstracción}{abstracción}{NWlam9-proY-1}\nwindexuse{aplicación}{aplicación}{NWlam9-proY-1}\nwindexuse{expresión?}{expresión?}{NWlam9-proY-1}\nwindexuse{hueco}{hueco}{NWlam9-proY-1}\nwindexuse{metainstrucción}{metainstrucción}{NWlam9-proY-1}\nwindexuse{término?}{término?}{NWlam9-proY-1}\nwindexuse{variable}{variable}{NWlam9-proY-1}\nwused{\\{NWlam9-estF-1}}\nwendcode{}\nwbegindocs{21}\nwdocspar
 
 El archivo {\tt{}estructuras.rkt} contiene este módulo y tiene la siguiente forma:
 
-\nwenddocs{}\nwbegincode{20}\sublabel{NWlam9-estF-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-estF-1}}}\moddef{estructuras.rkt~{\nwtagstyle{}\subpageref{NWlam9-estF-1}}}\endmoddef
+\nwenddocs{}\nwbegincode{22}\sublabel{NWlam9-estF-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-estF-1}}}\moddef{estructuras.rkt~{\nwtagstyle{}\subpageref{NWlam9-estF-1}}}\endmoddef
 ;;; -*- mode: racket; coding: utf-8 -*-
 ;;; Copyright (C) 2016 Eduardo Acuña Yeomans <eduardo.acye@gmail.com>
 ;;; Procura no editar este archivo, mejor modifica lambda.nw
 
 #lang racket/base
 
-;;; Identificadores exportados
+(require srfi/1)
+
 \LA{}provee las definiciones del árbol~{\nwtagstyle{}\subpageref{NWlam9-proY-1}}\RA{}
 
 ;;; Estructuras del árbol de sintaxis
@@ -259,17 +283,17 @@ El archivo {\tt{}estructuras.rkt} contiene este módulo y tiene la siguiente for
 
 ;;; Predicados especiales
 \LA{}predicados del lenguaje~{\nwtagstyle{}\subpageref{NWlam9-preN-1}}\RA{}
-\nwnotused{estructuras.rkt}\nwendcode{}\nwbegindocs{21}\nwdocspar
+\nwnotused{estructuras.rkt}\nwendcode{}\nwbegindocs{23}\nwdocspar
 
-\nwenddocs{}\nwbegindocs{22}\section*{Lectura de expresiones}
+\nwenddocs{}\nwbegindocs{24}\section*{Lectura de expresiones}
 
-\paragraph{Representación textual} El lenguaje de {\tt{}lambda} es descrito conceptualmente por las estructuras de los árboles de sintaxis. Sin embargo es tedioso definir expresiones del lenguaje escribiendo manualmente los constructores de las expresiones. Trabajando en un contexto meramente textual como en el código de un lenguaje de programación es conveniente tener una manera de transformar una cadena de caracteres como \( \mathrm{"(λx.(x x))(λx.(x x))"} \) (o mejor aún, con abuso de notación \( \mathrm{"(λx.x x) λx.x x"} \) ) a un árbol de sintaxis de este término. Este es el trabajo del lector.
+\paragraph{Representación textual} El lenguaje de {\tt{}lambda} es descrito conceptualmente por las estructuras de los árboles de sintaxis. Sin embargo es tedioso definir expresiones del lenguaje escribiendo manualmente los constructores de las expresiones. Trabajando en un contexto meramente textual como en el código de un lenguaje de programación es conveniente tener una manera de transformar una cadena de caracteres como ``\( \mathrm{(λx.(x x))(λx.(x x))} \)'' (o mejor aún, con abuso de notación ``\( \mathrm{(λx.x x) λx.x x} \)'' ) a un árbol de sintaxis de este término. Este es el trabajo del lector.
 
 La representación textual del lenguaje contempla la escritura de términos descrita en la definición formal de \( Λ \) y los abusos de notación contemplados en el trabajo. Adicionalmente se reprsentan las metainstrucciones de tal manera que
 
-\nwenddocs{}\nwbegincode{23}\sublabel{NWlam9-pseb-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-pseb-1}}}\moddef{pseudocódigo de una metainstrucción~{\nwtagstyle{}\subpageref{NWlam9-pseb-1}}}\endmoddef
+\nwenddocs{}\nwbegincode{25}\sublabel{NWlam9-pseb-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-pseb-1}}}\moddef{pseudocódigo de una metainstrucción~{\nwtagstyle{}\subpageref{NWlam9-pseb-1}}}\endmoddef
 (metainstrucción nombre (list argumento-0 argumento-1 ... argumento-n))
-\nwidentuses{\\{{metainstrucción}{metainstrucción}}}\nwindexuse{metainstrucción}{metainstrucción}{NWlam9-pseb-1}\nwnotused{pseudocódigo\ de\ una\ metainstrucción}\nwendcode{}\nwbegindocs{24}\nwdocspar
+\nwidentuses{\\{{metainstrucción}{metainstrucción}}}\nwindexuse{metainstrucción}{metainstrucción}{NWlam9-pseb-1}\nwnotused{pseudocódigo\ de\ una\ metainstrucción}\nwendcode{}\nwbegindocs{26}\nwdocspar
 
 tiene como representación textual
 
@@ -279,7 +303,7 @@ tiene como representación textual
 
 El procedimiento {\tt{}\protect\nwindexuse{leer}{leer}{NWlam9-lecL-1}leer} es el punto de entrada del parser, recibe opcionalmente un puerto llamado {\tt{}p} que por defecto es {\tt{}(current-input-port)}.
 
-\nwenddocs{}\nwbegincode{25}\sublabel{NWlam9-lecL-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-lecL-1}}}\moddef{lector de expresiones~{\nwtagstyle{}\subpageref{NWlam9-lecL-1}}}\endmoddef
+\nwenddocs{}\nwbegincode{27}\sublabel{NWlam9-lecL-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-lecL-1}}}\moddef{lector de expresiones~{\nwtagstyle{}\subpageref{NWlam9-lecL-1}}}\endmoddef
 (define (leer [p (current-input-port)])
   (let ([e (parsear-expresión p)])
     (cond
@@ -291,14 +315,14 @@ El procedimiento {\tt{}\protect\nwindexuse{leer}{leer}{NWlam9-lecL-1}leer} es el
       (error 'leer "Se esperaba una expresión completa pero se leyó `~a'" e)])))
 
 \nwindexdefn{leer}{leer}{NWlam9-lecL-1}\eatline
-\nwidentdefs{\\{{leer}{leer}}}\nwidentuses{\\{{parsear-expresión}{parsear-expresión}}}\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-lecL-1}\nwalsodefined{\\{NWlam9-lecL-2}}\nwused{\\{NWlam9-lecA-1}}\nwendcode{}\nwbegindocs{26}\nwdocspar
+\nwidentdefs{\\{{leer}{leer}}}\nwidentuses{\\{{parsear-expresión}{parsear-expresión}}}\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-lecL-1}\nwalsodefined{\\{NWlam9-lecL-2}}\nwused{\\{NWlam9-lecA-1}}\nwendcode{}\nwbegindocs{28}\nwdocspar
 
 El procedimiento {\tt{}\protect\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-lecL-2}parsear-expresión} se encarga de regresar una expresión {\tt{}e}, en caso que la estructura sintáctica analizada no haya sido una expresión válida se regresa un caracter que indica el inicio de lo que no se pudo leer. En esta implementación del lector el caracter punto y coma delimita expresiones, por lo tanto, obtener como resultado {\tt{}{\char35}{\char92};} provoca que se analice la siguiente expresión del puerto.
 
 La implementación de {\tt{}\protect\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-lecL-2}parsear-expresión} considera un puerto de entrada {\tt{}p} de donde se consumen caracteres, un caracter {\tt{}c} que es el primer caracter del puerto y un acumulador de expresiones {\tt{}a} que representa el árbol leído. A partir de {\tt{}c} se puede determinar el tipo de expresión que se está leyendo.
 
 
-\nwenddocs{}\nwbegincode{27}\sublabel{NWlam9-lecL-2}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-lecL-2}}}\moddef{lector de expresiones~{\nwtagstyle{}\subpageref{NWlam9-lecL-1}}}\plusendmoddef
+\nwenddocs{}\nwbegincode{29}\sublabel{NWlam9-lecL-2}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-lecL-2}}}\moddef{lector de expresiones~{\nwtagstyle{}\subpageref{NWlam9-lecL-1}}}\plusendmoddef
 (define (parsear-expresión [p (current-input-port)]
                            [c (peek-char p)]
                            [a null])
@@ -311,24 +335,26 @@ La implementación de {\tt{}\protect\nwindexuse{parsear-expresión}{parsear-expr
     \LA{}lectura de espacio en blanco~{\nwtagstyle{}\subpageref{NWlam9-lecS.2-1}}\RA{}]
    [(char=? #\\( c)
     \LA{}lectura de paréntesis abierto~{\nwtagstyle{}\subpageref{NWlam9-lecU-1}}\RA{}]
+   [(char=? #\\[ c)
+    \LA{}lectura de hueco~{\nwtagstyle{}\subpageref{NWlam9-lecG-1}}\RA{}]
    [(or (char=? (integer->char 955) c)
         (char=? #\\\\ c))
     \LA{}lectura de lambda~{\nwtagstyle{}\subpageref{NWlam9-lecH-1}}\RA{}]
    [else
     \LA{}lectura de variable o metainstrucción~{\nwtagstyle{}\subpageref{NWlam9-lecc-1}}\RA{}]))
 
-\nosublabel{NWlam9-lecL-2-u6}\nwindexdefn{parsear-expresión}{parsear-expresión}{NWlam9-lecL-2}\eatline
-\nwidentdefs{\\{{parsear-expresión}{parsear-expresión}}}\nwidentuses{\\{{delimitador-final?}{delimitador-final?}}}\nwindexuse{delimitador-final?}{delimitador-final?}{NWlam9-lecL-2}\nwendcode{}\nwbegindocs{28}\nwdocspar
+\nosublabel{NWlam9-lecL-2-u7}\nwindexdefn{parsear-expresión}{parsear-expresión}{NWlam9-lecL-2}\eatline
+\nwidentdefs{\\{{parsear-expresión}{parsear-expresión}}}\nwidentuses{\\{{delimitador-final?}{delimitador-final?}}}\nwindexuse{delimitador-final?}{delimitador-final?}{NWlam9-lecL-2}\nwendcode{}\nwbegindocs{30}\nwdocspar
 
 El análisis de casos tiene tres cláusulas ``triviales'': cuando no hay más que leer del puerto, cuando se lee un delimitador final y cuando se lee un espacio en blanco. Cuando el siguiente objeto del puerto de entrada es el ``fin de archivo'', el lector debe regresar este objeto si el acumulador {\tt{}a} es núlo, de lo contrario se regresa la expresión acumulada.
 
-\nwenddocs{}\nwbegincode{29}\sublabel{NWlam9-lecP-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-lecP-1}}}\moddef{lectura de fin de archivo~{\nwtagstyle{}\subpageref{NWlam9-lecP-1}}}\endmoddef
+\nwenddocs{}\nwbegincode{31}\sublabel{NWlam9-lecP-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-lecP-1}}}\moddef{lectura de fin de archivo~{\nwtagstyle{}\subpageref{NWlam9-lecP-1}}}\endmoddef
 (if (null? a) c a)
-\nwused{\\{NWlam9-lecL-2}}\nwendcode{}\nwbegindocs{30}\nwdocspar
+\nwused{\\{NWlam9-lecL-2}}\nwendcode{}\nwbegindocs{32}\nwdocspar
 
 El siguiente caso es la lectura de un delimitador final, el procedimiento {\tt{}\protect\nwindexuse{delimitador-final?}{delimitador-final?}{NWlam9-proa-1}delimitador-final?} se encarga de determinar si un caracter termina una expresión.
 
-\nwenddocs{}\nwbegincode{31}\sublabel{NWlam9-proa-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-proa-1}}}\moddef{procedimientos auxiliares de lectura~{\nwtagstyle{}\subpageref{NWlam9-proa-1}}}\endmoddef
+\nwenddocs{}\nwbegincode{33}\sublabel{NWlam9-proa-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-proa-1}}}\moddef{procedimientos auxiliares de lectura~{\nwtagstyle{}\subpageref{NWlam9-proa-1}}}\endmoddef
 (define (delimitador-final? c)
   (or (eof-object? c)
       (char=? #\\] c)
@@ -338,17 +364,17 @@ El siguiente caso es la lectura de un delimitador final, el procedimiento {\tt{}
       (char=? #\\; c)))
 
 \nwindexdefn{delimitador-final?}{delimitador-final?}{NWlam9-proa-1}\eatline
-\nwidentdefs{\\{{delimitador-final?}{delimitador-final?}}}\nwalsodefined{\\{NWlam9-proa-2}\\{NWlam9-proa-3}\\{NWlam9-proa-4}\\{NWlam9-proa-5}\\{NWlam9-proa-6}\\{NWlam9-proa-7}\\{NWlam9-proa-8}}\nwused{\\{NWlam9-lecA-1}}\nwendcode{}\nwbegindocs{32}\nwdocspar
+\nwidentdefs{\\{{delimitador-final?}{delimitador-final?}}}\nwalsodefined{\\{NWlam9-proa-2}\\{NWlam9-proa-3}\\{NWlam9-proa-4}\\{NWlam9-proa-5}\\{NWlam9-proa-6}\\{NWlam9-proa-7}\\{NWlam9-proa-8}\\{NWlam9-proa-9}\\{NWlam9-proa-A}}\nwused{\\{NWlam9-lecA-1}}\nwendcode{}\nwbegindocs{34}\nwdocspar
 
 Cuando un objeto leído de un puerto de entrada satisface este predicado, el lector consume y regresa el delimitador si el acumulador {\tt{}a} es núlo, de lo contrario regresa la expresión acumulada.
 
-\nwenddocs{}\nwbegincode{33}\sublabel{NWlam9-lecS-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-lecS-1}}}\moddef{lectura de delimitador final~{\nwtagstyle{}\subpageref{NWlam9-lecS-1}}}\endmoddef
+\nwenddocs{}\nwbegincode{35}\sublabel{NWlam9-lecS-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-lecS-1}}}\moddef{lectura de delimitador final~{\nwtagstyle{}\subpageref{NWlam9-lecS-1}}}\endmoddef
 (if (null? a) (read-char p) a)
-\nwused{\\{NWlam9-lecL-2}}\nwendcode{}\nwbegindocs{34}\nwdocspar
+\nwused{\\{NWlam9-lecL-2}}\nwendcode{}\nwbegindocs{36}\nwdocspar
 
 El caracter delimitador no es consumido en caso de que {\tt{}a} no sea núlo ya que usualmente los delimitadores finales tienen asociado un delimitador inicial con el que deben concordar, por ejemplo, el predicado {\tt{}\protect\nwindexuse{delimitador-inicial?}{delimitador-inicial?}{NWlam9-proa-2}delimitador-inicial?} se define\footnote{Se realiza una comparación con {\tt{}(integer->char\ 955)} ya que 955 es el valor numérico del caracter \( λ \) en Unicode.} como
 
-\nwenddocs{}\nwbegincode{35}\sublabel{NWlam9-proa-2}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-proa-2}}}\moddef{procedimientos auxiliares de lectura~{\nwtagstyle{}\subpageref{NWlam9-proa-1}}}\plusendmoddef
+\nwenddocs{}\nwbegincode{37}\sublabel{NWlam9-proa-2}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-proa-2}}}\moddef{procedimientos auxiliares de lectura~{\nwtagstyle{}\subpageref{NWlam9-proa-1}}}\plusendmoddef
 (define (delimitador-inicial? c)
   (or (char=? #\\( c)
       (char=? #\\[ c)
@@ -356,119 +382,161 @@ El caracter delimitador no es consumido en caso de que {\tt{}a} no sea núlo ya 
       (char=? #\\\\ c)))
 
 \nwindexdefn{delimitador-inicial?}{delimitador-inicial?}{NWlam9-proa-2}\eatline
-\nwidentdefs{\\{{delimitador-inicial?}{delimitador-inicial?}}}\nwendcode{}\nwbegindocs{36}\nwdocspar
+\nwidentdefs{\\{{delimitador-inicial?}{delimitador-inicial?}}}\nwendcode{}\nwbegindocs{38}\nwdocspar
 
 En el lenguaje, el delimitador {\tt{}{\char35}{\char92}(} debe estar asociado al delimitador {\tt{}{\char35}{\char92})} y de igual manera con {\tt{}{\char35}{\char92}[} y {\tt{}{\char35}{\char92}]}. Esta verificación se realiza en otra parte del código, pero se debe preservar la información del delimitador leído.
 
 Técnicamente, los caracteres delimitadores del lenguaje son los que satisfacen los predicados {\tt{}\protect\nwindexuse{delimitador-inicial?}{delimitador-inicial?}{NWlam9-proa-2}delimitador-inicial?}, {\tt{}\protect\nwindexuse{delimitador-final?}{delimitador-final?}{NWlam9-proa-1}delimitador-final?} y {\tt{}char-whitespace?}, sin embargo es conveniente definirlos por separado ya que son tratados de manera diferente en la lectura de una expresión. Para determinar si algún caracter es delimitador (sin importar el tipo de delimitador que sea) se utiliza el predicado {\tt{}\protect\nwindexuse{delimitador?}{delimitador?}{NWlam9-proa-3}delimitador?}.
 
-\nwenddocs{}\nwbegincode{37}\sublabel{NWlam9-proa-3}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-proa-3}}}\moddef{procedimientos auxiliares de lectura~{\nwtagstyle{}\subpageref{NWlam9-proa-1}}}\plusendmoddef
+\nwenddocs{}\nwbegincode{39}\sublabel{NWlam9-proa-3}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-proa-3}}}\moddef{procedimientos auxiliares de lectura~{\nwtagstyle{}\subpageref{NWlam9-proa-1}}}\plusendmoddef
 (define (delimitador? c)
   (or (delimitador-final? c)
       (delimitador-inicial? c)
       (char-whitespace? c)))
 
 \nwindexdefn{delimitador?}{delimitador?}{NWlam9-proa-3}\eatline
-\nwidentdefs{\\{{delimitador?}{delimitador?}}}\nwidentuses{\\{{delimitador-final?}{delimitador-final?}}\\{{delimitador-inicial?}{delimitador-inicial?}}}\nwindexuse{delimitador-final?}{delimitador-final?}{NWlam9-proa-3}\nwindexuse{delimitador-inicial?}{delimitador-inicial?}{NWlam9-proa-3}\nwendcode{}\nwbegindocs{38}\nwdocspar
+\nwidentdefs{\\{{delimitador?}{delimitador?}}}\nwidentuses{\\{{delimitador-final?}{delimitador-final?}}\\{{delimitador-inicial?}{delimitador-inicial?}}}\nwindexuse{delimitador-final?}{delimitador-final?}{NWlam9-proa-3}\nwindexuse{delimitador-inicial?}{delimitador-inicial?}{NWlam9-proa-3}\nwendcode{}\nwbegindocs{40}\nwdocspar
 
 El tercer y último caso ``trivial'' en la lectura es el de espacios en blanco. Al encontrarse un caracter de este tipo se consume del puerto y se llama de manera recursiva {\tt{}\protect\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-lecL-2}parsear-expresión} de tal manera que el caracter es ignorado y se preserva el valor de la expresión acumulada {\tt{}a}.
 
-\nwenddocs{}\nwbegincode{39}\sublabel{NWlam9-lecS.2-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-lecS.2-1}}}\moddef{lectura de espacio en blanco~{\nwtagstyle{}\subpageref{NWlam9-lecS.2-1}}}\endmoddef
+\nwenddocs{}\nwbegincode{41}\sublabel{NWlam9-lecS.2-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-lecS.2-1}}}\moddef{lectura de espacio en blanco~{\nwtagstyle{}\subpageref{NWlam9-lecS.2-1}}}\endmoddef
 (read-char p)
 (parsear-expresión p (peek-char p) a)
-\nwidentuses{\\{{parsear-expresión}{parsear-expresión}}}\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-lecS.2-1}\nwused{\\{NWlam9-lecL-2}}\nwendcode{}\nwbegindocs{40}\nwdocspar
+\nwidentuses{\\{{parsear-expresión}{parsear-expresión}}}\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-lecS.2-1}\nwused{\\{NWlam9-lecL-2}}\nwendcode{}\nwbegindocs{42}\nwdocspar
 
 El resto de los casos son significativamente más complejos que los primeros tres. Primero se aborda el leer un paréntesis abierto, esto puede ocurrir cuando se desea agrupar una aplicación o una abstracción. El procedimiento {\tt{}\protect\nwindexuse{parsear-paréntesis}{parsear-paréntesis}{NWlam9-proa-5}parsear-paréntesis} se encarga de leer una expresión después de un paréntesis abierto y verificar que dicha expresión termina con un paréntesis cerrado.
 
-\nwenddocs{}\nwbegincode{41}\sublabel{NWlam9-lecU-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-lecU-1}}}\moddef{lectura de paréntesis abierto~{\nwtagstyle{}\subpageref{NWlam9-lecU-1}}}\endmoddef
+\nwenddocs{}\nwbegincode{43}\sublabel{NWlam9-lecU-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-lecU-1}}}\moddef{lectura de paréntesis abierto~{\nwtagstyle{}\subpageref{NWlam9-lecU-1}}}\endmoddef
 (read-char p)
 (let ([e (parsear-paréntesis p)])
   (parsear-expresión p (peek-char p) (aplicación/identidad a e)))
-\nwidentuses{\\{{aplicación}{aplicación}}\\{{aplicación/identidad}{aplicación/identidad}}\\{{parsear-expresión}{parsear-expresión}}\\{{parsear-paréntesis}{parsear-paréntesis}}}\nwindexuse{aplicación}{aplicación}{NWlam9-lecU-1}\nwindexuse{aplicación/identidad}{aplicación/identidad}{NWlam9-lecU-1}\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-lecU-1}\nwindexuse{parsear-paréntesis}{parsear-paréntesis}{NWlam9-lecU-1}\nwused{\\{NWlam9-lecL-2}}\nwendcode{}\nwbegindocs{42}\nwdocspar
+\nwidentuses{\\{{aplicación}{aplicación}}\\{{aplicación/identidad}{aplicación/identidad}}\\{{parsear-expresión}{parsear-expresión}}\\{{parsear-paréntesis}{parsear-paréntesis}}}\nwindexuse{aplicación}{aplicación}{NWlam9-lecU-1}\nwindexuse{aplicación/identidad}{aplicación/identidad}{NWlam9-lecU-1}\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-lecU-1}\nwindexuse{parsear-paréntesis}{parsear-paréntesis}{NWlam9-lecU-1}\nwused{\\{NWlam9-lecL-2}}\nwendcode{}\nwbegindocs{44}\nwdocspar
 
 Primero se consume el caracter {\tt{}{\char35}{\char92}(} del puerto de entrada, después se llama el procedimiento {\tt{}\protect\nwindexuse{parsear-paréntesis}{parsear-paréntesis}{NWlam9-proa-5}parsear-paréntesis} el cuál regresará la expresión {\tt{}e} delimitada por {\tt{}{\char35}{\char92}(} y {\tt{}{\char35}{\char92})}. El procedimiento {\tt{}\protect\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-lecL-2}parsear-expresión} es llamado de manera recursiva ya que es posible que esta expresión entre paréntesis sea parte de una aplicación escrita con abuso de notación, por ejemplo {\tt{}(M\ N)P}. El resultado es acumulado con el procedimiento {\tt{}\protect\nwindexuse{aplicación}{aplicación}{NWlam9-estO-3}aplicación\protect\nwindexuse{aplicación/identidad}{aplicación/identidad}{NWlam9-proa-4}/identidad}, este contempla la posibilidad que la expresión leída sea parte de una expresión de la forma {\tt{}M(N\ P)} y se define como
 
-\nwenddocs{}\nwbegincode{43}\sublabel{NWlam9-proa-4}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-proa-4}}}\moddef{procedimientos auxiliares de lectura~{\nwtagstyle{}\subpageref{NWlam9-proa-1}}}\plusendmoddef
+\nwenddocs{}\nwbegincode{45}\sublabel{NWlam9-proa-4}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-proa-4}}}\moddef{procedimientos auxiliares de lectura~{\nwtagstyle{}\subpageref{NWlam9-proa-1}}}\plusendmoddef
 (define (aplicación/identidad a e)
   (if (null? a) e (aplicación a e)))
 
 \nwindexdefn{aplicación/identidad}{aplicación/identidad}{NWlam9-proa-4}\eatline
-\nwidentdefs{\\{{aplicación/identidad}{aplicación/identidad}}}\nwidentuses{\\{{aplicación}{aplicación}}}\nwindexuse{aplicación}{aplicación}{NWlam9-proa-4}\nwendcode{}\nwbegindocs{44}\nwdocspar
+\nwidentdefs{\\{{aplicación/identidad}{aplicación/identidad}}}\nwidentuses{\\{{aplicación}{aplicación}}}\nwindexuse{aplicación}{aplicación}{NWlam9-proa-4}\nwendcode{}\nwbegindocs{46}\nwdocspar
 
 Cuando el acumulador {\tt{}a} es núlo, el nuevo acumulador es la expresión {\tt{}e}, de lo contrario, el nuevo acumulador es la aplicación de {\tt{}a} con {\tt{}e}.
 
 El procedimiento {\tt{}\protect\nwindexuse{parsear-paréntesis}{parsear-paréntesis}{NWlam9-proa-5}parsear-paréntesis} lee una expresión {\tt{}e}, verifica que el resultado es una aplicación o una abstracción y verifica que el caracter después la representación textual de {\tt{}e} es un paréntesis cerrado.
 
-\nwenddocs{}\nwbegincode{45}\sublabel{NWlam9-proa-5}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-proa-5}}}\moddef{procedimientos auxiliares de lectura~{\nwtagstyle{}\subpageref{NWlam9-proa-1}}}\plusendmoddef
+\nwenddocs{}\nwbegincode{47}\sublabel{NWlam9-proa-5}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-proa-5}}}\moddef{procedimientos auxiliares de lectura~{\nwtagstyle{}\subpageref{NWlam9-proa-1}}}\plusendmoddef
 (define (parsear-paréntesis [p (current-input-port)]
                             [c (peek-char p)])
   (let ([e (parsear-expresión p c)])
     (unless (or (abstracción? e) (aplicación? e))
-      (error 'parsear-paréntesis "Se esperaba una abstracción o una aplicación pero se leyó ~a" e))
+      (error 'parsear-paréntesis
+             "Se esperaba una abstracción o una aplicación pero se leyó ~a" e))
     (let ([c (read-char p)])
       (unless (char=? #\\) c)
-        (error 'parsear-paréntesis "Se esperaba `)' pero se leyó `~a'" c))
+        (error 'parsear-paréntesis
+               "Se esperaba `)' pero se leyó `~a'" c))
       e)))
 
 \nwindexdefn{parsear-paréntesis}{parsear-paréntesis}{NWlam9-proa-5}\eatline
-\nwidentdefs{\\{{parsear-paréntesis}{parsear-paréntesis}}}\nwidentuses{\\{{abstracción}{abstracción}}\\{{aplicación}{aplicación}}\\{{parsear-expresión}{parsear-expresión}}}\nwindexuse{abstracción}{abstracción}{NWlam9-proa-5}\nwindexuse{aplicación}{aplicación}{NWlam9-proa-5}\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-proa-5}\nwendcode{}\nwbegindocs{46}\nwdocspar
+\nwidentdefs{\\{{parsear-paréntesis}{parsear-paréntesis}}}\nwidentuses{\\{{abstracción}{abstracción}}\\{{aplicación}{aplicación}}\\{{parsear-expresión}{parsear-expresión}}}\nwindexuse{abstracción}{abstracción}{NWlam9-proa-5}\nwindexuse{aplicación}{aplicación}{NWlam9-proa-5}\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-proa-5}\nwendcode{}\nwbegindocs{48}\nwdocspar
 
-El siguiente caso es leer un caracter que representa a \( λ \), en esta implementación estos caracteres son {\tt{}{\char35}{\char92}{\char92}} y el resultado de {\tt{}(integer->char\ 955)} que es el caracter Unicode de la letra lambda minúscula. De manera similar a la lectura de paréntesis abierto, se consume del puerto el caracter leído, se obtiene la abstracción con el procedimiento {\tt{}parsear-\protect\nwindexuse{abstracción}{abstracción}{NWlam9-estO-2}abstracción\protect\nwindexuse{parsear-abstracción}{parsear-abstracción}{NWlam9-proa-6}} y se manejan los abusos de notación de la aplicación.
+Ahora se aborda el caso de leer el caracter {\tt{}{\char35}{\char92}[} este caracter es utilizado después de leer el nombre de una metainstrucción, sin embargo, cuando se encuentra este caracter por sí solo denota el inicio de un hueco, los cuales se conforman de un corchete abierto y uno cerrado con espacios en blanco opcionales entre los corchetes.
 
-\nwenddocs{}\nwbegincode{47}\sublabel{NWlam9-lecH-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-lecH-1}}}\moddef{lectura de lambda~{\nwtagstyle{}\subpageref{NWlam9-lecH-1}}}\endmoddef
+\nwenddocs{}\nwbegincode{49}\sublabel{NWlam9-lecG-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-lecG-1}}}\moddef{lectura de hueco~{\nwtagstyle{}\subpageref{NWlam9-lecG-1}}}\endmoddef
+(read-char p)
+(let ([e (parsear-hueco p)])
+  (parsear-expresión p (peek-char p) (aplicación/identidad a e)))
+\nwidentuses{\\{{aplicación}{aplicación}}\\{{aplicación/identidad}{aplicación/identidad}}\\{{hueco}{hueco}}\\{{parsear-expresión}{parsear-expresión}}\\{{parsear-hueco}{parsear-hueco}}}\nwindexuse{aplicación}{aplicación}{NWlam9-lecG-1}\nwindexuse{aplicación/identidad}{aplicación/identidad}{NWlam9-lecG-1}\nwindexuse{hueco}{hueco}{NWlam9-lecG-1}\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-lecG-1}\nwindexuse{parsear-hueco}{parsear-hueco}{NWlam9-lecG-1}\nwused{\\{NWlam9-lecL-2}}\nwendcode{}\nwbegindocs{50}\nwdocspar
+
+\nwenddocs{}\nwbegincode{51}\sublabel{NWlam9-proa-6}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-proa-6}}}\moddef{procedimientos auxiliares de lectura~{\nwtagstyle{}\subpageref{NWlam9-proa-1}}}\plusendmoddef
+(define (parsear-hueco [p (current-input-port)]
+                       [c (peek-char p)])
+  (cond [(char-whitespace? c)
+         (read-char p)
+         (parsear-hueco p (peek-char p))]
+        [(char=? #\\] c)
+         (read-char p)
+         (hueco)]
+        [else
+         (error 'parsear-hueco
+                "Se esperaba `]' pero se leyó `~a'" c)]))
+
+\nwindexdefn{parsear-hueco}{parsear-hueco}{NWlam9-proa-6}\eatline
+\nwidentdefs{\\{{parsear-hueco}{parsear-hueco}}}\nwidentuses{\\{{hueco}{hueco}}}\nwindexuse{hueco}{hueco}{NWlam9-proa-6}\nwendcode{}\nwbegindocs{52}\nwdocspar
+
+
+El siguiente caso es leer un caracter que representa a \( λ \), en esta implementación estos caracteres son {\tt{}{\char35}{\char92}{\char92}} y el resultado de {\tt{}(integer->char\ 955)} que es el caracter Unicode de la letra lambda minúscula. De manera similar a la lectura de paréntesis abierto, se consume del puerto el caracter leído, se obtiene la abstracción con el procedimiento {\tt{}parsear-\protect\nwindexuse{abstracción}{abstracción}{NWlam9-estO-2}abstracción\protect\nwindexuse{parsear-abstracción}{parsear-abstracción}{NWlam9-proa-7}} y se manejan los abusos de notación de la aplicación.
+
+\nwenddocs{}\nwbegincode{53}\sublabel{NWlam9-lecH-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-lecH-1}}}\moddef{lectura de lambda~{\nwtagstyle{}\subpageref{NWlam9-lecH-1}}}\endmoddef
 (read-char p)
 (let ([e (parsear-abstracción p)])
   (parsear-expresión p (peek-char p) (aplicación/identidad a e)))
-\nwidentuses{\\{{abstracción}{abstracción}}\\{{aplicación}{aplicación}}\\{{aplicación/identidad}{aplicación/identidad}}\\{{parsear-abstracción}{parsear-abstracción}}\\{{parsear-expresión}{parsear-expresión}}}\nwindexuse{abstracción}{abstracción}{NWlam9-lecH-1}\nwindexuse{aplicación}{aplicación}{NWlam9-lecH-1}\nwindexuse{aplicación/identidad}{aplicación/identidad}{NWlam9-lecH-1}\nwindexuse{parsear-abstracción}{parsear-abstracción}{NWlam9-lecH-1}\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-lecH-1}\nwused{\\{NWlam9-lecL-2}}\nwendcode{}\nwbegindocs{48}\nwdocspar
+\nwidentuses{\\{{abstracción}{abstracción}}\\{{aplicación}{aplicación}}\\{{aplicación/identidad}{aplicación/identidad}}\\{{parsear-abstracción}{parsear-abstracción}}\\{{parsear-expresión}{parsear-expresión}}}\nwindexuse{abstracción}{abstracción}{NWlam9-lecH-1}\nwindexuse{aplicación}{aplicación}{NWlam9-lecH-1}\nwindexuse{aplicación/identidad}{aplicación/identidad}{NWlam9-lecH-1}\nwindexuse{parsear-abstracción}{parsear-abstracción}{NWlam9-lecH-1}\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-lecH-1}\nwused{\\{NWlam9-lecL-2}}\nwendcode{}\nwbegindocs{54}\nwdocspar
 
-La implementación del procedimiento {\tt{}parsear-\protect\nwindexuse{abstracción}{abstracción}{NWlam9-estO-2}abstracción\protect\nwindexuse{parsear-abstracción}{parsear-abstracción}{NWlam9-proa-6}} es un poco más compleja a la de {\tt{}\protect\nwindexuse{parsear-paréntesis}{parsear-paréntesis}{NWlam9-proa-5}parsear-paréntesis}, la representación textual de las abstracciones con el abuso de notación es de la forma {\tt{}"{\char92}\ x-1\ x-2\ ...\ x-n\ .\ M"}, ya que el procedimiento inicia después de consumir el caracter de \( λ \), primero se deben identificar todas las variables antes del punto y regresar una abstracción ``descurrificada''.
+La implementación del procedimiento {\tt{}parsear-\protect\nwindexuse{abstracción}{abstracción}{NWlam9-estO-2}abstracción\protect\nwindexuse{parsear-abstracción}{parsear-abstracción}{NWlam9-proa-7}} es un poco más compleja a la de {\tt{}\protect\nwindexuse{parsear-paréntesis}{parsear-paréntesis}{NWlam9-proa-5}parsear-paréntesis}, la representación textual de las abstracciones con el abuso de notación es de la forma {\tt{}"{\char92}\ x-1\ x-2\ ...\ x-n\ .\ M"}, ya que el procedimiento inicia después de consumir el caracter de \( λ \), primero se deben identificar todas las variables antes del punto y regresar una abstracción ``descurrificada''.
 
-\nwenddocs{}\nwbegincode{49}\sublabel{NWlam9-proa-6}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-proa-6}}}\moddef{procedimientos auxiliares de lectura~{\nwtagstyle{}\subpageref{NWlam9-proa-1}}}\plusendmoddef
+\nwenddocs{}\nwbegincode{55}\sublabel{NWlam9-proa-7}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-proa-7}}}\moddef{procedimientos auxiliares de lectura~{\nwtagstyle{}\subpageref{NWlam9-proa-1}}}\plusendmoddef
 (define (parsear-abstracción [p (current-input-port)]
                              [c (peek-char p)])
   (let itera ([c c]
               [a null])
     (cond [(or (eof-object? c)
                (and (delimitador? c) (not (char-whitespace? c)) (not (char=? #\\. c))))
-           (error 'parsear-abstracción "Se esperaba una variable pero se leyó `~a'" c)]
+           (error 'parsear-abstracción
+                  "Se esperaba una variable pero se leyó `~a'" c)]
           [(char-whitespace? c)
            (read-char p)
            (itera (peek-char p) a)]
           [(char=? #\\. c)
            (read-char p)
            (if (null? a)
-               (error 'parsear-abstracción "Se esperaba una variable pero se leyó `~a'" c)
+               (error 'parsear-abstracción
+                      "Se esperaba una variable pero se leyó `~a'" c)
                (let ([e (parsear-expresión p)])
                  (if (expresión? e)
                      (foldr abstracción e (reverse a))
-                     (error 'parsear-abstracción "Se esperaba una expresión pero se leyó ~a" e))))]
+                     (error 'parsear-abstracción
+                            "Se esperaba una expresión pero se leyó ~a" e))))]
           [else
            (let ([v (variable (parsear-constituyente p))])
              (itera (peek-char p) (cons v a)))])))
 
-\nwindexdefn{parsear-abstracción}{parsear-abstracción}{NWlam9-proa-6}\eatline
-\nwidentdefs{\\{{parsear-abstracción}{parsear-abstracción}}}\nwidentuses{\\{{abstracción}{abstracción}}\\{{delimitador?}{delimitador?}}\\{{expresión?}{expresión?}}\\{{parsear-constituyente}{parsear-constituyente}}\\{{parsear-expresión}{parsear-expresión}}\\{{variable}{variable}}}\nwindexuse{abstracción}{abstracción}{NWlam9-proa-6}\nwindexuse{delimitador?}{delimitador?}{NWlam9-proa-6}\nwindexuse{expresión?}{expresión?}{NWlam9-proa-6}\nwindexuse{parsear-constituyente}{parsear-constituyente}{NWlam9-proa-6}\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-proa-6}\nwindexuse{variable}{variable}{NWlam9-proa-6}\nwendcode{}\nwbegindocs{50}\nwdocspar
+\nwindexdefn{parsear-abstracción}{parsear-abstracción}{NWlam9-proa-7}\eatline
+\nwidentdefs{\\{{parsear-abstracción}{parsear-abstracción}}}\nwidentuses{\\{{abstracción}{abstracción}}\\{{delimitador?}{delimitador?}}\\{{expresión?}{expresión?}}\\{{parsear-constituyente}{parsear-constituyente}}\\{{parsear-expresión}{parsear-expresión}}\\{{variable}{variable}}}\nwindexuse{abstracción}{abstracción}{NWlam9-proa-7}\nwindexuse{delimitador?}{delimitador?}{NWlam9-proa-7}\nwindexuse{expresión?}{expresión?}{NWlam9-proa-7}\nwindexuse{parsear-constituyente}{parsear-constituyente}{NWlam9-proa-7}\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-proa-7}\nwindexuse{variable}{variable}{NWlam9-proa-7}\nwendcode{}\nwbegindocs{56}\nwdocspar
 
-El procedimiento {\tt{}\protect\nwindexuse{parsear-constituyente}{parsear-constituyente}{NWlam9-proa-7}parsear-constituyente} se utiliza para consumir del puerto de entrada una cadena de caracteres constituida por no-delimitadores.
+El procedimiento {\tt{}\protect\nwindexuse{parsear-constituyente}{parsear-constituyente}{NWlam9-proa-8}parsear-constituyente} se utiliza para consumir del puerto de entrada una cadena de caracteres constituida por no-delimitadores.
 
-\nwenddocs{}\nwbegincode{51}\sublabel{NWlam9-proa-7}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-proa-7}}}\moddef{procedimientos auxiliares de lectura~{\nwtagstyle{}\subpageref{NWlam9-proa-1}}}\plusendmoddef
+\nwenddocs{}\nwbegincode{57}\sublabel{NWlam9-proa-8}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-proa-8}}}\moddef{procedimientos auxiliares de lectura~{\nwtagstyle{}\subpageref{NWlam9-proa-1}}}\plusendmoddef
 (define (parsear-constituyente [p (current-input-port)]
                                [c (peek-char p)])
   (let itera ([a null]
               [c c])
     (if (delimitador? c)
         (if (null? a)
-            (error 'parsear-constituyente "Se esperaba un identificador pero se leyó `~a'" c)
+            (error 'parsear-constituyente
+                   "Se esperaba un identificador pero se leyó `~a'" c)
             (list->string (reverse a)))
         (itera (cons (read-char p) a)
                (peek-char p)))))
 
-\nwindexdefn{parsear-constituyente}{parsear-constituyente}{NWlam9-proa-7}\eatline
-\nwidentdefs{\\{{parsear-constituyente}{parsear-constituyente}}}\nwidentuses{\\{{delimitador?}{delimitador?}}}\nwindexuse{delimitador?}{delimitador?}{NWlam9-proa-7}\nwendcode{}\nwbegindocs{52}\nwdocspar
+\nwindexdefn{parsear-constituyente}{parsear-constituyente}{NWlam9-proa-8}\eatline
+\nwidentdefs{\\{{parsear-constituyente}{parsear-constituyente}}}\nwidentuses{\\{{delimitador?}{delimitador?}}}\nwindexuse{delimitador?}{delimitador?}{NWlam9-proa-8}\nwendcode{}\nwbegindocs{58}\nwdocspar
+
+Las cadenas conformadas por caracteres constituyentes son usadas en los nombres de las variables y metainstrucciones, para determinar si una cadena es un ``nombre'' se puede utilizar el predicado {\tt{}\protect\nwindexuse{nombre?}{nombre?}{NWlam9-proa-9}nombre?}.
+
+\nwenddocs{}\nwbegincode{59}\sublabel{NWlam9-proa-9}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-proa-9}}}\moddef{procedimientos auxiliares de lectura~{\nwtagstyle{}\subpageref{NWlam9-proa-1}}}\plusendmoddef
+(define (nombre? x)
+  (and (string? x)
+       (not (string=? x ""))
+       (not (any delimitador? (string->list x)))))
+
+\nwindexdefn{nombre?}{nombre?}{NWlam9-proa-9}\eatline
+\nwidentdefs{\\{{nombre?}{nombre?}}}\nwidentuses{\\{{delimitador?}{delimitador?}}}\nwindexuse{delimitador?}{delimitador?}{NWlam9-proa-9}\nwendcode{}\nwbegindocs{60}\nwdocspar
 
 La última cláusula del análisis de casos se encarga de leer variables o metainstrucciones, esto es debido a que ambas inician con la lectura de caracteres constituyentes. Para obtener la variable o la expresión se lee una cadena de caracteres constituyentes del puerto de entrada, si el delimitador de esta cadena es {\tt{}{\char35}{\char92}[} entonces la expresión debe ser una metainstrucción, de lo contrario debe ser una variable.
 
-\nwenddocs{}\nwbegincode{53}\sublabel{NWlam9-obtZ-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-obtZ-1}}}\moddef{obtener variable o metainstrucción~{\nwtagstyle{}\subpageref{NWlam9-obtZ-1}}}\endmoddef
+\nwenddocs{}\nwbegincode{61}\sublabel{NWlam9-obtZ-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-obtZ-1}}}\moddef{obtener variable o metainstrucción~{\nwtagstyle{}\subpageref{NWlam9-obtZ-1}}}\endmoddef
 (let* ([x (parsear-constituyente p c)]
        [c (peek-char p)])
   (cond [(and (char? c) (char=? #\\[ c))
@@ -476,94 +544,108 @@ La última cláusula del análisis de casos se encarga de leer variables o metai
          (metainstrucción x (parsear-corchetes p))]
         [else
          (variable x)]))
-\nwidentuses{\\{{metainstrucción}{metainstrucción}}\\{{parsear-constituyente}{parsear-constituyente}}\\{{parsear-corchetes}{parsear-corchetes}}\\{{variable}{variable}}}\nwindexuse{metainstrucción}{metainstrucción}{NWlam9-obtZ-1}\nwindexuse{parsear-constituyente}{parsear-constituyente}{NWlam9-obtZ-1}\nwindexuse{parsear-corchetes}{parsear-corchetes}{NWlam9-obtZ-1}\nwindexuse{variable}{variable}{NWlam9-obtZ-1}\nwused{\\{NWlam9-lecc-1}}\nwendcode{}\nwbegindocs{54}\nwdocspar
+\nwidentuses{\\{{metainstrucción}{metainstrucción}}\\{{parsear-constituyente}{parsear-constituyente}}\\{{parsear-corchetes}{parsear-corchetes}}\\{{variable}{variable}}}\nwindexuse{metainstrucción}{metainstrucción}{NWlam9-obtZ-1}\nwindexuse{parsear-constituyente}{parsear-constituyente}{NWlam9-obtZ-1}\nwindexuse{parsear-corchetes}{parsear-corchetes}{NWlam9-obtZ-1}\nwindexuse{variable}{variable}{NWlam9-obtZ-1}\nwused{\\{NWlam9-lecc-1}}\nwendcode{}\nwbegindocs{62}\nwdocspar
 
 Al igual que en el caso del paréntesis abierto y que la \( λ \), se debe acumular este valor utilizando {\tt{}\protect\nwindexuse{aplicación}{aplicación}{NWlam9-estO-3}aplicación\protect\nwindexuse{aplicación/identidad}{aplicación/identidad}{NWlam9-proa-4}/identidad}.
 
-\nwenddocs{}\nwbegincode{55}\sublabel{NWlam9-lecc-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-lecc-1}}}\moddef{lectura de variable o metainstrucción~{\nwtagstyle{}\subpageref{NWlam9-lecc-1}}}\endmoddef
+\nwenddocs{}\nwbegincode{63}\sublabel{NWlam9-lecc-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-lecc-1}}}\moddef{lectura de variable o metainstrucción~{\nwtagstyle{}\subpageref{NWlam9-lecc-1}}}\endmoddef
 ((lambda (e)
    (parsear-expresión p (peek-char p) (aplicación/identidad a e)))
  \LA{}obtener variable o metainstrucción~{\nwtagstyle{}\subpageref{NWlam9-obtZ-1}}\RA{})
-\nwidentuses{\\{{aplicación}{aplicación}}\\{{aplicación/identidad}{aplicación/identidad}}\\{{parsear-expresión}{parsear-expresión}}}\nwindexuse{aplicación}{aplicación}{NWlam9-lecc-1}\nwindexuse{aplicación/identidad}{aplicación/identidad}{NWlam9-lecc-1}\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-lecc-1}\nwused{\\{NWlam9-lecL-2}}\nwendcode{}\nwbegindocs{56}\nwdocspar
+\nwidentuses{\\{{aplicación}{aplicación}}\\{{aplicación/identidad}{aplicación/identidad}}\\{{parsear-expresión}{parsear-expresión}}}\nwindexuse{aplicación}{aplicación}{NWlam9-lecc-1}\nwindexuse{aplicación/identidad}{aplicación/identidad}{NWlam9-lecc-1}\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-lecc-1}\nwused{\\{NWlam9-lecL-2}}\nwendcode{}\nwbegindocs{64}\nwdocspar
 
-En el caso que la expresión termine con el corchete abierto, se utiliza el procedimiento {\tt{}\protect\nosublabel{NWlam9-lecc-1-u1}\protect\nwindexuse{parsear-corchetes}{parsear-corchetes}{NWlam9-proa-8}parsear-corchetes} para obtener una lista de expresiones separadas por coma y delimitadas por {\tt{}{\char35}{\char92}]}.
+En el caso que la expresión termine con el corchete abierto, se utiliza el procedimiento {\tt{}\protect\nosublabel{NWlam9-lecc-1-u1}\protect\nwindexuse{parsear-corchetes}{parsear-corchetes}{NWlam9-proa-A}parsear-corchetes} para obtener una lista de expresiones separadas por coma y delimitadas por {\tt{}{\char35}{\char92}]}. Es importante tener en cuenta que no se admiten espacios entre el nombre de una metainstrucción y el corchete que denota el inicio de su lista de argumentos.
 
-\nwenddocs{}\nwbegincode{57}\sublabel{NWlam9-proa-8}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-proa-8}}}\moddef{procedimientos auxiliares de lectura~{\nwtagstyle{}\subpageref{NWlam9-proa-1}}}\plusendmoddef
+\nwenddocs{}\nwbegincode{65}\sublabel{NWlam9-proa-A}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-proa-A}}}\moddef{procedimientos auxiliares de lectura~{\nwtagstyle{}\subpageref{NWlam9-proa-1}}}\plusendmoddef
 (define (parsear-corchetes [p (current-input-port)]
                            [c (peek-char p)])
   (let itera ([a null]
               [e (parsear-expresión p c)])
        (cond [(eof-object? e)
-              (error 'parsear-corchetes "Se esperaba leer `]' o `,' pero se leyó ~a" e)]
+              (error 'parsear-corchetes
+                     "Se esperaba leer `]' o `,' pero se leyó ~a" e)]
              [(char? e)
               (case e
                 [(#\\]) (reverse a)]
                 [(#\\,) (itera a (parsear-expresión p))]
                 [else
-                 (error 'parsear-corchetes "Se esperaba leer `]' o `,' pero se leyó ~a" e)])]
+                 (error 'parsear-corchetes
+                        "Se esperaba leer `]' o `,' pero se leyó ~a" e)])]
              [else
               (itera (cons e a) (parsear-expresión p))])))
 
-\nwindexdefn{parsear-corchetes}{parsear-corchetes}{NWlam9-proa-8}\eatline
-\nwidentdefs{\\{{parsear-corchetes}{parsear-corchetes}}}\nwidentuses{\\{{leer}{leer}}\\{{parsear-expresión}{parsear-expresión}}}\nwindexuse{leer}{leer}{NWlam9-proa-8}\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-proa-8}\nwendcode{}\nwbegindocs{58}\nwdocspar
+\nwindexdefn{parsear-corchetes}{parsear-corchetes}{NWlam9-proa-A}\eatline
+\nwidentdefs{\\{{parsear-corchetes}{parsear-corchetes}}}\nwidentuses{\\{{leer}{leer}}\\{{parsear-expresión}{parsear-expresión}}}\nwindexuse{leer}{leer}{NWlam9-proa-A}\nwindexuse{parsear-expresión}{parsear-expresión}{NWlam9-proa-A}\nwendcode{}\nwbegindocs{66}\nwdocspar
 
-\nwenddocs{}\nwbegindocs{59}\paragraph{Módulo de lector} El módulo del lector utiliza el módulo de {\tt{}estructuras.rkt} y provee el procedimiento {\tt{}\protect\nwindexuse{leer}{leer}{NWlam9-lecL-1}leer}, evitando que los usuarios del parser malutilicen los procedimientos auxiliares. El archivo {\tt{}lector.rkt} contiene este módulo y tiene la siguiente forma:
+\nwenddocs{}\nwbegindocs{67}\paragraph{Módulo de lector} El módulo del lector utiliza el módulo de {\tt{}estructuras.rkt} y provee el procedimiento {\tt{}\protect\nwindexuse{leer}{leer}{NWlam9-lecL-1}leer}, evitando que los usuarios del parser malutilicen los procedimientos auxiliares de lectura. Adicionalmente se proveen los predicados {\tt{}\protect\nwindexuse{delimitador?}{delimitador?}{NWlam9-proa-3}delimitador?} y {\tt{}\protect\nwindexuse{nombre?}{nombre?}{NWlam9-proa-9}nombre?} que pueden ser reutilizados en otras partes del programa. El archivo {\tt{}lector.rkt} contiene este módulo y tiene la siguiente forma:
 
-\nwenddocs{}\nwbegincode{60}\sublabel{NWlam9-lecA-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-lecA-1}}}\moddef{lector.rkt~{\nwtagstyle{}\subpageref{NWlam9-lecA-1}}}\endmoddef
+\nwenddocs{}\nwbegincode{68}\sublabel{NWlam9-lecA-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-lecA-1}}}\moddef{lector.rkt~{\nwtagstyle{}\subpageref{NWlam9-lecA-1}}}\endmoddef
 ;;; -*- mode: racket; coding: utf-8 -*-
 ;;; Copyright (C) 2016 Eduardo Acuña Yeomans <eduardo.acye@gmail.com>
 ;;; Procura no editar este archivo, mejor modifica lambda.nw
 
 #lang racket/base
 
-;;; Importar estructuras del árbol de sintaxis
-(require "estructuras.rkt")
+(require srfi/1
+         "estructuras.rkt")
 
 ;;; Exportar punto de entrada del parser
 (provide leer
-         delimitador?)
+         delimitador? nombre?)
 
 ;;; Procedimientos principales
 \LA{}lector de expresiones~{\nwtagstyle{}\subpageref{NWlam9-lecL-1}}\RA{}
 
 ;;; Procedimientos auxiliares
 \LA{}procedimientos auxiliares de lectura~{\nwtagstyle{}\subpageref{NWlam9-proa-1}}\RA{}
-\nwidentuses{\\{{delimitador?}{delimitador?}}\\{{leer}{leer}}}\nwindexuse{delimitador?}{delimitador?}{NWlam9-lecA-1}\nwindexuse{leer}{leer}{NWlam9-lecA-1}\nwnotused{lector.rkt}\nwendcode{}\nwbegindocs{61}\nwdocspar
+\nwidentuses{\\{{delimitador?}{delimitador?}}\\{{leer}{leer}}\\{{nombre?}{nombre?}}}\nwindexuse{delimitador?}{delimitador?}{NWlam9-lecA-1}\nwindexuse{leer}{leer}{NWlam9-lecA-1}\nwindexuse{nombre?}{nombre?}{NWlam9-lecA-1}\nwnotused{lector.rkt}\nwendcode{}\nwbegindocs{69}\nwdocspar
 
-\nwenddocs{}\nwbegindocs{62}\paragraph{Pruebas del lector} El archivo de pruebas {\tt{}lector-pruebas.rkt} es utilizado para verificar si la funcionalidad del lector es la esperada. Se omite su definición en este documento pero es distribuído con el código del trabajo.
+\nwenddocs{}\nwbegindocs{70}\paragraph{Pruebas del lector} El archivo de pruebas {\tt{}lector-pruebas.rkt} es utilizado para verificar si la funcionalidad del lector es la esperada. Se omite su definición en este documento pero es distribuído con el código del trabajo.
 
-\nwenddocs{}\nwbegindocs{63}\section*{Escritura de expresiones}
+\nwenddocs{}\nwbegindocs{71}\section*{Escritura de expresiones}
+
+Así como se tiene un mecanismo para pasar de la representación externa textual de una expresión a una estructura en memoria, también se tiene un mecanismo para realizar el procedimiento inverso, es decir, escribir la representación externa textual de una estructura en memoria.
+
+\nwenddocs{}\nwbegindocs{72}\paragraph{Diversidad en la escritura}
+En el caso del lenguaje de expresiones esto es algo complicado ya que hay varias representaciones textuales para una sola expresión, por ejemplo, formalmente correcta o con algún abuso de notación. Por lo tanto, la escritura de expresiones se maneja utilizando diferentes procedimientos que resultan en estilos diversos de escritura.
+
+Una cuestión importante que se debe tener en cuenta es que una misma representación externa textual puede escribirse para ser interpretada de manera diferente, por ejemplo, se pudieran escribir diferentes ``backends'' de escritura: texto plano, \LaTeX, {\tt{}postscript}, o incluso escribir la estructura en memoria de Racket a otro lenguaje de programación en la que pueda ser representada.
+
+Para manejar esta complejidad y variedad de estilos de escritura se establece una convención para generar \emph{escritores}, es decir, procedimientos que transforman una expresión a una representación externa.
+
+\nwenddocs{}\nwbegindocs{73}\paragraph{Convenciones para la generación de escritores}
+
+Los escritores que se implementan en este programa son funciones que toman una expresión del lenguaje y la recorren en un orden determinado para generar un valor, el cuál usualmente es una cadena.
+
+\nwenddocs{}\nwbegindocs{74}\section*{Evaluador de expresiones}
 
 \paragraph{Pendiente}
 
-\nwenddocs{}\nwbegindocs{64}\section*{Evaluador de expresiones}
+\nwenddocs{}\nwbegindocs{75}\section*{Ciclo de Lectura Evaluación y Escritura}
 
 \paragraph{Pendiente}
 
-\nwenddocs{}\nwbegindocs{65}\section*{Ciclo de Lectura Evaluación y Escritura}
-
-\paragraph{Pendiente}
-
-\nwenddocs{}\nwbegindocs{66}\section*{Editor estructural}
+\nwenddocs{}\nwbegindocs{76}\section*{Editor estructural}
 
 \paragraph{Pendiente}
 
 \nwenddocs{}
 
 \nwixlogsorted{c}{{construcción de un término}{NWlam9-conS-1}{\nwixd{NWlam9-conS-1}}}%
-\nwixlogsorted{c}{{estructuras del lenguaje}{NWlam9-estO-1}{\nwixd{NWlam9-estO-1}\nwixd{NWlam9-estO-2}\nwixd{NWlam9-estO-3}\nwixd{NWlam9-estO-4}\nwixu{NWlam9-estF-1}}}%
+\nwixlogsorted{c}{{estructuras del lenguaje}{NWlam9-estO-1}{\nwixd{NWlam9-estO-1}\nwixd{NWlam9-estO-2}\nwixd{NWlam9-estO-3}\nwixd{NWlam9-estO-4}\nwixd{NWlam9-estO-5}\nwixu{NWlam9-estF-1}}}%
 \nwixlogsorted{c}{{estructuras.rkt}{NWlam9-estF-1}{\nwixd{NWlam9-estF-1}}}%
 \nwixlogsorted{c}{{lector de expresiones}{NWlam9-lecL-1}{\nwixd{NWlam9-lecL-1}\nwixd{NWlam9-lecL-2}\nwixu{NWlam9-lecA-1}}}%
 \nwixlogsorted{c}{{lector.rkt}{NWlam9-lecA-1}{\nwixd{NWlam9-lecA-1}}}%
 \nwixlogsorted{c}{{lectura de delimitador final}{NWlam9-lecS-1}{\nwixu{NWlam9-lecL-2}\nwixd{NWlam9-lecS-1}}}%
 \nwixlogsorted{c}{{lectura de espacio en blanco}{NWlam9-lecS.2-1}{\nwixu{NWlam9-lecL-2}\nwixd{NWlam9-lecS.2-1}}}%
 \nwixlogsorted{c}{{lectura de fin de archivo}{NWlam9-lecP-1}{\nwixu{NWlam9-lecL-2}\nwixd{NWlam9-lecP-1}}}%
+\nwixlogsorted{c}{{lectura de hueco}{NWlam9-lecG-1}{\nwixu{NWlam9-lecL-2}\nwixd{NWlam9-lecG-1}}}%
 \nwixlogsorted{c}{{lectura de lambda}{NWlam9-lecH-1}{\nwixu{NWlam9-lecL-2}\nwixd{NWlam9-lecH-1}}}%
 \nwixlogsorted{c}{{lectura de paréntesis abierto}{NWlam9-lecU-1}{\nwixu{NWlam9-lecL-2}\nwixd{NWlam9-lecU-1}}}%
 \nwixlogsorted{c}{{lectura de variable o metainstrucción}{NWlam9-lecc-1}{\nwixu{NWlam9-lecL-2}\nwixd{NWlam9-lecc-1}}}%
 \nwixlogsorted{c}{{obtener variable o metainstrucción}{NWlam9-obtZ-1}{\nwixd{NWlam9-obtZ-1}\nwixu{NWlam9-lecc-1}}}%
 \nwixlogsorted{c}{{predicados del lenguaje}{NWlam9-preN-1}{\nwixd{NWlam9-preN-1}\nwixd{NWlam9-preN-2}\nwixu{NWlam9-estF-1}}}%
-\nwixlogsorted{c}{{procedimientos auxiliares de lectura}{NWlam9-proa-1}{\nwixd{NWlam9-proa-1}\nwixd{NWlam9-proa-2}\nwixd{NWlam9-proa-3}\nwixd{NWlam9-proa-4}\nwixd{NWlam9-proa-5}\nwixd{NWlam9-proa-6}\nwixd{NWlam9-proa-7}\nwixd{NWlam9-proa-8}\nwixu{NWlam9-lecA-1}}}%
+\nwixlogsorted{c}{{procedimientos auxiliares de lectura}{NWlam9-proa-1}{\nwixd{NWlam9-proa-1}\nwixd{NWlam9-proa-2}\nwixd{NWlam9-proa-3}\nwixd{NWlam9-proa-4}\nwixd{NWlam9-proa-5}\nwixd{NWlam9-proa-6}\nwixd{NWlam9-proa-7}\nwixd{NWlam9-proa-8}\nwixd{NWlam9-proa-9}\nwixd{NWlam9-proa-A}\nwixu{NWlam9-lecA-1}}}%
 \nwixlogsorted{c}{{provee las definiciones del árbol}{NWlam9-proY-1}{\nwixd{NWlam9-proY-1}\nwixu{NWlam9-estF-1}}}%
 \nwixlogsorted{c}{{pseudocódigo de una metainstrucción}{NWlam9-pseb-1}{\nwixd{NWlam9-pseb-1}}}%
 \nwixlogsorted{i}{{abstracción}{abstracción}}%
@@ -573,16 +655,19 @@ En el caso que la expresión termine con el corchete abierto, se utiliza el proc
 \nwixlogsorted{i}{{delimitador-final?}{delimitador-final?}}%
 \nwixlogsorted{i}{{delimitador-inicial?}{delimitador-inicial?}}%
 \nwixlogsorted{i}{{expresión?}{expresión?}}%
+\nwixlogsorted{i}{{hueco}{hueco}}%
 \nwixlogsorted{i}{{leer}{leer}}%
 \nwixlogsorted{i}{{metainstrucción}{metainstrucción}}%
+\nwixlogsorted{i}{{nombre?}{nombre?}}%
 \nwixlogsorted{i}{{parsear-abstracción}{parsear-abstracción}}%
 \nwixlogsorted{i}{{parsear-constituyente}{parsear-constituyente}}%
 \nwixlogsorted{i}{{parsear-corchetes}{parsear-corchetes}}%
 \nwixlogsorted{i}{{parsear-expresión}{parsear-expresión}}%
+\nwixlogsorted{i}{{parsear-hueco}{parsear-hueco}}%
 \nwixlogsorted{i}{{parsear-paréntesis}{parsear-paréntesis}}%
 \nwixlogsorted{i}{{término?}{término?}}%
 \nwixlogsorted{i}{{variable}{variable}}%
-\nwbegindocs{67}\section*{¿Cómo hackear la \( \bs{λ} \)?}
+\nwbegindocs{77}\section*{¿Cómo hackear la \( \bs{λ} \)?}
 
 
 \end{document}

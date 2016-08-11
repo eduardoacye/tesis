@@ -1,10 +1,21 @@
+Alonzo Church y Alan Turing hipotetizaron en 1936 de manera independiente que el cálculo \( λ \) y las máquinas de Turing formalizaban el concepto de cómputo \cite{Church:Unsolvable,Turing:Computable}. Esto puede parecer extraño ya que claramente los programas de computadora pueden realizar cómputos complejos que involucran números, texto, árboles, gráficas o conjuntos mientras que en el cálculo \( λ \) se está limitado a átomos, abstracciones y aplicaciones.
+
+En este capítulo se presenta un tratamiento computacional del cálculo \( λ \) con el objetivo de explorar el tipo de conceptos matemáticos y algorítmicos que se pueden representar y corroborar informalmente que todo lo que se puede hacer con un lenguaje de programación se puede hacer con el cálculo \( λ \).
+
+En la primer sección se plantean codificaciones para valores de verdad y operaciones booleanas, con esto se construye en el cálculo una operación similar a la sentencia condicional de los lenguajes de programación; en la segunda sección se exploran los números naturales y las operaciones aritméticas elementales, con esto se plantea un mecanismo de iteración; en la tercera sección se deriva un mecanismo de recursividad que permitirá representar algoritmos recursivos de manera sencilla; en la cuarta sección se presentan codificaciones de las listas, árboles y gráficas, finalmente se presenta la codificación de términos \( λ \).
+
+\begin{Gutu}
+primer sección->primera sección
+\end{Gutu}
+
+Este capítulo está fuertemente influenciado por la serie de reportes técnicos llamados en la comunidad de lenguajes de programación como ``The Lambda Papers'' por Sussman y Steele \cite{Scheme:first,Steele:Imperative,Steele:Declarative,Steele:LambdaGOTO,Steele:Opcode}.
 
 \section{Álgebra Booleana}
 \label{sec:algebra-booleana}
 
 El álgebra booleana es una rama del álgebra en donde las expresiones tienen asociado un valor de \emph{falso} o \emph{verdadero}. Estas expresiones son fundamentales en el estudio de circuitos y programas escritos en lenguajes de programación.
 
-Los términos lambda no tienen asignados un valor de verdad y las operaciones que se plantearon en los primeros dos capítulos involucraron el concepto de falso y verdadero únicamente en el metalenguaje y asociando estos valores no a los términos lambda en sí, si no a propiedades de estos, por ejemplo, es falso que \( \| λx.x \| = 5 \) y es verdadero que \( (\bs{K}\, x) \reduce{β} (λx.y) \). Sin embargo es posible codificar los valores de verdad como elementos de \( Λ \) y construir abstracciones que emulen las propiedades de las operaciones booleanas bajo la \( β \)-reducción. De esta manera se pueden escribir términos que, de acuerdo con la codificación establecida, representen expresiones booleanas y términos lambda al mismo tiempo.
+Los términos \( λ \) no tienen asignados un valor de verdad y las operaciones que se plantearon en los primeros dos capítulos involucraron el concepto de falso y verdadero únicamente en el metalenguaje y asociando estos valores no a los términos \( λ \) en sí, si no a propiedades de estos, por ejemplo, es falso que \( \| λx.x \| = 5 \) y es verdadero que \( (\bs{K}\, x) \reduce{β} (λx.y) \). Sin embargo es posible codificar los valores de verdad como elementos de \( Λ \) y construir abstracciones que emulen las propiedades de las operaciones booleanas bajo la \( β \)-reducción. De esta manera se pueden escribir términos que, de acuerdo con la codificación establecida, representen expresiones booleanas y términos \( λ \) al mismo tiempo.
 
 En los lenguajes de programación usualmente se mezclan las expresiones booleanas con otras expresiones y objetos a partir de \emph{predicados}, éstos son funciones con algún dominio \( X \) y codominio \( \{ \mathrm{falso},\ \mathrm{verdadero} \} \). Por ejemplo, al escribir un programa en donde se necesite tomar una desición a partir de si un número \( n \) es positivo o negativo se escribiría (en pseudocódigo):
 
@@ -20,7 +31,7 @@ En este ejemplo <<esPositivo>> es un predicado que es evaluado a falso si \verb!
 
 La codificación de valores de verdad y operaciones booleanas es común incluso en lenguajes de programación populares, por ejemplo en C, el tipo \texttt{bool} es codificado como un entero, en donde falso es 0 y verdadero cualquier otro entero, a su vez, los enteros son codificados usualmente como secuencias de 32 bits en complemento a dos. Por lo tanto, si <<esPositivo>> fuera una función de C: <<esPositivo(8)>> sería evaluado a 1 y <<esPositivo(-8)>> sería evaluado a 0.
 
-Al igual que el cálculo lambda, otras teorías que fundamentan las ciencias de la computación también carecen de expresiones y operaciones booleanas. En el caso de la máquina de Turing los cambios de estado en la ejecución de un programa se determinan a partir de su función de transición y predicados simples de igualdad entre símbolos del alfabeto de cinta se realizan en un paso, sin embargo, predicados mas complejos requieren ser codificados con estados, transiciones y anotaciones en su cinta.
+Al igual que el cálculo \( λ \), otras teorías que fundamentan las ciencias de la computación también carecen de expresiones y operaciones booleanas. En el caso de la máquina de Turing los cambios de estado en la ejecución de un programa se determinan a partir de su función de transición y predicados simples de igualdad entre símbolos del alfabeto de cinta se realizan en un paso, sin embargo, predicados mas complejos requieren ser codificados con estados, transiciones y anotaciones en su cinta.
 
 \subsection{Valores de verdad}
 \label{sec:valores-de-verdad}
@@ -31,12 +42,12 @@ Podemos ignorar la representación concreta de estos valores y pensar en una sit
 
 Detrás del concepto de falso y verdadero, está el concepto de \emph{desición}, la codificación que se desarrolla está basada en este concepto y aparece en \cite[p.~133]{Barendregt:Bible}.
 
-Supongamos que \( P \) es un término lambda el cual puede ser aplicado a una oración \( O \), al \( β \)-reducir \( (P\, O) \) se obtiene una decisión \( D \) la cual al ser aplicada a dos términos lambda \( M \) y \( N \) se \( β \)-reduce a \( M \) si la oración \( O \) es verdadera y a \( M \) si es falsa:
+Supongamos que \( P \) es un término \( λ \) el cual puede ser aplicado a una oración \( O \), al \( β \)-reducir \( (P\, O) \) se obtiene una decisión \( D \) la cual al ser aplicada a dos términos \( λ \) \( M \) y \( N \) se \( β \)-reduce a \( M \) si la oración \( O \) es verdadera y a \( M \) si es falsa:
 
 \[ P\, O \reduce{β} D, \]
 \[ D\, M\, N \reduce{β} \begin{cases} M & \text{si \( O \) es verdadera}\\ N & \text{si \( O \) es falsa}\end{cases} .\]
 
-Para fines prácticos no es necesario saber cómo es \( P \) ni \( O \), lo importante es que cuando \( O \) es cierta, \( D \) eligirá \( M \) y si \( O \) es falsa, eligirá \( N \). Por lo tanto, \( (P\, O) = D \) es un término lambda de la forma
+Para fines prácticos no es necesario saber cómo es \( P \) ni \( O \), lo importante es que cuando \( O \) es cierta, \( D \) eligirá \( M \) y si \( O \) es falsa, eligirá \( N \). Por lo tanto, \( (P\, O) = D \) es un término \( λ \) de la forma
 
 \[ λx\, y.Q \]
 
@@ -48,17 +59,17 @@ Si \( D \) es una desición tomada por que \( O \) es falsa, podemos asegurar qu
 
 \[ D \synteq λx\, y.y \]
 
-Teniendo los términos lambda que representan la desición de \( P \) ante una oración falsa y ante una oración verdadera, se puede considerar que estos términos representan el concepto de falso y verdadero.
+Teniendo los términos \( λ \) que representan la desición de \( P \) ante una oración falsa y ante una oración verdadera, se puede considerar que estos términos representan el concepto de falso y verdadero.
 
 \begin{defn}[Valores de verdad]
   \label{defn:valores-verdad}
-  El concepto de falso y verdadero es codificado en el cálculo lambda como los términos \( \bs{T} \) y \( \bs{F} \) respectivamente.
+  El concepto de falso y verdadero es codificado en el cálculo \( λ \) como los términos \( \bs{T} \) y \( \bs{F} \) respectivamente.
   \begin{align*}
     \bs{T} &\synteq λx\, y.x & \bs{F} &\synteq λx\, y.y
   \end{align*}
 \end{defn}
 
-Utilizar \( \bs{T} \) y \( \bs{F} \) en términos lambda es similar a imitar a \( P \) y determinar cuando \( O \) es verdadera o falsa. Esto es debido a que se pueden plantear predicados que sean conceptualmente ilógicos, por ejemplo, si <<esPositivo>> se define de tal manera que sin importar en que valor sea evaluado siempre resulte en falso, los programas que se escriban no van a funcionar suponiendo que <<esPositivo>> calcula lo que debe de calcular, sin embargo lo importante de codificar el álgebra booleana es poder manipular los valores de falso y verdadero, no representar un término \( P \) que determine verdades absolutas.
+Utilizar \( \bs{T} \) y \( \bs{F} \) en términos \( λ \) es similar a imitar a \( P \) y determinar cuando \( O \) es verdadera o falsa. Esto es debido a que se pueden plantear predicados que sean conceptualmente ilógicos, por ejemplo, si <<esPositivo>> se define de tal manera que sin importar en que valor sea evaluado siempre resulte en falso, los programas que se escriban no van a funcionar suponiendo que <<esPositivo>> calcula lo que debe de calcular, sin embargo lo importante de codificar el álgebra booleana es poder manipular los valores de falso y verdadero, no representar un término \( P \) que determine verdades absolutas.
 
 \subsection{Expresiones booleanas}
 
@@ -74,7 +85,7 @@ y la negación es una operación unaria definida en
 
 Las tablas de verdad en el cuadro \ref{tab:and-or-not} establecen los resultados de estas tres operaciones para cada valor en su dominio.
 
-\begin{table}[h!]
+\begin{table}[!htbp]
   \centering
   \small
   \begin{tabular}{|c|c|c|c|}
@@ -106,29 +117,29 @@ En el álgebra booleana, las expresiones se escriben en notación de infijo, uti
 \[ \lnot (\mathrm{falso} \lor \mathrm{falso}) \]
 \[ \mathrm{verdadero} \land (\mathrm{falso} \lor \mathrm{falso}) \]
 
-Esta notación es conveniente para escribir expresiones booleanas de manera concisa, pero es únicamente una conveniencia sintáctica del álgebra booleana. La codificación que se desarrolla de las operaciones seguirá las convenciones sintácticas del cálculo lambda, por ejemplo, suponiendo que \( \bs{\land} \), \( \bs{\lor} \), \( \bs{\lnot} \) son términos lambda, las expresiones mencionadas escribirían con notación de prefijo:
+Esta notación es conveniente para escribir expresiones booleanas de manera concisa, pero es únicamente una conveniencia sintáctica del álgebra booleana. La codificación que se desarrolla de las operaciones seguirá las convenciones sintácticas del cálculo \( λ \), por ejemplo, suponiendo que \( \bs{\land} \), \( \bs{\lor} \), \( \bs{\lnot} \) son términos \( λ \), las expresiones mencionadas escribirían con notación de prefijo:
 
 \[ \bs{\lor} (\bs{\land}\, \bs{T}\, \bs{F}) \bs{F} \]
 \[ \bs{\lnot} (\bs{\lor}\, \bs{F}\, \bs{F}) \]
 \[ \bs{\land}\, \bs{T} (\bs{\lor}\, \bs{F}\, \bs{F}) \]
 
-Al igual que los valores de verdad, las operaciones básicas son codificadas como abstracciones del cálculo lambda. Hay varias metodologías para derivar términos lambda para las operaciones booleanas a partir de \( \bs{T} \) y \( \bs{F} \), en esta sección se abordarán dos:
+Al igual que los valores de verdad, las operaciones básicas son codificadas como abstracciones del cálculo \( λ \). Hay varias metodologías para derivar términos \( λ \) para las operaciones booleanas a partir de \( \bs{T} \) y \( \bs{F} \), en esta sección se abordarán dos:
 
 \begin{itemize}
 \item Combinando valores de verdad
 \item Programando las operaciones
 \end{itemize}
 
-La primer metodología parte de la observación de que la codificación de falso y verdadero son abstracciones, por lo tanto, es posible \( β \)-reducirlas al aplicarlas a otros términos; se explora la clase de términos lambda en \( \{ \bs{T},\ \bs{F} \}^{+} \).
+La primer metodología parte de la observación de que la codificación de falso y verdadero son abstracciones, por lo tanto, es posible \( β \)-reducirlas al aplicarlas a otros términos; se explora la clase de términos \( λ \) en \( \{ \bs{T},\ \bs{F} \}^{+} \).
 
 La segunda metodología presenta la construcción del operador condicional, a partir del cual se derivan las operaciones booleanas como si fueran programas de computadora.
 
 \subsubsection{Combinaciones de valores de verdad}
 \label{sec:combinacion-valores}
 
-Una manera de obtener términos lambda a partir de \( \bs{F} \) y \( \bs{T} \) es \( β \)-reducir combinaciones de aplicaciones entre estos valores. En el cuadro \ref{tab:verdad-pares} se muestran los términos obtenidos al reducir combinaciones de dos valores de verdad.
+Una manera de obtener términos \( λ \) a partir de \( \bs{F} \) y \( \bs{T} \) es \( β \)-reducir combinaciones de aplicaciones entre estos valores. En el cuadro \ref{tab:verdad-pares} se muestran los términos obtenidos al reducir combinaciones de dos valores de verdad.
 
-\begin{table}[h!]
+\begin{table}[!htbp]
   \centering
   \begin{tabular}{|c||l|}
     \hline
@@ -168,7 +179,7 @@ Si se considera que \( P \in \{ \bs{F},\ \bs{T} \} \)
 \[ P\, \bs{F}\, \bs{T} \reduce{β} \bs{\lnot}\, P \]
 
 \begin{rem}[Sobre la \( β \)-reducción]
-  En el tratamiento de la codificación del álgebra booleana en el cálculo lambda, cuando se \( β \)-reducen términos lambda que tienen como subtérminos valores que suponemos son \( \bs{F} \) o \( \bs{T} \) se extiende la teoría \( \bs{λ} \) con la siguiente ecuación:
+  En el tratamiento de la codificación del álgebra booleana en el cálculo \( λ \), cuando se \( β \)-reducen términos \( λ \) que tienen como subtérminos valores que suponemos son \( \bs{F} \) o \( \bs{T} \) se extiende la teoría \( \bs{λ} \) con la siguiente ecuación:
 
   \begin{align*}
     P\, \bs{T}\, \bs{F} &= P && \text{si \( P \in \{ \bs{F},\ \bs{T} \} \)}
@@ -177,7 +188,7 @@ Si se considera que \( P \in \{ \bs{F},\ \bs{T} \} \)
 
 \begin{defn}[Operación de negación]
   \label{defn:negacion}
-  El término lambda \( \bs{\lnot} \synteq (λp.p\, \bs{F}\, \bs{T}) \) se reduce a \( \bs{T} \) cuando es aplicado a \( \bs{F} \) y viceversa
+  El término \( λ \) \( \bs{\lnot} \synteq (λp.p\, \bs{F}\, \bs{T}) \) se reduce a \( \bs{T} \) cuando es aplicado a \( \bs{F} \) y viceversa
 
   \begin{align*}
     \bs{\lnot}\, \bs{F} &\synteq (λp.p\, \bs{F}\, \bs{T}) \bs{F} \\
@@ -193,7 +204,7 @@ Si se considera que \( P \in \{ \bs{F},\ \bs{T} \} \)
 
 Las reducciones del cuadro \ref{tab:verdad-pares} se pueden aplicar a \( \bs{F} \) y \( \bs{T} \) para obtener todas las posibles combinaciones de aplicaciones de valores de verdad de la forma \( ((P\, M) N) \), en el cuadro \ref{tab:verdad-tripletas} se muestran las reducciones de las nuevas aplicaciones.
 
-\begin{table}[h!]
+\begin{table}[!htbp]
   \centering
   \begin{tabular}{|c||l|}
     \hline
@@ -222,7 +233,7 @@ Al observar el cuadro \ref{tab:verdad-tripletas}, se distinguen algúnos patrone
 
 En búsqueda de las operaciones binarias de conjunción y disyunción se desarrollan tablas de verdad con las posibles combinaciones de dos términos \( P, Q \in \{ \bs{F},\ \bs{T} \} \). La cantidad de combinaciones de estos valores es \( 2 \times \binom 3 2 = 2 \times \frac{3!}{2!} = 6 \) y son \( (P\, Q\, \bs{F}) ,\ (P\, Q\, \bs{T}) ,\ (P\, \bs{F}\, Q) ,\ (P\, \bs{T}\, Q) ,\ (\bs{F}\, P\, Q) ,\ (\bs{T}\, P\, Q) \). Las tablas de verdad de estas combinaciones intercambiando las posiciones de \( P \) y \( Q \) serían las mismas ya que ambos términos toman los valores de falso y verdadero en las tablas de verdad. En el cuadro \ref{tab:verdad-pq} se muestran estas tablas.
 
-\begin{table}[h!]
+\begin{table}[!htbp]
   \centering
   \begin{tabular}{|c|c||c|c|c|c|c|c|}
     \hline
@@ -245,7 +256,7 @@ Ya que  \( \bs{λ} \vdash (P\, Q\, \bs{F}) = (\bs{\land}\, P\, Q) \) y \( \bs{λ
 
 \begin{defn}[Operación de conjunción]
   \label{defn:conjuncion}
-  El término lambda que representa la conjunción es
+  El término \( λ \) que representa la conjunción es
 
   \[ \bs{\land} \synteq λp\, q.p\, q\, \bs{F} \]
 
@@ -278,7 +289,7 @@ Ya que  \( \bs{λ} \vdash (P\, Q\, \bs{F}) = (\bs{\land}\, P\, Q) \) y \( \bs{λ
 
 \begin{defn}[Operación de disyunción]
   \label{defn:disyuncion}
-  El término lambda que representa la disyunción es
+  El término \( λ \) que representa la disyunción es
 
   \[ \bs{\lor} \synteq λp\, q.p\, \bs{T}\, q \]
 
@@ -310,7 +321,7 @@ Esta metodología para encontrar operaciones del álgebra booleana, aplicando lo
 \subsubsection{Programación de operaciones booleanas}
 \label{sec:programacion-operaciones}
 
-Otra metodología que permite construír las operaciones booleanas como términos lambda es la de partir de un algorítmo que las describa. Usualmente las operaciones booleanas no son definidas como procedimientos, si no como operaciones primitivas del lenguaje utilizado para describirlos.
+Otra metodología que permite construír las operaciones booleanas como términos \( λ \) es la de partir de un algorítmo que las describa. Usualmente las operaciones booleanas no son definidas como procedimientos, si no como operaciones primitivas del lenguaje utilizado para describirlos.
 
 Consideremos dos términos \( M \) y \( N \). Ya que \( (\bs{T}\, M\, N) \reduce{β} M \) y \( (\bs{F}\, M\, N) \reduce{β} N \), si \( M \reduce{β} M' \) y \( N \reduce{β} N' \), entonces
 
@@ -322,11 +333,11 @@ Es decir, si \( P \in \{ \bs{F},\ \bs{T} \} \):
 
 \[ P\, M\, N \reduce{β} \begin{cases} M' & P \synteq \bs{T} \\ N' & P \synteq \bs{F} \end{cases} \]
 
-Esta aplicación de un valor de verdad a dos términos lambda cualquiera permite capturar el concepto de una expresión o sentencia condicional, usualmente llamada en los lenguajes de programación como sentencia \texttt{if-then-else}.
+Esta aplicación de un valor de verdad a dos términos \( λ \) cualquiera permite capturar el concepto de una expresión o sentencia condicional, usualmente llamada en los lenguajes de programación como sentencia \texttt{if-then-else}.
 
 \begin{defn}[Expresión condicional]
   \label{defn:condicional}
-  El término lambda que representa a la expresión condicional es
+  El término \( λ \) que representa a la expresión condicional es
 
   \[ \bs{\prec} \synteq λp\, m\, n.p\, m\, n \]
 
@@ -366,7 +377,7 @@ Consideremos la siguiente definición en pseudocódigo de la operación de negac
   \end{algorithmic}
 \end{algorithm}
 
-El pseudocódigo se traduce al cálculo lambda como
+El pseudocódigo se traduce al cálculo \( λ \) como
 
 \[ \bs{\lnot} \synteq λp.\bs{\prec}\, p\, \bs{F}\, \bs{T} \]
 
@@ -397,7 +408,7 @@ Para la operación de conjunción, se considera el siguiente pseudocódigo:
   \end{algorithmic}
 \end{algorithm}
 
-Traducido al cálculo lambda como
+Traducido al cálculo \( λ \) como
 
 \[ \bs{\land} \synteq λp_{1}\, p_{2}.\bs{\prec}\, p_{1} (\bs{\prec}\, p_{2}\, \bs{T}\, \bs{F}) \bs{F} \]
 
@@ -431,7 +442,7 @@ De igual manera, considerando el siguiente pseudocódigo de la operación de dis
   \end{algorithmic}
 \end{algorithm}
 
-Se traduce al cálculo lambda como
+Se traduce al cálculo \( λ \) como
 
 \[ \bs{\lor} \synteq λp_{1}\, p_{2}.\bs{\prec}\, p_{1}\, \bs{T} (\bs{\prec}\, p_{2}\, \bs{T}\, \bs{F}) \]
 
@@ -445,7 +456,7 @@ Y al \( β \)-reducir el cuerpo de la abstracción se obtiene el término de la 
   &=_{\bs{λ}} λp_{1}\, p_{2}.p_{1}\, \bs{T}\, p_{2}
 \end{align*}
 
-Utilizando esta técnica, se puede obtener el término lambda para una operación a partir del pseudocódigo basado en valores de verdad y la sentencia \verb!if-then-else!. Teniendo estos resultados resulta natural, generalizar el pseudocódigo para construír un término lambda que a partir de la tabla de verdad de una operación booleana binaria, resulte en la abstracción que codifica la operación.
+Utilizando esta técnica, se puede obtener el término \( λ \) para una operación a partir del pseudocódigo basado en valores de verdad y la sentencia \verb!if-then-else!. Teniendo estos resultados resulta natural, generalizar el pseudocódigo para construír un término \( λ \) que a partir de la tabla de verdad de una operación booleana binaria, resulte en la abstracción que codifica la operación.
 
 
 \begin{defn}[Traducción de operaciones booleanas binarias]
@@ -492,7 +503,7 @@ Utilizando esta técnica, se puede obtener el término lambda para una operació
     \end{algorithmic}
   \end{algorithm}
 
-  Y la traducción al cálculo lambda es
+  Y la traducción al cálculo \( λ \) es
   \[ λx_{1}\, x_{2}\, x_{3}\, x_{4}.(λp_{1}\, p_{2}.(\bs{\prec}\, p_{1} (\bs{\prec}\, p_{2}\, x_{4}\, x_{3}) (\bs{\prec}\, p_{2}\, x_{2}\, x_{1}))) \]
   
 \end{defn}
@@ -519,7 +530,7 @@ Utilizando esta técnica, se puede obtener el término lambda para una operació
     \end{tabular}
   \end{center}
 
-  Con el proceso de traducción mostrado en la definición \ref{defn:op-bool-bin-lambda}, el término lambda \( \bs{\uparrow} \) que codifica la operación NAND sería
+  Con el proceso de traducción mostrado en la definición \ref{defn:op-bool-bin-lambda}, el término \( λ \) \( \bs{\uparrow} \) que codifica la operación NAND sería
   
   \begin{align*}
     \bs{\uparrow}
@@ -614,12 +625,12 @@ Cuando se generaliza el método de traducción de \ref{defn:op-bool-bin-lambda} 
 \subsection{Extensiones al álgebra booleana}
 \label{sec:boolean-extensiones}
 
-Conociendo el proceso de codificación del álgebra booleana en el cálculo lambda, resulta simple adaptar la codificación.
+Conociendo el proceso de codificación del álgebra booleana en el cálculo \( λ \), resulta simple adaptar la codificación.
 
 Consideremos el caso en donde, además de tener los valores de falso y verdadero, se desea incorporar un valor ``desconocido'' utilizado para representar un valor que no es ni falso, ni verdadero. La interpretación de estos valores es similar a \ref{defn:valores-verdad}, pero en lugar de decidir sobre dos términos, se decide sobre tres.
 
 \begin{defn}[Valores de álgebra trivalente]
-  La codificación en términos lambda de los valores de ésta álgebra trivalente son
+  La codificación en términos \( λ \) de los valores de ésta álgebra trivalente son
 
   \begin{align*}
     \bs{T} &\synteq λx\, y\, z.x \\
@@ -692,7 +703,7 @@ El procedimiento en pseudocódigo que la describe es:
   \end{algorithmic}
 \end{algorithm}
 
-Traducido al cálculo lambda como
+Traducido al cálculo \( λ \) como
 \[ λx_{1}\, x_{2}\, x_{3}\, x_{4}\, x_{5}\, x_{6}\, x_{7}\, x_{8}\, x_{9}.(λp_{1}\, p_{2}.(\bs{\prec_{3}}\, p_{1}\, R_{1}\, R_{2}\, R_{3})) \]
 
 Donde
@@ -708,11 +719,11 @@ Donde
 
 La aritmética es una de las ramas mas antiguas de las matemáticas. Consiste en el estudio de los números y de las operaciones elementales como la suma y la multiplicación. El manejo de expresiones aritméticas es ubicuo en la vida cotidiana y es una parte fundamental de la formación básica en matemáticas.
 
-En el cálculo lambda, los números naturales no son términos lambda, sin embargo, desde el metalenguaje se pueden manejan números naturales y expresiones aritméticas como por ejemplo en la definición de longitud \ref{defn:longitud}. Al igual que el álgebra boolena, las expresiones aritméticas pueden ser codificadas como términos lambda.
+En el cálculo \( λ \), los números naturales no son términos \( λ \), sin embargo, desde el metalenguaje se pueden manejan números naturales y expresiones aritméticas como por ejemplo en la definición de longitud \ref{defn:longitud}. Al igual que el álgebra boolena, las expresiones aritméticas pueden ser codificadas como términos \( λ \).
 
 En los lenguajes de programación los números naturales y las operaciones aritméticas son de los objetos más utilizados para expresar la mayoría de los cómputos. Virtualmente todo programa no trivial ejecutable en una computadora hace uso de números y operaciones sobre ellos. Como se menciona al inicio de la sección anterior, el concepto de número es codificado usualmente como una secuencia de bits de longitud fija y las operaciones aritméticas terminan siendo traducidas a instrucciones ejecutadas por la unidad aritmética lógica de la computadora.
 
-En esta sección se plantea la codificación de expresiones aritméticas en el lenguaje del cálculo lambda de manera similar a como se abordó en \ref{sec:algebra-booleana}, también se aborda la representación de la noción de iteración y aglunos mecanismos que nos permiten abstaer el cómputo de las operaciones elementales.
+En esta sección se plantea la codificación de expresiones aritméticas en el lenguaje del cálculo \( λ \) de manera similar a como se abordó en \ref{sec:algebra-booleana}, también se aborda la representación de la noción de iteración y aglunos mecanismos que nos permiten abstaer el cómputo de las operaciones elementales.
 
 \subsection{Numerales de Church}
 \label{sec:numerales}
@@ -909,7 +920,7 @@ Por lo tanto, la codificación de la adición es
 
 Las codificaciones \eqref{eq:numeral:exp1}, \eqref{eq:numeral:mul1} y \eqref{eq:numeral:sum1} fueron construídas a partir de las reducciones mostradas en \eqref{eq:numeral:PmQ}, \eqref{eq:numeral:mP} y \eqref{eq:numeral:nm}, las cuales a su vez fueron obtenidas a partir del abuso de notación definido en \eqref{eq:abuso:F} el cual refleja la estructura de los numerales de Church, por lo tanto, las codificaciones mostradas se basan únicamente en la estructura de los numerales. Sin embargo, las operaciones de adición, multiplicación y exponenciación no son únicamente cálculos independientes que permiten expresar expresiones aritméticas. Estas tres operaciones se encuentran conceptualmente relacionadas.
 
-\begin{figure}[h!]
+\begin{figure}[!htbp]
   \begin{align*}
     \cn{+} & &\synteq& & \mathcolor{gray}{λm\, n.λx\, y.}\mathcolor{red}{n}\, x (\mathcolor{blue}{m}\, x\, y) & &\synteq& & \mathcolor{gray}{(λm.(λn.(λx.(λy.}((n\, x)\mathcolor{magenta}{((m\, x)y)})\mathcolor{gray}{))))} \\
     \cn{\times} & &\synteq& & \mathcolor{gray}{λm\, n.λx\, y.}\mathcolor{red}{n}(\mathcolor{blue}{m}\, x)y & &\synteq& & \mathcolor{gray}{(λm.(λn.(λx.(λy.}((n\mathcolor{magenta}{(m\, x)})y)\mathcolor{gray}{))))} \\
@@ -937,12 +948,12 @@ Una persona omnisciente y muda llamada \( P \) puede decirme la cantidad de obje
 
 Detrás del concepto de contar, está el concepto de \emph{repetición}, la estructura de los numerales de Church se puede interpretar como la analogía entre repetición y número.
 
-Sea \( P \) un término lambda el cual puede ser aplicado a una pregunta \( Q \), al \( β \)-reducir \( (P\, Q) \) se obtiene una repetición \( R \) la cual al ser aplicada a una acción \( A \) y un objeto \( O \) se \( β \)-reduce a realizar la acción \( A \) sobre \( O \) y repetir el procedimiento con el resultado hasta haber realizado cierta cantidad de acciones:
+Sea \( P \) un término \( λ \) el cual puede ser aplicado a una pregunta \( Q \), al \( β \)-reducir \( (P\, Q) \) se obtiene una repetición \( R \) la cual al ser aplicada a una acción \( A \) y un objeto \( O \) se \( β \)-reduce a realizar la acción \( A \) sobre \( O \) y repetir el procedimiento con el resultado hasta haber realizado cierta cantidad de acciones:
 
 \[ P\, Q \reduce{β} R, \]
 \[ R\, A\, O \reduce{β} \underbrace{A(A(\ ...\ (A(A\, O))\ ...\ ))}_\text{\( n \) veces} \]
 
-Para fines prácticos no es necesario conocer la estructura de \( P \) ni de \( Q \), lo importante es que \( A \) se realice cierta cantidad de veces sobre \( O \). Por lo tanto \( R \) es un término lambda de la forma
+Para fines prácticos no es necesario conocer la estructura de \( P \) ni de \( Q \), lo importante es que \( A \) se realice cierta cantidad de veces sobre \( O \). Por lo tanto \( R \) es un término \( λ \) de la forma
 
 \[ λx\, y.x(x(\ ...\ (x(x\, y))\ ...\ )) \]
 
@@ -1094,7 +1105,7 @@ Comparando esta segunda aproximación de las codicicaciones de \( \cn{+} \), \( 
 
 En la tabla \ref{fig:numeral:cod2comp} se puede apreciar la diferencia estrucural entre las codificaciones definidas, las similitudes menos importantes se encuentran coloreadas en gris.
 
-\begin{figure}[h!]
+\begin{figure}[!htbp]
   \begin{align*}
     \cn{+} &&\synteq&& \mathcolor{gray}{λm\, n.}\mathcolor{red}{n} \cn{+}_{1} \mathcolor{blue}{m}  &&\synteq&& \mathcolor{gray}{(λm.(λn.}((n\, \mathcolor{magenta}{\cn{+}_{1}}) m)\mathcolor{gray}{))} \\
     \cn{\times} &&\synteq&& \mathcolor{gray}{λm\, n.}\mathcolor{red}{n} (\cn{+}\, m) \mathcolor{blue}{\cn{0}}  &&\synteq&& \mathcolor{gray}{(λm.(λn.}((n \mathcolor{magenta}{(\cn{+}\, m)})\cn{0})\mathcolor{gray}{))} \\
@@ -1119,9 +1130,9 @@ Estas operaciones inversas pueden ser vistas de manera similar a la adición, mu
 
 La estructura de los numerales de Church favorece los mecanismos que añaden aplicaciones. En la codificación del sucesor fué relativamente sencillo ``reenlazar'' las variables ligadas en \( \cn{n} \) de tal manera que sólo se necesitaba aplicar \( x \) a \( (x^{n}\, y) \) para obtener \( (x^{n+1}\, y) \). Sin embargo, para codificar el predecesor es necesario ``eliminar'' una \( x \) de la aplicación y no hay manera sencilla de lograr esto.
 
-Henk Barendreght, en el artículo titulado ``The Impact of Lambda Calculus in Logic and Computer Science'' \cite{Barendregt:Impact}, menciona que la codificación del predecesor en el cálculo lambda fue un problema abierto. Alonzo Church pudo codificar la adición, la multiplicación y la exponenciación, sin embargo, la función predecesor resultaba ser extremadamente difícil de encontrar con sus numerales.
+Henk Barendreght, en el artículo titulado ``The Impact of Lambda Calculus in Logic and Computer Science'' \cite{Barendregt:Impact}, menciona que la codificación del predecesor en el cálculo \( λ \) fue un problema abierto. Alonzo Church pudo codificar la adición, la multiplicación y la exponenciación, sin embargo, la función predecesor resultaba ser extremadamente difícil de encontrar con sus numerales.
 
-Stephen Kleene, estudiante de Alonzo Church, encontró la solución de la misteriosa codificación del predecesor. Sin embargo se tuvo que auxiliar de una representación alternativa para los números naturales. De acuerdo a \cite{Barendregt:Impact}, Kleene hizo uso de una codificación de pares de números \( \langle n-1,n \rangle \). Se inicia con \( \langle 0,0 \rangle \) y el sucesor de \( \langle a,b \rangle \) es \( \langle b,b+1 \rangle \). Cuando Kleene le llevó la propuesta a Church, este ya se había convencido que el cálculo lambda era un sistema demasiado débil para representar el predecesor; es entonces que Church, habiendo aprendido que el predecesor era definible en el cálculo lambda, se convenció de que todas las funciones que eran intuitivamente computables, eran definibles en el cálculo lambda.
+Stephen Kleene, estudiante de Alonzo Church, encontró la solución de la misteriosa codificación del predecesor. Sin embargo se tuvo que auxiliar de una representación alternativa para los números naturales. De acuerdo a \cite{Barendregt:Impact}, Kleene hizo uso de una codificación de pares de números \( \langle n-1,n \rangle \). Se inicia con \( \langle 0,0 \rangle \) y el sucesor de \( \langle a,b \rangle \) es \( \langle b,b+1 \rangle \). Cuando Kleene le llevó la propuesta a Church, este ya se había convencido que el cálculo \( λ \) era un sistema demasiado débil para representar el predecesor; es entonces que Church, habiendo aprendido que el predecesor era definible en el cálculo \( λ \), se convenció de que todas las funciones que eran intuitivamente computables, eran definibles en el cálculo \( λ \).
 
 Para definir la codificación del predecesor, no se hará uso de la técnica de Kleene, pero si se introducirá otra notación para los números naturales.
 
@@ -1277,7 +1288,7 @@ Por ejemplo, un algoritmo para computar el factorial de un número \( n \) puede
 
 El mecanismo utilizado en este algoritmo para iterar es el \emph{mientras}, éste se acompaña con una condición, si la condición se satisface, el cuerpo del \emph{mientras} es ejecutado, de lo contrario, se detiene la iteración y se prosigue con el resto de los pasos del algoritmo.
 
-Por fortuna, este tipo de algoritmos pueden ser codificados de manera sencilla en el cálculo lambda. En lugar de codificar el \emph{mientras}, se puede utilizar \( \cn{n} \) para repetir un procedimiento, después de todo, el algoritmo inicia con \( r = n \) y en cada iteración \( r \) disminuye en 1, por lo que se realizan \( n \) iteraciones. La variable \( a \) inicia en 1 y en cada iteración es multiplicada por \( r \), al terminar los pasos del algoritmo, el valor de \( a \) es el resultado \( n! \).
+Por fortuna, este tipo de algoritmos pueden ser codificados de manera sencilla en el cálculo \( λ \). En lugar de codificar el \emph{mientras}, se puede utilizar \( \cn{n} \) para repetir un procedimiento, después de todo, el algoritmo inicia con \( r = n \) y en cada iteración \( r \) disminuye en 1, por lo que se realizan \( n \) iteraciones. La variable \( a \) inicia en 1 y en cada iteración es multiplicada por \( r \), al terminar los pasos del algoritmo, el valor de \( a \) es el resultado \( n! \).
 
 La clave para codificar este algoritmo es determinar los valores que representan el cómputo. Las variables \( r \) y \( a \) describen el estado del cómputo en el caso trivial \( n = 0 \). Cuando \( n \not= 0 \), en cada iteración, toda la información del cómputo sigue estando en las variables \( r \) y \( a \), aún más, los valores de estas variables describen una propiedad interesante del algoritmo: Antes y después de cada iteración, se cumple que \( n! = a \times r! \).
 
@@ -1287,14 +1298,14 @@ El estado del cómputo consiste de la codificación de \( r \) y \( a \) como nu
 
 Sean \( \cn{r} \) y \( \cn{a} \) dos numerales, el término \( M \synteq λp.p\, \cn{r}\, \cn{a} \) puede representar al estado, de tal manera que \( (M\, \bs{T}) \reduce{β} \cn{r} \) y \( (M\, \bs{F}) \reduce{β} \cn{a} \).
 
-Para construír un estado, basta con codificar un término lambda que al ser aplicado a dos numerales, se reduzca a un término como \( M \). Se define el constructor \( S \) de un estado como
+Para construír un estado, basta con codificar un término \( λ \) que al ser aplicado a dos numerales, se reduzca a un término como \( M \). Se define el constructor \( S \) de un estado como
 
 \begin{equation}
   \label{eq:iter:const1}
   S \synteq λn_{1}\, n_{2}.λp.p\, n_{1}\, n_{2}
 \end{equation}
 
-Para seleccionar de un determinado valor a partir de un estado, se plantean abstracciones lambda que al ser aplicadas a un término como \( M \), se reduzcan al valor deseado. Se definen los selectores \( S_{r} \) y \( S_{a} \) de un estado como
+Para seleccionar de un determinado valor a partir de un estado, se plantean abstracciones \( λ \) que al ser aplicadas a un término como \( M \), se reduzcan al valor deseado. Se definen los selectores \( S_{r} \) y \( S_{a} \) de un estado como
 
 \begin{equation}
   \label{eq:iter:selec1r}
@@ -1312,7 +1323,7 @@ Con estas codificaciones, se facilita la escritura de los términos \( P \) y \(
   B \synteq S\, \cn{n}\, \cn{1}
 \end{equation}
 
-El término \( P \) debe ser una abstracción que sea aplicada a un estado y sea reducida a un estado, ya que en el cálculo lambda no hay una noción de asignación, en cada repetición de la aplicación de \( P \) se crea un estado nuevo con sus valores en función del estado anterior. Si \( \cn{r} \) y \( \cn{a} \) son los valores del estado previo, el término \( P \) debe reducirse a un estado en donde el primer elemento sea \( (\cn{-_{1}}\, \cn{r}) \) y el segundo sea \( (\cn{\times}\, \cn{a}\, \cn{r}) \). Utilizando los selectores \( S_{r} \) y \( S_{a} \), el término \( P \) se codifica como
+El término \( P \) debe ser una abstracción que sea aplicada a un estado y sea reducida a un estado, ya que en el cálculo \( λ \) no hay una noción de asignación, en cada repetición de la aplicación de \( P \) se crea un estado nuevo con sus valores en función del estado anterior. Si \( \cn{r} \) y \( \cn{a} \) son los valores del estado previo, el término \( P \) debe reducirse a un estado en donde el primer elemento sea \( (\cn{-_{1}}\, \cn{r}) \) y el segundo sea \( (\cn{\times}\, \cn{a}\, \cn{r}) \). Utilizando los selectores \( S_{r} \) y \( S_{a} \), el término \( P \) se codifica como
 
 \begin{equation}
   \label{eq:iter:proc1}
@@ -1384,7 +1395,7 @@ Para corroborar que este predicado es correcto al ser aplicado a un numeral, se 
 El siguiente predicado que se define es el que a partir de dos numerales \( \cn{m} \) y \( \cn{n} \), determina si \( m \leq n \). La codificación de este predicado se basa en la observación de al restar \( \cn{n} \) de \( \cn{m} \) el resultado será \( \cn{0} \) si \( \cn{m} \) es menor o igual a \( \cn{n} \). Por lo tanto, la codificación de este predicado se define
 
 \begin{equation}
-  \label{eq:numeral:pred<=}
+  \label{eq:numeral:predleq}
   \cn{\leq}_{?} \synteq λm\, n.\cn{0}_{?} (\cn{-}\, m\, n)
 \end{equation}
 
@@ -1393,22 +1404,22 @@ Ya que estos predicados son reducidos a valores booleanos cuando se aplican a nu
 \begin{itemize}
 \item Si \( n \leq m \), entonces \( m \geq n \):
   \begin{equation}
-    \label{eq:numeral:pred>=}
+    \label{eq:numeral:predgeq}
     \cn{\geq}_{?} \synteq λm\, n.\cn{\leq}_{?}\, n\, m
   \end{equation}
 \item Si \( m \leq n \) y \( m \geq n \), entonces \( m = n \):
   \begin{equation}
-    \label{eq:numeral:pred=}
+    \label{eq:numeral:predeq}
     \cn{=}_{?} \synteq λm\, n.\bs{\land} (\cn{\leq}_{?}\, m\, n) (\cn{\geq}_{?}\, m\, n)
   \end{equation}
 \item Si \( m \not\leq n \), entonces \( m > n \):
   \begin{equation}
-    \label{eq:numeral:pred>}
+    \label{eq:numeral:predgt}
     \cn{>}_{?} \synteq λm\, n.\bs{\lnot} (\cn{\leq}_{?}\, m\, n)
   \end{equation}
 \item Si \( m \not\geq n \), entonces \( m < n \):
   \begin{equation}
-    \label{eq:numeral:pred<}
+    \label{eq:numeral:predlt}
     \cn{<}_{?} \synteq λm\, n.\bs{\lnot} (\cn{\geq}_{?}\, m\, n)
   \end{equation}
 \end{itemize}
@@ -1627,11 +1638,11 @@ Para complementar el mecanismo de iteración presentado en la sección \ref{sec:
 
 La recursividad está detrás de una grán cantidad de definiciones, problemas y algoritmos en matemáticas y ciencias de la computación. La idea básica de la recursividad es plantear un concepto en términos de sí mismo \cite{knuth:Concrete}.
 
-Un ejemplo de definición recursiva es el de términos lambda. Una aplicación es un término y se compone de otros dos términos, mientras que una abstracción es un término y se compone de un átomo y otro término. Incluso la definición de los números naturales, los cuales nos permiten iterar, es recursiva, ya que \( (x^{n}\, y) \) es definido como un abuso de notación de \( (x(x^{n-1}\, y)) \).
+Un ejemplo de definición recursiva es el de términos \( λ \). Una aplicación es un término y se compone de otros dos términos, mientras que una abstracción es un término y se compone de un átomo y otro término. Incluso la definición de los números naturales, los cuales nos permiten iterar, es recursiva, ya que \( (x^{n}\, y) \) es definido como un abuso de notación de \( (x(x^{n-1}\, y)) \).
 
 Hay problemas clásicos cuyas soluciones son también recursivas, por ejemplo, el rompecabezas de \emph{las torres de Hanoi} o el problema de \emph{Flavio Josefo} \cite{knuth:Concrete}. Sus soluciones consisten en suponer que el problema ya fue resuelto para una versión más simple y resolver la diferencia del problema simple al original. De esta manera, se reduce el problema hasta llegar a una versión muy simple, en donde la solución es ``trivial''.
 
-Los algoritmos con definiciones recursivas en algunos casos son más concisos que sus contrapartes iterativas. En particular cuando los algoritmos manipulan estructuras definidas de manera recursiva, su especificación suele seguir un patrón similar a la de las estructuras que manipula. Por ejemplo, los procedimientos para encontrar los subtérminos de un término lambda o calcular su longitud, por definición (\ref{defn:longitud},\ref{defn:subtermino}), son recursivos.
+Los algoritmos con definiciones recursivas en algunos casos son más concisos que sus contrapartes iterativas. En particular cuando los algoritmos manipulan estructuras definidas de manera recursiva, su especificación suele seguir un patrón similar a la de las estructuras que manipula. Por ejemplo, los procedimientos para encontrar los subtérminos de un término \( λ \) o calcular su longitud, por definición (\ref{defn:longitud},\ref{defn:subtermino}), son recursivos.
 
 El mecanismo de iteración presentado en este trabajo está más asociado al concepto de iteración en matemáticas que en computación. La estructura de los numerales de Church, capturan la idea de la aplicación de una \emph{función iterativa} cuyo dominio y rango son el mismo conjunto, de tal manera que estas funciones se pueden componer consigo mismas.
 
@@ -1840,7 +1851,7 @@ Es entonces que \( (\bs{Y}\, \cn{!}) \) puede ser \( β \)-convertido nuevamente
 
 Un \emph{punto fijo} de un operador o función es un objeto el cuál no cambia cuando el operador le es aplicado. Por ejemplo, la función \( f(x)=x^{2} \) tiene dos puntos fijos 0 y 1, ya que \( 0^{2} = 0 \) y \( 1^{2} = 1 \). Hay operadores que no tienen punto fijo, por ejemplo el sucesor de un número, ya que \( n+1 \not= n \) para toda \( n \).
 
-El teorema de punto fijo \ref{thm:punto-fijo} es uno de los resultados básicos en el cálculo lambda.
+El teorema de punto fijo \ref{thm:punto-fijo} es uno de los resultados básicos en el cálculo \( λ \).
 
 \begin{thm}[Teorema de punto fijo]
   \label{thm:punto-fijo}
@@ -1898,7 +1909,7 @@ Esta propiedad no la tiene \( \bs{Y} \), para realizar el último paso del desar
 
 La utilidad de los combinadores de punto fijo va más allá que el de permitir la codificación de procesos recursivos. Estos combinadores son especialmente útiles para resolver el siguiente tipo de problema:
 
-Sea \( Z \) un término lambda, con variables libres \( f \) y \( \vec{x} \), encuentra el término \( F \) tal que
+Sea \( Z \) un término \( λ \), con variables libres \( f \) y \( \vec{x} \), encuentra el término \( F \) tal que
 
 \[ F\, \vec{M} \convertible{β} \subst{\subst{Z}{f}{F}}{\vec{x}}{\vec{M}} \]
 
@@ -1926,13 +1937,13 @@ En general, la solución para este tipo de problemas es
 \section{Estructuras recursivas}
 \label{sec:estructuras-recursivas}
 
-Utilizando combinadores de punto fijo como \( \bs{Y} \) y \( \bs{Θ} \) y la solución general \eqref{eq:fixed:prala} se pueden codificar procedimientos recursivos como el algoritmo \ref{alg:factorial3} del factorial. Sin embargo, los procesos recursivos se tornan más interesantes cuando la información que manipulan es también recursiva. En esta sección se muestran técnicas para codificar estructuras recursivas en el cálculo lambda.
+Utilizando combinadores de punto fijo como \( \bs{Y} \) y \( \bs{Θ} \) y la solución general \eqref{eq:fixed:prala} se pueden codificar procedimientos recursivos como el algoritmo \ref{alg:factorial3} del factorial. Sin embargo, los procesos recursivos se tornan más interesantes cuando la información que manipulan es también recursiva. En esta sección se muestran técnicas para codificar estructuras recursivas en el cálculo \( λ \).
 
 Una variedad de lenguajes de programación, cuentan con un operador o función fundamental para la construcción de estructuras compuestas. Este operador usualmente es llamado \emph{cons}, el cual es una abreviación de la palabra ``construír en memoria''. Este operador toma dos objetos \( a \) y \( d \) y construye en memoria un objeto que contiene a ambos.
 
 Matemáticamente, el objeto resultante de aplicar el operador \emph{cons} es un par ordenado. La notación que se utiliza en este trabajo para escribir el par conformado por \( a \) y \( d \) es \( \langle a : d \rangle \).
 
-Un par ordenado no es más que un estado con dos elementos, para codificarse en el cálculo lambda, se deben plantear los mecanismos para construír pares y obtener sus elementos. A continuación se construyen las definiciones del constructor \( \mc{p} \) y los selectores \( \mc{a} \) y \( \mc{d} \) para el par ordenado (basadas en las definiciones \eqref{eq:state-cons} y \eqref{eq:state-selec}).
+Un par ordenado no es más que un estado con dos elementos, para codificarse en el cálculo \( λ \), se deben plantear los mecanismos para construír pares y obtener sus elementos. A continuación se construyen las definiciones del constructor \( \mc{p} \) y los selectores \( \mc{a} \) y \( \mc{d} \) para el par ordenado (basadas en las definiciones \eqref{eq:state-cons} y \eqref{eq:state-selec}).
 
 \begin{equation}
   \label{eq:cons1}
@@ -1950,7 +1961,7 @@ Un par ordenado no es más que un estado con dos elementos, para codificarse en 
 Estas tres ecuaciones cumplen con las reducciones
 \[ (\mc{a} (\mc{p}\, M\, N)) \reduce{β} M \]
 \[ (\mc{d} (\mc{p}\, M\, N)) \reduce{β} N \]
-para cualesquiera términos lambda \( M \) y \( N \). Para corroborar esto, se desarrollan las reducciones:
+para cualesquiera términos \( λ \) \( M \) y \( N \). Para corroborar esto, se desarrollan las reducciones:
 
 \begin{align}
   \label{eq:car1-prop}
@@ -1977,7 +1988,7 @@ En el resto de esta sección se abordan diferentes maneras en las que se puede e
 \subsection{Listas}
 \label{sec:estructura-listas}
 
-Las listas son secuencias de valores, en donde cada valor en la lista tiene una posición fija. La codificación de las listas en el cálculo lambda se asemeja a la lista enlazada comunmente estudiada en estructuras de datos. Si consideramos que el par ordenado contiene como primer elemento un numeral de Church y como segundo elemento otro par ordenado, se puede representar una lista de números, en donde el último par contiene como segundo elemento una codificación que represente el valor nulo \( \emptyset \).
+Las listas son secuencias de valores, en donde cada valor en la lista tiene una posición fija. La codificación de las listas en el cálculo \( λ \) se asemeja a la lista enlazada comunmente estudiada en estructuras de datos. Si consideramos que el par ordenado contiene como primer elemento un numeral de Church y como segundo elemento otro par ordenado, se puede representar una lista de números, en donde el último par contiene como segundo elemento una codificación que represente el valor nulo \( \emptyset \).
 
 \[ \langle \cn{n}_{1} : \langle \cn{n}_{2} : \langle \cn{n}_{3} : \langle ... \langle \cn{n}_{k} : \emptyset \rangle ... \rangle \rangle \rangle \rangle \]
 
@@ -2035,7 +2046,7 @@ Por lo tanto
 \end{equation}
 
 \begin{rem}[Sobre predicados]
-  La aplicación de un predicado como \( \cn{0}_{?} \) o \( \emptyset_{?} \) a un término lambda \( M \) no necesariamente se \( β \)-reduce a una codificación de valor de verdad. Estos predicados son construídos para ser aplicados a numerales o listas respectivamente y el resultado de reducir otro tipo de términos no es de importancia para la codificación de algoritmos.
+  La aplicación de un predicado como \( \cn{0}_{?} \) o \( \emptyset_{?} \) a un término \( λ \) \( M \) no necesariamente se \( β \)-reduce a una codificación de valor de verdad. Estos predicados son construídos para ser aplicados a numerales o listas respectivamente y el resultado de reducir otro tipo de términos no es de importancia para la codificación de algoritmos.
 \end{rem}
 
 Con estas codificaciones se pueden construír algoritmos que manipulen listas de números. Consideremos el algoritmo \ref{alg:lis-doubles} que dada una lista de números compute una lista con la misma cantidad de elementos pero con cada número de la lista original multiplicado por 2. En cada paso recursivo se verifica que la lista \( \mc{L} \) no sea el valor nulo, en cuyo caso, será un par cuyo primer elemento es \( n \) y segundo elemento es otra lista \( \mc{L}^{\prime} \); se construye otro par con el primer elemento multiplicado por 2 y con el segundo elemento el resultado de realizar este mismo proceso con \( \mc{L}^{\prime} \).
@@ -2085,7 +2096,7 @@ Aún más, se puede generalizar la estructura del resultado al abstraer el térm
                                                    &(f\, \mc{p}\, \emptyset\, g (\mc{d}\, \mc{L})))) \nonumber
 \end{align}
 
-Si \( \mc{F} \) es la abstracción \eqref{eq:lis-fold}, \( \mc{M} \) es la abstracción \eqref{eq:lis-map}, \( \mc{D} \) es la abstracción \eqref{eq:lis-doubles} y \( \mc{L} \) es el término lambda que codifica la lista \( \langle n_{1},\ ...\ ,\ n_{k} \rangle \), entonces
+Si \( \mc{F} \) es la abstracción \eqref{eq:lis-fold}, \( \mc{M} \) es la abstracción \eqref{eq:lis-map}, \( \mc{D} \) es la abstracción \eqref{eq:lis-doubles} y \( \mc{L} \) es el término \( λ \) que codifica la lista \( \langle n_{1},\ ...\ ,\ n_{k} \rangle \), entonces
 
 \[ \mc{F}\, \mc{p}\, \mc{\emptyset} (\cn{\times}\, \cn{2}) \mc{L} \convertible{β} \mc{M} (\cn{\times}\, \cn{2}) \mc{L} \convertible{β} \mc{D}\, \mc{L} \]
 
@@ -2156,11 +2167,11 @@ Esta abstracción también es posible generalizarla con pocas modificaciones par
                                             &(f\, g_{?} (\mc{d} \mc{L})))) \nonumber
 \end{align}
 
-Si \( \mc{F} \) es la abstracción \eqref{eq:lis-filter}, \( \mc{I} \) es la abstracción \eqref{eq:lis-impares} y \( \mc{L} \) es el término lambda que codifica la lista \( \langle n_{1},\ ...\ ,\ n_{k} \rangle \), entonces
+Si \( \mc{F} \) es la abstracción \eqref{eq:lis-filter}, \( \mc{I} \) es la abstracción \eqref{eq:lis-impares} y \( \mc{L} \) es el término \( λ \) que codifica la lista \( \langle n_{1},\ ...\ ,\ n_{k} \rangle \), entonces
 
 \[ \mc{F}\, \cn{imp}_{?}\, \mc{L} \convertible{β} \mc{I}\, \mc{L} \]
 
-Algoritmos de procesamiento de listas más complejos pueden ser codificados ya sea utilizando \eqref{eq:lis-map}, \eqref{eq:lis-fold}, \eqref{eq:lis-filter} o términos con una estructura similar. Algo que es importante notar de las generalizaciones planteadas en los ejemplos es que la lista \( \mc{L} \) puede tener términos lambda que no sean numerales, al utilizar los algoritmos genéricos sólo se debe tener cuidado con que la forma de los términos en \( \mc{L} \) sea conocida para \( g \) y \( g_{?} \).
+Algoritmos de procesamiento de listas más complejos pueden ser codificados ya sea utilizando \eqref{eq:lis-map}, \eqref{eq:lis-fold}, \eqref{eq:lis-filter} o términos con una estructura similar. Algo que es importante notar de las generalizaciones planteadas en los ejemplos es que la lista \( \mc{L} \) puede tener términos \( λ \) que no sean numerales, al utilizar los algoritmos genéricos sólo se debe tener cuidado con que la forma de los términos en \( \mc{L} \) sea conocida para \( g \) y \( g_{?} \).
 
 \subsection{Árboles}
 \label{sec:estructura-arboles}
@@ -2168,7 +2179,7 @@ Algoritmos de procesamiento de listas más complejos pueden ser codificados ya s
 Los árboles son estructuras no-lineales jerárquicas compuestos de \emph{vértices} (también llamados \emph{nodos}) y \emph{aristas} que establecen una relación entre dos vértices.
 
 Utilizando pares y listas es posible construír árboles. Consideremos el árbol mostrado en la figura \ref{fig:tree}.
-\begin{figure}[h!]
+\begin{figure}[!htbp]
   \centering
   \begin{tikzpicture}
     \node[circle,draw] (11) {};
@@ -2211,7 +2222,7 @@ La definición usual de un árbol como el mostrado en la figura es como un conju
 
 \[ \mc{T} \longrightarrow (v,\ \langle \mc{T}_{1},\ ...\ ,\ \mc{T}_{k} \rangle) \mid \emptyset \]
 
-Esta definición nos permite codificar árboles como el valor nulo o como un par cuyo primer elemento sea un vértice \( v \) y cuyo segundo elemento sea una lista de los vértices en los que \( v \) incide. El vértice puede ser representado por cualquier término lambda, en ocaciones es útil asociar un término a cada vértice del árbol para construír, por ejemplo, árboles de numerales.
+Esta definición nos permite codificar árboles como el valor nulo o como un par cuyo primer elemento sea un vértice \( v \) y cuyo segundo elemento sea una lista de los vértices en los que \( v \) incide. El vértice puede ser representado por cualquier término \( λ \), en ocaciones es útil asociar un término a cada vértice del árbol para construír, por ejemplo, árboles de numerales.
 
 El árbol de la figura \ref{fig:tree} se representa de la siguiente manera:
 
@@ -2245,7 +2256,7 @@ Esta similitud en la representación de árboles y listas corresponde con la cod
   \end{algorithmic}
 \end{algorithm}
 
-La codificación del procedimiento \( \mathrm{fold} \) es el término \eqref{eq:lis-fold}. Por lo que el algoritmo \ref{alg:tree-count} se define en el cálculo lambda como
+La codificación del procedimiento \( \mathrm{fold} \) es el término \eqref{eq:lis-fold}. Por lo que el algoritmo \ref{alg:tree-count} se define en el cálculo \( λ \) como
 
 \begin{align*}
   \bs{Y}(λf\, \mc{T}.\bs{\prec} &(\emptyset_{?}\, \mc{T})\\
@@ -2258,7 +2269,7 @@ La codificación del procedimiento \( \mathrm{fold} \) es el término \eqref{eq:
 
 Las gráficas son una generalización de árboles en donde se admiten \emph{ciclos}, es decir, a partir de un vértice, se pudieran encontrar dos caminos de aristas para llegar a otro vértice. Consideremos la gráfica mostrada en la figura \ref{fig:graph}.
 
-\begin{figure}[h!]
+\begin{figure}[!htbp]
   \centering
   \begin{tikzpicture}
     \node[circle,draw] (1) {};
@@ -2293,18 +2304,18 @@ La gráfica de la figura \ref{fig:graph} se representa como lista de adyacencia 
 
 La única restricción que se debe incorporar a la codificación es que los vértices puedan ser distinguidos entre sí, esto se puede lograr por ejemplo, utilizando numerales de Church para representar vértices.
 
-Ya que las gráficas son codificadas utilizando términos lambda conocidos, los algoritmos que manipular gráficas pueden ser codificados de manera similar a los presentados en las secciones \ref{sec:estructura-arboles} y  \ref{sec:estructura-listas}.
+Ya que las gráficas son codificadas utilizando términos \( λ \) conocidos, los algoritmos que manipular gráficas pueden ser codificados de manera similar a los presentados en las secciones \ref{sec:estructura-arboles} y  \ref{sec:estructura-listas}.
 
-\subsection{Términos lambda}
+\subsection{\texorpdfstring{Términos \( \bs{λ} \)}{Términos lambda}}
 \label{sec:estructura-lambda}
 
-En esta sección se aborda el mecanismo mediante el cual es posible codificar términos lambda dentro del cálculo lambda y de esta manera, tener las herramientas para codificar algoritmos que manipulen términos lambda como la sustitución, la \( α \)-contracción, la \( β \)-contracción, encontrar los subtérminos de un término, etc.
+En esta sección se aborda el mecanismo mediante el cual es posible codificar términos \( λ \) dentro del cálculo \( λ \) y de esta manera, tener las herramientas para codificar algoritmos que manipulen términos \( λ \) como la sustitución, la \( α \)-contracción, la \( β \)-contracción, encontrar los subtérminos de un término, etc.
 
-El hecho de poder codificar términos lambda en el cálculo lambda no introduce problema algúno. Este técnica de representar un lenguaje en sí mismo es común, por ejemplo, en compiladores de \texttt{C} escritos en \texttt{C} o en intérpretes de \texttt{Lisp} escritos en \texttt{Lisp}.
+El hecho de poder codificar términos \( λ \) en el cálculo \( λ \) no introduce problema algúno. Este técnica de representar un lenguaje en sí mismo es común, por ejemplo, en compiladores de \texttt{C} escritos en \texttt{C} o en intérpretes de \texttt{Lisp} escritos en \texttt{Lisp}.
 
-Partiendo de la definición \ref{defn:terminos} de término lambda, se modifica el conjunto \( V \) para que en lugar de ser \( \{v_{0},\ v_{00},\ ... \} \), sea \( \{ 0,\ 1,\ ... \} \), es decir, que los átomos sean numeros naturales; además en lugar de construír las abstracciones y aplicaciones a partir de símbolos, se construyen a partir de pares.
+Partiendo de la definición \ref{defn:terminos} de término \( λ \), se modifica el conjunto \( V \) para que en lugar de ser \( \{v_{0},\ v_{00},\ ... \} \), sea \( \{ 0,\ 1,\ ... \} \), es decir, que los átomos sean numeros naturales; además en lugar de construír las abstracciones y aplicaciones a partir de símbolos, se construyen a partir de pares.
 
-\begin{defn}[Términos lambda]
+\begin{defn}[Términos \( λ \)]
   El conjunto \( Λ^{\prime} \) tiene elementos que son pares y números naturales. \( Λ^{\prime} \) es el conjunto más pequeño que satisface:
   \label{defn:cod-terminos}
   \begin{subequations}
@@ -2319,18 +2330,18 @@ Partiendo de la definición \ref{defn:terminos} de término lambda, se modifica 
   \end{subequations}
 \end{defn}
 
-El problema con esta definición de términos lambda es que no es posible distinguir al término \( (λx.x) \) de \( (x\, x) \). Además, la mayoría de los algoritmos que manipulan términos lambda es crucial poder diferenciar cuando un término \( M \) es un átomo, una abstracción o una aplicación. Para arreglar la definición \ref{defn:cod-terminos} se pueden utilizar números que etiqueten cada tipo de término, asignando el número 1 a los átomos, el 2 a las abstracciones y el 3 a las aplicaciones, se tiene una correspondencia uno a uno entre \( Λ \) y \( Λ^{\prime} \).
+El problema con esta definición de términos \( λ \) es que no es posible distinguir al término \( (λx.x) \) de \( (x\, x) \). Además, la mayoría de los algoritmos que manipulan términos \( λ \) es crucial poder diferenciar cuando un término \( M \) es un átomo, una abstracción o una aplicación. Para arreglar la definición \ref{defn:cod-terminos} se pueden utilizar números que etiqueten cada tipo de término, asignando el número 1 a los átomos, el 2 a las abstracciones y el 3 a las aplicaciones, se tiene una correspondencia uno a uno entre \( Λ \) y \( Λ^{\prime} \).
 
-\begin{defn}[Términos lambda]
+\begin{defn}[Términos \( λ \)]
   El conjunto \( Λ^{\prime} \) tiene elementos que son pares. \( Λ^{\prime} \) es el conjunto más pequeño que satisface:
   \label{defn:cod-terminos2}
   \begin{subequations}
     \begin{align}
-      \label{cod-terminos:atomos} \tag{a}
+      \label{cod-terminos:atomos2} \tag{a}
       n \in \mathbb{N} & \implies \langle 1 : n \rangle \in Λ^{\prime} \\
-      \label{cod-terminos:abstracciones} \tag{b}
+      \label{cod-terminos:abstracciones2} \tag{b}
       M \in Λ^{\prime},\ n \in \mathbb{N} & \implies \langle 2 : \langle n : M \rangle \rangle \in Λ^{\prime} \\
-      \label{cod-terminos:aplicaciones} \tag{c}
+      \label{cod-terminos:aplicaciones2} \tag{c}
       M,\ N \in Λ^{\prime} & \implies \langle 3 : \langle M : N \rangle \rangle \in Λ^{\prime}
     \end{align}
   \end{subequations}
@@ -2338,9 +2349,9 @@ El problema con esta definición de términos lambda es que no es posible distin
 
 Con esta definición, el término \( (λx.x) \) se puede representar como \( \langle 2 : \langle \langle 1 : n \rangle : \langle 1 : n \rangle \rangle \rangle \) y el término \( (x\, x) \) se puede representar como \( \langle 3 : \langle \langle 1 : n \rangle : \langle 1 : n \rangle \rangle \rangle \).
 
-Codificaciones adecuadas para los constructores y selectores de esta representación de términos lambdas se basan en las técnicas abordadas a lo largo de este capítulo.
+Codificaciones adecuadas para los constructores y selectores de esta representación de términos \( λ \) se basan en las técnicas abordadas a lo largo de este capítulo.
 
-Sea \( \mc{T} \) la codificación de un término lambda, los predicados \( \mathrm{atomo}_{?} \), \( \mathrm{abstraccion}_{?} \) y \( \mathrm{aplicacion}_{?} \) permiten determinar la clase de término que es \( \mc{T} \):
+Sea \( \mc{T} \) la codificación de un término \( λ \), los predicados \( \mathrm{atomo}_{?} \), \( \mathrm{abstraccion}_{?} \) y \( \mathrm{aplicacion}_{?} \) permiten determinar la clase de término que es \( \mc{T} \):
 
 \begin{align}
   \label{eq:cod-lambda-preds}
@@ -2356,7 +2367,7 @@ Utilizando estos tres predicados y el término \( \bs{\prec} \) se puede codific
   \mathrm{ramifica} \synteq λ\mc{T}\, x\, y\, z\, e.\bs{\prec} (\mathrm{atomo}_{?}\, \mc{T}) x (\bs{\prec} (\mathrm{abstraccion}_{?}\, \mc{T}) y (\bs{\prec} (\mathrm{aplicacion}_{?}\, \mc{T}) z\, e))
 \end{equation}
 
-Los constructores para cada clase de término lambda siguen la definición \ref{defn:cod-terminos2}:
+Los constructores para cada clase de término \( λ \) siguen la definición \ref{defn:cod-terminos2}:
 
 \begin{align}
   \label{eq:cod-lambda-cons}
@@ -2384,7 +2395,7 @@ Los constructores en \eqref{eq:cod-lambda-cons} deben satisfacer los predicados 
 \end{align*}
 Corroborar que las otras combinaciones de aplicaciones se reducen de manera correcta implica un desarrollo similar.
 
-Los selectores para cada clase de término lambda se codifican en función de la cantidad de elementos que conforman al término. Los átomos tienen un selector, las abstracciones dos y las aplicaciones dos. Debido a que las abstracciones comparten la misma estructura, sus selectores son los mismos.
+Los selectores para cada clase de término \( λ \) se codifican en función de la cantidad de elementos que conforman al término. Los átomos tienen un selector, las abstracciones dos y las aplicaciones dos. Debido a que las abstracciones comparten la misma estructura, sus selectores son los mismos.
 
 \begin{align}
   \label{eq:cod-lambda-selec}
@@ -2395,7 +2406,7 @@ Los selectores para cada clase de término lambda se codifican en función de la
   \mathrm{aplicacion}_{a} &\synteq λx.\mc{d} (\mc{d}\, x)
 \end{align}
 
-La técnica de etiquetar pares para poder determinar el ``tipo'' de estructura es muy utilizada en la implementación de lenguajes de programación con verificación dinámica de tipos. La flexibilidad de la técnica permite codificar todos los objetos que se han abordado en este trabajo como pares etiquetados, los valores de verdad pueden etiquetarse con el 4, los numerales de Church con el 5, los pares con el 6 y así sucesivamente. De esta manera la codificación de algoritmos en el cálculo lambda puede ser más robusta, evitando errores que puedan surgir al reducir los términos.
+La técnica de etiquetar pares para poder determinar el ``tipo'' de estructura es muy utilizada en la implementación de lenguajes de programación con verificación dinámica de tipos. La flexibilidad de la técnica permite codificar todos los objetos que se han abordado en este trabajo como pares etiquetados, los valores de verdad pueden etiquetarse con el 4, los numerales de Church con el 5, los pares con el 6 y así sucesivamente. De esta manera la codificación de algoritmos en el cálculo \( λ \) puede ser más robusta, evitando errores que puedan surgir al reducir los términos.
 
 %%% Local Variables:
 %%% mode: latex

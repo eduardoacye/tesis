@@ -1,18 +1,19 @@
 % Eduardo Acuña Yeomans 2016
-% Stripped down version of my dissertation.
-%
 
-% Document class and language
-\documentclass[letterpaper,twoside,openright,10pt]{book}
+\documentclass[letterpaper,twoside,openright,11pt]{book}
+
+\usepackage[lmargin=1.4 in, rmargin=.8 in, tmargin=1 in, bmargin=1 in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-minimal]{babel}
+\decimalpoint
+\usepackage[T1]{fontenc}
+
+\usepackage{noweb}
+\noweboptions{smallcode,spanish,breakcode,longchunks,longxref,webnumbering}
 
 \usepackage{setspace}
 \onehalfspacing
 % \doublespacing
-
-\usepackage[lmargin=1.4 in, rmargin=.8 in, tmargin=1 in, bmargin=1 in]{geometry}
-\usepackage[utf8]{inputenc}
-\usepackage[spanish]{babel}
-\usepackage[T1]{fontenc}
 
 \usepackage[sumlimits]{amsmath}
 \usepackage{amssymb}
@@ -206,9 +207,53 @@
     bookmarks=true,
 }
 
+% Comentarios de revisión
+\usepackage[framemethod=tikz]{mdframed}
+\definecolor{colorGutu}{HTML}{F8AEAE}
+\definecolor{colorWaissman}{HTML}{AEB4F8}
+\definecolor{colorFrias}{HTML}{AEF8C0}
+\definecolor{colorJesus}{HTML}{000000}
+\definecolor{colorEduardo}{HTML}{F8AEF2}
+\definecolor{colorAnonimo}{HTML}{F3F87C}
+\definecolor{colorFondo}{HTML}{F7F7F7}
+\mdfdefinestyle{comentario}{
+	topline=false,
+    bottomline=false,
+    rightline=false,
+    linewidth=4pt,
+    backgroundcolor=colorFondo,
+    frametitlefont=\sffamily\bfseries\color{black},
+    frametitlebelowskip=.0cm,
+}
+\mdtheorem[
+	style=comentario,
+    linecolor=colorGutu,
+]{Gutu}{Olivia Gutú}[chapter]
+\mdtheorem[
+	style=comentario,
+    linecolor=colorWaissman,
+]{Waissman}{Julio Waissman}[chapter]
+\mdtheorem[
+	style=comentario,
+    linecolor=colorFrias,
+]{Frias}{Martín Frías}[chapter]
+\mdtheorem[
+	style=comentario,
+    linecolor=colorJesus,
+]{Jesus}{Jesús Espinoza}[chapter]
+\mdtheorem[
+	style=comentario,
+    linecolor=colorEduardo,
+]{Eduardo}{Eduardo Acuña}[chapter]
+\mdtheorem[
+	style=comentario,
+    linecolor=colorAnonimo,
+]{Anonimo}{Anónimo}[chapter]
+
+
 \begin{document}
 
-\title{El cálculo lambda y los fundamentos de la computación}
+\title{El cálculo \( \bs{λ} \) y los fundamentos de la computación}
 \author{Eduardo Acuña Yeomans}
 \date{2016}
 
@@ -218,16 +263,21 @@
 \tableofcontents
 
 \mainmatter
+\chapter*{Para revisores}
+\markboth{}{}
+\addcontentsline{toc}{chapter}{Para revisores}
+\input{revisores}
+
 \chapter*{Introducción}
 \addcontentsline{toc}{chapter}{Introducción}
 \label{ch:introduccion}
 \input{introduccion}
 
-\chapter{Noción informal del cálculo lambda}
+\chapter{\texorpdfstring{Noción informal del cálculo \( \bs{λ} \)}{Noción informal del cálculo lambda}}
 \label{ch:nocion-informal}
 \input{capitulo-1}
 
-\chapter{Formalización del cálculo lambda}
+\chapter{\texorpdfstring{Formalización del cálculo \( \bs{λ} \)}{Formalización del cálculo lambda}}
 \label{ch:formalizacion}
 \input{capitulo-2}
 
@@ -244,11 +294,22 @@
 
 \chapter{Programación de codificaciones}
 \label{ap:lambda-scheme}
+\begin{Eduardo}
+La versión final de este apéndice contiene una descripción de la implementación y el resto de las codificaciones (como se puede observar la traducción es bastante directa).
+\end{Eduardo}
 \input{apendice-1}
 
-\chapter{Intérprete del cálculo lambda}
+\chapter{\texorpdfstring{Intérprete del cálculo \( \bs{λ} \)}{Intérprete del cálculo lambda}}
 \label{ap:texlambda}
+\begin{Eduardo}
+La versión final de este apéndice es un programa literario en español, está pendiente actualizar la implementación. En el repositorio de Github están los avances del programa literario
+\url{https://github.com/eduardoacye/tesis/blob/master/racket/docs/lambda.pdf}
+\end{Eduardo}
 \input{apendice-2}
+
+\chapter{Intérprete Lambda}
+\label{ap:lambda}
+\input{apendice-pl}
 
 \nocite{*}
 \bibliographystyle{acm}

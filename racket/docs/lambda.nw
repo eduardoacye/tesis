@@ -611,11 +611,264 @@ En el caso del lenguaje de expresiones esto es algo complicado ya que hay varias
 
 Una cuestión importante que se debe tener en cuenta es que una misma representación externa textual puede escribirse para ser interpretada de manera diferente, por ejemplo, se pudieran escribir diferentes ``backends'' de escritura: texto plano, \LaTeX, [[postscript]], o incluso escribir la estructura en memoria de Racket a otro lenguaje de programación en la que pueda ser representada.
 
-Para manejar esta complejidad y variedad de estilos de escritura se establece una convención para generar \emph{escritores}, es decir, procedimientos que transforman una expresión a una representación externa.
+Los escritores que son implementados en el programa son:
 
-@ \paragraph{Convenciones para la generación de escritores}
+\begin{itemize}
+\item A texto plano sin abuso de notación;
+\item A texto plano con abuso de notación;
+\item A \LaTeX sin abuso de notación;
+\item A \LaTeX con abuso de notación;
+\item A una figura funcional de [[Racket]] sin abuso de notación;
+\item A una figura funcional de [[Racket]] con abuso de notación.
+\end{itemize}
 
-Los escritores que se implementan en este programa son funciones que toman una expresión del lenguaje y la recorren en un orden determinado para generar un valor, el cuál usualmente es una cadena.
+Se abordan estos estilos en orden
+
+@ \paragraph{De expresiones a texto plano}
+
+Para traducir una expresión a texto plano se procesa el árbol de manera recursiva, concatenando cadenas de caracteres con la representación externa de las subexpresiones.
+
+Primero define el procedimiento [[expresión->texto-plano]] el cuál se encarga de identificar la clase de expresión que se desea traducir.
+
+<<A texto plano sin abuso>>=
+(define (expresión->texto-plano e)
+  (cond
+   [(variable? e)
+    <<Traducir variable a texto plano sin abuso>>]
+   [(abstracción? e)
+    <<Traducir abstracción a texto plano sin abuso>>]
+   [(aplicación? e)
+    <<Traducir aplicación a texto plano sin abuso>>]
+   [(hueco? e)
+    <<Traducir hueco a texto plano sin abuso>>]
+   [(metainstrucción? e)
+    <<Traducir metainstrucción a texto plano sin abuso>>]
+   [else
+    (error 'expresión->texto-plano
+           "La expresión ~a no es válida" e)]))
+
+@ %def expresión->texto-plano
+@
+
+Para traducir una variable a texto plano sin abuso de notación, basta con obtener el nombre de la variable ya que los nombres de las variables ya son cadenas de caracteres. Sin embargo, la traducción de variables es utilizada en la traducción de abstracciones, por lo tanto es conveniente definir el procedimiento [[variable->texto-plano]] el cuál corrobora que la expresión es una variable y regresa su nombre.
+
+<<A texto plano sin abuso>>=
+(define (variable->texto-plano e)
+  (if (variable? e)
+      (variable-nombre e)
+      (error 'variable->texto-plano
+             "La expresión ~a no es una variable" e)))
+
+@ %def variable->texto-plano
+@
+
+En [[expresión->texto-plano]] solo se invoca este procedimiento
+
+<<Traducir variable a texto plano sin abuso>>=
+(variable->texto-plano e)
+@
+
+Para traducir una abstracción a texto plano sin abuso de notación, primero se debe traducir su argumento y su cuerpo y después concatenarlos de la forma \( (λ \mathtt{argumento} . \mathtt{cuerpo}) \).
+
+<<Traducir abstracción a texto plano sin abuso>>=
+(format "(~a~a.~a)"
+        (integer->char 955)
+        (variable->texto-plano (abstracción-argumento e))
+        (expresión->texto-plano (abstracción-cuerpo e)))
+@ 
+
+Para traducir una aplicación a texto plano sin abuso de notación, se traduce su operador y su operando y después se concatenan de la forma \( (\mathtt{operador}\ \mathtt{operando}) \).
+
+<<Traducir aplicación a texto plano sin abuso>>=
+(format "(~a ~a)"
+        (expresión->texto-plano (aplicación-operador e))
+        (expresión->texto-plano (aplicación-operando e)))
+@ 
+
+La traducción de un hueco a texto plano sin abuso de notación es simplemente la cadena compuesta por el corchete abierto y el corchete cerrado.
+
+<<Traducir hueco a texto plano sin abuso>>=
+"[ ]"
+@ 
+
+La traducción de una metainstrucción a texto plano sin abuso de notación es un poco más complicada que en los otros casos. Primero se verifica que el nombre de la metainstrucción es una cadena de caracteres y que los argumentos de la metainstrucción sean una lista, después se obtiene una lista de las traducciones de cada expresión en la lista de argumentos de la metainstrucción, teniendo esta lista se concatenan comas entre cada argumento de la lista.
+
+<<Traducir metainstrucción a texto plano sin abuso>>=
+(let ([nombre     (metainstrucción-nombre     e)]
+      [argumentos (metainstrucción-argumentos e)])
+  (if (and (string? nombre) (list? argumentos))
+      (format "~a[~a]"
+              nombre
+              (string-join (map expresión->texto-plano argumentos) ", "))
+      (error 'metainstrucción->texto-plano
+             "La metainstrucción ~a está mal formada" e)))
+@ 
+
+En ocaciones será de utilidad obtener la representación externa de una expresión con las convenciones de abuso de notación utilizadas en este trabajo. La lectura de expresiones admite el abuso de notación en cualquier parte de la expresión, sin embargo, para la escritura de expresiones con abuso, habrá una sola representación externa con abuso de notación y será aquella que aproxime la máxima cantidad de abuso de notación posible.
+
+La implementación del escritor para texto plano con abuso de notación es el procedimiento [[expresión->abuso-texto-plano]] el cuál tiene una forma similar a [[expresión->texto-plano]] sólo que en el análisis de casos se invocan procedimientos especializados para cada clase de expresión.
+
+<<A texto plano con abuso>>=
+(define (expresión->abuso-texto-plano e)
+  (cond
+   [(variable? e)
+    (variable->abuso-texto-plano e)]
+   [(abstracción? e)
+    (abstracción->abuso-texto-plano e)]
+   [(aplicación? e)
+    (aplicación->abuso-texto-plano e)]
+   [(hueco? e)
+    (hueco->abuso-texto-plano e)]
+   [(metainstrucción? e)
+    (metainstrucción->abuso-texto-plano e)]
+   [else
+    (error 'expresión->abuso-texto-plano
+           "La expresión ~a no es válida" e)]))
+
+@ %def expresión->abuso-texto-plano
+@
+
+Para traducir una variable a texto plano con abuso de notación, se hace uso del procedimiento [[variable->texto-plano]] ya que las variables tienen una sola representación externa en texto plano.
+
+<<A texto plano con abuso>>=
+(define (variable->abuso-texto-plano e)
+  (variable->texto-plano e))
+
+@ %def variable->abuso-texto-plano
+@
+
+La traducción de abstracciones a texto plano con abuso de notación consiste en revisar la clase de expresión que es el cuerpo, en caso que sea también una abstracción se debe iterar sobre los cuerpos de las abstracciones acumulando la representación externa de sus argumentos hasta llegar a un cuerpo que no sea abstracción. La forma de la cadena resultante debe ser \( λ\mathtt{argumento}_{1}\ \mathtt{argumento}_{2}\ ...\ \mathtt{argumento}_{n}.\mathtt{cuerpo}_{n} \).
+
+<<A texto plano con abuso>>=
+(define (abstracción->abuso-texto-plano e)
+  (let itera ([argumentos (list (abstracción-argumento e))]
+              [cuerpo     (abstracción-cuerpo e)])
+     (if (abstracción? cuerpo)
+         (itera (cons (abstracción-argumento cuerpo) argumentos)
+                (abstracción-cuerpo cuerpo))
+         (format "~a~a.~a"
+                 (integer->char 955)
+                 (string-join (map variable->abuso-texto-plano
+                                   (reverse argumentos))
+                              " ")
+                 (expresión->abuso-texto-plano cuerpo)))))
+
+@ %def abstracción->abuso-texto-plano
+@
+
+Para traducir una aplicación a texto plano con abuso de notación primero se computa una lista de términos conformada por los operandos anidados de las aplicaciones de la forma \( ((M\ N) P) \) donde el primer operador que no sea aplicación es el primer elemento de la lista, es decir, se obtiene la lista de expresiones removiendo la asociación a la izquierda de la aplicación original, por ejemplo si consideramos una aplicación de la forma\[ (...\ ((((M_{1}\ M_{2})\ M_{3})\ M_{4})\ M_{5})\ ...\ M_{n}) \]la lista de expresiones seria\[ \mathtt{(list}\ M_{1}\ M_{2}\ M_{3}\ M_{4}\ M_{5}\ ...\ M_{n} \mathtt{)} \]donde \( M_{1} \) no es una aplicación.
+
+Después de remover la asociación a la izquierda se determinan los elementos de la lista que deben estar encerrados entre paréntesis. El criterio utilizado en general es: si el elemento de la lista es una aplicación o una abstracción, va encerrada entre paréntesis, de lo contrario, se escribe tal cuál. Además se aplica un criterio diferente para un caso en particular: cuando el último elemento de la lista es una abstracción, no se encierra entre paréntesis, esto es para que una expresión como\[ (((M\ N)\ P)\ (λx.Q)) \]pueda ser escrita como\[ M\ N\ P\ λx.Q \]la cuál es una expresión sintácticamente equivalente. Esto no se puede realizar para las abstracciones en general ya que una expresión como\[ ((M\ (λx.N))\ P) \]sería considerada equivalente a\[ M\ λx.N\ P \]sin embargo, esta última expresión corresponde a\[ (M\ (λx.(N\ P))) \]al tener los paréntesis escritos de manera adecuada se concatenan las expresiones con un espacio en blanco.
+
+El procedimiento [[aplicación->abuso-texto-plano]] implementa este algoritmo para el abuso de notación.
+
+<<A texto plano con abuso>>=
+(define (aplicación->abuso-texto-plano e)
+  (let itera ([operador    (aplicación-operador e)]
+              [expresiones (list (aplicación-operando e))])
+    (if (aplicación? operador)
+        (itera (aplicación-operador operador)
+               (cons (aplicación-operando operador) expresiones))
+        (let itera ([expresiones  (cons operador expresiones)]
+                    [traducciones null])
+          (if (null? expresiones)
+              (string-join (reverse traducciones) " ")
+              (let ([e  (first expresiones)]
+                    [es (rest  expresiones)])
+                (cond
+                 [(aplicación? e)
+                  (itera es (cons (format "(~a)" (aplicación->abuso-texto-plano e))
+                                  traducciones))]
+                 [(and (abstracción? e) (not (null? es)))
+                  (itera es (cons (format "(~a)" (abstracción->abuso-texto-plano e))
+                                  traducciones))]
+                 [else
+                  (itera es (cons (expresión->abuso-texto-plano e)
+                                  traducciones))])))))))
+
+@ %def aplicación->abuso-texto-plano
+@
+
+La traducción a texto plano con abuso de notación para huecos es exactamente la misma que cuando no se tiene abuso de notación.
+
+<<A texto plano con abuso>>=
+(define (hueco->abuso-texto-plano e)
+  "[ ]")
+
+@ %def hueco->abuso-texto-plano
+@
+
+En el caso de la traducción de metainstrucciones a texto plano con abuso de notación se emplea el mismo procedimiento que en el caso donde no hay abuso de notación, con la excepción de que las llamadas recursivas a la traducción de argumentos se realizan invocando el procedimiento [[expresión->abuso-texto-plano]] en lugar de [[expresión->texto-plano]].
+
+<<A texto plano con abuso>>=
+(define (metainstrucción->abuso-texto-plano e)
+  (let ([nombre     (metainstrucción-nombre e)]
+        [argumentos (metainstrucción-argumentos e)])
+    (if (and (string? nombre) (list? argumentos))
+        (format "~a[~a]"
+                nombre
+                (string-join (map expresión->abuso-texto-plano argumentos) ", "))
+        (error 'metainstrucción->abuso-text-plano
+               "La metainstrucción ~a está mal formada" e))))
+
+@ %def metainstrucción->abuso-texto-plano
+@
+
+@ \paragraph{De expresiones a \LaTeX} Traducir expresiones a código interpretable por \LaTeX~es relativamente fácil, lo complicado es la diversidad de estilos con los que se puede escribir una expresión. Por ejemplo, el espaciado entre dos términos en una aplicación, el color de algún subtérmino, la tipografía de los símbolos o la manera en como se escriben los paréntesis. Para solventar estos problemas se reduce el problema de generar un archivo válido de \LaTeX~a simplemente producir una cadena de caracteres que al ser insertada en un documento válido y en un lugar donde se aplique el modo de matemáticas, el archivo seguirá siendo válido y producirá una expresión sintácticamente correcta.
+
+Se define el parámetro [[plantilla-latex]] el cuál debe contener una cadena de caracteres que podrá ser utilizado de tal manera que [[(format (plantilla-latex) expresión-traducida)]] sea una cadena de caracteres con el contenido del documento de \LaTeX~válido. Para evitar complicar la implementación de este parámetro, la única condición que se verifica es que sea una cadena de caracteres y que contenga únicamente una secuencia [[~a]].
+
+<<A LaTeX sin abuso>>=
+(define +plantilla-latex-inicial+
+  "\
+\\documentclass[preview]{standalone}\n\
+\\usepackage{amsmath}\n\
+\\begin{document}\n\
+\\( ~a \\)\n\
+\\end{document}")
+
+(define plantilla-latex
+  (make-parameter
+   +plantilla-latex-inicial+
+   (lambda (x)
+     (if (and (string? x) (= (length (string-split x "~a" #:trim? #f)) 2))
+         x
+         +plantilla-latex-inicial+))))
+
+@ %def plantilla-latex
+
+
+@ \paragraph{De expresiones a figuras funcionales de [[Racket]]}
+
+@ \paragraph{Módulo de escritor} El módulo de los escritores utiliza el módulo [[estructuras.rkt]] y provee los procedimientos de escritura a texto plano, \LaTeX~ y a figuras de [[Racket]] con abuso y sin abuso de notación. El archivo [[escritor.rkt]] contiene este módulo y tiene la siguiente forma.
+
+<<escritor.rkt>>=
+;;; -*- mode: racket; coding: utf-8 -*-
+;;; Copyright (C) 2016 Eduardo Acuña Yeomans <eduardo.acye@gmail.com>
+;;; Procura no editar este archivo, mejor modifica lambda.nw
+
+#lang racket/base
+
+(require "estructuras.rkt"
+         racket/list
+         racket/string)
+
+(provide expresión->texto-plano
+         expresión->abuso-texto-plano
+         plantilla-latex)
+
+;;; Traducir a texto plano sin abuso de notación
+<<A texto plano sin abuso>>
+
+;;; Traducir a texto plano con abuso de notación
+<<A texto plano con abuso>>
+
+;;; Traducir a LaTeX sin abuso de notación
+<<A LaTeX sin abuso>>
+@
+
+@ \paragraph{Pruebas de escritores} El archivo de pruebas [[escritor-pruebas.rkt]] es utilizado para verificar si la funcionalidad de los escritores es la esperada. Se omite su definición en este documento pero es distribuído con el código del trabajo.
+
 
 @ \section*{Evaluador de expresiones}
 

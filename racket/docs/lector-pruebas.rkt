@@ -31,222 +31,249 @@
          "estructuras.rkt"
          "lector.rkt")
 
-(test-case
-    "Prueba de lectura de términos λ y metainstrucciones"
-  (display "Variable sencilla...")
-  (check-equal? (leer (open-input-string "foo"))
+(display "Probando lectura de expresiones...")
+
+(test-case "Variable sencilla"
+  (test-equal? "Variable sencilla -- comparación estructural"
+               (leer (open-input-string "foo"))
+               (variable "foo"))
+  (test-true "Variable sencilla -- ¿es término?"
+             (término? (leer (open-input-string "foo"))))
+  (test-true "Variable sencilla -- ¿es expresión?"
+             (expresión? (leer (open-input-string "foo")))))
+
+(test-case "Aplicación con abuso de notación"
+  (test-equal? "Aplicación con abuso de notación -- comparación estructural"
+               (leer (open-input-string "foo bar"))
+               (aplicación (variable "foo")
+                           (variable "bar")))
+  (test-true "Aplicación con abuso de notación -- ¿es término?"
+             (término? (leer (open-input-string "foo bar"))))
+  (test-true "Aplicación con abuso de notación -- ¿es expresión?"
+             (expresión? (leer (open-input-string "foo bar")))))
+
+(test-case "Aplicación sin abuso de notación"
+  (test-equal? "Aplicación sin abuso de notación -- comparación estructural"
+               (leer (open-input-string "(foo bar)"))
+               (aplicación (variable "foo")
+                           (variable "bar")))
+  (test-true "Aplicación sin abuso de notación -- ¿es término?"
+             (término? (leer (open-input-string "(foo bar)"))))
+  (test-true "Aplicación sin abuso de notación -- ¿es expresión?"
+             (expresión? (leer (open-input-string "(foo bar)")))))
+
+(test-case "Aplicación múltiple con abuso de notación"
+  (test-equal? "Aplicación múltiple con abuso de notación -- comparación estructural"
+               (leer (open-input-string "foo bar baz"))
+               (aplicación
+                (aplicación (variable "foo")
+                            (variable "bar"))
+                (variable "baz")))
+  (test-true "Aplicación múltiple con abuso de notación -- ¿es término?"
+             (término? (leer (open-input-string "foo bar baz"))))
+  (test-true "Aplicación múltiple con abuso de notación -- ¿es expresión?"
+             (expresión? (leer (open-input-string "foo bar baz")))))
+
+(test-case "Aplicación múltiple sin abuso de notación"
+  (test-equal? "Aplicación múltiple sin abuso de notación -- comparación estructural"
+               (leer (open-input-string "((foo bar) baz)"))
+               (aplicación
+                (aplicación (variable "foo")
+                            (variable "bar"))
+                (variable "baz")))
+  (test-true "Aplicación múltiple sin abuso de notación -- ¿es término?"
+             (término? (leer (open-input-string "((foo bar) baz)"))))
+  (test-true "Aplicación múltiple sin abuso de notación -- ¿es expresión?"
+             (expresión? (leer (open-input-string "((foo bar) baz)")))))
+
+(test-case "Aplicación múltiple alternativa con abuso de notación"
+  (test-equal? "Aplicación múltiple alternativa con abuso de notación -- comparación estructural"
+               (leer (open-input-string "foo (bar baz)"))
+               (aplicación
                 (variable "foo")
-                "Variable sencilla")
-  (check-true (término? (leer (open-input-string "foo"))))
-  (check-true (expresión? (leer (open-input-string "foo"))))
-  (display "ok\n")
+                (aplicación (variable "bar")
+                            (variable "baz"))))
+  (test-true "Aplicación múltiple alternativa con abuso de notación -- ¿es término?"
+             (término? (leer (open-input-string "foo (bar baz)"))))
+  (test-true "Aplicación múltiple alternativa con abuso de notación -- ¿es expresión?"
+             (expresión? (leer (open-input-string "foo (bar baz)")))))
 
-  (display "Aplicación con abuso...")
-  (check-equal? (leer (open-input-string "foo bar"))
-                (aplicación (variable "foo")
-                            (variable "bar"))
-                "Aplicación con abuso")
-  (check-true (término? (leer (open-input-string "foo bar"))))
-  (check-true (expresión? (leer (open-input-string "foo bar"))))
-  (display "ok\n")
+(test-case "Aplicación múltiple alternativa sin abuso de notación"
+  (test-equal? "Aplicación múltiple alternativa sin abuso de notación -- comparación estructural"
+               (leer (open-input-string "(foo (bar baz))"))
+               (aplicación
+                (variable "foo")
+                (aplicación (variable "bar")
+                            (variable "baz"))))
+  (test-true "Aplicación múltiple alternativa sin abuso de notación -- ¿es término?"
+             (término? (leer (open-input-string "(foo (bar baz))"))))
+  (test-true "Aplicación múltiple alternativa sin abuso de notación -- ¿es expresión?"
+             (expresión? (leer (open-input-string "(foo (bar baz))")))))
 
-  (display "Aplicación sin abuso...")
-  (check-equal? (leer (open-input-string "(foo bar)"))
-                (aplicación (variable "foo")
-                            (variable "bar"))
-                "Aplicación sin abuso")
-  (check-true (término? (leer (open-input-string "(foo bar)"))))
-  (check-true (expresión? (leer (open-input-string "(foo bar)"))))
-  (display "ok\n")
+(test-case "Abstracción sencilla con abuso de notación"
+  (test-equal? "Abstracción sencilla con abuso de notación -- comparación estructural"
+               (leer (open-input-string "λfoo.foo"))
+               (abstracción (variable "foo")
+                            (variable "foo")))
+  (test-true "Abstracción sencilla con abuso de notación -- ¿es término?"
+             (término? (leer (open-input-string "λfoo.foo"))))
+  (test-true "Abstracción sencilla con abuso de notación -- ¿es expresión?"
+             (expresión? (leer (open-input-string "λfoo.foo")))))
 
-  (display "Aplicación múltiple con abuso...")
-  (check-equal? (leer (open-input-string "foo bar baz"))
+(test-case "Abstracción sencilla sin abuso de notación"
+  (test-equal? "Abstracción sencilla sin abuso de notación -- comparación estructural"
+               (leer (open-input-string "(λbar.bar)"))
+               (abstracción (variable "bar")
+                            (variable "bar")))
+  (test-true "Abstracción sencilla sin abuso de notación -- ¿es término?"
+             (término? (leer (open-input-string "(λbar.bar)"))))
+  (test-true "Abstracción sencilla sin abuso de notación -- ¿es expresión?"
+             (expresión? (leer (open-input-string "(λbar.bar)")))))
+
+(test-case "Abstracción curry con abuso de notación"
+  (test-equal? "Abstracción curry con abuso de notación -- comparación estructural"
+               (leer (open-input-string "λfoo bar.foo"))
+               (abstracción
+                (variable "foo")
+                (abstracción
+                 (variable "bar")
+                 (variable "foo"))))
+  (test-true "Abstracción curry con abuso de notación -- ¿es término?"
+             (término? (leer (open-input-string "λfoo bar.foo"))))
+  (test-true "Abstracción curry con abuso de notación -- ¿es expresión?"
+             (expresión? (leer (open-input-string "λfoo bar.foo")))))
+
+(test-case "Abstracción curry con abuso de notación leve"
+  (test-equal? "Abstracción curry con abuso de notación leve -- comparación estructural"
+               (leer (open-input-string "(λfoo bar.foo)"))
+               (abstracción
+                (variable "foo")
+                (abstracción
+                 (variable "bar")
+                 (variable "foo"))))
+  (test-true "Abstracción curry con abuso de notación leve -- ¿es término?"
+             (término? (leer (open-input-string "(λfoo bar.foo)"))))
+  (test-true "Abstracción curry con abuso de notación leve -- ¿es expresión?"
+             (expresión? (leer (open-input-string "(λfoo bar.foo)")))))
+
+(test-case "Abstracción curry con abuso de notación más leve"
+  (test-equal? "Abstracción curry con abuso de notación más leve -- comparación estructural"
+               (leer (open-input-string "(λfoo.λbar.foo)"))
+               (abstracción
+                (variable "foo")
+                (abstracción
+                 (variable "bar")
+                 (variable "foo"))))
+  (test-true "Abstracción curry con abuso de notación más leve -- ¿es término?"
+             (término? (leer (open-input-string "(λfoo.λbar.foo)"))))
+  (test-true "Abstracción curry con abuso de notación más leve -- ¿es expresión?"
+             (expresión? (leer (open-input-string "(λfoo.λbar.foo)")))))
+
+(test-case "Abstracción curry con abuso de notación super leve"
+  (test-equal? "Abstracción curry con abuso de notación super leve -- comparación estructural"
+               (leer (open-input-string "(λfoo.(λbar.foo))"))
+               (abstracción
+                (variable "foo")
+                (abstracción
+                 (variable "bar")
+                 (variable "foo"))))
+  (test-true "Abstracción curry con abuso de notación super leve -- ¿es término?"
+             (término? (leer (open-input-string "(λfoo.(λbar.foo))"))))
+  (test-true "Abstracción curry con abuso de notación super leve -- ¿es expresión?"
+             (expresión? (leer (open-input-string "(λfoo.(λbar.foo))")))))
+
+(test-case "Abstracción con aplicación"
+  (test-equal? "Abstracción con aplicación -- comparación estructural"
+               (leer (open-input-string "λfoo.bar baz"))
+               (abstracción
+                (variable "foo")
                 (aplicación
-                 (aplicación (variable "foo")
-                             (variable "bar"))
-                 (variable "baz"))
-                "Aplicación múltiple con abuso")
-  (check-true (término? (leer (open-input-string "foo bar baz"))))
-  (check-true (expresión? (leer (open-input-string "foo bar baz"))))
-  (display "ok\n")
+                 (variable "bar")
+                 (variable "baz"))))
+  (test-true "Abstracción con aplicación -- ¿es término?"
+             (término? (leer (open-input-string "λfoo.bar baz"))))
+  (test-true "Abstracción con aplicación -- ¿es expresión?"
+             (expresión? (leer (open-input-string "λfoo.bar baz")))))
 
-  (display "Aplicación múltiple sin abuso...")
-  (check-equal? (leer (open-input-string "((foo bar) baz)"))
-                (aplicación
-                 (aplicación (variable "foo")
-                             (variable "bar"))
-                 (variable "baz"))
-                "Aplicación múltiple sin abuso")
-  (check-true (término? (leer (open-input-string "((foo bar) baz)"))))
-  (check-true (expresión? (leer (open-input-string "((foo bar) baz)"))))
-  (display "ok\n")
-
-  (display "Aplicación múltiple alternativa con abuso...")
-  (check-equal? (leer (open-input-string "foo (bar baz)"))
-                (aplicación
-                 (variable "foo")
-                 (aplicación (variable "bar")
-                             (variable "baz")))
-                "Aplicación múltiple alternativa con abuso")
-  (check-true (término? (leer (open-input-string "foo (bar baz)"))))
-  (check-true (expresión? (leer (open-input-string "foo (bar baz)"))))
-  (display "ok\n")
-
-  (display "Aplicación múltiple alternativa sin abuso...")
-  (check-equal? (leer (open-input-string "(foo (bar baz))"))
-                (aplicación
-                 (variable "foo")
-                 (aplicación (variable "bar")
-                             (variable "baz")))
-                "Aplicación múltiple alternativa sin abuso")
-  (check-true (término? (leer (open-input-string "(foo (bar baz))"))))
-  (check-true (expresión? (leer (open-input-string "(foo (bar baz))"))))
-  (display "ok\n")
-
-  (display "Abstracción sencilla con abuso...")
-  (check-equal? (leer (open-input-string "λfoo.foo"))
-                (abstracción (variable "foo")
-                             (variable "foo"))
-                "Abstracción sencilla con abuso")
-  (check-true (término? (leer (open-input-string "λfoo.foo"))))
-  (check-true (expresión? (leer (open-input-string "λfoo.foo"))))
-  (display "ok\n")
-
-  (display "Abstracción sencilla sin abuso...")
-  (check-equal? (leer (open-input-string "(λbar.bar)"))
-                (abstracción (variable "bar")
-                             (variable "bar"))
-                "Abstracción sencilla sin abuso")
-  (check-true (término? (leer (open-input-string "(λbar.bar)"))))
-  (check-true (expresión? (leer (open-input-string "(λbar.bar)"))))
-  (display "ok\n")
-
-  (display "Abstracción curry con abuso...")
-  (check-equal? (leer (open-input-string "λfoo bar.foo"))
+(test-case "Abstracción curry con aplicación"
+  (test-equal? "Abstracción curry con aplicación -- comparación estructural"
+               (leer (open-input-string "λfoo bar.bar baz"))
+               (abstracción
+                (variable "foo")
                 (abstracción
-                 (variable "foo")
-                 (abstracción
-                  (variable "bar")
-                  (variable "foo")))
-                "Abstracción curry con abuso")
-  (check-true (término? (leer (open-input-string "λfoo bar.foo"))))
-  (check-true (expresión? (leer (open-input-string "λfoo bar.foo"))))
-  (display "ok\n")
-
-  (display "Abstracción curry con abuso menor...")
-  (check-equal? (leer (open-input-string "(λfoo bar.foo)"))
-                (abstracción
-                 (variable "foo")
-                 (abstracción
-                  (variable "bar")
-                  (variable "foo")))
-                "Abstracción curry con abuso menor")
-  (check-true (término? (leer (open-input-string "(λfoo bar.foo)"))))
-  (check-true (expresión? (leer (open-input-string "(λfoo bar.foo)"))))
-  (display "ok\n")
-
-  (display "Abstracción curry con abuso menor 2...")
-  (check-equal? (leer (open-input-string "(λfoo.λbar.foo)"))
-                (abstracción
-                 (variable "foo")
-                 (abstracción
-                  (variable "bar")
-                  (variable "foo")))
-                "Abstracción curry con abuso menor 2")
-  (check-true (término? (leer (open-input-string "(λfoo.λbar.foo)"))))
-  (check-true (expresión? (leer (open-input-string "(λfoo.λbar.foo)"))))
-  (display "ok\n")
-
-  (display "Abstracción curry con abuso menor 3...")
-  (check-equal? (leer (open-input-string "(λfoo.(λbar.foo))"))
-                (abstracción
-                 (variable "foo")
-                 (abstracción
-                  (variable "bar")
-                  (variable "foo")))
-                "Abstracción curry con abuso menor 3")
-  (check-true (término? (leer (open-input-string "(λfoo.(λbar.foo))"))))
-  (check-true (expresión? (leer (open-input-string "(λfoo.(λbar.foo))"))))
-  (display "ok\n")
-
-  (display "Abstracción con aplicación...")
-  (check-equal? (leer (open-input-string "λfoo.bar baz"))
-                (abstracción
-                 (variable "foo")
+                 (variable "bar")
                  (aplicación
                   (variable "bar")
-                  (variable "baz")))
-                "Abstracción con aplicación")
-  (check-true (término? (leer (open-input-string "λfoo.bar baz"))))
-  (check-true (expresión? (leer (open-input-string "λfoo.bar baz"))))
-  (display "ok\n")
+                  (variable "baz")))))
+  (test-true "Abstracción curry con aplicación -- ¿es término?"
+             (término? (leer (open-input-string "λfoo bar.bar baz"))))
+  (test-true "Abstracción curry con aplicación -- ¿es expresión?"
+             (expresión? (leer (open-input-string "λfoo bar.bar baz")))))
 
-  (display "Abstracción con aplicación 2...")
-  (check-equal? (leer (open-input-string "λfoo bar.bar baz"))
-                (abstracción
-                 (variable "foo")
-                 (abstracción
-                  (variable "bar")
-                  (aplicación
-                   (variable "bar")
-                   (variable "baz"))))
-                "Abstracción con aplicación 2")
-  (check-true (término? (leer (open-input-string "λfoo bar.bar baz"))))
-  (check-true (expresión? (leer (open-input-string "λfoo bar.bar baz"))))
-  (display "ok\n")
+(test-case "Aplicación de abstracciones con abuso de notación"
+  (test-equal? "Aplicación de abstracciones con abuso de notación -- comparación estructural"
+               (leer (open-input-string "(λfoo.foo)λbar.bar"))
+               (aplicación (abstracción (variable "foo")
+                                        (variable "foo"))
+                           (abstracción (variable "bar")
+                                        (variable "bar"))))
+  (test-true "Aplicación de abstracciones con abuso de notación -- ¿es término?"
+             (término? (leer (open-input-string "(λfoo.foo)λbar.bar"))))
+  (test-true "Aplicación de abstracciones con abuso de notación -- ¿es expresión?"
+             (expresión? (leer (open-input-string "(λfoo.foo)λbar.bar")))))
 
-  (display "Aplicación de abstracciones con abuso...")
-  (check-equal? (leer (open-input-string "(λfoo.foo)λbar.bar"))
-                (aplicación (abstracción (variable "foo")
-                                         (variable "foo"))
-                            (abstracción (variable "bar")
-                                         (variable "bar")))
-                "Aplicación de abstracciones con abuso")
-  (check-true (término? (leer (open-input-string "(λfoo.foo)λbar.bar"))))
-  (check-true (expresión? (leer (open-input-string "(λfoo.foo)λbar.bar"))))
-  (display "ok\n")
+(test-case "Metainstrucción simple"
+  (test-equal? "Metainstrucción simple -- comparación estructural"
+               (leer (open-input-string "foo[bar,baz]"))
+               (metainstrucción "foo"
+                                (list (variable "bar")
+                                      (variable "baz"))))
+  (test-false "Metainstrucción simple -- ¿es término?"
+              (término? (leer (open-input-string "foo[bar,baz]"))))
+  (test-true "Metainstrucción simple -- ¿es expresión?"
+             (expresión? (leer (open-input-string "foo[bar,baz]")))))
 
-  (display "Metainstrucción simple...")
-  (check-equal? (leer (open-input-string "foo[bar,baz]"))
+(test-case "Metainstrucción compleja"
+  (test-equal? "Metainstrucción compleja -- comparación estructural"
+               (leer (open-input-string "  foo[λbar.bar bar, λbaz.baz baz] quux "))
+               (aplicación
                 (metainstrucción "foo"
-                                 (list (variable "bar")
-                                       (variable "baz")))
-                "Metainstrucción simple")
-  (check-true (expresión? (leer (open-input-string "foo[bar,baz]"))))
-  (display "ok\n")
+                                 (list (abstracción (variable "bar")
+                                                    (aplicación
+                                                     (variable "bar")
+                                                     (variable "bar")))
+                                       (abstracción (variable "baz")
+                                                    (aplicación
+                                                     (variable "baz")
+                                                     (variable "baz")))))
+                (variable "quux")))
+  (test-false "Metainstrucción compleja -- ¿es término?"
+              (término? (leer (open-input-string "  foo[λbar.bar bar, λbaz.baz baz] quux "))))
+  (test-true "Metainstrucción compleja -- ¿es expresión?"
+             (expresión? (leer (open-input-string "  foo[λbar.bar bar, λbaz.baz baz] quux ")))))
 
-  (display "Metainstrucción compleja...")
-  (check-equal? (leer (open-input-string "  foo[λbar.bar bar, λbaz.baz baz] quux "))
+(test-case "Hueco simple"
+  (test-equal? "Hueco simple -- comparación estructural"
+               (leer (open-input-string "  []  "))
+               (hueco))
+  (test-false "Hueco simple -- ¿es término?"
+              (término? (leer (open-input-string "  []  "))))
+  (test-true "Hueco simple -- ¿es expresión?"
+             (expresión? (leer (open-input-string "  []  ")))))
+
+(test-case "Hueco complejo"
+  (test-equal? "Hueco complejo -- comparación estructural"
+               (leer (open-input-string "λx.x [] x"))
+               (abstracción
+                (variable "x")
                 (aplicación
-                 (metainstrucción "foo"
-                                  (list (abstracción (variable "bar")
-                                                     (aplicación
-                                                      (variable "bar")
-                                                      (variable "bar")))
-                                        (abstracción (variable "baz")
-                                                     (aplicación
-                                                      (variable "baz")
-                                                      (variable "baz")))))
-                 (variable "quux"))
-                "Metainstrucción compleja")
-  (check-true (expresión? (leer (open-input-string "  foo[λbar.bar bar, λbaz.baz baz] quux "))))
-  (display "ok\n")
+                 (aplicación (variable "x")
+                             (hueco))
+                 (variable "x"))))
+  (test-false "Hueco complejo -- ¿es término?"
+              (término? (leer (open-input-string "λx.x [] x"))))
+  (test-true "Hueco complejo -- ¿es expresión?"
+             (expresión? (leer (open-input-string "λx.x [] x")))))
 
-  (display "Hueco simple...")
-  (check-equal? (leer (open-input-string "  []  "))
-                (hueco)
-                "Hueco simple")
-  (display "ok\n")
+(display "ok\n")
 
-  (display "Hueco complejo...")
-  (check-equal? (leer (open-input-string "λx.x [] x"))
-                (abstracción
-                 (variable "x")
-                 (aplicación
-                  (aplicación (variable "x")
-                              (hueco))
-                  (variable "x")))
-                "Hueco complejo")
-  (display "ok\n")
-
-  (display "Aparentemente todo funciona bien... ¡Aparentemente!\n"))

@@ -2,7 +2,7 @@
  "lambda"
  (lambda ()
    (TeX-add-to-alist 'LaTeX-provided-class-options
-                     '(("book" "letterpaper" "twoside" "openright" "11pt")))
+                     '(("book" "letterpaper" "twoside" "openright" "11pt") ("standalone" "preview")))
    (TeX-add-to-alist 'LaTeX-provided-package-options
                      '(("geometry" "lmargin=1.4in" "rmargin=.8in" "tmargin=1in" "bmargin=1in") ("inputenc" "utf8") ("fontenc" "T1") ("amsmath" "sumlimits") ("textcomp" "full") ("newpxtext" "osf") ("inconsolata" "varqu" "varl") ("newpxmath" "bigdelims" "vvarbb") ("mathalfa" "cal=boondoxo")))
    (add-to-list 'LaTeX-verbatim-macros-with-braces-local "hyperref")
@@ -35,7 +35,9 @@
     "enumerate"
     "newunicodechar"
     "noweb"
-    "hyperref")
+    "hyperref"
+    "standalone"
+    "standalone10")
    (TeX-add-symbols
     '("cn" 1)
     '("convertible" 1)

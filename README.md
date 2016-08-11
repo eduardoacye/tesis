@@ -2,7 +2,7 @@
 
 ## Pendientes
 
-- [ ] Introducción
+- [x] Introducción
 - [x] Cuerpo de la tesis
   - [x] Noción informal del cálculo lambda
     - [x] Expresiones
@@ -17,7 +17,7 @@
     - [x] Aritmética
     - [x] Procesos recursivos
     - [x] Estructuras recursivas
-- [ ] Conclusión
+- [x] Conclusión
 - [x] Apéndices
   - [x] Programación de codificaciones
   - [x] Intérprete del cálculo lambda

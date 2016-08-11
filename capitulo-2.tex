@@ -6,31 +6,14 @@ El presente capítulo presenta un tratamiento matemático del cálculo \( λ \) 
 
 En la primer sección se define el conjunto que tiene como elementos todas las expresiones válidas del cálculo, se presentan propiedades y criterios de clasificación de expresiones y finalmente se formaliza el concepto de sustitución; en la segunda sección se construye una teoría formal del cálculo \( λ \), en donde un conjunto de axiomas y reglas de inferencia permiten plantear razonamientos lógicos para demostrar propiedades del cálculo; finalmente en la tercer sección se formulan nociones de reducción para las expresiones del cálculo usando sistemas de reescritura.
 
-\begin{Gutu}
-primer sección->primera sección
-tercer sección->tercera sección
-\end{Gutu}
-
 El contenido de este capítulo está basado en los primeros cuatro capítulos del libro \emph{The Lambda Calculus, Its Syntax and Semantics} de H.P. Barendregt \cite{Barendregt:Bible} y los capítulos 1, 3, 6, 7 y 8 del libro \emph{Lambda Calculus and Combinators, an Introduction} de J.R. Hindley y J.P. Seldin \cite{HindleySeldin:LambdaCalculusAndCombinators} así como el artículo \emph{A Set of Postulates for the Foundation of Logic} y la monografía \emph{The Calculi of Lambda-Conversion} de Alonzo Church \cite{Church:FoundationsLogic,Church:LambdaConversion}.
-
-\begin{Gutu}
-Títulos de artículos entre comillas no itálicas:\emph{A Set of Postulates for the Foundation of Logic}-> ``A Set of Postulates for the Foundation of Logic''
-\end{Gutu}
 
 \section{\texorpdfstring{Términos \( \bs{λ} \)}{Términos lambda}}
 \label{sec:terminos-lambda}
 
 Esta subsección está basada principalmente en el capítulo 2 de \cite{Barendregt:Bible}.
 
-\begin{Gutu}
-¿No sería mejor incluir la referencia de `Esta subsección está basada principalmente en el capítulo 2 de \cite{Barendregt:Bible}.' junto con las que se dan en el fin de la introducción del capítulo?
-\end{Gutu}
-
 Los \emph{términos \( λ \)} son la formalización de las expresiones descritas en la sección \ref{sec:expresiones}. El conjunto de todos los términos \( λ \) es un lenguaje formal \( Λ \) en donde sus elementos son cadenas compuestas de símbolos de un alfabeto \cite{Hopcroft:Automata}.
-
-\begin{Gutu}
-Cada término $\lambda$ es $\alpha$-equivalente a un elemento de un lenguaje formal...
-\end{Gutu}
 
 El lenguaje \( Λ \) se puede definir de diferentes maneras, a continuación se presenta una definición inductiva y posteriormente una definición basada en una gramática libre de contexto.
 

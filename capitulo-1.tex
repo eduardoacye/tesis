@@ -15,10 +15,6 @@ Las funciones tienen varias maneras de ser representadas. En la definición ante
 
 Por ejemplo, la función \( f : \mathbb{Z} \to \mathbb{Z} \) definida como \( \{ (x,\ 2x+y) \mid y\in\mathbb{Z} \} \) se escribe con la notación convencional como \[ f(x) = 2x+y \] En la notación funcional usada en el cálculo \( λ \) se escribe \[ f = λx.2x+y \] Para denotar la evaluación de una función para un valor en concreto, por ejemplo el \( 3 \), se escribe con la notación convencional como \[ f(3) \] mientras que en la notación \( λ \) se escribe \[ (f\ 3) \] a pesar de ser similares, la notación \( λ \) hace que sea posible denotar funciones anónimas, es decir, funciones que no están asociadas a un nombre como \( f \). Expresar funciones anónimas con la notación convencional es inconveniente ya que al leer \( 2x+y \) no se puede estar seguros si la variable es \( x \) o \( y \), por otra parte, con \( λx.2x+y \) no existe esta ambigüedad.
 
-\begin{Gutu}
-Entiendo el punto de esta parte, pero no estoy totalmente de acuerdo, con la notación convencional también se pueden denotar funciones anónimas: $2(\cdot)+y$ por ejemplo.
-\end{Gutu}
-
 La notación \( λ \) es útil para escribir funcionales o funciones de orden superior, es decir, aquellas funciones cuyo dominio o codominio son a su vez funciones, por ejemplo \[ f = λg.λx.2(g\ x) \] denota una función que toma como argumento una función \( g \) y resulta en una función anónima que toma como argumento un valor \( x \) y resulta en el doble de la evaluación de \( g \) de \( x \). Desarrollando la evaluación de \( f \) de \( λy.3y \) se tiene que
 \begin{align*}
 (f\ λy.3y) 	&= ((λg.λx.2(g\ x))\ λy.3y) \\
@@ -36,9 +32,6 @@ En el estudio del cálculo \( λ \) se distinguen dos lenguajes: el lenguaje de 
 
 Existen tres clases de expresiones en el cálculo \( λ \): los \emph{átomos}, las \emph{abstracciones} y las \emph{aplicaciones}.
 
-\begin{Gutu}
-Sugerencia: las subsecciones Átomos, Abstracciones y Aplicaciones las pondría en una sola subsección.
-\end{Gutu}
 \subsection{Átomos}
 \label{sec:atomos}
 
@@ -57,15 +50,7 @@ Las abstracciones son expresiones con \emph{estructura}, es decir, se conforman 
 
 En el cálculo \( λ \) las abstracciones son representadas simbólicamente con un átomo y con otra expresión, se escriben de la forma \( (λx.M) \) donde \( x \) es algún átomo llamado variable enlazada o argumento y \( M \) es alguna expresión ya sea otra abstracción, una aplicación o un átomo a la cual llamamos cuerpo de la abstracción. Un ejemplo de abstracción es \( (λy.y) \) en donde el argumento y cuerpo de la abstracción son el átomo \( y \).
 
-\begin{Gutu}
-`variable enlazada' y `argumento' en itálicas.
-\end{Gutu}
-
 Las abstracciones proveen el mecanismo para asociarle un valor a una variable. Esta asociación es similar a la que proveen las funciones en la matemática clásica y las proposiciones en la lógica de primer orden, sin embargo, éstas se basan en conjuntos y en operaciones sobre conjuntos, por ejemplo \( f(x)=M \) asocia a \( x \) un valor en el dominio de \( f \) en \( M \) y \( \exists x\ M \) asocia a \( x \) valores en el dominio del discurso en el enunciado \( M \).
-
-\begin{Gutu}
-$f(x)=M$ asocia a $x$ el valor $M$
-\end{Gutu}
 
 Es posible utilizar la definición de función para describir operaciones y transformaciones de expresiones en el cálculo \( λ \), utilizar lógica de primer orden para aseverar propiedades del cálculo, o utilizar aritmética para cuantificar aspectos de las expresiones del cálculo \( λ \), sin embargo estos objetos matemáticos son usados en el metalenguaje y no como expresiones válidas del cálculo.
 
@@ -76,10 +61,6 @@ Es posible utilizar la definición de función para describir operaciones y tran
 Las aplicaciones, al igual que las abstracciones, son expresiones con estructura. Se conforman por otras dos expresiones y se escriben de la forma \( (M\, N) \) donde \( M \) y \( N \) son cualesquiera átomos, abstracciones o aplicaciones. Este tipo de expresiones son de cierta manera complementarias a las abstracciones ya que representan un potencial acto de concretar una expresión.
 
 El concepto relacionado con las aplicaciones en la matemática clásica es el de \emph{evaluación de funciones}. En el cálculo \( λ \) se hace una distinción entre la expresión sintáctica de una evaluación como \( f(x) \) y el acto de encontrar el valor de asociado de \( x \) en \( f \). Usualmente el primero se refiere a aplicaciones y el segundo se refiere a reducciones. Por ejemplo, cuando se tiene la aplicación de una abstracción \( (λx.M) \) en alguna expresión \( N \), se dice que \( ((λx.M) N) \) se \emph{reduce} a una expresión \( Z \) la cual es similar a \( M \) solo que con \( x \) cambiada por \( N \). En la evaluación de funciones, el procedimiento es parecido, por ejemplo \( f(3) \) donde \( f = 2x^{2}+x-8 \), se evalúa sustituyendo las \( x \) de \( 2x^{2}+x-8 \) por 3, obteniendo así la expresión aritmética \( 2(3)^{2}+3-8 \), la cual puede ser operada para obtener el número 13.
-
-\begin{Gutu}
-Aquí decir que las reducciones se verán después, creo que es la primera vez que aparece el término.
-\end{Gutu}
 
 \subsection{Extensiones}
 \label{sec:extensiones}
@@ -92,14 +73,7 @@ El hecho de tener un lenguaje tan reducido y minimalista para las expresiones de
 \subsection{Ejemplos}
 \label{sec:ejemplos}
 
-\begin{Gutu}
-Sugerencia: pondría esto en la subsección anterior. 
-\end{Gutu}
 Con solo átomos, aplicaciones y abstracciones se pueden formular expresiones complejas. A continuación se presentan seis ejemplos de expresiones del cálculo \( λ \) y se describen diferentes maneras en las cuales estas se pueden componer para formar otras expresiones más complejas.
-
-\begin{Gutu}
-Está un poco raro como decidiste numerar los ejemplos. El siguientes está ligado con el anterior. Sugerencia: quitar el ambiente de `exmp' a menos que vayas a hacer referencia de él después.
-\end{Gutu}
 
 \begin{exmp}
   Algunas expresiones del cálculo \( λ \)
@@ -152,10 +126,6 @@ En el inciso \eqref{eq:expresiones:e} se presenta una abstracción cuyo cuerpo e
 A este tipo de expresiones se les llaman ``quines'' \cite[pp.~431--437]{Hofstadter:GEB} término originalmente asociado a una paradoja sobre sistemas lógicos \cite{Quine:Paradox}. En la actualidad, el término ``quine'' hace referencia a un programa cuya \emph{salida} es el programa mismo.
 
 En el inciso \eqref{eq:expresiones:f} se tiene una abstracción cuyo cuerpo es otra abstracción. El concepto interesante que ilustra esta expresión es el de representación de abstracciones de varias variables. Al reducir la aplicación de \( (λf.(λx.(f(f\, x)))) \) en una expresión cualquiera \( M \), se obtiene \( (λx.(M(M\, x))) \). Si posteriormente se reduce la aplicación de este resultado a una expresión cualquiera \( N \) se obtiene \( (M(M\, N)) \). El resultado final es similar al resultado que se obtendría al evaluar en \( M \) y \( N \) una función \( g(f,x) = f(f(x)) \), es decir, \( g(M,N) = M(M(N)) \).
-
-\begin{Gutu}
-¿La función $g$ es una función doble-evaluación?
-\end{Gutu}
 
 Una manera de codificar funciones de varias variables como abstracciones del cálculo \( λ \) es codificar a \emph{tuplas} o \emph{secuencias} y poder hacer referencia a sus elementos de manera individual, sin embargo, representar secuencias es un procedimiento más complejo que se aborda en la sección \ref{sec:estructura-listas}.
 
@@ -224,10 +194,6 @@ Para resolver el problema presentado en el ejemplo \ref{exmp:sustitucion3} se de
   \end{align*}
 \end{exmp}
 
-\begin{Gutu}
-En 1., ¿no es $\subst{(λx.y)}{x}{z}$?
-\end{Gutu}
-
 Cuando se realiza un cambio de variable ligada sobre una abstracción \( (λx.M) \) se cambia tanto el átomo \( x \) acompañado por la \( λ \), llamada variable \emph{enlazada} como todas las apariciones del átomo en el cuerpo de la abstracción, también llamado \emph{alcance de} \( λ x \) a menos que en \( M \) se encuentre una expresión de la forma \( (λx.N) \), ya que las \( x \) en \( N \) hacen referencia a la \( λx \) de \( (λx.N) \) no de \( (λx.M) \).
 
 En el ejemplo \ref{exmp:sustitucion4} el cambio de variable ligada únicamente cambió la variable enlazada, en otras expresiones el cambio de variable ligada puede realizarse múltiples veces para transformar varias abstracciones.
@@ -272,10 +238,6 @@ La definición de la reducción de la aplicación de \( (λx.M) \) en una expres
 
 A continuación se presentan ejemplos de reducciones con los pasos de la transformación
 
-\begin{Gutu}
-Aquí explicar la relación entre la reducción de aplicaciones y la sustitución.
-\end{Gutu}
-
 \begin{exmp}
   Procedimiento de reducir la aplicación de \( (λx.x) \) en \( y \)
   \label{exmp:aplicacion6}
@@ -309,10 +271,6 @@ Aquí explicar la relación entre la reducción de aplicaciones y la sustitució
 \end{exmp}
 
 El cálculo \( λ \) es un sistema maleable y se permite definir operaciones arbitrarias sobre expresiones para estudiar como el sistema se comporta en diferentes contextos, por ejemplo, se puede considerar una operación similar a la sustitución que permite introducir referencias a una o más \( λ \) en una expresión, sin embargo, el presente trabajo está constituido para entender plenamente las ideas centrales del cálculo \( λ \) haciendo solamente uso de las operaciones de \emph{sustitución}, \emph{cambio de variable ligada} y \emph{aplicación de abstracciones}.
-
-\begin{Gutu}
-¿No ser\'ia mejor \emph{reducción de aplicaciones} en lugar de  \emph{aplicación de abstracciones} para estar en sintonía con las subsecciones que se acaban de presentar?
-\end{Gutu}
 
 \section{Equivalencias}
 \label{sec:equivalencias}
@@ -351,9 +309,6 @@ para dos expresiones del cálculo \( λ \) \( M \) y \( N \) en donde a partir d
 
 \subsubsection{Índices de De Bruijn}
 
-\begin{Gutu}
-Sugerencia: poner el contenido de esta subsección en la sección $\alpha$-convertibilidad.
-\end{Gutu}
 Una técnica utilizada por algoritmos que verifican si dos expresiones \( M \) y \( N \) son \( α \)-convertibles es la de \emph{índices de De Bruijn}, esta transformación cambia la aparición de átomos por números naturales que representan la ``distancia'' de los átomos a las \( λ \) que hacen referencia.
 
 \begin{exmp}[índices de De Bruijn]
@@ -443,11 +398,6 @@ El proceso inverso a la reducción de aplicaciones se puede ilustrar considerand
 
 \[ (f(f(f\, x))) \convertible{β} (((λg.(λy.(g (g (g\, y))))) f) x) \]
 
-\begin{Gutu}
-No entiendo este último párrafo ¿$A$ se reduce a $B$, pero $B$ no reduce $A$, entonces $A$ es equivalente a $B$? Además eso no contradice el párrafo anterior `` la cual significa que si dos expresiones \( M \) y \( N \) son equivalentes en el sistema, es posible transformar \( M \) a \( N \) y viceversa por medio de un número finito de operaciones.
-''
-\end{Gutu}
-
 \subsection{Relaciones de equivalencia}
 \label{sec:relaciones-de-equivalencia}
 
@@ -466,10 +416,6 @@ La equivalencia sintáctica corresponde al inciso \ref{enum:rela:a} de las propi
 La \( α \)-conversión y la \( β \)-conversión fueron definidas como equivalencias independientes y su definición cumple con las tres propiedades mencionadas a pesar de ser definidas en base a un procedimiento y no en una regla declarativa, sin embargo, es deseable referirse a una sola equivalencia de expresiones que tenga las propiedades de \emph{reflexividad}, \emph{simetría} y \emph{transitividad} y posteriormente considerar otras reglas que la equivalencia deba de cumplir.
 
 Al igual que Haskell Curry en \cite[p.~59]{Curry:CombinatoryLogicI} se utilizan las letras griegas \( α \) y \( β \) para referirse a las ecuaciones relacionadas con la \( α \)-conversión y \( β \)-conversión respectivamente y las letras \( ρ \), \( σ \) y \( τ \) para referirse a las propiedades de reflexividad, simetría y transitividad respectivamente, se retoma esta convención para elaborar la siguiente definición de una relación de equivalencia \( \sim \):
-
-\begin{Gutu}
-¿Esta relación de equivalencia $\sim$ es una nueva y concreta relación de equivalencia? La pregunta es porque arriba utilizas el mismo símbolo para describir cualquier relación de equivalencia. Por otra parte, no entiendo porqué el inciso $(\alpha)$ está ligado a la $\alpha$-conversión.
-\end{Gutu}
 
 \begin{defn}[Ecuaciones de \( \sim \)]
   Las ecuaciones con \( \sim \) que se satisfacen para expresiones del cálculo \( λ \) son
@@ -529,20 +475,10 @@ Con estas reglas y a partir de un razonamiento lógico, podemos demostrar la \( 
 Es posible incluir aún más reglas de equivalencia cuando se estudia el cálculo \( λ \), a pesar de poder trabajar con expresiones en este sistema a partir de equivalencias arbitrarias, usualmente cada regla de equivalencia se asocia con alguna argumentación basada en la noción de función.
 
 Por ejemplo, se pueden considerar dos abstracciones diferentes \( (λx.M) \) y \( (λy.N) \) que al ser aplicadas a cualquier expresión \( Z \) sean \( β \)-convertibles a una misma expresión \( W \). Si se relacionan las abstracciones del cálculo \( λ \) con funciones, es natural pensar que \( M \) y \( N \) sean equivalentes, ya que por definición, dos funciones \( f \) y \( g \) son equivalentes si para toda \( x \) en su dominio \( f(x)=g(x) \). Por ejemplo, las funciones \( f(n)=\sum_{i=0}^{n}i \) y \( g(n)=\frac{n(n+1)}{2} \) a pesar de describir dos procedimientos diferentes para el cálculo de la suma de los primeros \( n \) números naturales son ``funcionalmente'' equivalentes ya que para todo natural \( f(n)=g(n) \). Por otro lado, si se relacionan las abstracciones del cálculo \( λ \) con algoritmos, \( M \) y \( N \) no pudieran ser consideradas equivalentes ya que en el estudio de la complejidad algorítmica, el énfasis en la comparación entre dos procedimientos no es las entradas y salidas, si no el proceso que describen. Por ejemplo, el algoritmo de ordenamiento \emph{merge sort} logra ordenar una secuencia de \( n \) números de menor a mayor en \( \mathcal{O}(n \log n) \) mientras que el algoritmo \emph{bubble sort} computa el mismo resultado pero en \( \mathcal{O}(n^2) \).  La equivalencia ``funcional'' se pudiera incluír en la definición de \( \sim \) añadiendo la siguiente regla:
-\begin{Gutu}
-incluír-> incluir
-\end{Gutu}
 
 \[ (M\, P) \sim (N\, P) \implies M \sim N \]
 
-\begin{Gutu}
-¿para todo $P$?
-\end{Gutu}
 Con esto se termina la introducción informal al cálculo \( λ \), las ideas que se han manejado en esta sección son formalizadas y definidas de manera rigurosa en el capítulo \ref{ch:formalizacion}.
-
-\begin{Gutu}
-La página 22 debe de ir completamente en blanco, sin encabezado.
-\end{Gutu}
 
 %%% Local Variables:
 %%% mode: latex

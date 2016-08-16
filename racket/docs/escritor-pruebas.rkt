@@ -94,3 +94,71 @@
                "foo[λbar.baz, baz bar]"))
 
 (display "ok\n")
+
+(display "Probando escritura de expresiones a LaTeX sin abuso de notación...")
+
+(test-case "Variable sencilla"
+  (test-equal? "Variable-sencilla -- comparación textual"
+               (expresión->latex (leer (open-input-string "foo")))
+               "foo"))
+
+(test-case "Abstracción sencilla"
+  (test-equal? "Abstracción sencilla -- comparación textual"
+               (expresión->latex (leer (open-input-string "λfoo.foo")))
+               "(\\lambda foo . foo)"))
+
+(test-case "Aplicación sencilla"
+  (test-equal? "Aplicación sencilla -- comparación textual"
+               (expresión->latex (leer (open-input-string "foo bar (baz baz)")))
+               "((foo\\, bar)\\, (baz\\, baz))"))
+
+(test-case "Aplicación compleja"
+  (test-equal? "Aplicación compleja -- comparación textual"
+               (expresión->latex (leer (open-input-string "foo (bar baz) λquux.quux quux")))
+               "((foo\\, (bar\\, baz))\\, (\\lambda quux . (quux\\, quux)))"))
+
+(test-case "Hueco"
+  (test-equal? "Hueco -- comparación textual"
+               (expresión->latex (leer (open-input-string "   [       ]")))
+               "[\\quad ]"))
+
+(test-case "Metainstrucción"
+  (test-equal? "Metainstrucción -- comparación textual"
+               (expresión->latex (leer (open-input-string "foo[λbar.baz,baz bar]")))
+               "foo[(\\lambda bar . baz),\\, (baz\\, bar)]"))
+
+(display "ok\n")
+
+(display "Probando escritura de expresiones a LaTeX con abuso de notación...")
+
+(test-case "Variable sencilla"
+  (test-equal? "Variable-sencilla -- comparación textual"
+               (expresión->abuso-latex (leer (open-input-string "foo")))
+               "foo"))
+
+(test-case "Abstracción sencilla"
+  (test-equal? "Abstracción sencilla -- comparación textual"
+               (expresión->abuso-latex (leer (open-input-string "λfoo.foo")))
+               "\\lambda foo . foo"))
+
+(test-case "Aplicación sencilla"
+  (test-equal? "Aplicación sencilla -- comparación textual"
+               (expresión->abuso-latex (leer (open-input-string "foo bar (baz baz)")))
+               "foo\\, bar\\, (baz\\, baz)"))
+
+(test-case "Aplicación compleja"
+  (test-equal? "Aplicación compleja -- comparación textual"
+               (expresión->abuso-latex (leer (open-input-string "foo (bar baz) λquux.quux quux")))
+               "foo\\, (bar\\, baz)\\, \\lambda quux . quux\\, quux"))
+
+(test-case "Hueco"
+  (test-equal? "Hueco -- comparación textual"
+               (expresión->abuso-latex (leer (open-input-string "   [       ]")))
+               "[\\quad ]"))
+
+(test-case "Metainstrucción"
+  (test-equal? "Metainstrucción -- comparación textual"
+               (expresión->abuso-latex (leer (open-input-string "foo[λbar.baz,baz bar]")))
+               "foo[\\lambda bar . baz,\\, baz\\, bar]"))
+
+(display "ok\n")

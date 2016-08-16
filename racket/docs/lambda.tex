@@ -617,12 +617,10 @@ Los escritores que son implementados en el programa son:
 \item A texto plano sin abuso de notación;
 \item A texto plano con abuso de notación;
 \item A \LaTeX sin abuso de notación;
-\item A \LaTeX con abuso de notación;
-\item A una figura funcional de {\tt{}Racket} sin abuso de notación;
-\item A una figura funcional de {\tt{}Racket} con abuso de notación.
+\item A \LaTeX con abuso de notación.
 \end{itemize}
 
-Se abordan estos estilos en orden
+Se abordan estos estilos en orden.
 
 \nwenddocs{}\nwbegindocs{73}\paragraph{De expresiones a texto plano}
 
@@ -650,14 +648,11 @@ Primero define el procedimiento {\tt{}\protect\nosublabel{NWlam9-lecA-1-u2}\prot
 \nosublabel{NWlam9-A*tN-1-u5}\nwindexdefn{expresión->texto-plano}{expresión->texto-plano}{NWlam9-A*tN-1}\eatline
 \nwidentdefs{\\{{expresión->texto-plano}{expresión->texto-plano}}}\nwidentuses{\\{{abstracción}{abstracción}}\\{{aplicación}{aplicación}}\\{{hueco}{hueco}}\\{{metainstrucción}{metainstrucción}}\\{{variable}{variable}}}\nwindexuse{abstracción}{abstracción}{NWlam9-A*tN-1}\nwindexuse{aplicación}{aplicación}{NWlam9-A*tN-1}\nwindexuse{hueco}{hueco}{NWlam9-A*tN-1}\nwindexuse{metainstrucción}{metainstrucción}{NWlam9-A*tN-1}\nwindexuse{variable}{variable}{NWlam9-A*tN-1}\nwalsodefined{\\{NWlam9-A*tN-2}}\nwused{\\{NWlam9-escC-1}}\nwendcode{}\nwbegindocs{75}\nwdocspar
 
-Para traducir una variable a texto plano sin abuso de notación, basta con obtener el nombre de la variable ya que los nombres de las variables ya son cadenas de caracteres. Sin embargo, la traducción de variables es utilizada en la traducción de abstracciones, por lo tanto es conveniente definir el procedimiento {\tt{}\protect\nwindexuse{variable}{variable}{NWlam9-estO-1}variable\protect\nwindexuse{variable->texto-plano}{variable->texto-plano}{NWlam9-A*tN-2}->texto-plano} el cuál corrobora que la expresión es una variable y regresa su nombre.
+Para traducir una variable a texto plano sin abuso de notación, basta con obtener el nombre de la variable ya que los nombres de las variables ya son cadenas de caracteres. Sin embargo, la traducción de variables es utilizada en la traducción de abstracciones, por lo tanto es conveniente definir el procedimiento {\tt{}\protect\nwindexuse{variable}{variable}{NWlam9-estO-1}variable\protect\nwindexuse{variable->texto-plano}{variable->texto-plano}{NWlam9-A*tN-2}->texto-plano} el cuál regresa su nombre.
 
 \nwenddocs{}\nwbegincode{76}\sublabel{NWlam9-A*tN-2}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-A*tN-2}}}\moddef{A texto plano sin abuso~{\nwtagstyle{}\subpageref{NWlam9-A*tN-1}}}\plusendmoddef
 (define (variable->texto-plano e)
-  (if (variable? e)
-      (variable-nombre e)
-      (error 'variable->texto-plano
-             "La expresión ~a no es una variable" e)))
+  (variable-nombre e))
 
 \nwindexdefn{variable->texto-plano}{variable->texto-plano}{NWlam9-A*tN-2}\eatline
 \nwidentdefs{\\{{variable->texto-plano}{variable->texto-plano}}}\nwidentuses{\\{{variable}{variable}}}\nwindexuse{variable}{variable}{NWlam9-A*tN-2}\nwendcode{}\nwbegindocs{77}\nwdocspar
@@ -696,12 +691,9 @@ La traducción de una metainstrucción a texto plano sin abuso de notación es u
 \nwenddocs{}\nwbegincode{86}\sublabel{NWlam9-Tran-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-Tran-1}}}\moddef{Traducir metainstrucción a texto plano sin abuso~{\nwtagstyle{}\subpageref{NWlam9-Tran-1}}}\endmoddef
 (let ([nombre     (metainstrucción-nombre     e)]
       [argumentos (metainstrucción-argumentos e)])
-  (if (and (string? nombre) (list? argumentos))
-      (format "~a[~a]"
+  (format "~a[~a]"
               nombre
-              (string-join (map expresión->texto-plano argumentos) ", "))
-      (error 'metainstrucción->texto-plano
-             "La metainstrucción ~a está mal formada" e)))
+              (string-join (map expresión->texto-plano argumentos) ", ")))
 \nwidentuses{\\{{expresión->texto-plano}{expresión->texto-plano}}\\{{metainstrucción}{metainstrucción}}}\nwindexuse{expresión->texto-plano}{expresión->texto-plano}{NWlam9-Tran-1}\nwindexuse{metainstrucción}{metainstrucción}{NWlam9-Tran-1}\nwused{\\{NWlam9-A*tN-1}}\nwendcode{}\nwbegindocs{87}\nwdocspar
 
 En ocaciones será de utilidad obtener la representación externa de una expresión con las convenciones de abuso de notación utilizadas en este trabajo. La lectura de expresiones admite el abuso de notación en cualquier parte de la expresión, sin embargo, para la escritura de expresiones con abuso, habrá una sola representación externa con abuso de notación y será aquella que aproxime la máxima cantidad de abuso de notación posible.
@@ -741,17 +733,16 @@ La traducción de abstracciones a texto plano con abuso de notación consiste en
 
 \nwenddocs{}\nwbegincode{92}\sublabel{NWlam9-A*tN.2-3}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-A*tN.2-3}}}\moddef{A texto plano con abuso~{\nwtagstyle{}\subpageref{NWlam9-A*tN.2-1}}}\plusendmoddef
 (define (abstracción->abuso-texto-plano e)
-  (let itera ([argumentos (list (abstracción-argumento e))]
-              [cuerpo     (abstracción-cuerpo e)])
-     (if (abstracción? cuerpo)
-         (itera (cons (abstracción-argumento cuerpo) argumentos)
-                (abstracción-cuerpo cuerpo))
-         (format "~a~a.~a"
-                 (integer->char 955)
-                 (string-join (map variable->abuso-texto-plano
-                                   (reverse argumentos))
-                              " ")
-                 (expresión->abuso-texto-plano cuerpo)))))
+  (let itera ([cuerpo (abstracción-cuerpo e)]
+              [resultado (format "~a~a"
+                                 (integer->char 955)
+                                 (variable->abuso-texto-plano (abstracción-argumento e)))])
+    (if (not (abstracción? cuerpo))
+        (format "~a.~a" resultado (expresión->abuso-texto-plano cuerpo))
+        (itera (abstracción-cuerpo cuerpo)
+               (format "~a ~a"
+                       resultado
+                       (variable->abuso-texto-plano (abstracción-argumento cuerpo)))))))
 
 \nwindexdefn{abstracción->abuso-texto-plano}{abstracción->abuso-texto-plano}{NWlam9-A*tN.2-3}\eatline
 \nwidentdefs{\\{{abstracción->abuso-texto-plano}{abstracción->abuso-texto-plano}}}\nwidentuses{\\{{abstracción}{abstracción}}\\{{expresión->abuso-texto-plano}{expresión->abuso-texto-plano}}\\{{variable}{variable}}\\{{variable->abuso-texto-plano}{variable->abuso-texto-plano}}}\nwindexuse{abstracción}{abstracción}{NWlam9-A*tN.2-3}\nwindexuse{expresión->abuso-texto-plano}{expresión->abuso-texto-plano}{NWlam9-A*tN.2-3}\nwindexuse{variable}{variable}{NWlam9-A*tN.2-3}\nwindexuse{variable->abuso-texto-plano}{variable->abuso-texto-plano}{NWlam9-A*tN.2-3}\nwendcode{}\nwbegindocs{93}\nwdocspar
@@ -764,27 +755,31 @@ El procedimiento {\tt{}\protect\nwindexuse{aplicación}{aplicación}{NWlam9-estO
 
 \nwenddocs{}\nwbegincode{94}\sublabel{NWlam9-A*tN.2-4}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-A*tN.2-4}}}\moddef{A texto plano con abuso~{\nwtagstyle{}\subpageref{NWlam9-A*tN.2-1}}}\plusendmoddef
 (define (aplicación->abuso-texto-plano e)
-  (let itera ([operador    (aplicación-operador e)]
-              [expresiones (list (aplicación-operando e))])
-    (if (aplicación? operador)
-        (itera (aplicación-operador operador)
-               (cons (aplicación-operando operador) expresiones))
-        (let itera ([expresiones  (cons operador expresiones)]
-                    [traducciones null])
-          (if (null? expresiones)
-              (string-join (reverse traducciones) " ")
-              (let ([e  (first expresiones)]
-                    [es (rest  expresiones)])
-                (cond
-                 [(aplicación? e)
-                  (itera es (cons (format "(~a)" (aplicación->abuso-texto-plano e))
-                                  traducciones))]
-                 [(and (abstracción? e) (not (null? es)))
-                  (itera es (cons (format "(~a)" (abstracción->abuso-texto-plano e))
-                                  traducciones))]
-                 [else
-                  (itera es (cons (expresión->abuso-texto-plano e)
-                                  traducciones))])))))))
+  (let itera ([operador (aplicación-operador e)]
+              [resultado (format " ~a"
+                                 (let ([e (aplicación-operando e)])
+                                   (if (aplicación? e)
+                                       (format "(~a)" (aplicación->abuso-texto-plano e))
+                                       (expresión->abuso-texto-plano e))))])
+    (if (not (aplicación? operador))
+        (format "~a~a"
+                (cond [(aplicación? operador)
+                       (format "(~a)" (aplicación->abuso-texto-plano operador))]
+                      [(abstracción? operador)
+                       (format "(~a)" (abstracción->abuso-texto-plano operador))]
+                      [else
+                       (expresión->abuso-texto-plano operador)])
+                resultado)
+        (let ([e (aplicación-operando operador)])
+          (itera (aplicación-operador operador)
+                 (format " ~a~a"
+                         (cond [(aplicación? e)
+                                (format "(~a)" (aplicación->abuso-texto-plano e))]
+                               [(abstracción? e)
+                                (format "(~a)" (abstracción->abuso-texto-plano e))]
+                               [else
+                                (expresión->abuso-texto-plano e)])
+                         resultado))))))
 
 \nwindexdefn{aplicación->abuso-texto-plano}{aplicación->abuso-texto-plano}{NWlam9-A*tN.2-4}\eatline
 \nwidentdefs{\\{{aplicación->abuso-texto-plano}{aplicación->abuso-texto-plano}}}\nwidentuses{\\{{abstracción}{abstracción}}\\{{abstracción->abuso-texto-plano}{abstracción->abuso-texto-plano}}\\{{aplicación}{aplicación}}\\{{expresión->abuso-texto-plano}{expresión->abuso-texto-plano}}}\nwindexuse{abstracción}{abstracción}{NWlam9-A*tN.2-4}\nwindexuse{abstracción->abuso-texto-plano}{abstracción->abuso-texto-plano}{NWlam9-A*tN.2-4}\nwindexuse{aplicación}{aplicación}{NWlam9-A*tN.2-4}\nwindexuse{expresión->abuso-texto-plano}{expresión->abuso-texto-plano}{NWlam9-A*tN.2-4}\nwendcode{}\nwbegindocs{95}\nwdocspar
@@ -802,21 +797,24 @@ En el caso de la traducción de metainstrucciones a texto plano con abuso de not
 
 \nwenddocs{}\nwbegincode{98}\sublabel{NWlam9-A*tN.2-6}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-A*tN.2-6}}}\moddef{A texto plano con abuso~{\nwtagstyle{}\subpageref{NWlam9-A*tN.2-1}}}\plusendmoddef
 (define (metainstrucción->abuso-texto-plano e)
-  (let ([nombre     (metainstrucción-nombre e)]
-        [argumentos (metainstrucción-argumentos e)])
-    (if (and (string? nombre) (list? argumentos))
-        (format "~a[~a]"
-                nombre
-                (string-join (map expresión->abuso-texto-plano argumentos) ", "))
-        (error 'metainstrucción->abuso-text-plano
-               "La metainstrucción ~a está mal formada" e))))
+  (let itera ([argumentos (metainstrucción-argumentos e)]
+              [resultado (format "~a[" (metainstrucción-nombre e))])
+    (cond [(null? argumentos)
+           (format "~a]" resultado)]
+          [(null? (cdr argumentos))
+           (format "~a~a]"
+                   resultado
+                   (expresión->abuso-texto-plano (car argumentos)))]
+          [else
+           (itera (cdr argumentos)
+                  (format "~a~a, "
+                          resultado
+                          (expresión->abuso-texto-plano (car argumentos))))])))
 
 \nwindexdefn{metainstrucción->abuso-texto-plano}{metainstrucción->abuso-texto-plano}{NWlam9-A*tN.2-6}\eatline
 \nwidentdefs{\\{{metainstrucción->abuso-texto-plano}{metainstrucción->abuso-texto-plano}}}\nwidentuses{\\{{expresión->abuso-texto-plano}{expresión->abuso-texto-plano}}\\{{metainstrucción}{metainstrucción}}}\nwindexuse{expresión->abuso-texto-plano}{expresión->abuso-texto-plano}{NWlam9-A*tN.2-6}\nwindexuse{metainstrucción}{metainstrucción}{NWlam9-A*tN.2-6}\nwendcode{}\nwbegindocs{99}\nwdocspar
 
-\nwenddocs{}\nwbegindocs{100}\paragraph{De expresiones a \LaTeX} Traducir expresiones a código interpretable por \LaTeX~es relativamente fácil, lo complicado es la diversidad de estilos con los que se puede escribir una expresión. Por ejemplo, el espaciado entre dos términos en una aplicación, el color de algún subtérmino, la tipografía de los símbolos o la manera en como se escriben los paréntesis. Para solventar estos problemas se reduce el problema de generar un archivo válido de \LaTeX~a simplemente producir una cadena de caracteres que al ser insertada en un documento válido y en un lugar donde se aplique el modo de matemáticas, el archivo seguirá siendo válido y producirá una expresión sintácticamente correcta.
-
-Se define el parámetro {\tt{}\protect\nwindexuse{plantilla-latex}{plantilla-latex}{NWlam9-A*LH-1}plantilla-latex} el cuál debe contener una cadena de caracteres que podrá ser utilizado de tal manera que {\tt{}(format\ (\protect\nwindexuse{plantilla-latex}{plantilla-latex}{NWlam9-A*LH-1}plantilla-latex)\ expresión-traducida)} sea una cadena de caracteres con el contenido del documento de \LaTeX~válido. Para evitar complicar la implementación de este parámetro, la única condición que se verifica es que sea una cadena de caracteres y que contenga únicamente una secuencia {\tt{}{\char126}a}.
+\nwenddocs{}\nwbegindocs{100}\paragraph{De expresiones a \LaTeX} Traducir expresiones a código interpretable por \LaTeX{} es relativamente fácil, esta tarea se divide en dos: la escritura de la expresión en sí y la plantilla del documento. Primero se define la plantilla del documento en donde se encuentra el preámbulo, el {\tt{}{\char92}begin{\char123}document{\char125}} y {\tt{}{\char92}end{\char123}document{\char125}}. El parámetro {\tt{}\protect\nwindexuse{plantilla-latex}{plantilla-latex}{NWlam9-A*LH-1}plantilla-latex} contiene una cadena de caracteres que es utilizada de tal manera que {\tt{}(format\ (\protect\nwindexuse{plantilla-latex}{plantilla-latex}{NWlam9-A*LH-1}plantilla-latex)\ expresión-latex)} sea una cadena de caracteres con el contenido de un documento válido de \LaTeX{}.
 
 \nwenddocs{}\nwbegincode{101}\sublabel{NWlam9-A*LH-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-A*LH-1}}}\moddef{A LaTeX sin abuso~{\nwtagstyle{}\subpageref{NWlam9-A*LH-1}}}\endmoddef
 (define +plantilla-latex-inicial+
@@ -836,13 +834,175 @@ Se define el parámetro {\tt{}\protect\nwindexuse{plantilla-latex}{plantilla-lat
          +plantilla-latex-inicial+))))
 
 \nwindexdefn{plantilla-latex}{plantilla-latex}{NWlam9-A*LH-1}\eatline
-\nwidentdefs{\\{{plantilla-latex}{plantilla-latex}}}\nwused{\\{NWlam9-escC-1}}\nwendcode{}\nwbegindocs{102}\nwdocspar
+\nwidentdefs{\\{{plantilla-latex}{plantilla-latex}}}\nwalsodefined{\\{NWlam9-A*LH-2}\\{NWlam9-A*LH-3}\\{NWlam9-A*LH-4}\\{NWlam9-A*LH-5}\\{NWlam9-A*LH-6}\\{NWlam9-A*LH-7}}\nwused{\\{NWlam9-escC-1}}\nwendcode{}\nwbegindocs{102}\nwdocspar
 
-\nwenddocs{}\nwbegindocs{103}\paragraph{De expresiones a figuras funcionales de {\tt{}Racket}}
+Los escritores para \LaTeX{} tienen una estructura similar a los de texto plano, la única diferencia es que se escriben comandos del modo de matemáticas de \LaTeX{} para darle formato a las expresiones. La definición del procedimiento {\tt{}\protect\nwindexuse{expresión->latex}{expresión->latex}{NWlam9-A*LH-2}expresión->latex} es similar a {\tt{}\protect\nwindexuse{expresión->texto-plano}{expresión->texto-plano}{NWlam9-A*tN-1}expresión->texto-plano}.
 
-\nwenddocs{}\nwbegindocs{104}\paragraph{Módulo de escritor} El módulo de los escritores utiliza el módulo {\tt{}estructuras.rkt} y provee los procedimientos de escritura a texto plano, \LaTeX~ y a figuras de {\tt{}Racket} con abuso y sin abuso de notación. El archivo {\tt{}escritor.rkt} contiene este módulo y tiene la siguiente forma.
+\nwenddocs{}\nwbegincode{103}\sublabel{NWlam9-A*LH-2}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-A*LH-2}}}\moddef{A LaTeX sin abuso~{\nwtagstyle{}\subpageref{NWlam9-A*LH-1}}}\plusendmoddef
+(define (expresión->latex e)
+  (cond
+   [(variable? e)
+    (variable->latex e)]
+   [(abstracción? e)
+    (abstracción->latex e)]
+   [(aplicación? e)
+    (aplicación->latex e)]
+   [(hueco? e)
+    (hueco->latex e)]
+   [(metainstrucción? e)
+    (metainstrucción->latex e)]
+   [else
+    (error 'expresión->latex
+           "La expresión ~a no es válida" e)]))
 
-\nwenddocs{}\nwbegincode{105}\sublabel{NWlam9-escC-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-escC-1}}}\moddef{escritor.rkt~{\nwtagstyle{}\subpageref{NWlam9-escC-1}}}\endmoddef
+\nwindexdefn{expresión->latex}{expresión->latex}{NWlam9-A*LH-2}\eatline
+\nwidentdefs{\\{{expresión->latex}{expresión->latex}}}\nwidentuses{\\{{abstracción}{abstracción}}\\{{abstracción->latex}{abstracción->latex}}\\{{aplicación}{aplicación}}\\{{aplicación->latex}{aplicación->latex}}\\{{hueco}{hueco}}\\{{hueco->latex}{hueco->latex}}\\{{metainstrucción}{metainstrucción}}\\{{metainstrucción->latex}{metainstrucción->latex}}\\{{variable}{variable}}\\{{variable->latex}{variable->latex}}}\nwindexuse{abstracción}{abstracción}{NWlam9-A*LH-2}\nwindexuse{abstracción->latex}{abstracción->latex}{NWlam9-A*LH-2}\nwindexuse{aplicación}{aplicación}{NWlam9-A*LH-2}\nwindexuse{aplicación->latex}{aplicación->latex}{NWlam9-A*LH-2}\nwindexuse{hueco}{hueco}{NWlam9-A*LH-2}\nwindexuse{hueco->latex}{hueco->latex}{NWlam9-A*LH-2}\nwindexuse{metainstrucción}{metainstrucción}{NWlam9-A*LH-2}\nwindexuse{metainstrucción->latex}{metainstrucción->latex}{NWlam9-A*LH-2}\nwindexuse{variable}{variable}{NWlam9-A*LH-2}\nwindexuse{variable->latex}{variable->latex}{NWlam9-A*LH-2}\nwendcode{}\nwbegindocs{104}\nwdocspar
+
+Para la traducción de una variable a \LaTeX{} sin abuso de notación simplemente se obtiene su nombre.
+
+\nwenddocs{}\nwbegincode{105}\sublabel{NWlam9-A*LH-3}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-A*LH-3}}}\moddef{A LaTeX sin abuso~{\nwtagstyle{}\subpageref{NWlam9-A*LH-1}}}\plusendmoddef
+(define (variable->latex e)
+  (variable-nombre e))
+
+\nwindexdefn{variable->latex}{variable->latex}{NWlam9-A*LH-3}\eatline
+\nwidentdefs{\\{{variable->latex}{variable->latex}}}\nwidentuses{\\{{variable}{variable}}}\nwindexuse{variable}{variable}{NWlam9-A*LH-3}\nwendcode{}\nwbegindocs{106}\nwdocspar
+
+La traducción de una abstracción a \LaTeX{} sin abuso de notación es igual que en el caso de texto plano, solo que el símbolo \( λ \) es escrito {\tt{}{\char92}lambda}.
+
+\nwenddocs{}\nwbegincode{107}\sublabel{NWlam9-A*LH-4}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-A*LH-4}}}\moddef{A LaTeX sin abuso~{\nwtagstyle{}\subpageref{NWlam9-A*LH-1}}}\plusendmoddef
+(define (abstracción->latex e)
+  (format "(\\\\lambda ~a . ~a)"
+          (variable->latex (abstracción-argumento e))
+          (expresión->latex (abstracción-cuerpo e))))
+
+\nwindexdefn{abstracción->latex}{abstracción->latex}{NWlam9-A*LH-4}\eatline
+\nwidentdefs{\\{{abstracción->latex}{abstracción->latex}}}\nwidentuses{\\{{abstracción}{abstracción}}\\{{expresión->latex}{expresión->latex}}\\{{variable}{variable}}\\{{variable->latex}{variable->latex}}}\nwindexuse{abstracción}{abstracción}{NWlam9-A*LH-4}\nwindexuse{expresión->latex}{expresión->latex}{NWlam9-A*LH-4}\nwindexuse{variable}{variable}{NWlam9-A*LH-4}\nwindexuse{variable->latex}{variable->latex}{NWlam9-A*LH-4}\nwendcode{}\nwbegindocs{108}\nwdocspar
+
+De manera similar se traduce una aplicación a \LaTeX{} sin abuso de notación, la diferencia en este caso es que el espacio entre el operador y el operando se escribe {\tt{}{\char92},\ }.
+
+\nwenddocs{}\nwbegincode{109}\sublabel{NWlam9-A*LH-5}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-A*LH-5}}}\moddef{A LaTeX sin abuso~{\nwtagstyle{}\subpageref{NWlam9-A*LH-1}}}\plusendmoddef
+(define (aplicación->latex e)
+  (format "(~a\\\\, ~a)"
+          (expresión->latex (aplicación-operador e))
+          (expresión->latex (aplicación-operando e))))
+
+\nwindexdefn{aplicación->latex}{aplicación->latex}{NWlam9-A*LH-5}\eatline
+\nwidentdefs{\\{{aplicación->latex}{aplicación->latex}}}\nwidentuses{\\{{aplicación}{aplicación}}\\{{expresión->latex}{expresión->latex}}}\nwindexuse{aplicación}{aplicación}{NWlam9-A*LH-5}\nwindexuse{expresión->latex}{expresión->latex}{NWlam9-A*LH-5}\nwendcode{}\nwbegindocs{110}\nwdocspar
+
+Para traducir un hueco a \LaTeX{} sin abuso de notación se traduce el espacio como {\tt{}{\char92}quad}.
+
+\nwenddocs{}\nwbegincode{111}\sublabel{NWlam9-A*LH-6}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-A*LH-6}}}\moddef{A LaTeX sin abuso~{\nwtagstyle{}\subpageref{NWlam9-A*LH-1}}}\plusendmoddef
+(define (hueco->latex e)
+  "[\\\\quad ]")
+
+\nwindexdefn{hueco->latex}{hueco->latex}{NWlam9-A*LH-6}\eatline
+\nwidentdefs{\\{{hueco->latex}{hueco->latex}}}\nwidentuses{\\{{hueco}{hueco}}}\nwindexuse{hueco}{hueco}{NWlam9-A*LH-6}\nwendcode{}\nwbegindocs{112}\nwdocspar
+
+Para traducir una metainstrucción a \LaTeX{} sin abuso de notación se computa la lista de cadenas de los argumentos separados por la coma y el espacio {\tt{}{\char92},\ }.
+
+\nwenddocs{}\nwbegincode{113}\sublabel{NWlam9-A*LH-7}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-A*LH-7}}}\moddef{A LaTeX sin abuso~{\nwtagstyle{}\subpageref{NWlam9-A*LH-1}}}\plusendmoddef
+(define (metainstrucción->latex e)
+  (let ([nombre     (metainstrucción-nombre e)]
+        [argumentos (metainstrucción-argumentos e)])
+    (format "~a[~a]"
+            nombre
+            (string-join (map expresión->latex argumentos) ",\\\\, "))))
+
+\nwindexdefn{metainstrucción->latex}{metainstrucción->latex}{NWlam9-A*LH-7}\eatline
+\nwidentdefs{\\{{metainstrucción->latex}{metainstrucción->latex}}}\nwidentuses{\\{{expresión->latex}{expresión->latex}}\\{{metainstrucción}{metainstrucción}}}\nwindexuse{expresión->latex}{expresión->latex}{NWlam9-A*LH-7}\nwindexuse{metainstrucción}{metainstrucción}{NWlam9-A*LH-7}\nwendcode{}\nwbegindocs{114}\nwdocspar
+
+La implementación del escritor a \LaTeX{} con abuso de notación sigue el algoritmo de escritura a texto plano con abuso.
+
+Siguiendo las convenciones de los escritores previamente definidos, {\tt{}\protect\nwindexuse{expresión->abuso-latex}{expresión->abuso-latex}{NWlam9-A*LH.2-1}expresión->abuso-latex} implementa el despacho a escritores especializados por la clase de expresión.
+
+\nwenddocs{}\nwbegincode{115}\sublabel{NWlam9-A*LH.2-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-A*LH.2-1}}}\moddef{A LaTeX con abuso~{\nwtagstyle{}\subpageref{NWlam9-A*LH.2-1}}}\endmoddef
+(define (expresión->abuso-latex e)
+  (cond
+   [(variable? e)
+    (variable->abuso-latex e)]
+   [(abstracción? e)
+    (abstracción->abuso-latex e)]
+   [(aplicación? e)
+    (aplicación->abuso-latex e)]
+   [(hueco? e)
+    (hueco->abuso-latex e)]
+   [(metainstrucción? e)
+    (metainstrucción->abuso-latex e)]
+   [else
+    (error 'expresión->abuso-latex
+           "La expresión ~a no es válida" e)]))
+
+\nwindexdefn{expresión->abuso-latex}{expresión->abuso-latex}{NWlam9-A*LH.2-1}\eatline
+\nwidentdefs{\\{{expresión->abuso-latex}{expresión->abuso-latex}}}\nwidentuses{\\{{abstracción}{abstracción}}\\{{abstracción->abuso-latex}{abstracción->abuso-latex}}\\{{aplicación}{aplicación}}\\{{aplicación->abuso-latex}{aplicación->abuso-latex}}\\{{hueco}{hueco}}\\{{hueco->abuso-latex}{hueco->abuso-latex}}\\{{metainstrucción}{metainstrucción}}\\{{metainstrucción->abuso-latex}{metainstrucción->abuso-latex}}\\{{variable}{variable}}\\{{variable->abuso-latex}{variable->abuso-latex}}}\nwindexuse{abstracción}{abstracción}{NWlam9-A*LH.2-1}\nwindexuse{abstracción->abuso-latex}{abstracción->abuso-latex}{NWlam9-A*LH.2-1}\nwindexuse{aplicación}{aplicación}{NWlam9-A*LH.2-1}\nwindexuse{aplicación->abuso-latex}{aplicación->abuso-latex}{NWlam9-A*LH.2-1}\nwindexuse{hueco}{hueco}{NWlam9-A*LH.2-1}\nwindexuse{hueco->abuso-latex}{hueco->abuso-latex}{NWlam9-A*LH.2-1}\nwindexuse{metainstrucción}{metainstrucción}{NWlam9-A*LH.2-1}\nwindexuse{metainstrucción->abuso-latex}{metainstrucción->abuso-latex}{NWlam9-A*LH.2-1}\nwindexuse{variable}{variable}{NWlam9-A*LH.2-1}\nwindexuse{variable->abuso-latex}{variable->abuso-latex}{NWlam9-A*LH.2-1}\nwalsodefined{\\{NWlam9-A*LH.2-2}}\nwused{\\{NWlam9-escC-1}}\nwendcode{}\nwbegindocs{116}\nwdocspar
+
+Los escritores especializados para traducir a \LaTeX{} con abuso de notación se basan en la escritura a texto plano con abuso.
+
+\nwenddocs{}\nwbegincode{117}\sublabel{NWlam9-A*LH.2-2}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-A*LH.2-2}}}\moddef{A LaTeX con abuso~{\nwtagstyle{}\subpageref{NWlam9-A*LH.2-1}}}\plusendmoddef
+(define (variable->abuso-latex e)
+  (variable->texto-plano e))
+
+(define (abstracción->abuso-latex e)
+  (let itera ([cuerpo (abstracción-cuerpo e)]
+              [resultado (format "\\\\lambda ~a"
+                                 (variable->abuso-latex (abstracción-argumento e)))])
+    (if (not (abstracción? cuerpo))
+        (format "~a . ~a" resultado (expresión->abuso-latex cuerpo))
+        (itera (abstracción-cuerpo cuerpo)
+               (format "~a\\\\, ~a"
+                       resultado
+                       (variable->abuso-latex (abstracción-argumento cuerpo)))))))
+
+(define (aplicación->abuso-latex e)
+  (let itera ([operador (aplicación-operador e)]
+              [resultado (format "\\\\, ~a"
+                                 (let ([e (aplicación-operando e)])
+                                   (if (aplicación? e)
+                                       (format "(~a)" (aplicación->abuso-latex e))
+                                       (expresión->abuso-latex e))))])
+    (if (not (aplicación? operador))
+        (format "~a~a"
+                (cond [(aplicación? operador)
+                       (format "(~a)" (aplicación->abuso-latex operador))]
+                      [(abstracción? operador)
+                       (format "(~a)" (abstracción->abuso-latex operador))]
+                      [else
+                       (expresión->abuso-latex operador)])
+                resultado)
+        (let ([e (aplicación-operando operador)])
+          (itera (aplicación-operador operador)
+                 (format "\\\\, ~a~a"
+                         (cond [(aplicación? e)
+                                (format "(~a)" (aplicación->abuso-latex e))]
+                               [(abstracción? e)
+                                (format "(~a)" (abstracción->abuso-latex e))]
+                               [else
+                                (expresión->abuso-latex e)])
+                         resultado))))))
+
+(define (hueco->abuso-latex e)
+  "[\\\\quad ]")
+
+(define (metainstrucción->abuso-latex e)
+  (let itera ([argumentos (metainstrucción-argumentos e)]
+              [resultado (format "~a[" (metainstrucción-nombre e))])
+    (cond [(null? argumentos)
+           (format "~a]" resultado)]
+          [(null? (cdr argumentos))
+           (format "~a~a]"
+                   resultado
+                   (expresión->abuso-latex (car argumentos)))]
+          [else
+           (itera (cdr argumentos)
+                  (format "~a~a,\\\\, "
+                          resultado
+                          (expresión->abuso-latex (car argumentos))))])))
+
+\nwindexdefn{variable->abuso-latex}{variable->abuso-latex}{NWlam9-A*LH.2-2}\nwindexdefn{abstracción->abuso-latex}{abstracción->abuso-latex}{NWlam9-A*LH.2-2}\nwindexdefn{aplicación->abuso-latex}{aplicación->abuso-latex}{NWlam9-A*LH.2-2}\nwindexdefn{hueco->abuso-latex}{hueco->abuso-latex}{NWlam9-A*LH.2-2}\nwindexdefn{metainstrucción->abuso-latex}{metainstrucción->abuso-latex}{NWlam9-A*LH.2-2}\eatline
+\nwidentdefs{\\{{abstracción->abuso-latex}{abstracción->abuso-latex}}\\{{aplicación->abuso-latex}{aplicación->abuso-latex}}\\{{hueco->abuso-latex}{hueco->abuso-latex}}\\{{metainstrucción->abuso-latex}{metainstrucción->abuso-latex}}\\{{variable->abuso-latex}{variable->abuso-latex}}}\nwidentuses{\\{{abstracción}{abstracción}}\\{{aplicación}{aplicación}}\\{{expresión->abuso-latex}{expresión->abuso-latex}}\\{{hueco}{hueco}}\\{{metainstrucción}{metainstrucción}}\\{{variable}{variable}}\\{{variable->texto-plano}{variable->texto-plano}}}\nwindexuse{abstracción}{abstracción}{NWlam9-A*LH.2-2}\nwindexuse{aplicación}{aplicación}{NWlam9-A*LH.2-2}\nwindexuse{expresión->abuso-latex}{expresión->abuso-latex}{NWlam9-A*LH.2-2}\nwindexuse{hueco}{hueco}{NWlam9-A*LH.2-2}\nwindexuse{metainstrucción}{metainstrucción}{NWlam9-A*LH.2-2}\nwindexuse{variable}{variable}{NWlam9-A*LH.2-2}\nwindexuse{variable->texto-plano}{variable->texto-plano}{NWlam9-A*LH.2-2}\nwendcode{}\nwbegindocs{118}\nwdocspar
+
+\nwenddocs{}\nwbegindocs{119}\paragraph{Módulo de escritor} El módulo de los escritores utiliza el módulo {\tt{}estructuras.rkt} y provee los procedimientos de escritura a texto plano, \LaTeX~ y a figuras de {\tt{}Racket} con abuso y sin abuso de notación. El archivo {\tt{}escritor.rkt} contiene este módulo y tiene la siguiente forma.
+
+\nwenddocs{}\nwbegincode{120}\sublabel{NWlam9-escC-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-escC-1}}}\moddef{escritor.rkt~{\nwtagstyle{}\subpageref{NWlam9-escC-1}}}\endmoddef
 ;;; -*- mode: racket; coding: utf-8 -*-
 ;;; Copyright (C) 2016 Eduardo Acuña Yeomans <eduardo.acye@gmail.com>
 ;;; Procura no editar este archivo, mejor modifica lambda.nw
@@ -851,11 +1011,14 @@ Se define el parámetro {\tt{}\protect\nwindexuse{plantilla-latex}{plantilla-lat
 
 (require "estructuras.rkt"
          racket/list
-         racket/string)
+         racket/string
+         (for-syntax racket/base))
 
 (provide expresión->texto-plano
          expresión->abuso-texto-plano
-         plantilla-latex)
+         plantilla-latex
+         expresión->latex
+         expresión->abuso-latex)
 
 ;;; Traducir a texto plano sin abuso de notación
 \LA{}A texto plano sin abuso~{\nwtagstyle{}\subpageref{NWlam9-A*tN-1}}\RA{}
@@ -865,28 +1028,137 @@ Se define el parámetro {\tt{}\protect\nwindexuse{plantilla-latex}{plantilla-lat
 
 ;;; Traducir a LaTeX sin abuso de notación
 \LA{}A LaTeX sin abuso~{\nwtagstyle{}\subpageref{NWlam9-A*LH-1}}\RA{}
-\nwidentuses{\\{{expresión->abuso-texto-plano}{expresión->abuso-texto-plano}}\\{{expresión->texto-plano}{expresión->texto-plano}}\\{{plantilla-latex}{plantilla-latex}}}\nwindexuse{expresión->abuso-texto-plano}{expresión->abuso-texto-plano}{NWlam9-escC-1}\nwindexuse{expresión->texto-plano}{expresión->texto-plano}{NWlam9-escC-1}\nwindexuse{plantilla-latex}{plantilla-latex}{NWlam9-escC-1}\nwnotused{escritor.rkt}\nwendcode{}\nwbegindocs{106}\nwdocspar
 
-\nwenddocs{}\nwbegindocs{107}\paragraph{Pruebas de escritores} El archivo de pruebas {\tt{}escritor-pruebas.rkt} es utilizado para verificar si la funcionalidad de los escritores es la esperada. Se omite su definición en este documento pero es distribuído con el código del trabajo.
+;;; Traducir a LaTeX con abuso de notación
+\LA{}A LaTeX con abuso~{\nwtagstyle{}\subpageref{NWlam9-A*LH.2-1}}\RA{}
+\nwidentuses{\\{{expresión->abuso-latex}{expresión->abuso-latex}}\\{{expresión->abuso-texto-plano}{expresión->abuso-texto-plano}}\\{{expresión->latex}{expresión->latex}}\\{{expresión->texto-plano}{expresión->texto-plano}}\\{{plantilla-latex}{plantilla-latex}}}\nwindexuse{expresión->abuso-latex}{expresión->abuso-latex}{NWlam9-escC-1}\nwindexuse{expresión->abuso-texto-plano}{expresión->abuso-texto-plano}{NWlam9-escC-1}\nwindexuse{expresión->latex}{expresión->latex}{NWlam9-escC-1}\nwindexuse{expresión->texto-plano}{expresión->texto-plano}{NWlam9-escC-1}\nwindexuse{plantilla-latex}{plantilla-latex}{NWlam9-escC-1}\nwnotused{escritor.rkt}\nwendcode{}\nwbegindocs{121}\nwdocspar
+
+\nwenddocs{}\nwbegindocs{122}\paragraph{Pruebas de escritores} El archivo de pruebas {\tt{}escritor-pruebas.rkt} es utilizado para verificar si la funcionalidad de los escritores es la esperada. Se omite su definición en este documento pero es distribuído con el código del trabajo.
 
 
-\nwenddocs{}\nwbegindocs{108}\section*{Evaluador de expresiones}
+\nwenddocs{}\nwbegindocs{123}\section*{Evaluador de expresiones}
+
+\nwenddocs{}\nwbegincode{124}\sublabel{NWlam9-EvaW-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-EvaW-1}}}\moddef{Evaluación de metainstrucciones~{\nwtagstyle{}\subpageref{NWlam9-EvaW-1}}}\endmoddef
+(define (evaluar-expresión e)
+  (cond
+   [(variable? e)
+    (variable (variable-nombre e))]
+   [(abstracción? e)
+    (abstracción (evaluar-expresión (abstracción-argumento e))
+                 (evaluar-expresión (abstracción-cuerpo e)))]
+   [(aplicación? e)
+    (aplicación (evaluar-expresión (aplicación-operador e))
+                (evaluar-expresión (aplicación-operando e)))]
+   [(hueco? e)
+    (hueco)]
+   [(metainstrucción? e)
+    (cond [(hash-ref metainstrucciones (metainstrucción-nombre e) #f) =>
+           (lambda (procedimiento)
+             (apply procedimiento (metainstrucción-argumentos e)))]
+          [else
+           (metainstrucción (metainstrucción-nombre e)
+                            (map evaluar-expresión
+                                 (metainstrucción-argumentos e)))])]
+   [else
+    (error 'evaluar-expresión "La expresión ~a no es válida" e)]))
+
+\nwindexdefn{evaluar-expresión}{evaluar-expresión}{NWlam9-EvaW-1}\eatline
+\nwidentdefs{\\{{evaluar-expresión}{evaluar-expresión}}}\nwidentuses{\\{{abstracción}{abstracción}}\\{{aplicación}{aplicación}}\\{{hueco}{hueco}}\\{{metainstrucción}{metainstrucción}}\\{{metainstrucciones}{metainstrucciones}}\\{{variable}{variable}}}\nwindexuse{abstracción}{abstracción}{NWlam9-EvaW-1}\nwindexuse{aplicación}{aplicación}{NWlam9-EvaW-1}\nwindexuse{hueco}{hueco}{NWlam9-EvaW-1}\nwindexuse{metainstrucción}{metainstrucción}{NWlam9-EvaW-1}\nwindexuse{metainstrucciones}{metainstrucciones}{NWlam9-EvaW-1}\nwindexuse{variable}{variable}{NWlam9-EvaW-1}\nwnotused{Evaluación\ de\ metainstrucciones}\nwendcode{}\nwbegindocs{125}\nwdocspar
+
+\nwenddocs{}\nwbegincode{126}\sublabel{NWlam9-RegT-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-RegT-1}}}\moddef{Registro de metainstrucciones~{\nwtagstyle{}\subpageref{NWlam9-RegT-1}}}\endmoddef
+(define metainstrucciones (make-hash))
+
+\nwindexdefn{metainstrucciones}{metainstrucciones}{NWlam9-RegT-1}\eatline
+\nwidentdefs{\\{{metainstrucciones}{metainstrucciones}}}\nwnotused{Registro\ de\ metainstrucciones}\nwendcode{}\nwbegindocs{127}\nwdocspar
+
+
+\nwenddocs{}\nwbegincode{128}\sublabel{NWlam9-Macb-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-Macb-1}}}\moddef{Macros para definir metainstrucciones~{\nwtagstyle{}\subpageref{NWlam9-Macb-1}}}\endmoddef
+(define-syntax define-metainstrucción
+  (syntax-rules ()
+    [(_ (id . args) cuerpo ...)
+     (begin
+       (define (id . args) cuerpo ...)
+       (hash-set! metainstrucciones (symbol->string 'id) id))]
+    [(_ id value)
+     (begin
+       (define id value)
+       (hash-set! metainstrucciones (symbol->string 'id) id))]))
+
+(define-syntax define-instrucción
+  (syntax-rules ()
+    [(_ (id . args) cuerpo ...)
+     (define-metainstrucción (id . args*)
+       (apply (lambda args cuerpo ...)
+              (map evaluar-expresión args*)))]
+    [(_ id value)
+     (define-metainstrucción id
+       (lambda args
+         (apply value (map evaluar-expresión args))))]))
+
+\nwindexdefn{define-metainstrucción}{define-metainstrucción}{NWlam9-Macb-1}\nwindexdefn{define-instrucción}{define-instrucción}{NWlam9-Macb-1}\eatline
+\nwidentdefs{\\{{define-instrucción}{define-instrucción}}\\{{define-metainstrucción}{define-metainstrucción}}}\nwidentuses{\\{{evaluar-expresión}{evaluar-expresión}}\\{{metainstrucción}{metainstrucción}}\\{{metainstrucciones}{metainstrucciones}}}\nwindexuse{evaluar-expresión}{evaluar-expresión}{NWlam9-Macb-1}\nwindexuse{metainstrucción}{metainstrucción}{NWlam9-Macb-1}\nwindexuse{metainstrucciones}{metainstrucciones}{NWlam9-Macb-1}\nwnotused{Macros\ para\ definir\ metainstrucciones}\nwendcode{}\nwbegindocs{129}\nwdocspar
+
+
+\nwenddocs{}\nwbegincode{130}\sublabel{NWlam9-InsD-1}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-InsD-1}}}\moddef{Instrucciones~{\nwtagstyle{}\subpageref{NWlam9-InsD-1}}}\endmoddef
+(define-instrucción (decodifica-numeral M)
+  (match M
+    [(abstracción (variable f) (abstracción (variable x) N))
+     (let itera ([N N]
+                 [n 0])
+       (match N
+         [(== (variable x))
+          (variable (number->string n))]
+         [(aplicación (== (variable f)) N)
+          (itera N (+ n 1))]
+         [_
+          (variable "-1")]))]
+    [_ (variable "-1")]))
+
+\nwindexdefn{decodifica-numeral}{decodifica-numeral}{NWlam9-InsD-1}\eatline
+\nwidentdefs{\\{{decodifica-numeral}{decodifica-numeral}}}\nwidentuses{\\{{abstracción}{abstracción}}\\{{aplicación}{aplicación}}\\{{define-instrucción}{define-instrucción}}\\{{variable}{variable}}}\nwindexuse{abstracción}{abstracción}{NWlam9-InsD-1}\nwindexuse{aplicación}{aplicación}{NWlam9-InsD-1}\nwindexuse{define-instrucción}{define-instrucción}{NWlam9-InsD-1}\nwindexuse{variable}{variable}{NWlam9-InsD-1}\nwalsodefined{\\{NWlam9-InsD-2}}\nwnotused{Instrucciones}\nwendcode{}\nwbegindocs{131}\nwdocspar
+
+
+\nwenddocs{}\nwbegincode{132}\sublabel{NWlam9-InsD-2}\nwmargintag{{\nwtagstyle{}\subpageref{NWlam9-InsD-2}}}\moddef{Instrucciones~{\nwtagstyle{}\subpageref{NWlam9-InsD-1}}}\plusendmoddef
+(define-instrucción (codifica-número M)
+  (match M
+    [(variable x)
+     (let ([n (string->number x)])
+       (if (and (number? n) (integer? n) (>= n 0))
+           (abstracción
+            (variable "f")
+            (abstracción
+             (variable "x")
+             (let itera ([n n])
+               (if (zero? n)
+                   (variable "x")
+                   (aplicación (variable "f")
+                               (itera (- n 1)))))))
+           M))]
+    [_
+     M]))
+
+\nwindexdefn{codifica-número}{codifica-número}{NWlam9-InsD-2}\eatline
+\nwidentdefs{\\{{codifica-número}{codifica-número}}}\nwidentuses{\\{{abstracción}{abstracción}}\\{{aplicación}{aplicación}}\\{{define-instrucción}{define-instrucción}}\\{{variable}{variable}}}\nwindexuse{abstracción}{abstracción}{NWlam9-InsD-2}\nwindexuse{aplicación}{aplicación}{NWlam9-InsD-2}\nwindexuse{define-instrucción}{define-instrucción}{NWlam9-InsD-2}\nwindexuse{variable}{variable}{NWlam9-InsD-2}\nwendcode{}\nwbegindocs{133}\nwdocspar
+
+
+\nwenddocs{}\nwbegindocs{134}\section*{Ciclo de Lectura Evaluación y Escritura}
 
 \paragraph{Pendiente}
 
-\nwenddocs{}\nwbegindocs{109}\section*{Ciclo de Lectura Evaluación y Escritura}
-
-\paragraph{Pendiente}
-
-\nwenddocs{}\nwbegindocs{110}\section*{Editor estructural}
+\nwenddocs{}\nwbegindocs{135}\section*{Editor estructural}
 
 \paragraph{Pendiente}
 
 \nwenddocs{}
 
-\nwixlogsorted{c}{{A LaTeX sin abuso}{NWlam9-A*LH-1}{\nwixd{NWlam9-A*LH-1}\nwixu{NWlam9-escC-1}}}%
+\nwixlogsorted{c}{{A LaTeX con abuso}{NWlam9-A*LH.2-1}{\nwixd{NWlam9-A*LH.2-1}\nwixd{NWlam9-A*LH.2-2}\nwixu{NWlam9-escC-1}}}%
+\nwixlogsorted{c}{{A LaTeX sin abuso}{NWlam9-A*LH-1}{\nwixd{NWlam9-A*LH-1}\nwixd{NWlam9-A*LH-2}\nwixd{NWlam9-A*LH-3}\nwixd{NWlam9-A*LH-4}\nwixd{NWlam9-A*LH-5}\nwixd{NWlam9-A*LH-6}\nwixd{NWlam9-A*LH-7}\nwixu{NWlam9-escC-1}}}%
 \nwixlogsorted{c}{{A texto plano con abuso}{NWlam9-A*tN.2-1}{\nwixd{NWlam9-A*tN.2-1}\nwixd{NWlam9-A*tN.2-2}\nwixd{NWlam9-A*tN.2-3}\nwixd{NWlam9-A*tN.2-4}\nwixd{NWlam9-A*tN.2-5}\nwixd{NWlam9-A*tN.2-6}\nwixu{NWlam9-escC-1}}}%
 \nwixlogsorted{c}{{A texto plano sin abuso}{NWlam9-A*tN-1}{\nwixd{NWlam9-A*tN-1}\nwixd{NWlam9-A*tN-2}\nwixu{NWlam9-escC-1}}}%
+\nwixlogsorted{c}{{Evaluación de metainstrucciones}{NWlam9-EvaW-1}{\nwixd{NWlam9-EvaW-1}}}%
+\nwixlogsorted{c}{{Instrucciones}{NWlam9-InsD-1}{\nwixd{NWlam9-InsD-1}\nwixd{NWlam9-InsD-2}}}%
+\nwixlogsorted{c}{{Macros para definir metainstrucciones}{NWlam9-Macb-1}{\nwixd{NWlam9-Macb-1}}}%
+\nwixlogsorted{c}{{Registro de metainstrucciones}{NWlam9-RegT-1}{\nwixd{NWlam9-RegT-1}}}%
 \nwixlogsorted{c}{{Traducir abstracción a texto plano sin abuso}{NWlam9-Traj-1}{\nwixu{NWlam9-A*tN-1}\nwixd{NWlam9-Traj-1}}}%
 \nwixlogsorted{c}{{Traducir aplicación a texto plano sin abuso}{NWlam9-Trai-1}{\nwixu{NWlam9-A*tN-1}\nwixd{NWlam9-Trai-1}}}%
 \nwixlogsorted{c}{{Traducir hueco a texto plano sin abuso}{NWlam9-Trac-1}{\nwixu{NWlam9-A*tN-1}\nwixd{NWlam9-Trac-1}}}%
@@ -911,21 +1183,37 @@ Se define el parámetro {\tt{}\protect\nwindexuse{plantilla-latex}{plantilla-lat
 \nwixlogsorted{c}{{provee las definiciones del árbol}{NWlam9-proY-1}{\nwixd{NWlam9-proY-1}\nwixu{NWlam9-estF-1}}}%
 \nwixlogsorted{c}{{pseudocódigo de una metainstrucción}{NWlam9-pseb-1}{\nwixd{NWlam9-pseb-1}}}%
 \nwixlogsorted{i}{{abstracción}{abstracción}}%
+\nwixlogsorted{i}{{abstracción->abuso-latex}{abstracción->abuso-latex}}%
 \nwixlogsorted{i}{{abstracción->abuso-texto-plano}{abstracción->abuso-texto-plano}}%
+\nwixlogsorted{i}{{abstracción->latex}{abstracción->latex}}%
 \nwixlogsorted{i}{{aplicación}{aplicación}}%
+\nwixlogsorted{i}{{aplicación->abuso-latex}{aplicación->abuso-latex}}%
 \nwixlogsorted{i}{{aplicación->abuso-texto-plano}{aplicación->abuso-texto-plano}}%
 \nwixlogsorted{i}{{aplicación/identidad}{aplicación/identidad}}%
+\nwixlogsorted{i}{{aplicación->latex}{aplicación->latex}}%
+\nwixlogsorted{i}{{codifica-número}{codifica-número}}%
+\nwixlogsorted{i}{{decodifica-numeral}{decodifica-numeral}}%
+\nwixlogsorted{i}{{define-instrucción}{define-instrucción}}%
+\nwixlogsorted{i}{{define-metainstrucción}{define-metainstrucción}}%
 \nwixlogsorted{i}{{delimitador?}{delimitador?}}%
 \nwixlogsorted{i}{{delimitador-final?}{delimitador-final?}}%
 \nwixlogsorted{i}{{delimitador-inicial?}{delimitador-inicial?}}%
+\nwixlogsorted{i}{{evaluar-expresión}{evaluar-expresión}}%
 \nwixlogsorted{i}{{expresión?}{expresión?}}%
+\nwixlogsorted{i}{{expresión->abuso-latex}{expresión->abuso-latex}}%
 \nwixlogsorted{i}{{expresión->abuso-texto-plano}{expresión->abuso-texto-plano}}%
+\nwixlogsorted{i}{{expresión->latex}{expresión->latex}}%
 \nwixlogsorted{i}{{expresión->texto-plano}{expresión->texto-plano}}%
 \nwixlogsorted{i}{{hueco}{hueco}}%
+\nwixlogsorted{i}{{hueco->abuso-latex}{hueco->abuso-latex}}%
 \nwixlogsorted{i}{{hueco->abuso-texto-plano}{hueco->abuso-texto-plano}}%
+\nwixlogsorted{i}{{hueco->latex}{hueco->latex}}%
 \nwixlogsorted{i}{{leer}{leer}}%
 \nwixlogsorted{i}{{metainstrucción}{metainstrucción}}%
+\nwixlogsorted{i}{{metainstrucción->abuso-latex}{metainstrucción->abuso-latex}}%
 \nwixlogsorted{i}{{metainstrucción->abuso-texto-plano}{metainstrucción->abuso-texto-plano}}%
+\nwixlogsorted{i}{{metainstrucción->latex}{metainstrucción->latex}}%
+\nwixlogsorted{i}{{metainstrucciones}{metainstrucciones}}%
 \nwixlogsorted{i}{{nombre?}{nombre?}}%
 \nwixlogsorted{i}{{parsear-abstracción}{parsear-abstracción}}%
 \nwixlogsorted{i}{{parsear-constituyente}{parsear-constituyente}}%
@@ -936,9 +1224,11 @@ Se define el parámetro {\tt{}\protect\nwindexuse{plantilla-latex}{plantilla-lat
 \nwixlogsorted{i}{{plantilla-latex}{plantilla-latex}}%
 \nwixlogsorted{i}{{término?}{término?}}%
 \nwixlogsorted{i}{{variable}{variable}}%
+\nwixlogsorted{i}{{variable->abuso-latex}{variable->abuso-latex}}%
 \nwixlogsorted{i}{{variable->abuso-texto-plano}{variable->abuso-texto-plano}}%
+\nwixlogsorted{i}{{variable->latex}{variable->latex}}%
 \nwixlogsorted{i}{{variable->texto-plano}{variable->texto-plano}}%
-\nwbegindocs{111}\section*{¿Cómo hackear la \( \bs{λ} \)?}
+\nwbegindocs{136}\section*{¿Cómo hackear la \( \bs{λ} \)?}
 
 
 \end{document}

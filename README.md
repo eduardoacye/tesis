@@ -1,27 +1,16 @@
-# Tesis de licenciatura: El cálculo lambda y los fundamentos de la computación
+# El cálculo lambda y los fundamentos de la computación
 
-## Pendientes
+En este repositorio están los archivos relacionados con el trabajo de mi tesis de licenciatura.
 
-- [x] Introducción
-- [x] Cuerpo de la tesis
-  - [x] Noción informal del cálculo lambda
-    - [x] Expresiones
-    - [x] Operaciones
-    - [x] Equivalencias
-  - [x] Formalización del cálculo lambda
-    - [x] Términos lambda
-    - [x] Los cálculos de la conversión lambda
-    - [x] Teoría de reducción
-  - [x] Codificación de objetos
-    - [x] Álgebra booleana
-    - [x] Aritmética
-    - [x] Procesos recursivos
-    - [x] Estructuras recursivas
-- [x] Conclusión
-- [x] Apéndices
-  - [x] Programación de codificaciones
-  - [x] Intérprete del cálculo lambda
-- [x] Formato
-  - [x] Clase de estilo
-  - [x] Clase de bibliografía
-  - [x] Comandos de estilo
+No está bien organizado, pero la última versión se encuentra en la carpeta `final` (la cuál no es 
+final, pronto este repositorio será puesto en orden).
+
+<pre>
+                       __           __   
+ (\.   \      ,/)    .' _|  ,-.    |_ `.    (\,          ./) 
+  \(   |\     )/     | |    ', \     | |     \(     _    )/   
+  //\  | \   /\\     | |    /   \    | |     //\   / |  /\\   
+ (/ /\_#oo#_/\ \)    | |_  / / \ \  _| |    (/ /\_%oo%_/\ \)  
+  \/\  ####  /\/     `.__| `-'  --'|__,'     \/\  %%%%  /\/   
+       `##'                                       '%%´         
+</pre>

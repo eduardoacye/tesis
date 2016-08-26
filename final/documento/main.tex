@@ -1,0 +1,240 @@
+% Eduardo Acuña Yeomans 2016
+
+\documentclass[letterpaper,twoside,openright,11pt]{book}
+
+\usepackage{emptypage}
+
+\usepackage[lmargin=1.4 in, rmargin=.8 in, tmargin=1 in, bmargin=1 in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-minimal]{babel}
+\decimalpoint
+\usepackage[T1]{fontenc}
+
+% \usepackage{noweb}
+% \noweboptions{smallcode,spanish,breakcode,longchunks,longxref,webnumbering}
+
+\usepackage{setspace}
+\onehalfspacing
+% \doublespacing
+
+\usepackage[sumlimits]{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage[full]{textcomp}
+\usepackage[osf]{newpxtext}
+\usepackage{cabin}
+\usepackage[varqu,varl]{inconsolata}
+\usepackage[bigdelims,vvarbb]{newpxmath}
+\usepackage[cal=boondoxo]{mathalfa} % mathcal
+\usepackage{proof}
+
+\newcommand{\bs}{\boldsymbol}
+\newcommand{\mc}{\mathcal}
+
+\makeatletter
+\newtheoremstyle{indented}
+  {3pt}% space before
+  {3pt}% space after
+  {\addtolength{\@totalleftmargin}{2em}
+   \addtolength{\linewidth}{-2em}
+   \parshape 1 2em \linewidth}% body font
+  {}% indent
+  {\bfseries}% header font
+  {.}% punctuation
+  {.5em}% after theorem header
+  {}% header specification (empty for default)
+\makeatother
+
+\theoremstyle{plain}%
+\newtheorem{thm}{Teorema}[section]
+\newtheorem{lem}[thm]{Lema}
+\newtheorem{prop}[thm]{Proposición}
+\newtheorem*{cor}{Corolario}
+\theoremstyle{definition}
+\newtheorem{defn}{Definición}[section]
+\newtheorem{exmp}{Ejemplo}[section]
+\theoremstyle{remark}
+\newtheorem*{rem}{Observación}
+\newtheorem*{note}{Nota}
+\newtheorem{case}{Caso}
+
+\usepackage{graphicx}
+\DeclareGraphicsRule{*}{mps}{*}{}
+
+\usepackage{listings}
+\usepackage{listingsutf8}
+\lstset{xleftmargin=.15in,basicstyle=\footnotesize\ttfamily,escapeinside={@<}{>@}}
+
+\usepackage{algorithmic}
+\usepackage[chapter]{algorithm}
+\floatname{algorithm}{Algoritmo}
+\renewcommand{\algorithmicrequire}{\textbf{Entrada:}} 
+\renewcommand{\algorithmicensure}{\textbf{Salida:}} 
+\renewcommand{\algorithmicend}{\textbf{fin}} 
+\renewcommand{\algorithmicif}{\textbf{si}} 
+\renewcommand{\algorithmicthen}{\textbf{entonces}} 
+\renewcommand{\algorithmicelse}{\textbf{de lo contrario}} 
+\renewcommand{\algorithmicelsif}{\algorithmicelse\ y \algorithmicif} 
+\renewcommand{\algorithmicendif}{\algorithmicend\ \algorithmicif} 
+\renewcommand{\algorithmicfor}{\textbf{para}} 
+\renewcommand{\algorithmicforall}{\textbf{para todo}} 
+\renewcommand{\algorithmicdo}{\textbf{hacer}} 
+\renewcommand{\algorithmicendfor}{\algorithmicend\ \algorithmicfor} 
+\renewcommand{\algorithmicwhile}{\textbf{mientras}} 
+\renewcommand{\algorithmicendwhile}{\algorithmicend\ \algorithmicwhile} 
+\renewcommand{\algorithmicloop}{\textbf{repetir}} 
+\renewcommand{\algorithmicendloop}{\algorithmicend\ \algorithmicloop} 
+\renewcommand{\algorithmicrepeat}{\textbf{repetir}} 
+\renewcommand{\algorithmicuntil}{\textbf{hasta}} 
+\renewcommand{\algorithmicprint}{\textbf{imprimir}} 
+\renewcommand{\algorithmicreturn}{\textbf{regresar}} 
+\renewcommand{\algorithmictrue}{\textbf{verdadero}} 
+\renewcommand{\algorithmicfalse}{\textbf{falso}} 
+\renewcommand{\algorithmiccomment}[1]{$\quad\vartriangleright$ #1}
+\renewcommand{\algorithmicto}{\textbf{hasta}}
+
+% Color
+\usepackage{xcolor}
+\makeatletter
+\def\mathcolor#1#{\@mathcolor{#1}}
+\def\@mathcolor#1#2#3{%
+  \protect\leavevmode
+  \begingroup
+    \color#1{#2}#3%
+  \endgroup
+}
+\makeatother
+
+% Pictures
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows, shadows}
+
+% Lists
+\usepackage{enumerate}
+
+% Unicode lambda
+\usepackage{newunicodechar}
+\newunicodechar{λ}{\lambda}
+\newunicodechar{Λ}{\Lambda}
+\newunicodechar{α}{\alpha}
+\newunicodechar{β}{\beta}
+\newunicodechar{δ}{\delta}
+\newunicodechar{Δ}{\Delta}
+\newunicodechar{Γ}{\Gamma}
+\newunicodechar{ω}{\omega}
+\newunicodechar{Ω}{\Omega}
+\newunicodechar{ρ}{\rho}
+\newunicodechar{σ}{\sigma}
+\newunicodechar{Σ}{\Sigma}
+\newunicodechar{τ}{\tau}
+\newunicodechar{ν}{\nu}
+\newunicodechar{μ}{\mu}
+\newunicodechar{ξ}{\xi}
+\newunicodechar{Ξ}{\Xi}
+\newunicodechar{ζ}{\zeta}
+\newunicodechar{η}{\eta}
+\newunicodechar{φ}{\phi}
+\newunicodechar{Φ}{\Phi}
+\newunicodechar{π}{\pi}
+\newunicodechar{Π}{\Pi}
+\newunicodechar{θ}{\theta}
+\newunicodechar{Θ}{\Theta}
+
+% λ-calculus commands
+\newcommand{\subst}[3]{#1 \left[ #2 \operatorname{:=} #3 \right]}
+\newcommand{\synteq}{\ \equiv\ }
+\newcommand{\contract}[1]{\ \operatorname{\rightarrow_{#1}}\ }
+\newcommand{\specialcontract}[2]{\ \operatorname{\overset{#2}{\rightarrow_{#1}}}\ }
+\newcommand{\xcontract}[2]{\ \operatorname{\overset{#2}{\rightarrow_{#1}}}}
+\newcommand{\reduce}[1]{\ \operatorname{\twoheadrightarrow_{#1}}\ }
+\newcommand{\xreduce}[2]{\ \operatorname{\overset{#2}{\twoheadrightarrow_{#1}}}}
+\newcommand{\convertible}[1]{\ \operatorname{=_{#1}}\ }
+\DeclareMathOperator{\Sub}{Sub}
+\DeclareMathOperator{\FV}{FV}
+\newcommand*\cn[1]{\widehat{#1}}
+
+\usepackage[activate={true,nocompatibility},
+    final,
+    tracking=true,
+    kerning=true,
+    spacing=true,
+    factor=1100,
+    stretch=10,
+    shrink=10]{microtype}
+
+\usepackage{pdfpages}
+
+% Links in PDF
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    pdftitle={El cálculo lambda y los fundamentos de la computación},
+    pdfauthor={Eduardo Acuña Yeomans}
+    bookmarks=true,
+}
+
+
+\begin{document}
+
+\title{El cálculo \( \bs{λ} \) y los fundamentos de la computación}
+\author{Eduardo Acuña Yeomans}
+\date{2016}
+
+\maketitle
+
+\frontmatter
+\tableofcontents
+
+\mainmatter
+
+\chapter*{Introducción}
+\addcontentsline{toc}{chapter}{Introducción}
+\label{ch:introduccion}
+\input{introduccion}
+
+\chapter{\texorpdfstring{Noción informal del cálculo \( \bs{λ} \)}{Noción informal del cálculo lambda}}
+\label{ch:nocion-informal}
+\input{capitulo-1}
+
+\chapter{\texorpdfstring{Formalización del cálculo \( \bs{λ} \)}{Formalización del cálculo lambda}}
+\label{ch:formalizacion}
+\input{capitulo-2}
+
+\chapter{Codificación de objetos}
+\label{ch:codificacion}
+\input{capitulo-3}
+
+\chapter*{Conclusión}
+\addcontentsline{toc}{chapter}{Conclusión}
+\label{ch:conclusion}
+\input{conclusion}
+
+\appendix
+
+\chapter{Programación de codificaciones}
+\label{ap:lambda-scheme}
+\input{apendice-1}
+
+% \chapter{\texorpdfstring{Intérprete del cálculo \( \bs{λ} \)}{Intérprete del cálculo lambda}}
+% \label{ap:texlambda}
+% \input{apendice-2}
+
+% \chapter{Intérprete Lambda}
+% \label{ap:lambda}
+% \input{apendice-pl}
+
+\chapter{Intérprete Lambda}
+\label{ap:lambda}
+\input{apendice-pl2}
+\includepdf[pages=-,pagecommand={\thispagestyle{empty}},width=\textwidth,fitpaper=true]{lambda.pdf}
+
+\nocite{*}
+\bibliographystyle{acm}
+\bibliography{biblio}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

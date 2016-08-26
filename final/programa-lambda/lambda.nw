@@ -1,0 +1,2678 @@
+% -*- mode: latex; mmm-noweb-code-mode: scheme-mode; coding: utf-8 -*-
+
+% Configuración general del documento
+\documentclass[10pt,oneside,openany,letterpaper]{book}
+
+% Codificación e idioma
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-minimal]{babel}
+\decimalpoint
+\usepackage[T1]{fontenc}
+
+% Notas en márgenes
+% \usepackage{geometry}
+\usepackage[lmargin=.8 in, rmargin=.8 in, tmargin=1 in, bmargin=1 in]{geometry}
+
+% Programación literaria
+\usepackage{noweb}
+\noweboptions{smallcode,spanish,breakcode,longchunks,longxref,webnumbering,shift}
+
+% Matemáticas
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+% Cuadros
+% \usepackage{longtable}
+
+% Cabeceras
+\usepackage{fncychap}
+\ChNameUpperCase
+\ChTitleUpperCase
+\ChNameVar{\centering\large}
+\ChNumVar{\centering\large}
+\ChTitleVar{\centering\bfseries\Large}
+
+% Para estilo de primer letra de capítulos
+\usepackage{lettrine}
+
+% Índice general
+\usepackage[titles]{tocloft}
+
+% Figuras
+\usepackage{wrapfig}
+
+% Espaciado entre lineas
+% \usepackage[onehalfspacing]{setspace}
+
+% Configuración de estilo en listas
+\usepackage{enumitem}
+
+% Mejora el typesetting para estrechos
+% \usepackage{microtype}
+\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=1100,stretch=10,shrink=10]{microtype}
+
+% Tipo de letra principal
+\usepackage{kpfonts}
+
+% Tipo de letra algoritmos y programas
+\usepackage[varqu,varl,scaled=.95]{inconsolata}
+
+% Gráficos
+\usepackage{graphicx}
+\DeclareGraphicsRule{*}{mps}{*}{}
+
+% Centrado de cuerpo considerando márgenes
+\usepackage{tocenter}
+\ToCenter{30pc}{50.5pc}
+
+% Estilo de secciones
+\usepackage{titlesec}
+\titleformat{\section}[hang]{\Large\scshape}{\thesection.}{1em}{}
+
+% Referencias en pdf
+\usepackage[hyperfootnotes=false,hidelinks]{hyperref}
+\hypersetup{
+  bookmarksnumbered=true,
+  pdfauthor=Eduardo Acuña Yeomans,
+  pdftitle=Lambda - Un sistema computacional basado en el cálculo lambda,
+  pdfcreator=Eduardo Acuña Yeomans,
+  pdfsubject={Computación, Matemáticas}
+}
+
+% Letras griegas para matemáticas
+\usepackage{newunicodechar}
+\newunicodechar{λ}{\lambda}
+\newunicodechar{Λ}{\Lambda}
+\newunicodechar{α}{\alpha}
+\newunicodechar{β}{\beta}
+\newunicodechar{δ}{\delta}
+\newunicodechar{Δ}{\Delta}
+\newunicodechar{Γ}{\Gamma}
+\newunicodechar{ω}{\omega}
+\newunicodechar{Ω}{\Omega}
+\newunicodechar{ρ}{\rho}
+\newunicodechar{σ}{\sigma}
+\newunicodechar{Σ}{\Sigma}
+\newunicodechar{τ}{\tau}
+\newunicodechar{ν}{\nu}
+\newunicodechar{μ}{\mu}
+\newunicodechar{ξ}{\xi}
+\newunicodechar{Ξ}{\Xi}
+\newunicodechar{ζ}{\zeta}
+\newunicodechar{η}{\eta}
+\newunicodechar{φ}{\phi}
+\newunicodechar{Φ}{\Phi}
+\newunicodechar{π}{\pi}
+\newunicodechar{Π}{\Pi}
+\newunicodechar{θ}{\theta}
+\newunicodechar{Θ}{\Theta}
+
+% Información del documento
+\newcommand{\titulo}{[[Lambda]]}
+\newcommand{\subtitulo}{Un sistema computacional basado en el cálculo \( \lambda \)}
+\newcommand{\autor}{Eduardo Acuña Yeomans}
+\newcommand{\lugar}{Hermosillo, Sonora}
+\newcommand{\institucion}{Universidad de Sonora}
+\newcommand{\programa}{Licenciatura en Ciencias de la Computación}
+\newcommand{\departamento}{Departamento de Matemáticas}
+\newcommand{\division}{División de Ciencias Exactas y Naturales}
+\newcommand{\fecha}{2016}
+
+% Parámetros de espaciado
+\newlength{\titlepagetop}
+\setlength{\titlepagetop}{50pt}
+\newlength{\titlepageby}
+\setlength{\titlepageby}{15pt}
+\newlength{\titlepagemiddle}
+\setlength{\titlepagemiddle}{220pt}
+
+% Estilo capítulo
+\renewcommand{\thechapter}{\Roman{chapter}}
+\renewcommand{\thesection}{\Roman{section}}
+\renewcommand{\thesubsection}{\Roman{section}.\Roman{subsection}.}
+
+\begin{document}
+
+\pagestyle{myheadings}
+
+\frontmatter
+
+% Página de título
+\thispagestyle{empty}
+
+\begin{center}
+  \vspace*{\titlepagetop}
+  \Huge{\textbf{\titulo}}\\
+  \large{\subtitulo}\\
+  \vspace*{\titlepageby}
+  \normalsize{por}\\
+  \vspace*{\titlepageby}
+  \large{\autor}\\
+  \vspace*{\titlepagemiddle}
+  \institucion \\
+  \small{\programa}\\
+  \small{\departamento}\\
+  \small{\division}\\
+  \bigskip
+  \small{\textit{\lugar}}\\
+  \normalfont{\fecha}\\
+\end{center}
+
+
+% Índice general
+\setlength{\cftbeforechapskip}{.25em}
+\setlength{\cftchapnumwidth}{3.5em}
+\renewcommand{\cftchapdotsep}{\cftdotsep}
+\renewcommand{\cftchappresnum}{\hfill}
+\renewcommand{\cftchapaftersnum}{.\hspace*{0.5em}}
+
+\clearpage\phantomsection%
+\markboth{\normalsize\hfill\textit{\titulo}\hfill}{\normalsize\hfill\textit{Índice general}\hfill}
+% \addcontentsline{toc}{chapter}{Índice general}
+\tableofcontents
+
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Introducción}
+\chapter*{Introducción}
+\markboth{
+  \normalsize\hfill\textit{\titulo}\hfill
+}{
+  \normalsize\hfill\textit{Introducción}\hfill
+}
+
+\noindent \lettrine{E}{l} cálculo \( λ \) es estudiado usualmente desde un punto de vista matemático, ya sea formulado como una teoría ecuacional o como un sistema de reducción, esto implica que antes de poder trabajar con el cálculo, es necesario entender su formalización.
+
+Una alternativa a esta manera de estudiar el cálculo \( λ \) es escribiendo un programa de computadora con el que se pueda trabajar de manera interactiva. Leyendo el código presente es posible entender de manera precisa los objetos matemáticos y procedimientos computacionales asociados al cálculo, de tal manera que extensiones y modificaciones sean fáciles de incorporar.
+
+Para poder materializar este método de aprendizaje del cálculo \( λ \) se identifican tres etapas: primero está la implementación de las estructuras y algoritmos que permiten construír al cálculo \( λKβ \); después está la implementación de una interfaz con la que se puede explorar y extender el programa base; finalmente está la implementación de las extensiones del programa base.
+
+El código de este trabajo está escrito en el lenguaje de programación [[Racket]], un dialecto de [[Lisp]] similar a [[Scheme]]. Traducir este programa a otros lenguajes de programación puede ser un buen ejercicio para comprender mejor la idea central del código.
+
+
+\mainmatter
+
+% I. Piezas fundamentales
+\chapter{Piezas fundamentales}
+\markboth{
+  \normalsize\hfill\textit{\titulo}\hfill
+}{
+  \normalsize\hfill\textit{\thechapter.\ \ Piezas fundamentales}\hfill
+}
+\label{ap2:piezas-fundamentales}
+
+\section{Objetos elementales}
+
+\noindent \lettrine{E}{xisten} diversas clases de objetos que pueden existir en el mundo del cálculo \( λ \), estas clases de objetos representan ideas abstractas asociadas a cadenas de un lenguaje formal denotado \( Λ \). Este lenguaje formal determina qué secuencias de símbolos son válidas expresar dentro del cálculo.
+
+\paragraph{Definición de expresión} Las clases de objetos cuya representación simbólica son parte de \( Λ \) son llamados \emph{términos}, en este programa se implementan los tres tipos de términos más básicos del cálculo \( λ \): las \emph{variables}, las \emph{abstracciones} y las \emph{aplicaciones}. Las clases de objetos del sistema [[Lambda]] tienen como representación simbólica elementos del lenguaje formal \( Ω \) llamados \emph{expresiones}, los elementos de \( Ω \) incluyen a todos los términos y a representaciones de otros dos tipos de objetos: los \emph{huecos} y las \emph{metainstrucciones}. El predicado [[expresión?]] determina si un objeto tiene representación simbólica en \( Ω \).
+
+<<Definición de expresión>>=
+(define/contract (expresión? x)
+  (any/c . -> . boolean?)
+  (or (variable? x) (abstracción? x) (aplicación? x)
+      (hueco? x) (metainstrucción? x)))
+@ %def expresión?
+
+
+\paragraph{Definición de variable} Las variables son una clase de objetos sencilla, se conforman de un \emph{nombre} el cuál es usado para referirnos a ellas, por ejemplo, [[Eduardo]] es un nombre que puede referirse a una variable y usualmente diremos que [[Eduardo]] \emph{es} la variable. Las variables son implementadas como una estructura compuesta de una cadena de caracteres. Utilizo el comando [[define-struct/contract]] para definir una estructura cuyo constructor verifica que el valor del campo [[nombre]] satisface el predicado [[string?]].
+
+<<Definición de variable>>=
+(define-struct/contract variable
+  ([nombre string?])
+  #:transparent
+  #:mutable)
+@ %def variable
+
+Al programar las variables de esta manera [[Racket]] define varios procedimientos: [[variable]] es un constructor que recibe una cadena de caracteres y regresa un objeto de este tipo; [[variable?]] es un predicado que recibe un valor y determina si es un valor de tipo [[variable]]; [[variable-nombre]] es un selector que dado un valor de tipo [[variable]] regresa la cadena de caracteres del campo [[nombre]]. La palabra clave [[#:transparent]] permite imprimir un valor de tipo [[variable]] de manera legible en el entorno interactivo de [[Racket]], mientras que la palabra clave [[#:mutable]] hace que los campos muedan ser modificados, en este caso con el procedimiento [[set-variable-nombre!]].
+
+Para verificar que esta implementación tiene la funcionalidad esperada se define el caso de prueba ``[[Implementación de variables]]''.
+
+<<Casos de prueba>>=
+(test-case "Implementación de variables"  
+  (check-true (variable? (variable "x")))
+  (check-false (variable? 42))
+  (check-exn exn:fail:contract? (lambda () (variable 42)))
+  (check-equal? (variable-nombre (variable "x")) "x"))
+@ 
+
+La definición de los casos de prueba se realiza utilizando los procedimientos de la biblioteca [[rackunit]], la cual es invocada con el comando [[require]].
+
+<<Dependencias de casos de prueba>>=
+(require rackunit)
+@ 
+
+\paragraph{Definición de abstracción} Las abstracciones son clases de objetos compuestos que representan el concepto de \emph{función}, se conforman de un \emph{argumento} y un \emph{cuerpo}, el argumento es una variable y el cuerpo es una expresión. El constructor de abstracciones verifica que las partes de la abstracción son del tipo adecuado por medio de los predicados [[variable?]] y [[expresión?]].
+
+<<Definición de abstracción>>=
+(define-struct/contract abstracción
+  ([argumento variable?] [cuerpo expresión?])
+  #:transparent
+  #:mutable)
+@ %def abstracción
+
+Se verifica el correcto funcionamiento de la implementación de las abstracciones con el caso de prueba ``[[Implementación de abstracciones]]''.
+
+<<Casos de prueba>>=
+(test-case "Implementación de abstracciones"  
+  (check-true (abstracción? (abstracción (variable "x") (variable "y"))))
+  (check-false (abstracción? (variable "x")))
+  (check-exn exn:fail:contract? (lambda () (abstracción "x" "y")))
+  (check-equal? (abstracción-argumento (abstracción (variable "x") (variable "y")))
+                (variable "x"))
+  (check-equal? (abstracción-cuerpo (abstracción (variable "x") (variable "y")))
+                (variable "y")))
+@ 
+
+\paragraph{Definición de aplicación} Al igual que las abstracciones, las aplicaciones también son clases de objetos compuestos, sin embargo estos se conforman de dos expresiones cualesquiera llamadas \emph{operador} y \emph{operando}. El constructor de aplicaciones verifica que las partes de la aplicación son del tipo adecuado utilizando el predicado [[expresión?]].
+
+<<Definición de aplicación>>=
+(define-struct/contract aplicación
+  ([operador expresión?] [operando expresión?])
+  #:transparent
+  #:mutable)
+@ %def aplicación
+
+Se verifica que la implementación es correcta con el caso de prueba ``[[Implementación de aplicaciones]]''.
+
+<<Casos de prueba>>=
+(test-case "Implementación de aplicaciones"  
+  (check-true (aplicación? (aplicación (variable "x") (variable "y"))))
+  (check-false (aplicación? (abstracción (variable "x") (variable "y"))))
+  (check-exn exn:fail:contract? (lambda () (aplicación "x" "y")))
+  (check-equal? (aplicación-operador (aplicación (variable "x") (variable "y")))
+                (variable "x"))
+  (check-equal? (aplicación-operando (aplicación (variable "x") (variable "y")))
+                (variable "y")))
+@ 
+
+\paragraph{Definición de hueco} Los huecos son una clase de objetos que representan información faltante. Las expresiones que contienen huecos son útiles únicamente para describir expresiones incompletas o expresiones cuya información faltante será descrita posteriormente. La implementación de los huecos consiste en una estructura sin campos.
+
+<<Definición de hueco>>=
+(define-struct/contract hueco
+  ()
+  #:transparent)
+@ %def hueco
+
+La verificación de que esta implementación es correcta se realiza con el caso de prueba ``[[Implementación de huecos]]'' y es más sencilla que en las anteriores clases de objetos.
+
+<<Casos de prueba>>=
+(test-case "Implementación de huecos"
+  (check-true (hueco? (hueco)))
+  (check-false (hueco? 42)))
+@ 
+
+\paragraph{Definición de metainstrucción} La última clase de objetos de las expresiones de [[Lambda]] es las metainstrucciones, estas representan operaciones que manipulan otras expresiones y pueden generar como resultado objetos que no cumplen con el predicado [[expresión?]]. La implementación de las metainstrucciones se divide en dos partes: primero la implementación de las expresiones que denotan una invocación de una metainstrucción y posteriormente la definición de una metainstrucción como procedimiento de [[Racket]] que se encarga de realizar un cómputo.
+
+La invocación de metainstrucciones se conforma de un \emph{nombre} y de una lista de expresiones llamada \emph{argumentos}. El constructor de invocaciones de metainstrucciones verifica que sus campos son del tipo adecuado utilizando el predicado [[string?]] y [[(*list/c expresión?)]].
+
+<<Definición de metainstrucción>>=
+(define-struct/contract metainstrucción
+  ([nombre string?] [argumentos (*list/c expresión?)])
+  #:transparent
+  #:mutable)
+@ %def metainstrucción
+
+El caso de prueba ``[[Implementación de metainstrucciones]]'' verifica que esta implementación funciona correctamente.
+
+<<Casos de prueba>>=
+(test-case "Implementación de metainstrucciones"  
+  (check-true (metainstrucción? (metainstrucción "f" (list (variable "x")))))
+  (check-false (metainstrucción? (aplicación (variable "x") (variable "y"))))
+  (check-exn exn:fail:contract?
+             (lambda () (metainstrucción (variable "f") (variable "x"))))
+  (check-equal? (metainstrucción-nombre
+                 (metainstrucción "f" (list (variable "x")))) "f")
+  (check-equal? (metainstrucción-argumentos
+                 (metainstrucción "f" (list (variable "x"))))
+                (list (variable "x"))))
+@ 
+
+La definición de metainstrucciones consiste en la definición de un procedimiento de [[Racket]] y la asociación del nombre de la metainstrucción a este procedimiento en la tabla hash llamada [[metainstrucciones]]. Esta funcionalidad se implementa con el macro [[define-metainstrucción]] y en la sección \ref{ap2:extensiones} se muestra la implementación de varias metainstrucciones.
+
+<<Definición de metainstrucción>>=
+(define metainstrucciones (make-hash))
+
+(define-syntax define-metainstrucción
+  (syntax-rules ()
+    [(define-metainstrucción (nombre . argumentos)
+       cómputo cómputos ...)
+     (begin
+      (define (nombre . argumentos)
+        cómputo cómputos ...)
+      (hash-set! metainstrucciones
+                 (symbol->string 'nombre)
+                 nombre))]))
+@ %def define-metainstrucción metainstrucciones
+
+Para verificar que el macro [[define-metainstrucción]] tiene la funcionalidad esperada se define el caso de prueba ``[[Definición de metainstrucciones]]''.
+
+<<Casos de prueba>>=
+(test-case "Definición de metainstrucciones"
+  (check-equal? (syntax->datum (expand-only #'(define-metainstrucción (f x)
+                                                (if (variable? x) 1 0))
+                                            (list #'define-metainstrucción)))
+                '(begin
+                  (define (f x) (if (variable? x) 1 0))
+                  (hash-set! metainstrucciones (symbol->string 'f) f))))
+@ 
+
+Para poder expander el macro en el caso de prueba es necesario hacer uso de la biblioteca [[macro-debugger/expand]].
+
+<<Dependencias de casos de prueba>>=
+(require macro-debugger/expand)
+@ 
+
+\paragraph{Definición de término} Teniendo implementadas las estructuras con representación simbólica en \( Ω \) es conveniente definir un procedimiento para determinar si una expresión es un término. El predicado [[término?]] inspecciona una expresión para verificar que se conforma únicamente de variables, abstracciones o aplicaciones.
+
+<<Definición de término>>=
+(define (término? x)
+  (cond [(variable? x)    true]
+        [(abstracción? x) (término? (abstracción-cuerpo x))]
+        [(aplicación? x)  (and (término? (aplicación-operador x))
+                               (término? (aplicación-operando x)))]
+        [else             false]))
+@ %def término?
+
+El caso de prueba ``[[Predicado para términos]]'' se encarga de verificar que la funcionalidad de este procedimiento es correcta.
+
+<<Casos de prueba>>=
+(test-case "Predicado para términos"
+  (check-true
+   (término? (abstracción (variable "x")
+                          (aplicación (variable "x") (variable "x")))))
+  (check-false
+   (término? (abstracción (variable "x") (aplicación (variable "x") (hueco))))))
+@ 
+
+\paragraph{Comparación de expresiones} El uso del mecanismo [[define-struct]] de [[Racket]] tiene la ventaja de que la verificación de que dos expresiones son del mismo tipo y tienen las mismas subexpresiones se puede realizar con el procedimiento genérico [[equal?]] y al igual que todos los objetos de cualquier tipo, la comparación [[eq?]] puede ser utilizada para determinar si dos objetos de cualquier tipo son el mismo objeto en memoria. Sin embargo, es útil implementar otros procedimientos que comparen aspectos particulares de dos expresiones, por ejemplo, si dos metainstrucciones tienen la misma cantidad de argumentos, si dos abstracciones tienen el mismo cuerpo, etc.
+
+Se definen los predicados [[expresión=?]] y [[término=?]] como procedimientos que además de utilizar [[equal?]] verifican el tipo de valores que reciben.
+
+<<Comparación de expresiones>>=
+(define/contract (expresión=? e1 e2)
+  (expresión? expresión? . -> . boolean?)
+  (equal? e1 e2))
+
+(define/contract (término=? t1 t2)
+  (término? término? . -> . boolean?)
+  (equal? t1 t2))
+@ %def expresión=? término=?
+
+
+\paragraph{Comparación de variables} Dos variables con el mismo nombre son consideradas diferentes ya que la importancia de la variable radica en cómo es utilizada. Es por ello que es conveniente referirnos a todas las variables con el mismo nombre como ``átomo'' (ya que son objetos sin estructura, es decir, no se puede separar en partes). Los predicados [[variable=?]] y [[átomo=?]] permiten comparar dos variables de acuerdo a estos criterios.
+
+<<Comparación de variables>>=
+(define/contract (variable=? v1 v2)
+  (variable? variable? . -> . boolean?)
+  (eq? v1 v2))
+
+(define/contract (átomo=? v1 v2)
+  (variable? variable? . -> . boolean?)
+  (equal? v1 v2))
+@ %def variable=? átomo=?
+
+Para verificar el correcto funcionamiento de estos predicados se define el caso de prueba ``[[Predicados de variables]]''.
+
+<<Casos de prueba>>=
+(test-case "Predicados de variables"
+  (let ([v (variable "x")])
+    (check-true (variable=? v v)))
+  (check-false (variable=? (variable "x") (variable "x")))
+  (check-true (átomo=? (variable "x") (variable "x")))
+  (check-false (átomo=? (variable "x") (variable "y"))))
+@ 
+
+\paragraph{Comparación de abstracciones} En el caso de las abstracciones consideramos dos comparaciones: entre argumentos y entre cuerpos.
+
+<<Comparación de abstracciones>>=
+(define/contract (argumento=? a1 a2)
+  (abstracción? abstracción? . -> . boolean?)
+  (átomo=? (abstracción-argumento a1)
+           (abstracción-argumento a2)))
+
+(define/contract (cuerpo=? a1 a2)
+  (abstracción? abstracción? . -> . boolean?)
+  (expresión=? (abstracción-cuerpo a1)
+               (abstracción-cuerpo a2)))
+@ %def argumento=? cuerpo=?
+
+Para verificar el correcto funcionamiento de estos predicados se define el caso de prueba ``[[Predicados de abstracciones]]''.
+
+<<Casos de prueba>>=
+(test-case "Predicados de abstracciones"
+  (check-true (argumento=? (abstracción (variable "x") (variable "y"))
+                           (abstracción (variable "x") (variable "z"))))
+  (check-false (argumento=? (abstracción (variable "y") (variable "x"))
+                            (abstracción (variable "z") (variable "x"))))
+  (check-true (cuerpo=? (abstracción (variable "y") (variable "x"))
+                        (abstracción (variable "z") (variable "x"))))
+  (check-false (cuerpo=? (abstracción (variable "x") (variable "y"))
+                         (abstracción (variable "x") (variable "z")))))
+@ 
+
+\paragraph{Comparación de aplicaciones} De manera similar a las abstracciones, se implementan predicados para verificar si dos aplicaciones comparten operador u operando.
+
+<<Comparación de aplicaciones>>=
+(define/contract (operador=? a1 a2)
+  (aplicación? aplicación? . -> . boolean?)
+  (expresión=? (aplicación-operador a1)
+               (aplicación-operador a2)))
+
+(define/contract (operando=? a1 a2)
+  (aplicación? aplicación? . -> . boolean?)
+  (expresión=? (aplicación-operando a1)
+               (aplicación-operando a2)))
+@ %def operador=? operando=?
+
+El caso de prueba ``[[Predicados de aplicaciones]]'' verifica que estos dos predicados sean correctos.
+
+<<Casos de prueba>>=
+(test-case "Predicados de aplicaciones"
+  (check-true (operador=? (aplicación (variable "x") (variable "y"))
+                          (aplicación (variable "x") (variable "z"))))
+  (check-false (operador=? (aplicación (variable "y") (variable "x"))
+                           (aplicación (variable "z") (variable "x"))))
+  (check-true (operando=? (aplicación (variable "y") (variable "x"))
+                          (aplicación (variable "z") (variable "x"))))
+  (check-false (operando=? (aplicación (variable "x") (variable "y"))
+                           (aplicación (variable "x") (variable "z")))))
+@ 
+
+\paragraph{Comparación de metainstrucciones} Para las metainstrucciones se implementan tres predicados de comparación: comparación de nombres, comparación de cantidad de argumentos y comparación de argumentos.
+
+<<Comparación de metainstrucciones>>=
+(define/contract (nombre=? m1 m2)
+  (metainstrucción? metainstrucción? . -> . boolean?)
+  (string=? (metainstrucción-nombre m1)
+            (metainstrucción-nombre m2)))
+
+(define/contract (cantidad-argumentos=? m1 m2)
+  (metainstrucción? metainstrucción? . -> . boolean?)
+  (= (length (metainstrucción-argumentos m1))
+     (length (metainstrucción-argumentos m2))))
+
+(define/contract (argumentos=? m1 m2)
+  (metainstrucción? metainstrucción? . -> . boolean?)
+  (equal? (metainstrucción-argumentos m1)
+          (metainstrucción-argumentos m2)))
+@ %def nombre=? cantidad-argumentos=? argumentos=?
+
+El caso de prueba ``[[Predicados de metainstrucciones]]'' verifica que la implementación es correcta.
+
+<<Casos de prueba>>=
+(test-case "Predicados de metainstrucciones"
+  (check-true (nombre=? (metainstrucción "f" null)
+                        (metainstrucción "f" (list (variable "x")))))
+  (check-false (nombre=? (metainstrucción "f" (list (variable "x")))
+                         (metainstrucción "g" null)))
+  (check-true (cantidad-argumentos=? (metainstrucción "f" (list (variable "x")))
+                                     (metainstrucción "g" (list (hueco)))))
+  (check-false (cantidad-argumentos=? (metainstrucción "f" (list (variable "x")))
+                                      (metainstrucción "f" null)))
+  (check-true (argumentos=? (metainstrucción "f" (list (variable "x")
+                                                       (variable "y")))
+                            (metainstrucción "g" (list (variable "x")
+                                                       (variable "y")))))
+  (check-false (argumentos=? (metainstrucción "f" (list (variable "x")))
+                             (metainstrucción "f" (list (variable "x")
+                                                        (variable "y"))))))
+@ 
+
+
+\paragraph{Estructuras de las expresiones} Los fragmentos de código presentados anteriormente conforman la implementación de las clases de objetos con representación simbólica en \( Ω \), es decir, la implementación de las expresiones del sistema [[Lambda]]. El orden de los fragmentos de código es de la siguiente manera:
+
+<<Estructuras de las expresiones>>=
+<<Definición de expresión>>
+<<Definición de término>>
+<<Comparación de expresiones>>
+<<Definición de variable>>
+<<Comparación de variables>>
+<<Definición de abstracción>>
+<<Comparación de abstracciones>>
+<<Definición de aplicación>>
+<<Comparación de aplicaciones>>
+<<Definición de hueco>>
+<<Definición de metainstrucción>>
+<<Comparación de metainstrucciones>>
+@ 
+
+\section{Lenguaje de expresiones}
+
+\paragraph{De \( Ω \) a expresiones y viceversa} Tener implementadas las estructuras de las expresiones es lo único necesario para poder escribir algoritmos que analicen y manipulen expresiones en el sistema [[Lambda]], sin embargo es inconveniente definir expresiones en particular y leer expresiones que sean resultado de algún algoritmo.
+
+Como se menciona al inicio de esta sección las estructuras implementadas son representaciones computacionales de elementos del lenguaje formal \( Ω \), estos elementos son cadenas de símbolos los cuáles son más amenos de escribir y leer que utilizando los constructores y representaciones textuales de las estructuras programadas en [[Racket]].
+
+La representación simbólica de una variable con nombre ``[[x]]'' es \( x \), en el caso de una abstracción de la forma [[(abstracción x M)]] su representación simbólica es la cadena \( (λx.M) \) donde \( x \) y \( M \) son las representaciones simbólicas de [[x]] y [[M]], de manera similar, una aplicación de la forma [[(aplicación M N)]] tiene como representación simbólica \( (M\, N) \). Estas notaciones son estándar en el estudio formal del cálculo \( λ \).
+
+En el caso de los huecos y las metainstrucciones, tomaremos una notación simbólica inventada, para un hueco será \( [\quad ] \) y para una metainstrucción de la forma [[(metainstrucción f (list M1 ... Mn))]] será \( f[M_{1},\, ...,\, M_{n}] \).
+
+Se define el lenguaje libre de contexto \( Ω \) de manera informal de la siguiente manera. Sea \( D = \left\{ `\, (\, ',\ `\, )\, ',\ `\, [\, ',\ `\, ]\, ',\ `\, .\, ',\ `\, ,\, ',\ `\, \lambda\, ',\ `\, \, \, \, ' \right\} \) un conjunto de símbolos delimitadores donde \( `\, \, \, \, ' \) es el símbolo de espacio en blanco y sea \( N \) el conjunto de nombres compuestos de uno o más símbolos \( a \not\in D \)
+\begin{align*}
+  x &\in Ω &\text{Si } x \in N \\
+  (λx.P) &\in Ω &\text{Si } x \in N \text{ y } P \in Ω \\
+  (P\, Q) &\in Ω &\text{Si } P,\ Q \in Ω \\
+  [\quad ] &\in Ω \\
+  x[P_{1},\, P_{2},\, ...,\, P_{n}] &\in Ω &\text{Si } x \in N \text{ y } P_{i} \in Ω
+\end{align*}
+
+Conociendo la sintaxis de los elementos de \( Ω \) podemos comparar representaciones diferentes de una misma expresión, por ejemplo, un término muy famoso es el \emph{combinador Y}, simbólicamente es escrito:
+\[ (λf.((λx.(f\, (x\, x)))\, (λx.(f\, (x\, x))))) \]
+mientras que su representación con las estructuras que se implementaron es:
+
+<<El combinador \( Y \)>>=
+(abstracción (variable "f")
+             (aplicación (abstracción (variable "x")
+                                      (aplicación (variable "f")
+                                                  (aplicación (variable "x")
+                                                              (variable "x"))))
+                         (abstracción (variable "x")
+                                      (aplicación (variable "f")
+                                                  (aplicación (variable "x")
+                                                              (variable "x"))))))
+@ 
+
+También se contemplan abusos de notación a la representación simbólica, las cuales son:
+\begin{align*}
+  (λx_{1}.(λx_{2}.(...(λx_{n}.P)...))) &\rightarrowtail λx_{1}\, x_{2}\, ...\, x_{n}.P\\
+  ((...(P_{1}\, P_{2})...)\, P_{n}) &\rightarrowtail P_{1}\, P_{2}\, ...\, P_{n}
+\end{align*}
+
+Esto nos permite escribir al combinador \( Y \), de manera más breve como
+\[ λf.(λx.f(x\, x))λx.f(x\, x) \]
+
+\paragraph{Sintaxis del lenguaje} Para definir de manera rigurosa las cadenas de símbolos que son elementos de \( Ω \) y el abuso de notación se implementa un \emph{analizador sintáctico} (o \emph{parser}) y un \emph{sintetizador sintáctico} (o \emph{escritor}).
+
+La tarea del parser consiste en transformar una cadena de símbolos en su estructrura correspondiente, en esta implementación los símbolos son caracteres leídos de un puerto de entrada el cuál puede extraer la información de un archivo en disco o de una cadena de caracteres. Ya que no todos los lenguajes de programación tienen la capacidad de manejar letras griegas como `\( \lambda \)' se considera el caracter `[[\]]' como un reemplazo de la letra lambda. Si se dispone de una codificación de caracteres extendida como [[Unicode]], entonces el caracter lambda (con código 955) puede ser utilizado también.
+
+La tarea del escritor consiste en transformar una estructura a su cadena de símbolos correspondiente, ya que la cadena de símbolos puede o no usar el abuso de notación, se implementan dos algoritmos de escritura: uno formal y otro breve.
+
+Una consideración del lenguaje de [[Lambda]] que no es explícitamente mencionada en la definición de arriba es que el símbolo `[[;]]' es utilizado para separar expresiones.
+
+La implementación de la sintaxis del lenguaje tiene la siguiente forma:
+
+<<Sintaxis del lenguaje>>=
+<<Configuración de la sintaxis>>
+<<Parseo del lenguaje>>
+<<Escritura del lenguaje>>
+@ 
+
+\paragraph{Configuración de la sintaxis} Tanto el parser como el escritor deben de poder manejar el caso en que la codificación del archivo o cadena a leer o escribir no soporte [[Unicode]], la variable [[hay-lambda?]] debe de tener un valor booleano que indique si se puede leer y escribir el caracter `\( \lambda \)' con código 955. De igual manera la variable [[símbolo-lambda]] debe ser el valor del caracter lambda.
+
+<<Configuración de la sintaxis>>=
+(define hay-lambda? true)
+
+(define/contract (símbolo-lambda? x)
+  (char? . -> . boolean?)
+  (and hay-lambda? (char=? (integer->char 955) x)))
+@ %def hay-lambda? símbolo-lambda?
+
+\subsection{Analizador sintáctico}
+
+\paragraph{Parseo del lenguaje} El parser es implementado con un algorimo \emph{descendente recursivo} el cuál toma como argumento un puerto de entrada de [[Racket]] y construye la estructura correspondiente a la cadena de símbolos leída. La estructura de la implementación del parser es la siguiente:
+
+<<Parseo del lenguaje>>=
+<<Procedimientos auxiliares del parser>>
+<<Algoritmo del parser>>
+<<Punto de entrada del parser>>
+@ 
+
+
+El procedimiento que implementa el algoritmo para analizar los caracteres del puerto de entrada es [[parsear-expresión]], este procedimiento recibe un puerto de entrada [[p]], un caracter [[c]] (que usualmente es el primer caracter de [[p]]) y un acumulador de expresiones [[a]] cuyo valor es la expresión parcialmente parseada; el valor resultante es una expresión en caso de éxito, un objeto ``fin de archivo'' cuando no hay símbolos que leer del puerto o un caracter cuando no se pudo parsear una expresión.
+
+<<Algoritmo del parser>>=
+(define/contract (parsear-expresión p c a)
+  (input-port? (or/c char? eof-object?) (or/c expresión? null?)
+               . -> . (or/c expresión? eof-object? char?))
+  (cond <<Casos del algoritmo de parseo>>))
+@ %def parsear-expresión
+
+El procedimiento [[parsear]] es el punto de entrada del parser, se encarga de intentar parsear una expresión utilizando el procedimiento [[parsear-expresión]] y emitir un error en caso que los símbolos del puerto no hayan podido conformar un elemento de \( Ω \) válido.
+
+<<Punto de entrada del parser>>=
+(define/contract (parsear p)
+  (input-port? . -> . (or/c expresión? eof-object?))
+  (let ([e (parsear-expresión p (peek-char p) null)])
+    (cond [(eof-object? e) e]
+          [(expresión? e)  e]
+          [(char=? #\; e)  (parsear p)]
+          [else
+           (error 'parsear "No fue posible parsear una expresión válida")])))
+@ %def parsear
+
+Un procedimiento que resulta útil para hacer pruebas simples de parseo es [[parsear-cadena]] el cuál se encarga de convertir una cadena de caracteres en un puerto de entrada y parsear el puerto de entrada.
+
+<<Punto de entrada del parser>>=
+(define/contract (parsear-cadena s)
+  (string? . -> . (or/c expresión? eof-object?))
+  (parsear (open-input-string s)))
+@ %def parsear-cadena
+
+\paragraph{Casos del algoritmo de parseo} El procedimiento [[parsear-expresión]] comienza conociendo el primer caracter [[c]] del puerto de entrada [[p]], se realiza un análisis de casos con [[cond]] para determinar la estructura sintáctica de la que [[c]] forma parte tomando en cuenta el parseo parcial acumulado [[a]].
+
+Antes de abordar cada caso es importante precisar el rol que juega el acumulador [[a]]. Ya que el parser debe ser capaz de construír una estructura a partir de una representación simbólica formal, parcialmente formal o con la mayor cantidad de abuso de notación posible, es necesario ``recordar'' la forma de las aplicaciones que se han leído, por ejemplo una expresión de la forma \( (P_{1}\, P_{2}\, P_{3}) \) es formalmente \( ((P_{1}\, P_{2})\, P_{3}) \), sin embargo, la lectura de izquierda a derecha nos obliga a leer primero \( P_{1} \), acumular su estructura y al ver que es posible leer a \( P_{2} \) construír la aplicación \( (P_{1}\, P_{2}) \) y acumularla para intentar leer la siguiente expresión \( P_{3} \) y formar la aplicación final.
+
+\subparagraph{Cuando se termina de parsear} Hay dos situaciones en donde se debe terminar de parsear una expresión, la primera es cuando se lee un objeto ``fin de archivo'' y la otra es cuando se lee un \emph{delimitador final}.
+
+Si [[c]] satisface el predicado [[eof-object?]] es cuando ya no es posible extraer más caracteres de [[p]].
+
+<<Casos del algoritmo de parseo>>=
+[(eof-object? c)
+ <<Se leyó un [[eof-object]]>>]
+@ 
+
+En este caso se debe regresar este objeto ``fin de archivo'' a menos que el valor del acumulador [[a]] no sea nulo, cuando [[a]] no es nulo es una expresión correctamente parseada, por lo tanto debe ser el resultado del parseo.
+
+<<Se leyó un [[eof-object]]>>=
+(if (null? a) c a)
+@ 
+
+El caso de prueba ``[[Lectura de fin de archivo]]'' verifica que este caso se maneje correctamente.
+
+<<Casos de prueba>>=
+(test-case "Lectura de fin de archivo"
+  (check-equal? (parsear-cadena "") eof)
+  (check-equal? (parsear-expresión (open-input-string "") eof (variable "x"))
+                (variable "x")))
+@ 
+
+En caso que el parser se encuentre un delimitador final el algoritmo debe regresar, los delimitadores finales son aquellos objetos que delimitan expresiones por la derecha. El predicado [[delimitador-final?]] determina si un objeto es delimitador final.
+
+<<Procedimientos auxiliares del parser>>=
+(define/contract (delimitador-final? x)
+  ((or/c char? eof-object?) . -> . boolean?)
+  (or (eof-object? x) (char=? #\] x) (char=? #\) x)
+      (char=? #\. x)  (char=? #\, x) (char=? #\; x)))
+@ %def delimitador-final?
+
+El caso de prueba ``[[Predicado para delimitadores]]'' verifica que este procedimiento sea correcto.
+
+<<Casos de prueba>>=
+(test-case "Predicados para delimitadores"
+  (check-true (delimitador-final? eof))
+  (check-true (delimitador-final? #\)))
+  (check-false (delimitador-final? #\x))
+  (check-false (delimitador-final? #\())
+  (check-exn exn:fail:contract? (lambda () (delimitador-final? 42))))
+@ 
+
+Si [[c]] satisface el predicado [[delimitador-final?]] el algoritmo ha terminado de parsear.
+
+<<Casos del algoritmo de parseo>>=
+[(delimitador-final? c)
+ <<Se leyó un delimitador final>>]
+@ 
+
+De manera similar al caso anterior el resultado depende de [[a]], cuando es nulo se debe consumir el delimitador del puerto de entrada y regresarse como resultado, de lo contrario, el delimitador debe permanecer en [[p]] y el resultado es la expresión acumulada.
+
+<<Se leyó un delimitador final>>=
+(if (null? a) (read-char p) a)
+@ 
+
+El caso de prueba ``[[Lectura de delimitador final]]'' verifica que este caso se maneje correctamente.
+
+<<Casos de prueba>>=
+(test-case "Lectura de delimitador final"
+  (check-exn exn:fail? (lambda () (parsear-cadena ")")))
+  (check-equal? (parsear-expresión (open-input-string ")") #\) null) #\))
+  (let ([p (open-input-string ")")])
+    (check-equal? (parsear-expresión p #\) (variable "x")) (variable "x"))
+    (check-equal? (read-char p) #\))))
+@ 
+
+
+\subparagraph{Cuando se lee espacio en blanco} Los espacios en blanco, también conocidos como caracteres ``whitespace'' son ignorador por el parser. La implementación de este caso hace uso del predicado [[char-whitespace?]] de [[Racket]] para determinar si [[c]] es un espacio en blanco, este predicado reconoce al menos los caracteres espacio, tab y nueva línea.
+
+<<Casos del algoritmo de parseo>>=
+[(char-whitespace? c)
+ <<Se leyó un espacio en blanco>>]
+@ 
+
+Para ignorar a [[c]] y seguir parseando expresiones se debe consumir el caracter del puerto [[p]] e invocar de manera recursiva [[parsear-expresión]].
+
+<<Se leyó un espacio en blanco>>=
+(read-char p)
+(parsear-expresión p (peek-char p) a)
+@ 
+
+El caso de prueba ``[[Lectura de espacio en blanco]]'' verifica que este caso se maneje correctamente.
+
+<<Casos de prueba>>=
+(test-case "Lectura de espacio en blanco"
+  (check-equal? (parsear-cadena " \t\n \n\t")
+                (parsear-cadena ""))
+  (check-equal? (parsear-expresión (open-input-string " \t\n \n\t)")
+                                   #\space
+                                   (variable "x"))
+                (parsear-expresión (open-input-string ")") #\) (variable "x"))))
+@ 
+
+
+\subparagraph{Cuando se parsea una subexpresión} En el análisis de casos inicial del algoritmo, la única manera de comenzar a parsear una subexpresión es leyendo el caracter de paréntesis abierto.
+
+<<Casos del algoritmo de parseo>>=
+[(char=? #\( c)
+ <<Se leyó un paréntesis abierto>>]
+@ 
+
+En este caso se debe consumir el paréntesis abierto del puerto [[p]], obtener la expresión dentro del paréntesis con un procedimiento auxiliar [[parsear-paréntesis]] e invocar de manera recursiva a [[parsear-expresión]].
+
+El procedimiento [[parsear-paréntesis]] recibe un puerto de entrada e invoca a [[parsear-expresión]], eventualmente el parseo termina al encontrar un paréntesis cerrado, en cuyo caso se debe verificar que la expresión leída sea una abstracción o una aplicación, ya que estas son las únicas expresiones que pueden ir dentro de un paréntesis.
+
+<<Procedimientos auxiliares del parser>>=
+(define/contract (parsear-paréntesis p)
+  (input-port? . -> . (or/c abstracción? aplicación?))
+  (let ([e (parsear-expresión p (peek-char p) null)])
+    (unless (char=? #\) (read-char p))
+      (error 'parsear-paréntesis "Se esperaba leer el caracter `)'"))
+    e))
+@ %def parsear-paréntesis
+
+La invocación recursiva a [[parsear-expresión]] debe de realizarse con cuidado, considerando a [[e]] la expresión resultante de [[parsear-paréntesis]], si el valor del acumulador es nulo, la llamada recursiva se hace con [[e]] como acumulador, de lo contrario se deberá acumular la aplicación de [[a]] con [[e]]. Esta verificación se realiza con el procedimiento auxiliar [[aplicación/identidad]].
+
+<<Procedimientos auxiliares del parser>>=
+(define/contract (aplicación/identidad a e)
+  ((or/c expresión? null?) expresión? . -> . expresión?)
+  (if (null? a) e (aplicación a e)))
+@ %def aplicación/identidad
+
+El caso de prueba ``[[Acumulación de expresiones]]'' se encarga de verificar el correcto funcionamiento de este procedimiento.
+
+<<Casos de prueba>>=
+(test-case "Acumulación de expresiones"
+  (check-equal? (aplicación/identidad null (variable "x"))
+                (variable "x"))
+  (check-equal? (aplicación/identidad (variable "x") (variable "y"))
+                (aplicación (variable "x") (variable "y"))))
+@ 
+
+
+Con estos procedimientos auxiliares implementados se define el caso de leer un paréntesis abierto.
+
+<<Se leyó un paréntesis abierto>>=
+(read-char p)
+(let ([e (parsear-paréntesis p)])
+  (parsear-expresión p (peek-char p) (aplicación/identidad a e)))
+@ 
+
+\subparagraph{Cuando se parsea un hueco} En el análisis de casos inicial del algoritmo, la única manera de comenzar a parsear un hueco es leyendo el caracter de corchete abierto, este caracter también forma parte de la representación simbólica de las metainstrucciones, sin embargo, en el caso de las metainstrucciones un nombre tiene que ser leído antes del caracter `[[[]]'.
+
+<<Casos del algoritmo de parseo>>=
+[(char=? #\[ c)
+ <<Se leyó un corchete abierto>>]
+@ 
+
+En este caso se hace uso del procedimiento auxiliar [[parsear-hueco]], el cuál admite la lectura de cero o más espacios en blanco antes de encontrarse con un corchete cerrado.
+
+<<Procedimientos auxiliares del parser>>=
+(define/contract (parsear-hueco p)
+  (input-port? . -> . hueco?)
+  (let ([c (peek-char p)])
+    (cond [(char-whitespace? c)
+           (read-char p)
+           (parsear-hueco p)]
+          [(char=? #\] c)
+           (read-char p)
+           (hueco)]
+          [else
+           (error 'parsear-hueco "Se esperaba leer el caracter `]'")])))
+@ %def parsear-hueco
+
+La implementación del caso consume el caracter `[[[]]' del puerto [[p]] y acumula el hueco parseado con [[parsear-hueco]] en una invocación recursiva a [[parsear-expresión]].
+
+<<Se leyó un corchete abierto>>=
+(read-char p)
+(let ([e (parsear-hueco p)])
+  (parsear-expresión p (peek-char p) (aplicación/identidad a e)))
+@ 
+
+\subparagraph{Cuando se lee una lambda} En la representación simbólica de las abstracciones, los paréntesis externos pueden omitirse por abuso de notación, por lo que un símbolo inicial válido para una abstracción es el caracter `\( \lambda \)'.
+
+<<Casos del algoritmo de parseo>>=
+[(or (símbolo-lambda? c) (char=? #\\ c))
+ <<Se leyó una lambda>>]
+@ 
+
+La implementación de este caso es similar a los anteriores dos, se consume el caracter leído, se utiliza un procedimiento auxiliar para parsear la abstracción y se invoca de manera recursiva [[parsear-expresión]] acumulando la abstracción resultante.
+
+<<Se leyó una lambda>>=
+(read-char p)
+(let ([e (parsear-abstracción p)])
+  (parsear-expresión p (peek-char p) (aplicación/identidad a e)))
+@ 
+
+El procedimiento auxiliar [[parsear-abstracción]] es un poco más complejo que los anteriores procedimientos auxiliares. Realiza una iteración acumulando las variables leídas cuidando los casos en que se lea un delimitador antes que el caracter `[[.]]' que separa los argumentos del cuerpo e ignorando los espacios en blanco de variable a variable. Cuando el punto separador es leído, se parsea el cuerpo de la abstracción y se construye la estructura completa aplicando un algoritmo de ``currificación'' con las variables acumuladas.
+
+<<Procedimientos auxiliares del parser>>=
+(define/contract (parsear-abstracción p)
+  (input-port? . -> . abstracción?)
+  (let itera ([c  (peek-char p)]
+              [vs null])
+    (cond [(and (char? c) (char-whitespace? c))
+           (read-char p)
+           (itera (peek-char p) vs)]
+          [(and (char? c) (char=? #\. c))
+           (read-char p)
+           (if (null? vs)
+               (error 'parsear-abstracción "Se esperaba al menos una variable")
+               (let ([e (parsear-expresión p (peek-char p) null)])
+                 (if (expresión? e)
+                     (foldr abstracción e (reverse vs))
+                     (error 'parsear-abstracción
+                            "Se esperaba leer el cuerpo de una abstracción"))))]
+          [(delimitador? c)
+           (error 'parsear-abstracción "Se esperaba leer una abstracción completa")]
+          [else
+           (let ([v (variable (parsear-nombre p))])
+             (itera (peek-char p) (cons v vs)))])))
+@ %def parsear-abstracción
+
+El predicado [[delimitador?]] es implementado de manera similar a [[delimitador-final?]] solo que contempla todos los objetos que delimitan expresiones, incluyendo los delimitadores ignorados de espacios en blanco.
+
+<<Procedimientos auxiliares del parser>>=
+(define/contract (delimitador? x)
+  ((or/c char? eof-object?) . -> . boolean?)
+  (or (delimitador-final? x)
+      (char=? #\( x) (char=? #\[ x)
+      (símbolo-lambda? x) (char=? #\\ x)
+      (char-whitespace? x)))
+@ %def delimitador?
+
+En el parseo de abstracciones se hace uso del procedimiento [[parsear-nombre]], este es descrito en el siguiente caso.
+
+\subparagraph{Cuando se lee un nombre} El último caso del análisis de casos es leer un caracter que no es delimitador, lo cuál significa que constituye un nombre.
+
+<<Casos del algoritmo de parseo>>=
+[else
+ <<Se leyó un constituyente>>]
+@ 
+
+Para leer un nombre se consumen y acumulan caracteres constituyentes (no-delimitadores) hasta encontrar algún otro caracter. El procedimiento [[parsear-nombre]] regresa una cadena con los caracteres consumidos del puerto [[p]].
+
+<<Procedimientos auxiliares del parser>>=
+(define/contract (parsear-nombre p)
+  (input-port? . -> . string?)
+  (let itera ([c  (peek-char p)]
+              [cs null])
+    (if (delimitador? c)
+        (if (null? cs)
+            (error 'parsear-nombre "Se intentó leer un nombre de longitud cero")
+            (list->string (reverse cs)))
+        (begin
+         (read-char p)
+         (itera (peek-char p) (cons c cs))))))
+@ %def parsear-nombre
+
+En la implementación del caso, se parsea un nombre y se determina el tipo de resultado, cuando el caracter después del nombre es `[[[]]' el resultado es una metainstrucción, de lo contrario es una variable.
+
+<<Se leyó un constituyente>>=
+((lambda (e)
+   (parsear-expresión p (peek-char p) (aplicación/identidad a e)))
+ (let* ([x (parsear-nombre p)]
+        [c (peek-char p)])
+   (cond [(and (char? c) (char=? #\[ c))
+          (read-char p)
+          (metainstrucción x (parsear-corchetes p))]
+         [else
+          (variable x)])))
+@ 
+
+En el caso que el nombre sea de una metainstrucción, se parsea la lista de argumentos con el procedimiento auxiliar [[parsear-corchetes]].
+
+<<Procedimientos auxiliares del parser>>=
+(define/contract (parsear-corchetes p)
+  (input-port? . -> . (*list/c expresión?))
+  (let itera ([e  (parsear-expresión p (peek-char p) null)]
+              [es null])
+    (cond [(eof-object? e)
+           (error 'parsear-corchetes
+                  "Se esperaba leer una metainstrucción completa")]
+          [(char? e)
+           (case e
+             [(#\]) (reverse es)]
+             [(#\,) (itera (parsear-expresión p (peek-char p) null) es)]
+             [else
+              (error 'parsear-corchetes
+                     "Se esperaba leer una metainstrucción completa")])]
+          [else
+           (itera (parsear-expresión p (peek-char p) null)
+                  (cons e es))])))
+@ %def parsear-corchetes
+
+Para verificar el correcto funcionamiento del parser se definen dos casos de prueba para el parseo de representaciones simbólicas con y sin abuso de notación.
+
+<<Casos de prueba>>=
+(test-case "Parsear sin abuso de notación"
+  (check-equal? (parsear-cadena "foo")
+                (variable "foo"))
+  (check-equal? (parsear-cadena "(foo bar)")
+                (aplicación (variable "foo") (variable "bar")))
+  (check-equal? (parsear-cadena "((foo bar) baz)")
+                (aplicación (aplicación (variable "foo") (variable "bar"))
+                            (variable "baz")))
+  (check-equal? (parsear-cadena "(foo (bar baz))")
+                (aplicación (variable "foo")
+                            (aplicación (variable "bar") (variable "baz"))))
+  (check-equal? (parsear-cadena "(\\bar.bar)")
+                (abstracción (variable "bar") (variable "bar")))
+  (check-equal? (parsear-cadena "foo[bar,baz]")
+                (metainstrucción "foo" (list (variable "bar") (variable "baz"))))
+  (check-equal? (parsear-cadena "(\\foo.(\\bar.foo))")
+                (abstracción (variable "foo")
+                             (abstracción (variable "bar") (variable "foo"))))
+  (check-equal? (parsear-cadena "  []  ")
+                (hueco)))
+@ 
+
+El caso de prueba para parsear expresiones escritas con abuso de notación debe ser más exhaustivo ya que el abuso de notación puede ser parcial o total.
+
+<<Casos de prueba>>=
+(test-case "Parsear con abuso de notación"
+  (check-equal? (parsear-cadena "foo bar")
+                (aplicación (variable "foo") (variable "bar")))
+  (check-equal? (parsear-cadena "foo bar baz")
+                (aplicación (aplicación (variable "foo") (variable "bar"))
+                            (variable "baz")))
+  (check-equal? (parsear-cadena "foo (bar baz)")
+                (aplicación (variable "foo")
+                            (aplicación (variable "bar") (variable "baz"))))
+  (check-equal? (parsear-cadena "\\foo.foo")
+                (abstracción (variable "foo") (variable "foo")))
+  (check-equal? (parsear-cadena "\\foo bar.foo")
+                (abstracción (variable "foo")
+                             (abstracción (variable "bar") (variable "foo"))))
+  (check-equal? (parsear-cadena "(\\foo bar.foo)")
+                (abstracción (variable "foo")
+                             (abstracción (variable "bar") (variable "foo"))))
+  (check-equal? (parsear-cadena "(\\foo.\\bar.foo)")
+                (abstracción (variable "foo")
+                             (abstracción (variable "bar")
+                                          (variable "foo"))))
+  (check-equal? (parsear-cadena "\\foo.bar baz")
+                (abstracción (variable "foo")
+                             (aplicación (variable "bar")
+                                         (variable "baz"))))
+  (check-equal? (parsear-cadena "\\foo bar.bar baz")
+                (abstracción (variable "foo")
+                             (abstracción (variable "bar")
+                                          (aplicación (variable "bar")
+                                                      (variable "baz")))))
+  (check-equal? (parsear-cadena "(\\foo.foo)\\bar.bar")
+                (aplicación (abstracción (variable "foo")
+                                         (variable "foo"))
+                            (abstracción (variable "bar")
+                                         (variable "bar"))))
+  (check-equal? (parsear-cadena "foo[\\bar.bar bar, \\baz.baz baz] quux")
+                (aplicación
+                 (metainstrucción "foo"
+                                  (list (abstracción (variable "bar")
+                                                     (aplicación (variable "bar")
+                                                                 (variable "bar")))
+                                        (abstracción (variable "baz")
+                                                     (aplicación (variable "baz")
+                                                                 (variable "baz")))))
+                 (variable "quux")))
+  (check-equal? (parsear-cadena "\\x.x [] x")
+                (abstracción (variable "x")
+                             (aplicación (aplicación (variable "x") (hueco))
+                                         (variable "x")))))
+@ 
+
+\subsection{Sintetizador sintáctico}
+
+\paragraph{Escritura del lenguaje} Para escribir estructuras de expresiones se identifican dos algoritmos básicos: uno para escritura formal y otro para escritura breve. Estos algoritmos se basan en un procedimiento de \emph{recorrido a lo profundo} en \emph{postorden} para transformar la estructura de una expresión a otro tipo de objetos, como por ejemplo cadenas de caracteres. Es importante implementar estos algoritmos de la manera más general posible, esto con la finalidad de poder definir escritores para diversos ``back-ends'' como cadenas de caracteres en texto plano o código del modo de matemáticas de \LaTeX{}. La estructura de esta implementación es la siguiente:
+
+<<Escritura del lenguaje>>=
+<<Algoritmos principales de escritura>>
+<<Escritores usuales>>
+<<Escritores misceláneos>>
+@ 
+
+
+\paragraph{Constructor de escritores formales} La técnica utilizada para implementar estos algoritmos genéricos es definir un constructor de escritores que reciba como argumentos procedimientos específicos para escribir cada clase de estructura. Consideremos primero el constructor de escritores formales llamado [[escritor-formal]], toma cinco procedimientos como argumentos, uno por cada tipo de estructura y regresa un escritor concreto.
+
+<<Algoritmos principales de escritura>>=
+(define/contract (escritor-formal e-variable e-abstracción e-aplicación
+                                  e-hueco e-metainstrucción)
+  <<Contrato para escritores formales>>
+  <<Algoritmo de escritura formal>>)
+@ %def escritor-formal
+
+El contrato de este constructor es que recibe cinco procedimientos y regresa un procedimiento que recibe una expresión y regresa algún objeto. Cada procedimiento de argumento corresponde en orden a escritor de variables, abstracciones, aplicaciones, huecos y metainstrucciones de tal manera que cada uno de estos procedimientos recibe de argumento la esctructura de la expresión correspondiente y los campos de dicha estructura.
+
+<<Contrato para escritores formales>>=
+((variable? string? . -> . any/c)                 ; Escritor de variables
+ (abstracción? variable? expresión? . -> . any/c) ; Escritor de abstracciones
+ (aplicación? expresión? expresión? . -> . any/c) ; Escritor de aplicaciones
+ (hueco? . -> . any/c)                            ; Escritor de huecos
+ (metainstrucción? string? (*list/c expresión?)   ; Escritor de metainstrucciones
+                   . -> . any/c)
+ . -> . (expresión? . -> . any/c))      ; Escritor de expresiones especializado
+@ 
+
+El algoritmo en sí tiene la tarea de identificar el escritor especializado que invocar y extraer los campos de la expresión [[e]].
+
+<<Algoritmo de escritura formal>>=
+(lambda (e)
+  (cond [(variable? e)
+         (e-variable e (variable-nombre e))]
+        [(abstracción? e)
+         (e-abstracción e (abstracción-argumento e) (abstracción-cuerpo e))]
+        [(aplicación? e)
+         (e-aplicación e (aplicación-operador e) (aplicación-operando e))]
+        [(hueco? e)
+         (e-hueco e)]
+        [(metainstrucción? e)
+         (e-metainstrucción e (metainstrucción-nombre e)
+                            (metainstrucción-argumentos e))]))
+@ 
+
+\paragraph{Escritor formal a texto plano} La definición de un escritor formal a una cadena de caracteres en texto plano es relativamente fácil. El objeto que regresan los procedimientos especializados es una cadena de caracteres y la escritura de estructuras complejas consiste en concatenar los resultados de la escritura de sus partes.
+
+<<Escritores usuales>>=
+(define escribir-expresión-formal
+  (escritor-formal
+   <<Escribir formalmente variable a texto plano>>
+   <<Escribir formalmente abstracción a texto plano>>
+   <<Escribir formalmente aplicación a texto plano>>
+   <<Escribir formalmente hueco a texto plano>>
+   <<Escribir formalmente metainstrucción a texto plano>>))
+@ %def escribir-expresión-formal
+
+La representación simbólica de una variable es su nombre, ya que los nombres son internamente implementados como cadenas de caracteres es suficiente regresar este campo de la variable.
+
+<<Escribir formalmente variable a texto plano>>=
+(lambda (e nombre) nombre)
+@
+
+En el caso de las abstracciones se deben escribir de la forma \( (λx.M) \) donde \( x \) es la representación simbólica del argumento y \( M \) la representación simbólica del cuerpo. Para escribir el símbolo `\( λ \)' se debe verificar si se puede usar su código en [[Unicode]], de lo contrario usar el caracter `[[\]]'.
+
+<<Escribir formalmente abstracción a texto plano>>=
+(lambda (e argumento cuerpo)
+  (format "(~a~a.~a)"
+          (if hay-lambda? (integer->char 955) #\\)
+          (escribir-expresión-formal argumento)
+          (escribir-expresión-formal cuerpo)))
+@ 
+
+Las aplicaciones son escritas de manera similar, invocando [[escribir-expresión-formal]] de manera recursiva sobre sus campos.
+
+<<Escribir formalmente aplicación a texto plano>>=
+(lambda (e operador operando)
+  (format "(~a ~a)"
+          (escribir-expresión-formal operador)
+          (escribir-expresión-formal operando)))
+@ 
+
+La representación simbólica de los huecos siempre es \( [\quad ] \), así que simplemente se regresa esta cadena de caracteres.
+
+<<Escribir formalmente hueco a texto plano>>=
+(lambda (e) "[ ]")
+@ 
+
+Para escribir una metainstrucción se obtienen las representaciones simbólicas de cada argumento y se concatenan junto con la separación de coma entre cada argumento.
+
+<<Escribir formalmente metainstrucción a texto plano>>=
+(lambda (e nombre argumentos)
+  (format "~a[~a]" nombre
+          (apply string-append
+                 (add-between (map escribir-expresión-formal argumentos)
+                              ", "))))
+@ 
+
+El caso de prueba ``[[Escritura formal a texto plano]]'' verifica que la implementación de este escritor concreto sea correcta.
+
+<<Casos de prueba>>=
+(test-case "Escritura formal a texto plano"
+  (check-equal? (escribir-expresión-formal (parsear-cadena "foo"))
+                "foo")
+  (check-equal? (escribir-expresión-formal (parsear-cadena "\\foo.foo"))
+                (format "(~afoo.foo)" (integer->char 955)))
+  (check-equal? (escribir-expresión-formal
+                 (parsear-cadena "foo bar (baz baz)"))
+                "((foo bar) (baz baz))")
+  (check-equal? (escribir-expresión-formal
+                 (parsear-cadena "   [       ]"))
+                "[ ]")
+  (check-equal? (escribir-expresión-formal
+                 (parsear-cadena "foo[\\bar.baz,baz bar]"))
+                (format "foo[(~abar.baz), (baz bar)]" (integer->char 955))))
+@ 
+
+\paragraph{Escritor formal a \LaTeX{}} La implementación básica del escritor formal a cadenas en texto plano es un buen punto de partida para definir escritores más especializados. Por ejemplo para escribir de manera formal a cadenas de caracteres con una sintáxis para el modo matemáticas de \LaTeX{} se parte de la definición de [[escribir-expresión-formal]] para escribir `\( \lambda \)' como [[\lambda]], espacios pequeños como [[\, ]] y espacios grandes como [[\quad]].
+
+<<Escritores misceláneos>>=
+(define escribir-latex-expresión-formal
+  (escritor-formal
+   (lambda (e nombre) nombre)
+   (lambda (e argumento cuerpo)
+     (format "(\\lambda ~a.~a)"
+             (escribir-latex-expresión-formal argumento)
+             (escribir-latex-expresión-formal cuerpo)))
+   (lambda (e operador operando)
+     (format "(~a\\, ~a)"
+             (escribir-latex-expresión-formal operador)
+             (escribir-latex-expresión-formal operando)))
+   (lambda (e) "[\\quad ]")
+   (lambda (e nombre argumentos)
+     (format "~a[~a]" nombre
+             (apply string-append
+                    (add-between (map escribir-latex-expresión-formal
+                                      argumentos)
+                                 ",\\, "))))))
+@ %def escribir-latex-expresión-formal
+
+Con el procedimiento [[escribir-latex-expresión-formal]] sólo hace falta usar una plantilla de documento de \LaTeX{} para poder generar un archivo interpretable válido. Por ejemplo, la variable [[plantilla-latex]] tiene como valor una cadena de caracteres de tal manera que si [[e]] es una expresión y [[p]] es un puerto de salida a un archivo en disco
+[[
+(fprintf p plantilla-latex e)
+]]
+escribe al archivo un documento compilable de \LaTeX{}.
+
+<<Escritores misceláneos>>=
+(define plantilla-latex
+#<<DOCUMENTO-LATEX
+  
+\documentclass[preview]{standalone}
+\usepackage{amsmath}
+
+\begin{document}
+\( ~a \)
+\end{document}
+
+DOCUMENTO-LATEX
+  )
+@ %def plantilla-latex
+
+\paragraph{Escritura a otros lenguajes} Traducir expresiones a \LaTeX{} puede ser de utilidad para leer expresiones con tipografía más bonita. Sin embargo el algoritmo de escritura también puede ser utilizado para implementar escritores con poco valor estético pero grán valor práctico. Por ejemplo para escribir expresiones a [[JSON]] con la finalidad de transferir una expresión particular a un lenguaje con la habilidad de parsear este popular formato, se puede utilizar el procedimiento [[escribir-json-expresión-formal]].
+
+<<Escritores misceláneos>>=
+(define escribir-json-expresión-formal
+  (escritor-formal
+   (lambda (e nombre)
+     (format "{ ~s : ~s, ~s : ~s }"
+             "tipo" "variable"
+             "nombre" nombre))
+   (lambda (e argumento cuerpo)
+     (format "{ ~s : ~s, ~s : ~a, ~s : ~a }"
+             "tipo" "abstracción"
+             "argumento" (escribir-json-expresión-formal argumento)
+             "cuerpo" (escribir-json-expresión-formal argumento)))
+   (lambda (e operador operando)
+     (format "{ ~s : ~s, ~s : ~a, ~s : ~a }"
+             "tipo" "aplicación"
+             "operador" (escribir-json-expresión-formal operador)
+             "operando" (escribir-json-expresión-formal operando)))
+   (lambda (e)
+     (format "{ ~s : ~s }"
+             "tipo" "hueco"))
+   (lambda (e nombre argumentos)
+     (format "{ ~s : ~s, ~s : ~s, ~s : [~a] }"
+             "tipo" "metainstrucción"
+             "nombre" nombre
+             "argumentos"
+             (apply string-append
+                    (add-between (map escribir-json-expresión-formal
+                                      argumentos)
+                                 ", "))))))
+@ %def escribir-json-expresión-formal
+
+\paragraph{Constructor de escritores breves} El algoritmo complicado de escritura es el que incluye abuso de notación. El parseo de expresiones admite abuso de notación parcial o total y para cualquier entrada se tiene una única salida, por otro lado en el caso de la escritura de expresiones con abuso, se tienen muchas posibles salidas para una misma entrada. En [[lambda]] se considera la escritura con abuso total de notación, es decir, si es posible aplicar un abuso de notación, se aplica.
+
+De manera similar al constructor [[escritor-formal]] se implementa otro constructor llamado [[escritor-breve]] el cuál toma también procedimientos de escritura especializados para cada tipo de estructura. Los procedimientos especializados para las abstracciones y las aplicaciones deben satisfacer contratos diferentes a los de la escritura formal ya que estos dos tipos de expresiones son las que tienen abuso de notación.
+
+<<Algoritmos principales de escritura>>=
+(define/contract (escritor-breve e-variable e-abstracción e-aplicación
+                                 e-hueco e-metainstrucción)
+  ((variable? string? . -> . any/c)
+   <<Contrato para escritor formal de abstracciones>>
+   <<Contrato para escritor formal de aplicaciones>>
+   (hueco? . -> . any/c)
+   (metainstrucción? string? (*list/c expresión?) . -> . any/c)
+   . -> . (expresión? . -> . any/c))
+  <<Algoritmo de escritura breve>>)
+@ %def escritor-breve
+
+Consideremos una abstracción de la forma\[ (λx.(λy.(λz.M))) \]tal que \( M \) no es abstracción. El abuso de notación nos permite escribirla como\[ λx\, y\, z.M \]en donde los cambios realizados son la omisión de paréntesis externos y la ``descurrificación'' de argumentos en abstracciones anidadas (abstracciones cuyos cuerpos son abstracciones). Por lo tanto el procedimiento de escritura breve de abstracciones debe conocer la lista de argumentos de la descurrificación (en este ejemplo \( x \), \( y \) y \( z \)) y el primer cuerpo en la anidación que no es abstracción (en este ejemplo \( M \)). La omisión de los paréntesis externos es la convención del abuso de notación, es posible que en una representación simbólica breve una abstracción esté encerrada entre paréntesis, sin embargo, la tarea de determinar si debe o no escribirse con paréntesis es del procedimiento de escritura de aplicaciones.
+
+<<Contrato para escritor formal de abstracciones>>=
+(abstracción? (*list/c variable? variable?) expresión?
+              . -> . any/c)
+@ 
+
+En el caso de una aplicación de la forma\[ (((M\, N)\, O)\, P) \]tal que \( M \) no es aplicación. El abuso de notación nos permite escribirla como\[ M\, N\, O\, P \]en donde los cambios realizados son la omisión de paréntesis externos, remover la asociación a la izquierda y determinar cuáles de las expresiones \( M \), \( N \), \( O \) y \( P \) deben de tener paréntesis. Este último procedimiento considera únicamente el caso en que una expresión de la aplicación sea abstracción y otra aplicación: para las abstracciones, todas excepto la última (en este ejemplo \( P \)) debe tener paréntesis, mientras que en el caso de las aplicaciones, todas deben tener paréntesis. El procedimiento de escritura breve para aplicaciones debe conocer la lista de expresiones en la aplicación y la lista de criterios que determinan qué expresiones deben tener paréntesis.
+
+<<Contrato para escritor formal de aplicaciones>>=
+(aplicación? (*list/c expresión? expresión? expresión?)
+             (*list/c boolean? boolean? boolean?)
+             . -> . any/c)
+@ 
+
+El algoritmo de escritura breve funciona de manera similar al de escritura formal, solo que debe extraer la información necesaria para los escritores de abstracciones y aplicaciones.
+
+<<Algoritmo de escritura breve>>=
+(lambda (e)
+  (cond [(variable? e)
+         (e-variable e (variable-nombre e))]
+        [(abstracción? e)
+         (let itera ([cuerpo (abstracción-cuerpo e)]
+                     [argumentos (list (abstracción-argumento e))])
+           (if (abstracción? cuerpo)
+               (itera (abstracción-cuerpo cuerpo)
+                      (cons (abstracción-argumento cuerpo)
+                            argumentos))
+               (e-abstracción e (reverse argumentos) cuerpo)))]
+        [(aplicación? e)
+         (let itera ([operador (aplicación-operador e)]
+                     [operandos (list (aplicación-operando e))]
+                     [paréntesis (list (aplicación? (aplicación-operando e)))])
+           (if (aplicación? operador)
+               (let ([operando (aplicación-operando operador)])
+                 (itera (aplicación-operador operador)
+                        (cons operando operandos)
+                        (cons (or (aplicación? operando)
+                                  (abstracción? operando))
+                              paréntesis)))
+               (e-aplicación e (cons operador operandos)
+                             (cons (or (aplicación? operador)
+                                       (abstracción? operador))
+                                   paréntesis))))]
+        [(hueco? e)
+         (e-hueco e)]
+        [(metainstrucción? e)
+         (e-metainstrucción e (metainstrucción-nombre e)
+                            (metainstrucción-argumentos e))]))
+                
+@ 
+
+\paragraph{Escritor breve a texto plano} La definición de un escritor breve a una cadena de caracteres en texto plano es relativamente fácil de implementar utilizando este algoritmo. Al igual que con [[escribir-expresión-formal]], todos los escritores especializados regresan una cadena de caracteres.
+
+<<Escritores usuales>>=
+(define escribir-expresión-breve
+  (escritor-breve
+   (lambda (e nombre) nombre)
+   (lambda (e argumentos cuerpo)
+     (format "~a~a.~a"
+             (if hay-lambda? (integer->char 955) #\\)
+             (apply string-append
+                    (add-between (map escribir-expresión-breve argumentos)
+                                 " "))
+             (escribir-expresión-breve cuerpo)))
+   (lambda (e operandos paréntesis)
+     (apply string-append
+            (add-between (map (lambda (o p)
+                                (format "~a~a~a"
+                                        (if p "(" "")
+                                        (escribir-expresión-breve o)
+                                        (if p ")" "")))
+                              operandos paréntesis)
+                         " ")))
+   (lambda (e) "[ ]")
+   (lambda (e nombre argumentos)
+     (format "~a[~a]" nombre
+             (apply string-append
+                    (add-between (map escribir-expresión-breve argumentos)
+                                 ", "))))))
+@ %def escribir-expresión-breve
+
+El caso de prueba ``[[Escritura breve a texto plano]]'' verifica que la implementación de este escritor sea correcta.
+
+<<Casos de prueba>>=
+(test-case "Escritura breve a texto plano"
+  (check-equal? (escribir-expresión-breve (parsear-cadena "foo"))
+                "foo")
+  (check-equal? (escribir-expresión-breve (parsear-cadena "\\foo.foo"))
+                (format "~afoo.foo" (integer->char 955)))
+  (check-equal? (escribir-expresión-breve
+                 (parsear-cadena "foo bar (baz baz)"))
+                "foo bar (baz baz)")
+  (check-equal? (escribir-expresión-breve
+                 (parsear-cadena "foo (bar baz) \\quux.quux quux"))
+                (format "foo (bar baz) ~aquux.quux quux" (integer->char 955)))
+  (check-equal? (escribir-expresión-breve (parsear-cadena " [    ]"))
+                "[ ]")
+  (check-equal? (escribir-expresión-breve
+                 (parsear-cadena "foo[\\bar.baz,baz bar]"))
+                (format "foo[~abar.baz, baz bar]" (integer->char 955))))
+@ 
+
+\paragraph{Escritor breve a \LaTeX{}} Para completar el ejemplo de escritura a \LaTeX{} se presenta el escritor [[escribir-latex-expresión-breve]] utilizando el algoritmo que aplica abuso de notación.
+
+<<Escritores misceláneos>>=
+(define escribir-latex-expresión-breve
+  (escritor-breve
+   (lambda (e nombre) nombre)
+   (lambda (e argumentos cuerpo)
+     (format "\\lambda ~a.~a"
+             (apply string-append
+                    (add-between (map escribir-latex-expresión-breve
+                                      argumentos)
+                                 "\\, "))
+             (escribir-latex-expresión-breve cuerpo)))
+   (lambda (e operandos paréntesis)
+     (apply string-append
+            (add-between (map (lambda (o p)
+                                (format "~a~a~a"
+                                        (if p "(" "")
+                                        (escribir-latex-expresión-breve o)
+                                        (if p ")" "")))
+                              operandos paréntesis)
+                         "\\, ")))
+   (lambda (e) "[\\quad ]")
+   (lambda (e nombre argumentos)
+     (format "~a[~a]" nombre
+             (apply string-append
+                    (add-between (map escribir-latex-expresión-breve
+                                      argumentos)
+                                 ",\\, "))))))
+@ %def escribir-latex-expresión-breve
+
+
+\section{Evaluación}
+
+\paragraph{Evaluación de expresiones} Habiendo definido la sintaxis y las estructuras del lenguaje solo falta proveer un mecanismo para el análisis, manipulación y transformación de expresiones del lenguaje. Como se mencionó al implementar la estructura de las metainstrucciones, se registran procedimientos en una tabla hash llamada [[metainstrucciones]] los cuales esperan ser invocados con expresiones como argumentos.
+
+La tarea de invocar metainstrucciones definidas la realiza un evaluador de expresiones, el algoritmo de evaluación consiste en recorrer las subexpresiones de una expresión en busca de invocaciones a metainstrucciones, al encontrar una metainstrucción se busca su nombre en el registro [[metainstrucciones]], si su nombre es encontrado, se invoca su procedimiento asociado con las expresiones evaluadas de argumentos.
+
+<<Evaluación de expresiones>>=
+(define/contract (evaluar-expresión e)
+  (expresión? . -> . any)
+  (cond [(abstracción? e)
+         (abstracción (evaluar-expresión (abstracción-argumento e))
+                      (evaluar-expresión (abstracción-cuerpo e)))]
+        [(aplicación? e)
+         (aplicación (evaluar-expresión (aplicación-operador e))
+                     (evaluar-expresión (aplicación-operando e)))]
+        [(metainstrucción? e)
+         (cond [(hash-ref metainstrucciones (metainstrucción-nombre e) #f) =>
+                (lambda (f)
+                  (apply f (map evaluar-expresión (metainstrucción-argumentos e))))]
+               [else
+                (metainstrucción (metainstrucción-nombre e)
+                                 (map evaluar-expresión
+                                      (metainstrucción-argumentos e)))])]
+        [else e]))
+@ %def evaluar-expresión
+
+De manera similar a la definición del procedimiento [[parsear-cadena]] se implementa [[evaluar-cadena]] para facilitar la invocación del evaluador.
+
+<<Evaluación de expresiones>>=
+(define/contract (evaluar-cadena s)
+  (string? . -> . any)
+  (evaluar-expresión (parsear-cadena s)))
+@ %def evaluar-cadena
+
+
+Considerando metainstrucciones ficticias, el caso de prueba ``[[Evaluación de expresiones]]'' verifica que el evaluador funciona correctamente.
+
+<<Casos de prueba>>=
+(define-metainstrucción (siempre-x . argumentos)
+  (variable "x"))
+
+(define-metainstrucción (encuentra-foo e)
+  (define (busca-foo e)
+    (cond [(or (variable? e) (hueco? e))
+           #f]
+          [(abstracción? e)
+           (busca-foo (abstracción-cuerpo))]
+          [(aplicación? e)
+           (or (busca-foo (aplicación-operador e))
+               (busca-foo (aplicación-operando e)))]
+          [(metainstrucción? e)
+           (if (string=? "foo" (metainstrucción-nombre e)) e #f)]))
+  (let ([foo (busca-foo e)])
+    (if foo foo e)))
+
+(test-case "Evaluación de expresiones"
+           (check-equal? (evaluar-cadena "y y siempre-x[y] y y")
+                         (parsear-cadena "y y x y y"))
+           (check-equal? (evaluar-cadena "\\x.encuentra-foo[x]")
+                         (parsear-cadena "\\x.x"))
+           (check-equal? (evaluar-cadena "\\x.encuentra-foo[foo[x]]")
+                         (parsear-cadena "\\x.foo[x]"))
+           (check-equal? (evaluar-cadena "siempre-x[encuentra-foo[foo[x]]]")
+                         (parsear-cadena "x"))
+           (check-equal? (evaluar-cadena "encuentra-foo[siempre-x[foo[x]]]")
+                         (parsear-cadena "x")))
+@ 
+
+\section{Código fuente}
+
+Los fragmentos de código presentados en este capítulo conforman un módulo de [[Racket]] llamado [[lambda-lib]], este es dividido en dos partes: el archivo [[lambda-lib.rkt]] con la implementación del módulo y el archivo [[pruebas-lambda-lib.rkt]] el cuál contiene todos los casos de pruebas.
+
+\paragraph{Archivo [[lambda-lib]]} En este archivo se especifica el uso del lenguaje [[Racket]] y se proveen todas las definiciones presentes con [[(provide (all-defined-out))]], el código principal de las tres secciones de este capítulo conforma el cuerpo del archivo, en orden.
+
+<<lambda-lib.rkt>>=
+#lang racket
+(provide (all-defined-out))
+<<Estructuras de las expresiones>>
+<<Sintaxis del lenguaje>>
+<<Evaluación de expresiones>>
+@
+
+\paragraph{Archivo [[pruebas-lambda-lib]]} Este archivo se conforma de todas las dependencias para los casos de prueba de este capítulo, una última dependencia es el archivo [[lambda-lib.rkt]] necesario para poder invocar los procedimientos definidos. El cuerpo de este archivo contiene todos los casos de prueba mencionados.
+
+<<pruebas-lambda-lib.rkt>>=
+#lang racket
+<<Dependencias de casos de prueba>>
+(require "lambda-lib.rkt")
+<<Casos de prueba>>
+@ 
+
+
+% II. Entorno interactivo
+\chapter{Entorno interactivo}
+\markboth{
+  \normalsize\hfill\textit{\titulo}\hfill
+}{
+  \normalsize\hfill\textit{\thechapter.\ \ Entorno interactivo}\hfill
+}
+\label{ap2:entorno-interactivo}
+
+El sistema [[Lambda]] puede ser utilizado como biblioteca para otros programas que requieran trabajar con el cálculo \( λ \), trabajando con [[Racket]] es suficiente importar el módulo [[lambda-lib]] o portando este módulo a otro lenguaje de programación y pasando las pruebas del archivo [[pruebas-lambda-lib.rkt]].
+
+En este capítulo se implementa un programa gráfico e interactivo para la exploración y estudio del cálculo \( λ \) puro. Primero se presentan dos mecanismos para la edición de expresiones, un editor de texto y un editor estructural. Podiendo editar expresiones se aborda un mecanismo para la evaluación de expresiones desde la interfaz gráfica. La segunda parte de la interfaz consiste en un historial de expresiones evaluadas, en donde se pueden observar las entradas y salidas. Para hacer más amena la experiencia de escribir expresiones se presenta un visualizador con tres maneras de visualizar la expresión siendo editada: en código de [[Racket]], con escritura formal y con escritura breve. Otra componente de la interfaz es un registro de metainstrucciones utilizado como referencia en la escritura de expresiones. Finalmente, todos estos elementos son combinados en una interfaz gráfica única concretando la experiencia completa de explorar el cálculo \( λ \).
+
+\section{Editores}
+
+Para construir expresiones en [[Lambda]] se pueden utilizar dos mecanismos: el editor de texto y el editor estructural.
+
+\subsection{Editor de texto}
+
+
+<<Editor de texto>>=
+(define-lex-abbrevs
+  [paréntesis (:or #\( #\) #\[ #\])]
+  [delimitadores (:or #\, #\. #\\ #\u3BB #\;)])
+
+(define lexer-lambda
+  (lexer
+   [(:+ (:~ delimitadores paréntesis whitespace))
+    (values lexeme 'otro #f (position-offset start-pos) (position-offset end-pos))]
+   [(:+ whitespace)
+    (values lexeme 'white-space #f (position-offset start-pos) (position-offset end-pos))]
+   [delimitadores
+    (values lexeme 'delimitadores #f (position-offset start-pos) (position-offset end-pos))]
+   [paréntesis
+    (values lexeme 'delimitadores (string->symbol lexeme) (position-offset start-pos) (position-offset end-pos))]
+   [(eof)
+    (values lexeme 'eof #f #f #f)]))
+
+(define editor-texto%
+  (class color:text%
+    (super-new)
+    (define expresión null)
+    (define/augment (after-insert start len)
+      (if (= len 1)
+          (let ([cadena (send this get-text start (+ start 1))])
+            (unless (char-whitespace? (string-ref cadena 0))
+              (parsear)))
+          (parsear)))
+    (define/augment (after-delete start len)
+      (parsear))
+    (define/public (parsear)
+      (with-handlers ([exn:fail? (lambda (err) (set! expresión null))])
+        (let ([e (parsear-cadena (send this get-text))])
+          (if (eof-object? e)
+              (set! expresión null)
+              (set! expresión e))))
+      (reportar-cambio-editor expresión))
+    (define/public (obtener-expresión)
+      expresión)
+    (define/public (cambiar-expresión e)
+      (send this erase)
+      (send this insert (if (null? e) "" (escribir-expresión-formal e)))
+      (parsear))
+    (send this start-colorer
+          (lambda (what)
+            (case what
+              [(delimitadores paréntesis) "Realzado"]
+              [else "Sencillo"]))
+          lexer-lambda
+          (list (list '|(| '|)|)
+                (list '|[| '|]|)))
+    (send this set-tabs null 2 #f)
+    ;; Estilos
+    (define estilo-realzado (make-object style-delta% 'change-size 10))
+    (send estilo-realzado set-weight-on 'bold)
+    (send estilo-realzado set-family 'modern)
+    (editor:set-standard-style-list-delta "Realzado" estilo-realzado)
+    (define estilo-sencillo (make-object style-delta% 'change-size 10))
+    (send estilo-sencillo set-family 'modern)
+    (editor:set-standard-style-list-delta "Sencillo" estilo-sencillo)
+    ;; Atajos
+    (define atajos (new keymap%))
+    (define-syntax atajo
+      (syntax-rules ()
+        [(_ (nombre . argumentos) teclas cuerpo ...)
+         (let ([nombre* nombre]
+               [teclas* teclas])
+           (send atajos add-function nombre*
+                 (lambda argumentos
+                   cuerpo ...))
+           (send atajos map-function teclas* nombre*))]))
+    (for-each (lambda (normal griego)
+                (atajo ((format "inserta-~a" griego) editor evento) (format "m:~a" normal)
+                       (send editor insert (format "~a" griego))))
+              (string->list "abcdefghijklmnoprstuvwxyzCDFGJLPSUVW")
+              '(#\u3b1 #\u3b2 #\u3c8 #\u3b4 #\u3b5 #\u3c6 #\u3b3 #\u3b7 #\u3b9 #\u3be
+                       #\u3ba #\u3bb #\u3bc #\u3bd #\u3bf #\u3c0 #\u3c1 #\u3c3 #\u3c4
+                       #\u3b8 #\u3c9 #\u3c2 #\u3c7 #\u3c5 #\u3b6 #\u3a8 #\u394 #\u3a6
+                       #\u393 #\u39e #\u39b #\u3a0 #\u3a3 #\u398 #\u3a9 #\u3a3))
+    (atajo ("selecciona-todo" editor evento) "c:a"
+           (send editor do-edit-operation 'select-all))
+    (atajo ("deshacer" editor evento) "c:z"
+           (send editor do-edit-operation 'undo))
+    (atajo ("rehacer" editor evento) "c:y"
+           (send editor do-edit-operation 'redo))
+    (atajo ("copiar" editor evento) "c:c"
+           (send editor do-edit-operation 'copy))
+    (atajo ("pegar" editor evento) "c:v"
+           (send editor do-edit-operation 'paste))
+    (atajo ("cortar" editor evento) "c:x"
+           (send editor do-edit-operation 'cut))
+    (atajo ("borrar-línea" editor evento) "c:k"
+           (send editor do-edit-operation 'kill))
+    (atajo ("enviar-expresión" editor evento) "c:enter"
+           (enviar-expresión (send editor obtener-expresión)))
+    (send this set-keymap atajos)))
+@ %def editor-texto%
+
+
+\subsection{Editor estructural}
+
+
+<<Editor estructural>>=
+(define fuente-texto-figura
+  (make-object font% 12 'modern 'normal 'bold))
+
+(define (text* x)
+  (text x fuente-texto-figura))
+
+(define (expresión->dibujo expresión cursor índice)
+  (define (p-fondo p color)
+    (let ([ancho (pict-width p)]
+          [alto  (pict-height p)])
+      (cc-superimpose (color (filled-rectangle ancho alto)) p)))
+  (define (p-nombre e nombre)
+    (if (and (eq? e cursor) (or (variable? e) (metainstrucción? e)))
+        (let ([n (string-length nombre)])
+          (if (< índice n)
+              (p-fondo (hbl-append (text* (substring nombre 0 índice))
+                                   (frame (blue (text* (substring nombre índice (+ índice 1))))
+                                          #:color "blue"
+                                          #:line-width .5)
+                                   (text* (substring nombre (+ índice 1) n)))
+                       red)
+              (p-fondo (hbl-append (text* nombre)
+                                   (frame (blue (text* "•")) #:color "blue")) red)))
+        (let ([p (text* nombre)])
+          (p-fondo p (if (eq? e cursor) red white)))))
+  (define (p-lambda e argumentos)
+    (define en-cursor? #f)
+    (define figuras (map (lambda (x)
+                           (if (and (abstracción? cursor) (eq? x (abstracción-argumento cursor)))
+                               (begin
+                                 (set! en-cursor? #t)
+                                 (frame (naive-layered (escribir-dibujo-breve x))
+                                        #:color "red" #:line-width 2))
+                               (naive-layered (escribir-dibujo-breve x))))
+                         argumentos))
+    (p-fondo (apply hbl-append (p-nombre (if en-cursor? cursor e) (string #\u3bb)) (text* "  ")
+                    (add-between figuras (text* "  ")))
+             white))
+  (define (e-variable e nombre)
+    (tree-layout #:pict (p-nombre e nombre)))
+  (define (e-abstracción e argumentos cuerpo)
+    (tree-layout #:pict (p-lambda e argumentos)
+                 (tree-edge #:edge-width 2
+                            (escribir-dibujo-breve cuerpo))))
+  (define (e-aplicación e operandos paréntesis)
+    (define en-cursor? #f)
+    (define hijos (map (lambda (x)
+                         (if (and (aplicación? cursor) (eq? x (aplicación-operando cursor)))
+                             (begin
+                               (set! en-cursor? #t)
+                               (escribir-dibujo-breve x))
+                             (escribir-dibujo-breve x)))
+                       operandos))
+    (apply tree-layout #:pict (disk 10
+                                    #:color (if en-cursor? "red" "white")
+                                    #:border-width 2)
+           (tree-edge #:edge-width 2
+                      #:edge-color (if en-cursor? "red" "gray")
+                      (car hijos))
+           (map (lambda (e x)
+                  (tree-edge #:edge-width 2
+                             #:edge-color (if en-cursor?
+                                              (if (eq? e (aplicación-operando cursor))
+                                                  (begin
+                                                    (set! en-cursor? #f)
+                                                    "red")
+                                                  "red")
+                                              "gray")
+                             x))
+                (cdr operandos)
+                (cdr hijos))))
+  (define (e-hueco e)
+    (tree-layout #:pict (p-nombre e "[ ]")))
+  (define (e-metainstrucción e nombre argumentos)
+    (define en-cursor? (eq? e cursor))
+    (tree-layout
+     #:pict (p-nombre e nombre)
+     (tree-edge #:edge-width 2
+                #:edge-color (if en-cursor? "red" "gray")
+                (tree-layout #:pict
+                             (p-fondo
+                              (apply ht-append
+                                     (append (list ((if en-cursor? red black) (text* "[ ")))
+                                             (add-between
+                                              (map (lambda (x)
+                                                     (naive-layered (escribir-dibujo-breve x)))
+                                                   argumentos)
+                                              ((if en-cursor? red black) (text* " , ")))
+                                             (list ((if en-cursor? red black) (text* " ]")))))
+                              white)))))
+  (define escribir-dibujo-breve
+    (escritor-breve e-variable e-abstracción e-aplicación
+                    e-hueco e-metainstrucción))
+  (if (null? expresión)
+      (blank 50)
+      (naive-layered (escribir-dibujo-breve expresión))))
+
+(define (escalar-dibujo dibujo ancho alto)
+  (let* ([dibujo-ancho (pict-width dibujo)]
+         [dibujo-alto (pict-height dibujo)])
+    (scale dibujo
+           (min (* (/ ancho dibujo-ancho) .9)
+                (* (/ alto dibujo-alto) .9)))))
+
+(define editor-estructural%
+  (class canvas%
+    (inherit refresh-now get-dc get-width get-height)
+    (super-new)
+    (define expresión null)
+    (define cursor expresión)
+    (define índice 0)
+    (define atajos (new keymap%))
+    (define/override (on-char evento)
+      (let ([código (send evento get-key-code)])
+        (if (and (char? código)
+                 (or (char-alphabetic? código)
+                     (char-numeric? código)
+                     (member código (string->list "+-_~:<>=?¿!@#$%^&*") char=?))
+                 (not (send evento get-control-down))
+                 (not (send evento get-meta-down)))
+            (send this inserta (send evento get-key-code))
+            (send atajos handle-key-event this evento))))
+    (define/override (on-paint)
+      (define dc (get-dc))
+      (define editor-ancho (get-width))
+      (define editor-alto (get-height))
+      (define dibujo (escalar-dibujo (expresión->dibujo expresión cursor índice)
+                                     editor-ancho editor-alto))
+      (define dibujo-ancho (pict-width dibujo))
+      (define dibujo-alto (pict-height dibujo))
+      (draw-pict dibujo dc
+                 (- (/ editor-ancho 2) (/ dibujo-ancho 2))
+                 (- (/ editor-alto 2) (/ dibujo-alto 2))))
+    (define/public (obtener-expresión)
+      expresión)
+    (define/public (inserta caracter)
+      (when (or (variable? cursor) (metainstrucción? cursor))
+        (let ([selector (if (variable? cursor) variable-nombre metainstrucción-nombre)]
+              [mutador (if (variable? cursor) set-variable-nombre! set-metainstrucción-nombre!)])
+          (if (= índice (string-length (selector cursor)))
+              (mutador cursor
+                       (string-append (selector cursor)
+                                      (string caracter)))
+              (mutador cursor
+                       (string-append (substring (selector cursor) 0 índice)
+                                      (string caracter)
+                                      (substring (selector cursor)
+                                                 índice
+                                                 (string-length (selector cursor)))))))
+        (set! índice (+ índice 1))
+        (send this refresh-now)))
+    (define/public (elimina)
+      (when (and (or (variable? cursor) (metainstrucción? cursor))
+                 (> índice 0)
+                 (> (string-length ((if (variable? cursor)
+                                        variable-nombre
+                                        metainstrucción-nombre)
+                                    cursor))
+                    1))
+        (let* ([selector (if (variable? cursor) variable-nombre metainstrucción-nombre)]
+               [mutador (if (variable? cursor) set-variable-nombre! set-metainstrucción-nombre!)]
+               [nombre (selector cursor)]
+               [n (string-length nombre)])
+          (if (= índice n)
+              (mutador cursor
+                       (substring nombre 0 (- índice 1)))
+              (mutador cursor
+                       (string-append (substring nombre 0 (- índice 1))
+                                      (substring nombre índice n)))))
+        (set! índice (- índice 1))
+        (send this refresh-now)))
+    (define/public (borrar)
+      (set! expresión null)
+      (set! cursor expresión)
+      (set! índice 0)
+      (send this refresh-now))
+    (define/public (cambiar-expresión e)
+      (set! expresión e)
+      (set! cursor expresión)
+      (set! índice 0)
+      (send this refresh-now))
+    ;; Atajos
+    (define-syntax atajo
+      (syntax-rules ()
+        [(_ (nombre . argumentos) teclas cuerpo ...)
+         (let ([nombre* nombre]
+               [teclas* teclas])
+           (send atajos add-function nombre*
+                 (lambda argumentos
+                   cuerpo ...))
+           (send atajos map-function teclas* nombre*))]))
+    (atajo ("expresión-abajo" editor evento) "c:s"
+           (cond [(abstracción? cursor)
+                  (set! cursor (abstracción-cuerpo cursor))
+                  (set! índice 0)
+                  (send editor refresh-now)]
+                 [(aplicación? cursor)
+                  (set! cursor (aplicación-operando cursor))
+                  (set! índice 0)
+                  (send editor refresh-now)]
+                 [(and (metainstrucción? cursor)
+                       (not (null? (metainstrucción-argumentos cursor))))
+                  (set! cursor (car (metainstrucción-argumentos cursor)))
+                  (set! índice 0)
+                  (send editor refresh-now)]))
+    (atajo ("expresión-izquierda" editor evento) "c:a"
+           (cond [(aplicación? cursor)
+                  (set! cursor (aplicación-operador cursor))
+                  (set! índice 0)
+                  (send editor refresh-now)]))
+    (atajo ("expresión-derecha" editor evento) "c:d"
+           (cond [(abstracción? cursor)
+                  (set! cursor (abstracción-argumento cursor))
+                  (set! índice 0)
+                  (send editor refresh-now)]))
+    (letrec ([recorre (lambda (x)
+                        (cond [(variable? x) #f]
+                              [(abstracción? x)
+                               (if (or (eq? cursor (abstracción-cuerpo x))
+                                       (eq? cursor (abstracción-argumento x)))
+                                   x
+                                   (recorre (abstracción-cuerpo x)))]
+                              [(aplicación? x)
+                               (if (or (eq? cursor (aplicación-operador x))
+                                       (eq? cursor (aplicación-operando x)))
+                                   x
+                                   (cond [(recorre (aplicación-operador x))
+                                          => identity]
+                                         [else (recorre (aplicación-operando x))]))]
+                              [(hueco? x) #f]
+                              [(metainstrucción? x)
+                               (if (memq cursor (metainstrucción-argumentos x))
+                                   x
+                                   (let itera ([argumentos (metainstrucción-argumentos x)])
+                                     (cond [(null? argumentos) #f]
+                                           [(recorre (car argumentos))
+                                            => identity]
+                                           [else (itera (cdr argumentos))])))]
+                              [else #f]))])
+      (atajo ("expresión-arriba" editor evento) "c:w"
+             (cond [(recorre expresión)
+                    => (lambda (x)
+                         (set! cursor x)
+                         (set! índice 0)
+                         (send editor refresh-now))]))
+      (atajo ("expresión-siguiente" editor evento) "c:e"
+             (cond [(recorre expresión)
+                    => (lambda (p)
+                         (when (metainstrucción? p)
+                           (let itera ([argumentos (metainstrucción-argumentos p)])
+                             (cond [(null? argumentos) (void)]
+                                   [(null? (cdr argumentos)) (void)]
+                                   [(eq? (car argumentos) cursor)
+                                    (set! cursor (cadr argumentos))
+                                    (set! índice 0)
+                                    (send editor refresh-now)]
+                                   [else (itera (cdr argumentos))]))))]))
+      (atajo ("expresión-anterior" editor evento) "c:q"
+             (cond [(recorre expresión)
+                    => (lambda (p)
+                         (when (metainstrucción? p)
+                           (let itera ([argumentos (metainstrucción-argumentos p)])
+                             (cond [(null? argumentos) (void)]
+                                   [(null? (cdr argumentos)) (void)]
+                                   [(eq? (cadr argumentos) cursor)
+                                    (set! cursor (car argumentos))
+                                    (set! índice 0)
+                                    (send editor refresh-now)]
+                                   [else (itera (cdr argumentos))]))))]))
+      (atajo ("variable-aquí" editor evento) "c:1"
+             (let ([x (variable "x")])
+               (cond [(recorre expresión)
+                      => (lambda (p)
+                           (cond [(abstracción? p)
+                                  (if (eq? cursor (abstracción-argumento p))
+                                      (set-abstracción-argumento! p x)
+                                      (set-abstracción-cuerpo! p x))]
+                                 [(aplicación? p)
+                                  (if (eq? cursor (aplicación-operador p))
+                                      (set-aplicación-operador! p x)
+                                      (set-aplicación-operando! p x))]
+                                 [(metainstrucción? p)
+                                  (set-metainstrucción-argumentos! p
+                                   (map (lambda (e)
+                                          (if (eq? e cursor) x e))
+                                        (metainstrucción-argumentos p)))]))]
+                     [else
+                      (set! expresión x)])
+               (set! cursor x)
+               (set! índice 0)
+               (send editor refresh-now)))
+      (atajo ("abstracción-aquí" editor evento) "c:2"
+             (let ([x (abstracción (variable "x") (variable "x"))])
+               (cond [(recorre expresión)
+                      => (lambda (p)
+                           (cond [(abstracción? p)
+                                  (set-abstracción-cuerpo! p x)]
+                                 [(aplicación? p)
+                                  (if (eq? cursor (aplicación-operador p))
+                                      (set-aplicación-operador! p x)
+                                      (set-aplicación-operando! p x))]
+                                 [(metainstrucción? p)
+                                  (set-metainstrucción-argumentos! p
+                                   (map (lambda (e)
+                                          (if (eq? e cursor) x e))
+                                        (metainstrucción-argumentos p)))]))]
+                     [else
+                      (set! expresión x)])
+               (set! cursor x)
+               (set! índice 0)
+               (send editor refresh-now)))
+      (atajo ("aplicación-aquí" editor evento) "c:3"
+             (let ([x (aplicación (variable "x") (variable "x"))])
+               (cond [(recorre expresión)
+                      => (lambda (p)
+                           (cond [(abstracción? p)
+                                  (set-abstracción-cuerpo! p x)]
+                                 [(aplicación? p)
+                                  (if (eq? cursor (aplicación-operador p))
+                                      (set-aplicación-operador! p x)
+                                      (set-aplicación-operando! p x))]
+                                 [(metainstrucción? p)
+                                  (set-metainstrucción-argumentos! p
+                                   (map (lambda (e)
+                                          (if (eq? e cursor) x e))
+                                        (metainstrucción-argumentos p)))]))]
+                     [else
+                      (set! expresión x)])
+               (set! cursor x)
+               (set! índice 0)
+               (send editor refresh-now)))
+      (atajo ("hueco-aquí" editor evento) "c:4"
+             (let ([x (hueco)])
+               (cond [(recorre expresión)
+                      => (lambda (p)
+                           (cond [(abstracción? p)
+                                  (set-abstracción-cuerpo! p x)]
+                                 [(aplicación? p)
+                                  (if (eq? cursor (aplicación-operador p))
+                                      (set-aplicación-operador! p x)
+                                      (set-aplicación-operando! p x))]
+                                 [(metainstrucción? p)
+                                  (set-metainstrucción-argumentos! p
+                                   (map (lambda (e)
+                                          (if (eq? e cursor) x e))
+                                        (metainstrucción-argumentos p)))]))]
+                     [else
+                      (set! expresión x)])
+               (set! cursor x)
+               (set! índice 0)
+               (send editor refresh-now)))
+      (let ([metainstrucción-aquí-n
+             (lambda (n)
+               (lambda (editor evento)
+                 (let ([x (metainstrucción "f" (build-list n (lambda (i) (variable "x"))))])
+                   (cond [(recorre expresión)
+                          => (lambda (p)
+                               (cond [(abstracción? p)
+                                      (set-abstracción-cuerpo! p x)]
+                                     [(aplicación? p)
+                                      (if (eq? cursor (aplicación-operador p))
+                                          (set-aplicación-operador! p x)
+                                          (set-aplicación-operando! p x))]
+                                     [(metainstrucción? p) p
+                                      (set-metainstrucción-argumentos! p
+                                       (map (lambda (e)
+                                              (if (eq? e cursor) x e))
+                                            (metainstrucción-argumentos p)))]))]
+                         [else
+                          (set! expresión x)])
+                   (set! cursor x)
+                   (set! índice 0)
+                   (send editor refresh-now))))])
+        (for-each (lambda (i)
+                    (send atajos add-function (format "metainstrucción-aquí-~a" i)
+                          (metainstrucción-aquí-n i))
+                    (send atajos map-function (format "c:5;~a" i) (format "metainstrucción-aquí-~a" i)))
+                  (range 0 10))))
+    (atajo ("índice-derecha" editor evento) "right"
+           (cond [(variable? cursor)
+                  (when (< índice (string-length (variable-nombre cursor)))
+                    (set! índice (+ índice 1))
+                    (send editor refresh-now))]
+                 [(metainstrucción? cursor)
+                  (when (< índice (string-length (metainstrucción-nombre cursor)))
+                    (set! índice (+ índice 1))
+                    (send editor refresh-now))]))
+    (atajo ("índice-izquierda" editor evento) "left"
+           (cond [(or (variable? cursor) (metainstrucción? cursor))
+                  (when (> índice 0)
+                    (set! índice (- índice 1))
+                    (send editor refresh-now))]))
+    (for-each (lambda (normal griego)
+                (atajo ((format "inserta-~a" griego) editor evento) (format "m:~a" normal)
+                       (send editor inserta griego)))
+              (string->list "abcdefghijkmnoprstuvwxyzCDFGJLPSUVW")
+              '(#\u3b1 #\u3b2 #\u3c8 #\u3b4 #\u3b5 #\u3c6 #\u3b3 #\u3b7 #\u3b9 #\u3be
+                       #\u3ba  #\u3bc #\u3bd #\u3bf #\u3c0 #\u3c1 #\u3c3 #\u3c4
+                       #\u3b8 #\u3c9 #\u3c2 #\u3c7 #\u3c5 #\u3b6 #\u3a8 #\u394 #\u3a6
+                       #\u393 #\u39e #\u39b #\u3a0 #\u3a3 #\u398 #\u3a9 #\u3a3))
+    (atajo ("eliminar-texto" editor evento) "backspace"
+           (send editor elimina))
+    (atajo ("enviar-expresión" editor evento) "c:enter"
+           (enviar-expresión (send editor obtener-expresión)))))
+@ %def editor-estructural% escalar-dibujo
+
+\section{Historial}
+
+
+<<Historial>>=
+(define expresión-snip%
+  (class editor-snip%
+    (init-field formal
+                breve)
+    (super-new)
+    (define actual breve)
+    (define editor (new text%))
+    (send this set-editor editor)
+    (refrescar)
+    (define/override (on-event dc x y ex ey evento)
+      (case (send evento get-event-type)
+        [(left-down)
+         (enviar-texto actual)
+         (enfocar-editor)]
+        [(right-down)
+         (if (eq? actual breve)
+             (set! actual formal)
+             (set! actual breve))
+         (refrescar)
+         (enfocar-editor)]
+        [else
+         (enfocar-editor)]))
+    (define/public (refrescar)
+      (send editor erase)
+      (send editor insert actual))))
+
+(define evaluación%
+  (class object%
+    (init-field entrada)
+    (super-new)
+    (define entrada-formal (escribir-expresión-formal entrada))
+    (define entrada-breve (escribir-expresión-breve entrada))
+    (define salida
+      (with-handlers ([exn:fail? (lambda (err)
+                                   (cons 'error (exn-message err)))])
+        (evaluar-expresión entrada)))
+    (define salida-formal
+      (with-handlers ([exn:fail? (lambda (err)
+                                   (format "~v" salida))])
+        (if (and (pair? salida) (eq? 'error (car salida)))
+            (cdr salida)
+            (escribir-expresión-formal salida))))
+    (define salida-breve
+      (with-handlers ([exn:fail? (lambda (err)
+                                   (format "~v" salida))])
+        (if (and (pair? salida) (eq? 'error (car salida)))
+            (cdr salida)
+            (escribir-expresión-breve salida))))
+    (define/public (obtener-entrada)
+      entrada)
+    (define/public (obtener-entrada-formal)
+      entrada-formal)
+    (define/public (obtener-entrada-breve)
+      entrada-breve)
+    (define/public (obtener-entrada-snip)
+      (new expresión-snip% [formal entrada-formal] [breve entrada-breve]))
+    (define/public (obtener-salida)
+      salida)
+    (define/public (obtener-salida-formal)
+      salida-formal)
+    (define/public (obtener-salida-breve)
+      salida-breve)
+    (define/public (obtener-salida-snip)
+      (new expresión-snip% [formal salida-formal] [breve salida-breve]))))
+    
+
+(define historial%
+  (class text%
+    (super-new)
+    (define evaluaciones null)
+    (define bloqueado? #t)
+    (define/augment (can-insert? s l) (not bloqueado?))
+    (define/augment (can-delete? s l) #f)
+    (define/public (insertar evaluación)
+      (define (al-final x)
+        (send this insert x (send this last-position)))
+      (set! evaluaciones (cons evaluación evaluaciones))
+      (set! bloqueado? #f)
+      (al-final #\newline)
+      (al-final (send evaluación obtener-entrada-snip))
+      (al-final (new pict-snip% [pict (arrow 10 0)]))
+      (al-final (send evaluación obtener-salida-snip))
+      (al-final #\newline)
+      (set! bloqueado? #t))
+    (send this hide-caret #t)))
+@ %def historial% evaluación% expresión-snip%
+
+\section{Visualizador}
+
+
+<<Visualizador>>=
+(define (expresión->código expresión [columnas 50])
+  (codeblock-pict
+   #:keep-lang-line? #f
+   (string-append "#lang racket\n"
+                  (pretty-format expresión columnas))))
+
+(define (expresión->figura-escrita-formal expresión)
+  (define (e-variable e nombre)
+    (colorize (text nombre) (dark "green")))
+  (define (e-abstracción e argumento cuerpo)
+    (hbl-append (colorize (text (string-append "(" (string #\u3BB))) (dark "brown"))
+                (escribir-dibujo-formal argumento)
+                (colorize (text ".") (dark "brown"))
+                (escribir-dibujo-formal cuerpo)
+                (colorize (text ")") (dark "brown"))))
+  (define (e-aplicación e operador operando)
+    (hbl-append (colorize (text "(") (dark "brown"))
+                (escribir-dibujo-formal operador)
+                (text " ")
+                (escribir-dibujo-formal operando)
+                (colorize (text ")") (dark "brown"))))
+  (define (e-hueco e)
+    (colorize (text "[ ]") (dark "brown")))
+  (define (e-metainstrucción e nombre argumentos)
+    (apply hbl-append
+           (colorize (text nombre) (dark "green"))
+           (colorize (text "[") (dark "brown"))
+           (append (add-between (map escribir-dibujo-formal argumentos)
+                                (colorize (text ",") (dark "brown")))
+                   (list (colorize (text "]") (dark "brown"))))))
+  (define escribir-dibujo-formal
+    (escritor-formal e-variable e-abstracción e-aplicación
+                     e-hueco e-metainstrucción))
+  (if (null? expresión)
+      (blank 50)
+      (escribir-dibujo-formal expresión)))
+
+(define (expresión->figura-escrita-breve expresión)
+  (define (e-variable e nombre)
+    (colorize (text nombre) (dark "green")))
+  (define (e-abstracción e argumentos cuerpo)
+    (apply hbl-append
+           (colorize (text (string #\u3BB)) (dark "brown"))
+           (append (add-between (map escribir-dibujo-breve argumentos)
+                                (text " "))
+                   (list (colorize (text ".") (dark "brown"))
+                         (escribir-dibujo-breve cuerpo)))))
+  (define (e-aplicación e operandos paréntesis)
+    (apply hbl-append
+           (add-between (map (lambda (x p?)
+                               (if p?
+                                   (hbl-append (colorize (text "(") (dark "brown"))
+                                               (escribir-dibujo-breve x)
+                                               (colorize (text ")") (dark "brown")))
+                                   (escribir-dibujo-breve x)))
+                             operandos
+                             paréntesis)
+                        (text " "))))
+  (define (e-hueco e)
+    (colorize (text "[ ]") (dark "brown")))
+  (define (e-metainstrucción e nombre argumentos)
+    (apply hbl-append
+           (colorize (text nombre) (dark "green"))
+           (colorize (text "[") (dark "brown"))
+           (append (add-between (map escribir-dibujo-breve argumentos)
+                                (colorize (text ",") (dark "brown")))
+                   (list (colorize (text "]") (dark "brown"))))))
+  (define escribir-dibujo-breve
+    (escritor-breve e-variable e-abstracción e-aplicación
+                    e-hueco e-metainstrucción))
+  (if (null? expresión)
+      (blank 50)
+      (escribir-dibujo-breve expresión)))
+
+(define código-lienzo%
+  (class canvas%
+    (inherit refresh refresh-now get-dc get-width get-height)
+    (super-new)
+    (send this init-auto-scrollbars 1000 1000 0.0 0.0)
+    (define expresión null)
+    (define expresión-pict (blank 50))
+    (define/override (on-paint)
+      (define dc (get-dc))
+      (draw-pict expresión-pict dc 0 0))
+    (define/public (actualizar-expresión e)
+      (set! expresión e)
+      (set! expresión-pict
+            (scale (expresión->código e (inexact->exact (floor (/ (get-width) 15)))) 2))
+      (send this refresh-now))))
+
+(define figura-escrita-formal-lienzo%
+  (class canvas%
+    (inherit refresh refresh-now get-dc get-width get-height)
+    (super-new)
+    (define expresión null)
+    (define expresión-pict (expresión->figura-escrita-formal expresión))
+    (define/override (on-paint)
+      (define dc (get-dc))
+      (define lienzo-ancho (get-width))
+      (define lienzo-alto (get-height))
+      (define dibujo (escalar-dibujo expresión-pict
+                                     lienzo-ancho lienzo-alto))
+      (define dibujo-ancho (pict-width dibujo))
+      (define dibujo-alto (pict-height dibujo))
+      (draw-pict dibujo dc
+                 (- (/ lienzo-ancho 2) (/ dibujo-ancho 2))
+                 (- (/ lienzo-alto 2) (/ dibujo-alto 2))))
+    (define/public (actualizar-expresión e)
+      (set! expresión e)
+      (set! expresión-pict
+            (expresión->figura-escrita-formal e))
+      (send this refresh-now))))
+
+(define figura-escrita-breve-lienzo%
+  (class canvas%
+    (inherit refresh refresh-now get-dc get-width get-height)
+    (super-new)
+    (define expresión null)
+    (define expresión-pict (expresión->figura-escrita-breve expresión))
+    (define/override (on-paint)
+      (define dc (get-dc))
+      (define lienzo-ancho (get-width))
+      (define lienzo-alto (get-height))
+      (define dibujo (escalar-dibujo expresión-pict
+                                     lienzo-ancho lienzo-alto))
+      (define dibujo-ancho (pict-width dibujo))
+      (define dibujo-alto (pict-height dibujo))
+      (draw-pict dibujo dc
+                 (- (/ lienzo-ancho 2) (/ dibujo-ancho 2))
+                 (- (/ lienzo-alto 2) (/ dibujo-alto 2))))
+    (define/public (actualizar-expresión e)
+      (set! expresión e)
+      (set! expresión-pict (expresión->figura-escrita-breve e))
+      (send this refresh-now))))
+@ %def código-lienzo% figura-escrita-formal-lienzo% figura-escrita-breve-lienzo%
+
+
+\section{Registro de metainstrucciones}
+
+
+<<Registro de metainstrucciones>>=
+(pretty-print-current-style-table
+ (pretty-print-extend-style-table (pretty-print-current-style-table)
+                                  '(define-metainstrucción match)
+                                  '(define case)))
+
+(pretty-print-columns 80)
+
+(define metainstrucciones-código (make-hash))
+
+(define-syntax define-metainstrucción
+  (syntax-rules ()
+    [(define-metainstrucción (id . args) cuerpo ...)
+     (begin (define (id . args) cuerpo ...)
+            (hash-set! metainstrucciones
+                       (symbol->string 'id)
+                       id)
+            (hash-set! metainstrucciones-código
+                       (symbol->string 'id)
+                       '(define-metainstrucción (id . args) cuerpo ...)))]))
+
+(define (cargar-archivo-metainstrucciones archivo)
+  (let ([file (open-input-file archivo)])
+    (let loop ([e (read file)])
+      (unless (eof-object? e)
+        (eval e)
+        (loop (read file)))))
+  (reportar-cambio-registro))
+
+(define código-racket%
+  (class racket:text%
+    (super-new)
+    (define bloqueado? #t)
+    (define/augment (can-insert? s l) (not bloqueado?))
+    (define/augment (can-delete? s l) #t)
+    (define/public (insertar sexp)
+      (set! bloqueado? #f)
+      (send this erase)
+      (let ([p (open-output-string)])
+        (pretty-print sexp p 1)
+        (let ([cadena (get-output-string p)])
+          (for-each (lambda (x)
+                      (send this insert x)
+                      (send this insert-return))
+                    (map string-trim (string-split cadena "\n"))))
+      (set! bloqueado? #t)))))
+@ 
+
+
+\section{Interfaz gráfica}
+
+
+<<Uniendo las componentes de la interfaz gráfica>>=
+;; Ventana registro
+
+(define ventana-registro
+  (new frame%
+       [label "Registro Metainstrucciones"]
+       [width 800]
+       [height 600]))
+
+(define registro-panel
+  (new panel:horizontal-dragable%
+       [parent ventana-registro]
+       [border 0]
+       [spacing 20]))
+
+(define listado-panel
+  (new vertical-panel%
+       [parent registro-panel]
+       [spacing 20]))
+
+(define listado-metainstrucciones
+  (new list-box%
+       [parent listado-panel]
+       [label #f]
+       [choices (list "")]
+       [style (list 'single
+                    'column-headers)]
+       [columns (list "Nombre")]
+       [callback
+        (lambda (listado evento)
+          (when (eq? 'list-box (send evento get-event-type))
+            (let [(seleccionados (send listado get-selections))]
+              (unless (null? seleccionados)
+                (send código-texto insertar
+                      (send listado get-data (car seleccionados)))))))]))
+
+(define botón-cargar (new button%
+                          [label "Cargar archivo"]
+                          [parent listado-panel]
+                          [stretchable-width #t]
+                          [callback
+                           (lambda (botón evento)
+                             (when (eq? 'button (send evento get-event-type))
+                               (let ([p (get-file "Cargar archivo de metainstrucciones")])
+                                 (when p
+                                   (cargar-archivo-metainstrucciones (path->string p))))))]))
+
+(define código-texto (new código-racket%))
+
+(define lienzo-implementación (new canvas:color%
+                                   [parent registro-panel]
+                                   [editor código-texto]))
+
+(define ventana-visualizador
+  (new frame%
+       [label "Visualizador"]
+       [width 800]  [min-width 200]
+       [height 600] [min-height 200]))
+
+(define visualizador-panel
+  (new vertical-panel%
+       [parent ventana-visualizador]
+       [border 0]
+       [spacing 20]))
+
+(define visualizador-código
+  (new código-lienzo%
+       [parent visualizador-panel]
+       [style (list 'vscroll 'hscroll)]))
+
+(define visualizador-formal
+  (new figura-escrita-formal-lienzo%
+       [parent visualizador-panel]
+       [stretchable-height #f]
+       [min-height 50]))
+
+(define visualizador-breve
+  (new figura-escrita-breve-lienzo%
+       [parent visualizador-panel]
+       [stretchable-height #f]
+       [min-height 50]))
+
+(define ventana-principal
+  (new frame%
+       [label "Lambda"]
+       [width 800]  [min-width 200]
+       [height 600] [min-height 200]))
+
+(define panel-principal
+  (new vertical-panel%
+       [parent ventana-principal]))
+
+(define panel-herramientas
+  (new horizontal-panel%
+       [parent panel-principal]
+       [border 0]
+       [stretchable-height #f]))
+
+(define botón-visualizador
+  (new button%
+       [parent panel-herramientas]
+       [label "visualizador"]
+       [callback
+        (lambda (botón evento)
+          (send ventana-visualizador show #t))]))
+
+(define botón-metainstrucciones
+  (new button%
+       [parent panel-herramientas]
+       [label "metainstrucciones"]
+       [callback
+        (lambda (botón evento)
+          (send ventana-registro show #t))]))
+
+(define herramientas-espacio
+  (new panel%
+       [parent panel-herramientas]))
+
+(define botón-ayuda
+  (new button%
+       [parent panel-herramientas]
+       [label "ayuda"]))
+
+(define panel-historial/editor
+  (new panel:vertical-dragable%
+       [parent panel-principal]))
+
+(define historial-panel
+  (new panel%
+       [parent panel-historial/editor]
+       [border 0]))
+
+(define historial (new historial%))
+
+(define historial-lienzo
+  (new editor-canvas%
+       [parent historial-panel]
+       [editor historial]))
+
+(define panel-tabs
+  (new tab-panel%
+       [parent panel-historial/editor]
+       [choices (list "Texto" "Estructura")]
+       [callback
+        (lambda (panel evento)
+          (case (send panel get-selection)
+            [(0)
+             (send panel change-children (lambda (x) (list editor-texto-panel)))
+             (reportar-otro-editor 'Texto)]
+            [(1)
+             (send panel change-children (lambda (x) (list editor-estructural-panel)))
+             (reportar-otro-editor 'Estructura)]))]))
+
+(define editor-texto-panel
+  (new panel%
+       [parent panel-tabs]
+       [border 0]))
+
+(define editor-texto (new editor-texto%))
+
+(define editor-texto-lienzo
+  (new editor-canvas%
+       [parent editor-texto-panel]
+       [editor editor-texto]))
+
+(define editor-estructural-panel
+  (new panel%
+       [parent panel-tabs]
+       [border 0]))
+
+(define editor-estructural (new editor-estructural%
+                                [parent editor-estructural-panel]))
+
+(send panel-tabs change-children (lambda (x) (list editor-texto-panel)))
+
+;;
+;; Procedimientos conectivos
+;; 
+
+(define (enviar-expresión expresión)
+  (send historial insertar
+        (new evaluación% [entrada expresión]))
+  (case editor-actual
+    [(Texto)
+     (send editor-texto erase)]
+    [(Estructura)
+     (send editor-estructural borrar)]))
+
+(define (reportar-cambio-editor expresión)
+  (send visualizador-código actualizar-expresión expresión)
+  (send visualizador-formal actualizar-expresión expresión)
+  (send visualizador-breve actualizar-expresión expresión))
+
+(define (enfocar-editor)
+  (case editor-actual
+    [(Texto)
+     (send editor-texto-lienzo focus)]
+    [(Estructura)
+     (send editor-estructural focus)]))
+
+(define (enviar-texto cadena)
+  (case editor-actual
+    [(Texto)
+     (send editor-texto erase)
+     (send editor-texto insert cadena)]
+    [(Estructura)
+     (send editor-estructural borrar)
+     (send editor-estructural cambiar-expresión
+           (parsear-cadena cadena))]))
+
+(define editor-actual 'Texto)
+
+(define (reportar-otro-editor objetivo)
+  (unless (eq? editor-actual objetivo)
+    (case editor-actual
+      [(Texto)
+       (send editor-estructural cambiar-expresión
+             (send editor-texto obtener-expresión))]
+      [(Estructura)
+       (send editor-texto cambiar-expresión
+             (send editor-estructural obtener-expresión))]))
+  (set! editor-actual objetivo)
+  (enfocar-editor))
+
+(define (reportar-cambio-registro)
+  (hash-for-each metainstrucciones
+                 (lambda (nombre proc)
+                   (send listado-metainstrucciones append
+                         nombre (hash-ref metainstrucciones-código nombre)))
+                 #t))
+
+;;
+;; Mostrar la ventana principal
+;;
+
+(send ventana-principal show #t)
+
+@ 
+
+
+\section{Código fuente}
+
+
+<<lambda-gui.rkt>>=
+#lang racket/gui
+(require "lambda-lib.rkt")
+(require framework)
+(require (except-in parser-tools/lex
+                    blank))
+(require (prefix-in : parser-tools/lex-sre))
+(require pict)
+(require pict/snip)
+(require pict/color)
+(require pict/code)
+(require pict/tree-layout)
+
+<<Editor de texto>>
+<<Editor estructural>>
+<<Historial>>
+<<Visualizador>>
+<<Registro de metainstrucciones>>
+<<Uniendo las componentes de la interfaz gráfica>>
+@ 
+
+
+
+% III. Extensiones
+\chapter{Extensiones}
+\markboth{
+  \normalsize\hfill\textit{\titulo}\hfill
+}{
+  \normalsize\hfill\textit{\thechapter.\ \ Extensiones}\hfill
+}
+\label{ap2:extensiones}
+
+En este capítulo se muestran ejemplos de metainstrucciones, estos procedimientos podrán ser incluídos por programas que usen [[lambda-lib]] como por ejemplo [[lambda-gui]]. Las metainstrucciones presentes se dividen en tres categorías: análisis de estructura de términos, transformación de términos y manejo de codificaciones.
+
+\section{Análisis de términos}
+
+<<Metainstrucciones>>=
+(define-metainstrucción (longitud M)
+  (if (término? M)
+      (let recurre ([M M])
+        (match M
+          [(variable x)      1]
+          [(abstracción x M) (+ 1 (recurre M))]
+          [(aplicación M N)  (+ (recurre M) (recurre N))]))
+      -1))
+@ %def longitud
+
+<<Metainstrucciones>>=
+(define-metainstrucción (variables-libres M)
+  (match M
+    [(variable x)      (list (variable x))]
+    [(abstracción x M) (remove x (variables-libres M))]
+    [(aplicación M N)  (remove-duplicates
+                        (append (variables-libres M)
+                                (variables-libres N)))]
+    [_ null]))
+@ %def variables-libres
+
+\section{Transformación de términos}
+
+<<Metainstrucciones>>=
+(define-metainstrucción (sustituye M x N)
+  (match M
+    [(== x)                   N]
+    [(variable y)             M]
+    [(aplicación P Q)         (aplicación (sustituye P x N) (sustituye Q x N))]
+    [(abstracción (== x) P)   M]
+    [(abstracción y P)
+     (cond [(not (member x (variables-libres P)))
+            (abstracción y P)]
+           [(not (member y (variables-libres N)))
+            (abstracción y (sustituye P x N))]
+           [else
+            (let ([z (variable-ajena (aplicación N P))])
+              (abstracción z (sustituye (sustituye P y z) x N)))])]
+    [_ M]))
+@ %def sustituye
+
+<<Metainstrucciones>>=
+(define-metainstrucción (variable-ajena M)
+  (let ([variables (variables-libres M)])
+    (let itera ([letra #\a])
+      (if (char>? letra #\z)
+          (let itera [(letra #\a) (número 2)]
+            (if (char>? letra #\z)
+                (itera #\a (+ número 1))
+                (let ([v (variable (string-append (string letra)
+                                                  (number->string número)))])
+                  (if (member v variables)
+                      (itera (integer->char (+ (char->integer letra) 1))
+                             número)
+                      v))))
+          (let ([v (variable (string letra))])
+            (if (member v variables)
+                (itera (integer->char (+ (char->integer letra) 1)))
+                v))))))
+@ %def variable-ajena
+
+<<Metainstrucciones>>=
+(define-metainstrucción (llenar-huecos M N)
+  (match M
+    [(variable x)           M]
+    [(abstracción x P)      (abstracción x (llenar-huecos P N))]
+    [(aplicación P Q)       (aplicación (llenar-huecos P N)
+                                        (llenar-huecos Q N))]
+    [(hueco)                N]
+    [(metainstrucción x Ps) (metainstrucción x (map (lambda (P) (llenar-huecos P N)) Ps))]
+    [_ M]))
+@ %def llenar-huecos
+
+\section{Codificaciones}
+
+<<Metainstrucciones>>=
+(define-metainstrucción (T)
+  (parsear-cadena "\\x y.x"))
+
+(define-metainstrucción (F)
+  (parsear-cadena "\\x y.y"))
+@ %def T F
+
+<<Metainstrucciones>>=
+(define-metainstrucción (decodifica-numeral M)
+  (match M
+    [(abstracción (variable f) (abstracción (variable x) M))
+     (let itera ([M M] [n 0])
+       (match M
+         [(== (variable x)) n]
+         [(aplicación (== (variable f)) M) (itera M (+ n 1))]
+         [_ -1]))]
+    [_ -1]))
+@ %def decodifica-numeral
+
+
+<<Metainstrucciones>>=
+(define-metainstrucción (codifica-número M)
+  (match M
+    [(variable x)
+     (let ([n (string->number x)])
+       (if (and (number? n) (integer? n) (>= n 0))
+           (abstracción (variable "f")
+                        (abstracción (variable "x")
+                                     (let itera ([n n])
+                                       (if (zero? n)
+                                           (variable "x")
+                                           (aplicación (variable "f")
+                                                       (itera (- n 1)))))))
+           M))]
+    [_ M]))
+@ %def codifica-número
+
+<<lambda-init.rkt>>=
+<<Metainstrucciones>>
+@ 
+
+
+
+\end{document}

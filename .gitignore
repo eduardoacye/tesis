@@ -5,6 +5,14 @@ lc-buf.tex
 _region_.prv
 _region_.tex
 main.prv
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
 
 ## Core latex/pdflatex auxiliary files:
 *.aux

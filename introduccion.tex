@@ -1,0 +1,37 @@
+\section*{Descripción del trabajo}
+
+Este trabajo presenta una introducción al estudio del cálculo $ λ $ puro desde una perspectiva matemática y computacional. El contenido del trabajo es producto de una revisión de la literatura sobre este cálculo y temas relacionados de las ciencias de la computación.
+
+El objetivo de este trabajo es explorar y plantear los aspectos básicos del cálculo $ λ $ relacionados con la computación a un nivel adecuado para estudiantes de la LCC de la Universidad de Sonora con la finalidad de promover el estudio de las ramas teóricas de las Ciencias de la Computación.
+
+\section*{Aportaciones principales}
+
+Este trabajo se basa fuertemente en varios libros sobre el cálculo $ λ $ y la aportación principal es la adaptación y redacción de los temas teniendo en cuenta los conocimientos de un estudiante de la LCC de últimos semestres. Otras aportaciones realizadas son:
+\begin{itemize}
+\item El \autoref{alg:ski} para compilar cualquier término cerrado a los combinadores $ \bs{SKI} $;
+\item Las codificaciones de operaciones booleanas basadas en la codificación del término condicional en la \autoref{sec:expresiones-booleanas} y \autoref{sec:boolean-extensiones};
+\item Las codificaciones de operaciones aritméticas basadas en numerales de Church en la \autoref{sec:aritmetica-elemental} y \autoref{sec:hiperoperaciones};
+\item El mecanismo para codificar algoritmos iterativos en la \autoref{sec:iteracion};
+\item La codificación de términos $ λ $ en el cálculo $ λ $ en la \autoref{sec:estructura-lambda};
+\item La implementación de las codificaciones del \autoref{ch:codificacion} en Haskell y Scheme en el \autoref{ap:lambda-scheme};
+\item El programa Lambda en el \autoref{ap:lambda}.
+\end{itemize}
+
+\section*{Estructura del trabajo}
+
+La estructura del trabajo se conforma de tres capítulos y dos apéndices:
+
+\begin{itemize}
+\item El primer capítulo aborda las ideas elementales del cálculo $ λ $ de manera informal relacionando los conceptos de este cálculo con otras áreas de estudio más convencionales de las matemáticas.
+
+\item El segundo capítulo presenta la perspectiva matemática del cálculo $ λ $, se aborda la formalización de la sintaxis del lenguaje del cálculo y después haciendo uso de sistemas formales y sistemas de reducción se formalizan el resto de los conceptos introducidos en el primer capítulo.
+
+\item El tercer capítulo presenta la perspectiva computacional del cálculo $ λ $, se aborda la codificación de objetos matemáticos y algoritmos del álgebra booleana y la aritmética elemental, después se explora la representación de procesos y estructuras recursivas.
+
+\item Los apéndices son implementaciones de programas para ser ejecutados en la computadora. El primer apéndice presenta una manera de programar las codificaciones del tercer capítulo en los lenguajes de programación Scheme y Haskell. El segundo apéndice presenta la implementación de un intérprete y editores para un lenguaje diseñado con la finalidad de explorar los temas de este trabajo de manera interactiva.
+\end{itemize}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

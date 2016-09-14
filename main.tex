@@ -1,0 +1,230 @@
+% Eduardo Acuña Yeomans - 2016
+%
+
+% Configuración del documento
+\documentclass[letterpaper, twoside, openright, 11pt]{book}
+
+\usepackage{emptypage}
+\usepackage[lmargin = 1.4in, rmargin = 1.0in, tmargin = 1.0in, bmargin = 1.0in, includefoot, headheight=14pt]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, mexico]{babel}
+\decimalpoint{}
+\usepackage[T1]{fontenc}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{enumerate}
+\usepackage{enumitem}
+\setlist{nosep}
+\usepackage{amsmath, amssymb}
+\usepackage{amsthm}
+\usepackage{proof}
+\usepackage{centernot}
+\theoremstyle{plain}%
+\newtheorem{thm}{Teorema}[section]
+\newcommand{\thmautorefname}{Teorema}
+\newtheorem{lem}{Lema}[section]
+\newcommand{\lemautorefname}{Lema}
+\newtheorem{prop}{Proposición}[section]
+\newcommand{\propautorefname}{Proposición}
+\newtheorem*{cor}{Corolario}
+\newcommand{\corautorefname}{Corolario}
+\theoremstyle{definition}
+\newtheorem{defn}{Definición}[section]
+\newcommand{\defnautorefname}{Definición}
+\newtheorem{exmp}{Ejemplo}[section]
+\newcommand{\exmpautorefname}{Ejemplo}
+\theoremstyle{remark}
+\newtheorem*{rem}{Observación}
+\newcommand{\remautorefname}{Observación}
+\newtheorem*{note}{Nota}
+\newcommand{\noteautorefname}{Nota}
+\newtheorem{case}{Caso}
+\newcommand{\caseautorefname}{Caso}
+\usepackage{pdfpages}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows, shadows}
+\usepackage{algorithmic}
+\usepackage[chapter]{algorithm}
+\floatname{algorithm}{Algoritmo}
+\renewcommand{\algorithmicrequire}{\textbf{Entrada:}} 
+\renewcommand{\algorithmicensure}{\textbf{Salida:}} 
+\renewcommand{\algorithmicend}{\textbf{fin}} 
+\renewcommand{\algorithmicif}{\textbf{si}} 
+\renewcommand{\algorithmicthen}{\textbf{entonces}} 
+\renewcommand{\algorithmicelse}{\textbf{de lo contrario}} 
+\renewcommand{\algorithmicelsif}{\algorithmicelse\ y \algorithmicif} 
+\renewcommand{\algorithmicendif}{\algorithmicend\ \algorithmicif} 
+\renewcommand{\algorithmicfor}{\textbf{para}} 
+\renewcommand{\algorithmicforall}{\textbf{para todo}} 
+\renewcommand{\algorithmicdo}{\textbf{hacer}} 
+\renewcommand{\algorithmicendfor}{\algorithmicend\ \algorithmicfor} 
+\renewcommand{\algorithmicwhile}{\textbf{mientras}} 
+\renewcommand{\algorithmicendwhile}{\algorithmicend\ \algorithmicwhile} 
+\renewcommand{\algorithmicloop}{\textbf{repetir}} 
+\renewcommand{\algorithmicendloop}{\algorithmicend\ \algorithmicloop} 
+\renewcommand{\algorithmicrepeat}{\textbf{repetir}} 
+\renewcommand{\algorithmicuntil}{\textbf{hasta}} 
+\renewcommand{\algorithmicprint}{\textbf{imprimir}} 
+\renewcommand{\algorithmicreturn}{\textbf{regresar}} 
+\renewcommand{\algorithmictrue}{\textbf{verdadero}} 
+\renewcommand{\algorithmicfalse}{\textbf{falso}} 
+\renewcommand{\algorithmiccomment}[1]{$\quad\vartriangleright$ #1}
+\renewcommand{\algorithmicto}{\textbf{hasta}}
+\usepackage{listings}
+\usepackage{listingsutf8}
+\lstset{xleftmargin=.15in,basicstyle=\footnotesize\ttfamily,escapeinside={@<}{>@}}
+\renewcommand{\lstlistingname}{Código}
+\renewcommand{\listalgorithmname}{Índice de Algoritmos}
+\floatname{algorithm}{Algoritmo}
+\newcommand{\algorithmautorefname}{Algoritmo}
+
+\usepackage{newunicodechar}
+\newunicodechar{λ}{\lambda}
+\newunicodechar{Λ}{\Lambda}
+\newunicodechar{α}{\alpha}
+\newunicodechar{β}{\beta}
+\newunicodechar{δ}{\delta}
+\newunicodechar{Δ}{\Delta}
+\newunicodechar{Γ}{\Gamma}
+\newunicodechar{ω}{\omega}
+\newunicodechar{Ω}{\Omega}
+\newunicodechar{ρ}{\rho}
+\newunicodechar{σ}{\sigma}
+\newunicodechar{Σ}{\Sigma}
+\newunicodechar{τ}{\tau}
+\newunicodechar{ν}{\nu}
+\newunicodechar{μ}{\mu}
+\newunicodechar{ξ}{\xi}
+\newunicodechar{Ξ}{\Xi}
+\newunicodechar{ζ}{\zeta}
+\newunicodechar{η}{\eta}
+\newunicodechar{φ}{\phi}
+\newunicodechar{Φ}{\Phi}
+\newunicodechar{π}{\pi}
+\newunicodechar{Π}{\Pi}
+\newunicodechar{θ}{\theta}
+\newunicodechar{Θ}{\Theta}
+
+\usepackage{xcolor}
+\makeatletter
+\def\mathcolor#1#{\@mathcolor{#1}}
+\def\@mathcolor#1#2#3{%
+  \protect\leavevmode
+  \begingroup
+    \color#1{#2}#3%
+  \endgroup
+}
+\makeatother
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead{}
+\fancyhead[LO]{\textsl{\leftmark}}
+\fancyhead[RE]{\textsl{\rightmark}}
+\fancyhead[RO,LE]{\thepage}
+\fancyfoot{}
+\renewcommand{\chaptermark}[1]{\markboth{{\textsl{\thechapter}. #1}}{}}
+\renewcommand{\sectionmark}[1]{\markright{{\textsl{\thesection}. #1}}}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\usepackage{kpfonts}
+\usepackage[cal=boondoxo]{mathalfa}
+\usepackage[varqu,varl]{inconsolata}
+
+\usepackage[activate={true,nocompatibility}, final, tracking = true, kerning = true, spacing = true, factor = 1100, stretch = 10, shrink = 10]{microtype}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+  pdftitle={El cálculo lambda y los fundamentos de la computación},
+  pdfauthor={Eduardo Acuña Yeomans}
+}
+
+% Comandos de abreviaciones
+\newcommand{\bs}{\boldsymbol}
+\newcommand{\mc}{\mathcal}
+\newcommand{\subst}[3]{#1 \left[ #2 \operatorname{:=} #3 \right]}
+\newcommand{\synteq}{\ \equiv\ }
+\newcommand{\contract}[1]{\ \operatorname{\rightarrow_{#1}}\ }
+\newcommand{\specialcontract}[2]{\ \operatorname{\overset{#2}{\rightarrow_{#1}}}\ }
+\newcommand{\xcontract}[2]{\ \operatorname{\overset{#2}{\rightarrow_{#1}}}}
+\newcommand{\reduce}[1]{\ \operatorname{\twoheadrightarrow_{#1}}\ }
+\newcommand{\xreduce}[2]{\ \operatorname{\overset{#2}{\twoheadrightarrow_{#1}}}}
+\newcommand{\convertible}[1]{\ \operatorname{=_{#1}}\ }
+\DeclareMathOperator{\Sub}{Sub}
+\DeclareMathOperator{\FV}{FV}
+\newcommand*\cn[1]{\widehat{#1}}
+
+\begin{document}
+
+\title{El cálculo \( \bs{λ} \) y los fundamentos de la computación}
+\author{Eduardo Acuña Yeomans}
+\date{2016}
+
+\maketitle
+
+\frontmatter
+
+\cleardoublepage\thispagestyle{empty}
+\vspace*{15 cm}
+\begin{flushright}\it
+  Dedicado a los hackers de LCC
+\end{flushright}
+
+\chapter*{Agradecimientos}
+\thispagestyle{empty}
+\input{agradecimientos}
+
+\tableofcontents
+
+\mainmatter
+
+\chapter*{Introducción}
+\addcontentsline{toc}{chapter}{Introducción}
+\markright{Introducción}
+\label{ch:introduccion}
+\input{introduccion}
+
+\chapter{Noción informal del cálculo \texorpdfstring{$ \bs{λ} $}{lambda}}
+\label{ch:nocion-informal}
+\input{capitulos/capitulo-1}
+
+\chapter{Formalización del cálculo \texorpdfstring{$ \bs{λ} $}{lambda}}
+\label{ch:formalizacion}
+\input{capitulos/capitulo-2}
+
+\chapter{Codificación de objetos}
+\label{ch:codificacion}
+\input{capitulos/capitulo-3}
+
+\chapter*{Conclusión}
+\addcontentsline{toc}{chapter}{Conclusión}
+\markright{Conclusión}
+\label{ch:conclusion}
+\input{conclusion}
+
+\appendix
+
+\chapter{Programación de codificaciones}
+\label{ap:lambda-scheme}
+\input{apendices/apendice-1}
+
+\chapter{Intérprete Lambda}
+\label{ap:lambda}
+\input{apendices/apendice-2}
+\includepdf[pages = -, pagecommand = {\thispagestyle{empty}}]{programas/lambda/main.pdf}
+
+\nocite{*}
+\bibliographystyle{acm}
+\thispagestyle{empty}
+{\small
+\bibliography{bibliografia}}
+\addcontentsline{toc}{chapter}{Bibliografía}
+
+\end{document}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
